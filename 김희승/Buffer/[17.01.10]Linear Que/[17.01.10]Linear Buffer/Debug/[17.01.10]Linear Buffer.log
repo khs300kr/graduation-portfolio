@@ -1,0 +1,16 @@
+﻿  QueApp.cpp
+c:\users\unknown15\documents\github\job-training\practice_project\[17.01.10]linear buffer\[17.01.10]linear buffer\queapp.h(6): error C2143: 구문 오류: ';'이(가) '*' 앞에 없습니다.
+c:\users\unknown15\documents\github\job-training\practice_project\[17.01.10]linear buffer\[17.01.10]linear buffer\queapp.h(6): error C4430: 형식 지정자가 없습니다. int로 가정합니다. 참고: C++에서는 기본 int를 지원하지 않습니다.
+c:\users\unknown15\documents\github\job-training\practice_project\[17.01.10]linear buffer\[17.01.10]linear buffer\queapp.h(6): error C2238: ';' 앞에 예기치 않은 토큰이 있습니다.
+c:\users\unknown15\documents\github\job-training\practice_project\[17.01.10]linear buffer\[17.01.10]linear buffer\queapp.cpp(10): error C2614: 'CQueApp': 멤버 초기화가 잘못되었습니다. 'm_pQue'이(가) 기본 또는 멤버가 아닙니다.
+c:\users\unknown15\documents\github\job-training\practice_project\[17.01.10]linear buffer\[17.01.10]linear buffer\queapp.cpp(17): error C2065: 'm_pQue': 선언되지 않은 식별자입니다.
+c:\users\unknown15\documents\github\job-training\practice_project\[17.01.10]linear buffer\[17.01.10]linear buffer\queapp.cpp(51): error C2065: 'm_pQue': 선언되지 않은 식별자입니다.
+c:\users\unknown15\documents\github\job-training\practice_project\[17.01.10]linear buffer\[17.01.10]linear buffer\queapp.cpp(53): error C2065: 'm_pQue': 선언되지 않은 식별자입니다.
+c:\users\unknown15\documents\github\job-training\practice_project\[17.01.10]linear buffer\[17.01.10]linear buffer\queapp.cpp(53): error C2541: 'delete': 포인터가 아닌 개체를 삭제할 수 없습니다.
+c:\users\unknown15\documents\github\job-training\practice_project\[17.01.10]linear buffer\[17.01.10]linear buffer\queapp.cpp(54): error C2065: 'm_pQue': 선언되지 않은 식별자입니다.
+c:\users\unknown15\documents\github\job-training\practice_project\[17.01.10]linear buffer\[17.01.10]linear buffer\queapp.cpp(74): error C2065: 'm_pQue': 선언되지 않은 식별자입니다.
+c:\users\unknown15\documents\github\job-training\practice_project\[17.01.10]linear buffer\[17.01.10]linear buffer\queapp.cpp(74): error C2227: '->Enque' 왼쪽은 클래스/구조체/공용 구조체/제네릭 형식을 가리켜야 합니다.
+  c:\users\unknown15\documents\github\job-training\practice_project\[17.01.10]linear buffer\[17.01.10]linear buffer\queapp.cpp(74): note: 'unknown-type' 형식입니다.
+  main.cpp
+  LinearQue.cpp
+  코드를 생성하고 있습니다...
