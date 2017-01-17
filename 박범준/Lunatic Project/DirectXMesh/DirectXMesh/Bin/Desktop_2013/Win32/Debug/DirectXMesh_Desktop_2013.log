@@ -1,0 +1,13 @@
+﻿  DirectXMeshUtil.cpp
+  DirectXMeshAdjacency.cpp
+  DirectXMeshClean.cpp
+  DirectXMeshGSAdjacency.cpp
+  DirectXMeshNormals.cpp
+  DirectXMeshOptimize.cpp
+  DirectXMeshRemap.cpp
+  DirectXMeshTangentFrame.cpp
+  DirectXMeshValidate.cpp
+  DirectXMeshVBReader.cpp
+  DirectXMeshVBWriter.cpp
+  코드를 생성하고 있습니다...
+  DirectXMesh_Desktop_2013.vcxproj -> C:\Users\Administrator\Desktop\FBXLoader2015forDX11-master (5)\FBXLoader2015forDX11-master\DirectXMesh\DirectXMesh\Bin\Desktop_2013\Win32\Debug\DirectXMesh.lib
