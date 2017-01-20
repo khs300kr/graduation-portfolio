@@ -1,1 +1,8 @@
-﻿  DirectXTK_Desktop_2013.vcxproj -> C:\Users\Administrator\Desktop\FBXLoader2015forDX11-master (5)\FBXLoader2015forDX11-master\DirectXTK\Bin\Desktop_2013\Win32\Debug\DirectXTK.lib
+﻿  WICTextureLoader.cpp
+c:\program files (x86)\windows kits\8.1\include\um\wincodec.h(943): error C3646: 'PixelFormat': 알 수 없는 재정의 지정자입니다.
+c:\program files (x86)\windows kits\8.1\include\um\wincodec.h(943): error C4430: 형식 지정자가 없습니다. int로 가정합니다. 참고: C++에서는 기본 int를 지원하지 않습니다.
+  ScreenGrab.cpp
+c:\program files (x86)\windows kits\8.1\include\um\wincodec.h(943): error C3646: 'PixelFormat': 알 수 없는 재정의 지정자입니다.
+c:\program files (x86)\windows kits\8.1\include\um\wincodec.h(943): error C4430: 형식 지정자가 없습니다. int로 가정합니다. 참고: C++에서는 기본 int를 지원하지 않습니다.
+c:\users\wlstn\onedrive\문서\github\graduation-portfolio\박범준\lunatic project\directxtk\src\screengrab.cpp(927): warning C4838: 'UINT'에서 'INT'(으)로의 변환에는 축소 변환이 필요합니다.
+  코드를 생성하고 있습니다...
