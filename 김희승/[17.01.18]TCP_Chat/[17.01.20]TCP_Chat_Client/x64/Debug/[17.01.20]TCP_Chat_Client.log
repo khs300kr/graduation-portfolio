@@ -1,0 +1,5 @@
+﻿  client.cpp
+c:\users\unknown15\documents\github\job-training\practice_project\[17.01.18]tcp_chat\[17.01.20]tcp_chat_client\client.cpp(79): warning C4311: '형식 캐스팅': 'sockaddr *'에서 'int'(으)로 포인터가 잘립니다.
+c:\users\unknown15\documents\github\job-training\practice_project\[17.01.18]tcp_chat\[17.01.20]tcp_chat_client\client.cpp(79): warning C4302: '형식 캐스팅': 'sockaddr *'에서 'int'(으)로 잘립니다.
+  [17.01.20]TCP_Chat_Client.vcxproj -> C:\Users\unknown15\Documents\GitHub\Job-Training\Practice_Project\[17.01.18]TCP_Chat\x64\Debug\[17.01.20]TCP_Chat_Client.exe
+  [17.01.20]TCP_Chat_Client.vcxproj -> C:\Users\unknown15\Documents\GitHub\Job-Training\Practice_Project\[17.01.18]TCP_Chat\x64\Debug\[17.01.20]TCP_Chat_Client.pdb (Full PDB)

@@ -1,195 +1,197 @@
+#pragma comment(lib,"Ws2_32.lib")
+
 #include <iostream>
-#include <winsock2.h>
-#include <ws2tcpip.h>
+#include <WinSock2.h>
+#include <WS2tcpip.h> // getaddrinfo()
+#include <thread>	  // C+11 multithread
 #include <string>
-#include <thread>
 #include <vector>
 
-#pragma comment (lib, "Ws2_32.lib")
+#define IP_ADDR "127.0.0.1"		// loop back
+#define SERVER_PORT "8000"
+#define BUFSIZE 512
+#define MAX_CLIENT 1000			// 동접 1000
+#define NOTYET_CONNECT -1
 
-#define IP_ADDRESS "192.168.56.1"
-#define DEFAULT_PORT "3504"
-#define DEFAULT_BUFLEN 512
+using namespace std;
 
-struct client_type
+typedef struct tagClientType
 {
-	int id;
-	SOCKET socket;
-};
+	int		m_id;
+	SOCKET	m_socket;
+	tagClientType()
+		: m_id(-1), m_socket(INVALID_SOCKET) {}
+	~tagClientType() {}
 
-const char OPTION_VALUE = 1;
-const int MAX_CLIENTS = 5;
+}CLIENT_TYPE;
 
-//Function Prototypes
-int process_client(client_type &new_client, std::vector<client_type> &client_array, std::thread &thread);
-int main();
-
-int process_client(client_type &new_client, std::vector<client_type> &client_array, std::thread &thread)
+typedef struct tagClientAddr
 {
-	std::string msg = "";
-	char tempmsg[DEFAULT_BUFLEN] = "";
+	SOCKADDR_IN m_addr;
+	int			m_iLen;
+	tagClientAddr() 
+	{ 	m_iLen = sizeof(m_addr); }
+}CLIENT_ADDR;
 
-	//Session
-	while (1)
+int recvn(SOCKET S, char *buf, int len, int flags)
+{
+	int received{};
+	char* ptr = buf;
+	int left = len;	// BUFSIZE
+
+	while (left > 0)
 	{
-		memset(tempmsg, 0, DEFAULT_BUFLEN);
+		received = recv(S, ptr, left, flags);
+		if (received == SOCKET_ERROR) return SOCKET_ERROR;
+		else if (received == 0) break;
+		cout << "[Received] : " << received << endl;
+		left -= received;
+		ptr += received;
+	}
+	return (len - left);
+}
 
-		if (new_client.socket != 0)
+
+void process_client(CLIENT_TYPE& new_client, vector<CLIENT_TYPE>& vClient)//, thread& thread)
+{
+	string strMsg{};
+	char buf[BUFSIZE]{};
+
+	while (true)
+	{
+		if (new_client.m_socket != INVALID_SOCKET)
 		{
-			int iResult = recv(new_client.socket, tempmsg, DEFAULT_BUFLEN, 0);
+			int retval = recvn(new_client.m_socket, buf, BUFSIZE, 0);
 
-			if (iResult != SOCKET_ERROR)
+			if (retval == SOCKET_ERROR)
 			{
-				if (strcmp("", tempmsg))
-					msg = "Client #" + std::to_string(new_client.id) + ": " + tempmsg;
+				strMsg = "Client[" + to_string(new_client.m_id) + "]" + " 끊김";
+				cout << strMsg << endl;
 
-				std::cout << msg.c_str() << std::endl;
+				closesocket(new_client.m_socket);
+				closesocket(vClient[new_client.m_id].m_socket);
+				vClient[new_client.m_id].m_socket = INVALID_SOCKET;
 
-				//Broadcast that message to the other clients
-				for (int i = 0; i < MAX_CLIENTS; i++)
+				// Broadcast the disconnection meesage to the other clients
+				for (auto&d : vClient)
 				{
-					if (client_array[i].socket != INVALID_SOCKET)
-						if (new_client.id != i)
-							iResult = send(client_array[i].socket, msg.c_str(), strlen(msg.c_str()), 0);
+					if (d.m_socket != INVALID_SOCKET)
+						retval = send(d.m_socket, strMsg.c_str(), (int)strMsg.size(), 0);
 				}
+				break;
 			}
 			else
 			{
-				msg = "Client #" + std::to_string(new_client.id) + " Disconnected";
-
-				std::cout << msg << std::endl;
-
-				closesocket(new_client.socket);
-				closesocket(client_array[new_client.id].socket);
-				client_array[new_client.id].socket = INVALID_SOCKET;
-
-				//Broadcast the disconnection message to the other clients
-				for (int i = 0; i < MAX_CLIENTS; i++)
+				if (buf != NULL)
+					strMsg = "Client[" + to_string(new_client.m_id) + "]" + ": " + buf;
+				cout << strMsg << endl;
+				// Broadcast the disconnection meesage to the other clients
+				for (auto&d : vClient)
 				{
-					if (client_array[i].socket != INVALID_SOCKET)
-						iResult = send(client_array[i].socket, msg.c_str(), strlen(msg.c_str()), 0);
+					if (d.m_socket != INVALID_SOCKET)
+						retval = send(d.m_socket, strMsg.c_str(), (int)strMsg.size(), 0);
 				}
-
-				break;
 			}
-		}
-	} //end while
-
-	thread.detach();
-
-	return 0;
+		} 
+	} // end while
 }
 
-int main()
+void main()
 {
-	WSADATA wsaData;
-	struct addrinfo hints;
-	struct addrinfo *server = NULL;
-	SOCKET server_socket = INVALID_SOCKET;
-	std::string msg = "";
-	std::vector<client_type> client(MAX_CLIENTS);
-	int num_clients = 0;
-	int temp_id = -1;
-	std::thread my_thread[MAX_CLIENTS];
+	// Winsock Initializing
+	cout << "Initializing Winsock..." << endl;
+	WSADATA wsa;
+	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) { cout << "< Winsock Intializing failed >" << endl; exit(1);}
 
-	//Initialize Winsock
-	std::cout << "Intializing Winsock..." << std::endl;
-	WSAStartup(MAKEWORD(2, 2), &wsaData);
-
-	//Setup hints
+	// Setup hints
+	cout << "Setting up Server ( 주소 설정, 서버소켓 생성 )..." << endl;
+	addrinfo hints;
 	ZeroMemory(&hints, sizeof(hints));
-	hints.ai_family = AF_INET;
+	hints.ai_flags = AI_PASSIVE;		// The socket address will be used in a call to the bind function.(msdn)
 	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_protocol = IPPROTO_TCP;
-	hints.ai_flags = AI_PASSIVE;
+	hints.ai_family = AF_INET;
 
-	//Setup Server
-	std::cout << "Setting up server..." << std::endl;
-	getaddrinfo(static_cast<LPCTSTR>(IP_ADDRESS), DEFAULT_PORT, &hints, &server);
+	// Create server socket
+	addrinfo*	server;
+	getaddrinfo(IP_ADDR, SERVER_PORT, &hints, &server);
+	SOCKET server_socket = socket(server->ai_family, server->ai_socktype, 0);
+	if (server_socket == INVALID_SOCKET) { cout << "server_socket is invalid" << endl; exit(1); }
 
-	//Create a listening socket for connecting to server
-	std::cout << "Creating server socket..." << std::endl;
-	server_socket = socket(server->ai_family, server->ai_socktype, server->ai_protocol);
+	// Setup socket options
+	bool optval = true;
+	setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, (char*)&optval, sizeof(optval));	// 소켓코드가 처리하는 옵션 - (프로토콜 독립적 성격)
+	setsockopt(server_socket, IPPROTO_TCP, TCP_NODELAY, (char*)&optval, sizeof(optval));	// 프로토콜구현 코드가 처리하는 옵션 - Reduce response time but increase traffic
 
-	//Setup socket options
-	setsockopt(server_socket, SOL_SOCKET, SO_REUSEADDR, &OPTION_VALUE, sizeof(int)); //Make it possible to re-bind to a port that was used within the last 2 minutes
-	setsockopt(server_socket, IPPROTO_TCP, TCP_NODELAY, &OPTION_VALUE, sizeof(int)); //Used for interactive programs
+	cout << "Binding socket..." << endl;
+	bind(server_socket, &server->ai_addr, (int)server->ai_addrlen);
 
-																					 //Assign an address to the server socket.
-	std::cout << "Binding socket..." << std::endl;
-	bind(server_socket, server->ai_addr, (int)server->ai_addrlen);
-
-	//Listen for incoming connections.
-	std::cout << "Listening..." << std::endl;
+	cout << "Listening..." << endl;
 	listen(server_socket, SOMAXCONN);
+	
+	// 통신변수
+	vector<CLIENT_TYPE> client(MAX_CLIENT);		// key-value? trying map?
+	thread client_thread[MAX_CLIENT];
+	CLIENT_ADDR client_addr;
+	int		iIndex{};
+	int		iClient_Number{};
+	string	strMsg{};
 
-	//Initialize the client list
-	for (int i = 0; i < MAX_CLIENTS; i++)
+	while (true)
 	{
-		client[i] = { -1, INVALID_SOCKET };
-	}
+		SOCKET sTemp = accept(server_socket, (SOCKADDR*)&client_addr.m_addr, &client_addr.m_iLen);
+		if (sTemp == INVALID_SOCKET) continue;
+		cout << " [ Accept - IP : " << inet_ntoa(client_addr.m_addr.sin_addr) << ", Port : " << ntohs(client_addr.m_addr.sin_port) << " ] " << endl;
 
-	while (1)
-	{
-
-		SOCKET incoming = INVALID_SOCKET;
-		incoming = accept(server_socket, NULL, NULL);
-
-		if (incoming == INVALID_SOCKET) continue;
-
-		//Reset the number of clients
-		num_clients = -1;
-
-		//Create a temporary id for the next client
-		temp_id = -1;
-		for (int i = 0; i < MAX_CLIENTS; i++)
+		// 다음 클라이언트를 위해 템프 id 생성?
+		iIndex = NOTYET_CONNECT;
+		for (int i = 0; i < MAX_CLIENT; ++i)
 		{
-			if (client[i].socket == INVALID_SOCKET && temp_id == -1)
+			if (client[i].m_socket == INVALID_SOCKET && iIndex == NOTYET_CONNECT)
 			{
-				client[i].socket = incoming;
-				client[i].id = i;
-				temp_id = i;
+				client[i].m_socket = sTemp;
+				client[i].m_id = i;
+				iIndex = i;
 			}
-
-			if (client[i].socket != INVALID_SOCKET)
-				num_clients++;
-
-			//std::cout << client[i].socket << std::endl;
+			
+			if (client[i].m_socket != INVALID_SOCKET)
+				++iClient_Number;							// 동접수?
 		}
+	
 
-		if (temp_id != -1)
+
+		if (iIndex == NOTYET_CONNECT)
 		{
-			//Send the id to that client
-			std::cout << "Client #" << client[temp_id].id << " Accepted" << std::endl;
-			msg = std::to_string(client[temp_id].id);
-			send(client[temp_id].socket, msg.c_str(), strlen(msg.c_str()), 0);
-
-			//Create a thread process for that client
-			my_thread[temp_id] = std::thread(process_client, std::ref(client[temp_id]), std::ref(client), std::ref(my_thread[temp_id]));
+			strMsg = "Server is Full";
+			send(sTemp, strMsg.c_str(), (int)strMsg.size(), 0);
+			cout << strMsg << endl;
 		}
 		else
 		{
-			msg = "Server is full";
-			send(incoming, msg.c_str(), strlen(msg.c_str()), 0);
-			std::cout << msg << std::endl;
+			// id를 클라이언트에게 보낸다?
+			cout << "Client[" << client[iIndex].m_id << "]" << "접속" << endl;
+			strMsg = to_string(client[iIndex].m_id);
+			send(client[iIndex].m_socket, strMsg.c_str(), (int)strMsg.size(), 0);
+
+			// 해당 클라이언트를 위한 스레드 프로세스를 만든다.
+			client_thread[iIndex] = thread(
+				process_client,
+				std::ref(client[iIndex]),		// client_type
+				std::ref(client));//,				// vector
+				//std::ref(client_thread[iIndex]));	// thread array		
 		}
-	} //end while
+	} // end while
 
-
-	  //Close listening socket
+	// 서버(listening)소켓 종료
 	closesocket(server_socket);
 
-	//Close client socket
-	for (int i = 0; i < MAX_CLIENTS; i++)
+	// 스레드 , 클라이언트 소켓 종료
+	for (int i = 0; i < iClient_Number; ++i)
 	{
-		my_thread[i].detach();
-		closesocket(client[i].socket);
+		client_thread[i].detach();		// 프로세스와 스레드 분리.
+		closesocket(client[i].m_socket);
 	}
 
-	//Clean up Winsock
 	WSACleanup();
-	std::cout << "Program has ended successfully" << std::endl;
-
-	system("pause");
-	return 0;
 }
+
+

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DEFECTS>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>c:\users\unknown15\documents\github\job-training\practice_project\[17.01.18]tcp_chat\[17.01.18]tcp_chat\</FILEPATH>
+      <FILENAME>server.cpp</FILENAME>
+      <LINE>99</LINE>
+      <COLUMN>9</COLUMN>
+    </SFA>
+    <DEFECTCODE>6262</DEFECTCODE>
+    <DESCRIPTION>함수에서 '16592'바이트의 스택을 사용하는데 이 크기가 /analyze:stacksize '16384'을(를) 초과합니다. 일부 데이터를 힙으로 이동하십시오.</DESCRIPTION>
+    <FUNCTION>main</FUNCTION>
+    <DECORATED>main</DECORATED>
+    <FUNCLINE>99</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+</DEFECTS>

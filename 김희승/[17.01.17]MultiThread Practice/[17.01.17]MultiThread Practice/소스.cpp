@@ -94,6 +94,8 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	}
 	closesocket(client_sock);
 	cout << " [ Quit - IP : " << inet_ntoa(client_addr.sin_addr) << ", Port : " << ntohs(client_addr.sin_port) << " ] " << endl;
+
+	return 0;
 }
 
 void main()
@@ -139,3 +141,5 @@ void main()
 
 	WSACleanup();
 }
+
+
