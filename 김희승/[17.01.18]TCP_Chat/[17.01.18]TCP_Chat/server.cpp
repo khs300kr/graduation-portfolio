@@ -160,7 +160,7 @@ void main()
 			if (vClient[i].m_socket != INVALID_SOCKET)
 				++iClient_Number;							
 		}
-		cout << iClient_Number << endl;
+		cout << "µ¿Á¢ ¼ö : " << iClient_Number << endl;
 	
 
 		if (iIndex == NOTYET_CONNECT)		// Meaning Server is Full.
