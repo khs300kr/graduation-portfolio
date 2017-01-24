@@ -1,5 +1,0 @@
-﻿  server.cpp
-c:\users\unknown15\documents\github\job-training\practice_project\[17.01.18]tcp_chat\[17.01.18]tcp_chat\server.cpp(143): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
-  c:\program files (x86)\windows kits\8.1\include\um\winsock2.h(1868): note: 'inet_ntoa' 선언을 참조하십시오.
-  [17.01.18]TCP_Chat.vcxproj -> C:\Users\unknown15\Documents\GitHub\Job-Training\Practice_Project\[17.01.18]TCP_Chat\x64\Debug\[17.01.18]TCP_Chat_Server.exe
-  [17.01.18]TCP_Chat.vcxproj -> C:\Users\unknown15\Documents\GitHub\Job-Training\Practice_Project\[17.01.18]TCP_Chat\x64\Debug\[17.01.18]TCP_Chat_Server.pdb (Full PDB)

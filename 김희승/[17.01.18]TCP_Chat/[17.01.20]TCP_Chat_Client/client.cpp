@@ -55,63 +55,46 @@ void main()
 
 	// Setup hints
 	addrinfo  hints;
-	addrinfo* result = NULL;
+	addrinfo* client_addrinfo = NULL;
 	ZeroMemory(&hints, sizeof(hints));
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;
-	if (getaddrinfo(IP_ADDR, SERVER_PORT, &hints, &result) != 0) { cout << "< getaddrinfo failed >" << endl; exit(1); }
+	if (getaddrinfo(IP_ADDR, SERVER_PORT, &hints, &client_addrinfo) != 0) { cout << "< getaddrinfo failed >" << endl; exit(1); }
 
 
 	cout << "Connecting..." << endl;
-	addrinfo* ptr = NULL;
 	CLIENT_TYPE client;
-
+	int retval;	
 	
-	// 성공할때까지 시도한다.
-	int retval;
-	for (ptr = result; ptr != NULL; ptr = ptr->ai_next)
-	{
-		client.m_socket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
-		if (client.m_socket == INVALID_SOCKET) { cout << "socket()" << endl; exit(1); }
+	client.m_socket = socket(client_addrinfo->ai_family, client_addrinfo->ai_socktype, client_addrinfo->ai_protocol);
+	if (client.m_socket == INVALID_SOCKET) { cout << "socket()" << endl; exit(1); }
 		
-		//connect
-		retval = connect(client.m_socket, ptr->ai_addr, (int)ptr->ai_addr);
-		if (retval == SOCKET_ERROR) 
-		{
-			closesocket(client.m_socket);
-			client.m_socket = INVALID_SOCKET;
-			continue;
-		}
-		break;
-	}
+	//connect
+	retval = connect(client.m_socket, client_addrinfo->ai_addr, (int)client_addrinfo->ai_addrlen);
+	if (retval == SOCKET_ERROR) { cout << "connect()" << endl; exit(1); }
+	
+	freeaddrinfo(client_addrinfo);
 
-	freeaddrinfo(result);
-
-	if (client.m_socket == INVALID_SOCKET) {
-		cout << "서버에 접속할 수 없습니다" << endl;
-		exit(1);
-	}
-	else
-		cout << "서버 접속 성공" << endl;
+	if (client.m_socket == INVALID_SOCKET) { cout << "서버에 접속할 수 없습니다" << endl;	exit(1);}
+	else cout << "서버 접속 성공" << endl;
 
 	// 서버로부터 ID 획득
-	recv(client.m_socket, client.m_recv_msg, BUFSIZE, 0);
+	recv(client.m_socket, client.m_recv_msg, sizeof(int), 0);
 	string strMsg = client.m_recv_msg;
-
 
 	string str_send_msg{};
 	if (strMsg != "Server is Full")
 	{
 		client.m_id = atoi(client.m_recv_msg);	// ascii - to - int
+		cout << "MY ID : Client[" << client.m_id << "]" << endl;
 
-		thread client_thread(process_client, std::ref(client));
+		thread client_thread(process_client, std::ref(client)); // recv for broadcast
 		while (true)
 		{
 			getline(cin, str_send_msg);
 			retval = send(client.m_socket, str_send_msg.c_str(), (int)str_send_msg.size(), 0);
 			if (retval == SOCKET_ERROR) { cout << "send() failed" << endl; exit(1); }
-
 		}
 		// 보낼 데이터가 없으면 shutdown
 		client_thread.detach();
