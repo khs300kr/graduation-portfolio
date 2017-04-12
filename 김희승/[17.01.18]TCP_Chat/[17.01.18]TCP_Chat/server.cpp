@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-#define IP_ADDR "127.0.0.1"		// loop back
+#define IP_ADDR "192.168.162.144"		// loop back
 #define SERVER_PORT "8000"
 #define BUFSIZE 512
 #define MAX_CLIENT 1000			// 동접 1000
@@ -87,7 +87,7 @@ void process_client(CLIENT_TYPE& new_client, vector<CLIENT_TYPE>& vClient, threa
 				if (buf != NULL)
 					strMsg = "Client[" + to_string(new_client.m_id) + "]" + ": " + buf;
 				cout << strMsg << endl;
-				// Broadcast the disconnection meesage to the other clients
+				// Broadcast 
 				for (auto&d : vClient)
 				{
 					if (d.m_socket != INVALID_SOCKET)
@@ -126,7 +126,7 @@ void main()
 	setsockopt(server_socket, IPPROTO_TCP, TCP_NODELAY, (char*)&optval, sizeof(optval));	// 프로토콜구현 코드가 처리하는 옵션 - Reduce response time but increase traffic
 
 	cout << "Binding socket..." << endl;
-	if (::bind(server_socket, server_addrinfo->ai_addr, (int)server_addrinfo->ai_addrlen) == SOCKET_ERROR) { cout << "bind() Error" << endl; }
+	if (::bind(server_socket, server_addrinfo->ai_addr, (int)server_addrinfo->ai_addrlen) == SOCKET_ERROR) { cout << "bind() Error" << endl; exit(1); }
 
 	cout << "Listening..." << endl;
 	if (listen(server_socket, SOMAXCONN) == SOCKET_ERROR) { cout << "listen() Error" << endl; }
