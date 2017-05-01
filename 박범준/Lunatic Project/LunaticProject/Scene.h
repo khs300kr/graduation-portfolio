@@ -3,6 +3,8 @@
 #include "Shader.h"
 #include "SkyBoxShader.h"
 
+#include "SordMan.h"
+
 #define MAX_LIGHTS		4 
 #define POINT_LIGHT		1.0f
 #define SPOT_LIGHT		2.0f
@@ -48,9 +50,20 @@ private:
 	LIGHTS *m_pLights;
 	ID3D11Buffer *m_pd3dcbLights;
 
+
+	
+	
+
+	bool LeftKeyDown;
+	bool RightKeyDown;
+	bool UpKeyDown;
+	bool DownKeyDown;
+
+
 public:
 	CScene();
 	~CScene();
+	CSordMan* pSordmanObject;
 
 	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);

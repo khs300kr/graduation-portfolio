@@ -82,6 +82,7 @@ CGameObject::CGameObject(int nMeshes)
 	D3DXMatrixIdentity(&m_d3dxmtxRotate);
 	D3DXMatrixIdentity(&m_d3dxmtxScale);
 	D3DXMatrixIdentity(&m_d3dxmtxTranlate); 
+	m_d3dxvDirection = D3DXVECTOR3(0, 0, 0);
 	m_fRotationAngle = 0.0f;
 	
 	m_nMeshes = nMeshes;
@@ -212,7 +213,7 @@ D3DXVECTOR3 CGameObject::GetLookAt()
 	D3DXVECTOR3 d3dxvLookAt(m_d3dxmtxWorld._31, m_d3dxmtxWorld._32, m_d3dxmtxWorld._33);
 	D3DXVec3Normalize(&d3dxvLookAt, &d3dxvLookAt);
 	return d3dxvLookAt;
-} 
+}
 
 D3DXVECTOR3 CGameObject::GetUp()
 {

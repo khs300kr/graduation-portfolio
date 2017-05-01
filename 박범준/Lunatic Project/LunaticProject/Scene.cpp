@@ -17,6 +17,14 @@ CScene::CScene()
 	m_pCamera = NULL;
 	m_pLights = NULL;
 	m_pd3dcbLights = NULL;
+
+
+	LeftKeyDown = false;
+	RightKeyDown = false;
+	UpKeyDown = false;
+	DownKeyDown = false;
+
+
 }
 
 
@@ -49,7 +57,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	pd3dsrvTexture->Release();
 	pd3dsrvTexture = NULL;
 	CTexture *pNinjaTexture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/ninja_diffuse.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/SordMan.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pNinjaTexture->SetTexture(0, pd3dsrvTexture);
 	pNinjaTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
@@ -71,12 +79,9 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	pNormalMaterial->m_Material.m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// ④ 쉐이더에 적용할 메쉬(들) 생성	
-	CMesh *pTestMesh = new CFBXMesh(pd3dDevice, "../Data/drayer_animation.data", 0.01f);
-	CMesh *pTestMesh2 = new CFBXMesh(pd3dDevice, "../Data/SordMan.data", 0.1f);
+	CMesh *pTestMesh = new CFBXMesh(pd3dDevice, "../Data/man1.data", 0.1f);
+	CMesh *pSordManMesh = new CFBXMesh(pd3dDevice, "../Data/SordMan.data", 0.1f);
 	CMesh *pBuildingMesh = new CFBXMesh(pd3dDevice, "../Data/building-commercial_03.data", 1.0f);
-
-
-
 
 	//
 	// 일반 쉐이더 선언부
@@ -98,8 +103,8 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 		pTestObject->SetMesh(pTestMesh);
 		pTestObject->SetMaterial(pNormalMaterial);
 		pTestObject->SetTexture(pDrayerTexture);
-		pTestObject->Rotate(-90.0f, 0.0f, 0.0f);
-		pTestObject->SetPosition(0.0f, 0.0f, 0.0f);
+		pTestObject->Rotate(0.0f, 0.0f, 0.0f);
+		pTestObject->SetPosition(20.0f, 0.0f, 0.0f);
 		m_ppShaders[1]->AddObject(pTestObject);
 
 
@@ -107,13 +112,13 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 		m_ppShaders[2]->CreateShader(pd3dDevice);
 		m_ppShaders[2]->BuildObjects(pd3dDevice);
 
-		pTestObject = new CGameObject(1);
-		pTestObject->SetMesh(pTestMesh2);
-		pTestObject->SetMaterial(pNormalMaterial);
-		pTestObject->SetTexture(pNinjaTexture);
-		pTestObject->Rotate(-90.0f, 0.0f, 0.0f);
-		pTestObject->SetPosition(20.0f, 0.0f, 0.0f);
-		m_ppShaders[2]->AddObject(pTestObject);
+		pSordmanObject = new CSordMan(1);
+		pSordmanObject->SetMesh(pSordManMesh);
+		pSordmanObject->SetMaterial(pNormalMaterial);
+		pSordmanObject->SetTexture(pNinjaTexture);
+		pSordmanObject->Rotate(0.0f, 0.0f, 0.0f);
+		pSordmanObject->SetPosition(0.0f, 0.0f, 0.0f);
+		m_ppShaders[2]->AddObject(pSordmanObject);
 
 
 		m_ppShaders[3] = new CTexturedIlluminatedShader(1);
@@ -128,6 +133,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 		pBuildingObject->SetPosition(0.0f, 0.0f, 30.0f);
 		m_ppShaders[3]->AddObject(pBuildingObject);
 	}
+	
 	
 	CreateShaderVariables(pd3dDevice);
 }
@@ -166,6 +172,32 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	case WM_KEYDOWN:
 		switch (wParam)
 		{
+		case VK_LEFT:
+			if (!LeftKeyDown)
+			{
+				LeftKeyDown = true;
+				
+			}
+			break;
+		case VK_RIGHT:
+			if (!RightKeyDown)
+			{
+				RightKeyDown = true;
+			}
+			break;
+		case VK_UP:
+			if (!UpKeyDown)
+			{
+				UpKeyDown = true;
+			}
+			break;
+		case VK_DOWN:
+			if (!DownKeyDown)
+			{
+				DownKeyDown = true;
+			}
+			break;
+
 		case 'Z':
 			if (!bCharaterRun && !bCharaterPunch)
 			{
@@ -178,6 +210,7 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 			if (!bCharaterPunch)
 			{
 				m_ppShaders[1]->GetFBXMesh->SetAnimation(2);
+				
 				bCharaterRun = false;
 				bCharaterPunch = true;
 			}
@@ -188,6 +221,30 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	case WM_KEYUP:
 		switch (wParam)
 		{
+		case VK_LEFT:
+			if (LeftKeyDown)
+			{
+				LeftKeyDown = false;
+			}
+			break;
+		case VK_RIGHT:
+			if (RightKeyDown)
+			{
+				RightKeyDown = false;
+			}
+			break;
+		case VK_UP:
+			if (UpKeyDown)
+			{
+				UpKeyDown = false;
+			}
+			break;
+		case VK_DOWN:
+			if (DownKeyDown)
+			{
+				DownKeyDown = false;
+			}
+			break;
 		case 'Z':
 			if (bCharaterRun)
 			{
@@ -297,6 +354,7 @@ void CScene::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS
 
 void CScene::AnimateObjects(float fTimeElapsed)
 {
+	CPlayer *pPlayer = m_pCamera->GetPlayer();
 	if (m_pLights && m_pd3dcbLights)
 	{
 		// ● 임시주석
@@ -315,9 +373,10 @@ void CScene::AnimateObjects(float fTimeElapsed)
 		//m_pLights->m_pLights[0].m_fRange = pTerrain->GetPeakHeight();
 
 		/*두 번째 조명은 플레이어가 가지고 있는 손전등(스팟 조명)이다. 그러므로 플레이어의 위치와 방향이 바뀌면 현재 플레이어의 위치와 z-축 방향 벡터를 스팟 조명의 위치와 방향으로 설정한다.*/
-		CPlayer *pPlayer = m_pCamera->GetPlayer();
+		
 		m_pLights->m_pLights[1].m_d3dxvPosition = pPlayer->GetPosition();
 		m_pLights->m_pLights[1].m_d3dxvDirection = pPlayer->GetLookVector();
+		
 
 		m_pLights->m_pLights[3].m_d3dxvPosition = pPlayer->GetPosition() + D3DXVECTOR3(0.0f, 40.0f, 0.0f);
 	}
@@ -326,8 +385,84 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 	//cout << m_ppShaders[2]->GetFBXMesh->GetFBXAnimationNum() << " " << m_ppShaders[2]->GetFBXMesh->GetFBXMaxFrameNum() << endl;
 
+	
 	m_ppShaders[1]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed);
 	m_ppShaders[2]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed);
+
+
+	if (LeftKeyDown && UpKeyDown)
+	{
+		pSordmanObject->Rotate(0.0f, 135.0f, 0.0f);
+		pSordmanObject->m_d3dxvDirection = D3DXVECTOR3(-1.0f, 0.0f, 1.0f);
+	}
+	else if (LeftKeyDown && DownKeyDown)
+	{
+		pSordmanObject->Rotate(0.0f, 45.0f, 0.0f);
+		pSordmanObject->m_d3dxvDirection = D3DXVECTOR3(-1.0f, 0.0f, -1.0f);
+	}
+	else if (RightKeyDown && UpKeyDown)
+	{
+		pSordmanObject->Rotate(0.0f, -135.0f, 0.0f);
+		pSordmanObject->m_d3dxvDirection = D3DXVECTOR3(1.0f, 0.0f, 1.0f);
+	}
+	else if (RightKeyDown && DownKeyDown)
+	{
+		pSordmanObject->Rotate(0.0f, -45.0f, 0.0f);
+		pSordmanObject->m_d3dxvDirection = D3DXVECTOR3(1.0f, 0.0f, -1.0f);
+	}
+
+	else
+	{
+		if (LeftKeyDown)
+		{
+			pSordmanObject->Rotate(0.0f, 90.0f, 0.0f);
+			pSordmanObject->m_d3dxvDirection = D3DXVECTOR3(-1.0f, 0.0f, 0.0f);
+		}
+		else if (RightKeyDown)
+		{
+			pSordmanObject->Rotate(0.0f, -90.0f, 0.0f);
+			pSordmanObject->m_d3dxvDirection = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
+		}
+		else if (UpKeyDown)
+		{
+			pSordmanObject->Rotate(0.0f, 180.0f, 0.0f);
+			pSordmanObject->m_d3dxvDirection = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+		}
+		else if (DownKeyDown)
+		{
+			pSordmanObject->Rotate(0.0f, 0.0f, 0.0f);
+			pSordmanObject->m_d3dxvDirection = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+		}
+		
+	}
+	
+
+	if (LeftKeyDown)
+	{
+		
+		//pSordmanObject->SetPosition(pSordmanObject->GetPosition().x - pSordmanObject->GetSpeed(), pSordmanObject->GetPosition().y, pSordmanObject->GetPosition().z);
+		
+	}
+	if (RightKeyDown)
+	{
+		//pSordmanObject->SetPosition(pSordmanObject->GetPosition().x + pSordmanObject->GetSpeed(), pSordmanObject->GetPosition().y, pSordmanObject->GetPosition().z);
+		
+	}
+	if (UpKeyDown)
+	{
+		//pSordmanObject->SetPosition(pSordmanObject->GetPosition().x, pSordmanObject->GetPosition().y, pSordmanObject->GetPosition().z + pSordmanObject->GetSpeed());
+		
+	}
+	if (DownKeyDown)
+	{
+		//pSordmanObject->SetPosition(pSordmanObject->GetPosition().x, pSordmanObject->GetPosition().y, pSordmanObject->GetPosition().z - pSordmanObject->GetSpeed());
+		
+	}
+	
+	
+	//m_pCamera->SetPosition(D3DXVECTOR3(pSordmanObject->GetPosition().x, pSordmanObject->GetPosition().y, pSordmanObject->GetPosition().z - 40));
+	
+	//cout << pSordmanObject->m_d3dxvDirection.x << ends << pSordmanObject->m_d3dxvDirection.y << ends << pSordmanObject->m_d3dxvDirection.z << endl;
 }
 
 void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)

@@ -46,12 +46,16 @@ using namespace std;
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 
 // 입력 관련 Define
-#define DIR_FORWARD		0x01
-#define DIR_BACKWARD	0x02
+#define DIR_BACK		0x01
+#define DIR_FRONT	0x02
 #define DIR_LEFT		0x04
 #define DIR_RIGHT		0x08
-#define DIR_UP			0x10
+#define DIR_UP			0x10 //Y축으로 이동
 #define DIR_DOWN		0x20
+#define DIR_LEFT_BACK	0x05
+#define DIR_RIGHT_BACK	0x09
+#define DIR_LEFT_FRONT	0x06
+#define DIR_RIGHT_FRONT	0x10
 
 
 //

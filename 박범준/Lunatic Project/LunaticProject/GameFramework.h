@@ -25,7 +25,7 @@ private:
 	// 게임의 장면(Scene)을 관리하는 객체에 대한 포인터
 	CScene *m_pScene;
 	// 프레임 레이트를 주 윈도우의 캡션에 출력하기 위한 문자열
-	_TCHAR m_pszBuffer[50];
+	_TCHAR m_pszBuffer[60];
 
 	// 플레이어 멤버 변수
 	CPlayer *m_pPlayer;

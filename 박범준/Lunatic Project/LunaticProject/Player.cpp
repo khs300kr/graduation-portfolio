@@ -48,8 +48,8 @@ void CPlayer::Move(DWORD dwDirection, float fDistance, bool bUpdateVelocity)
 	{
 		D3DXVECTOR3 d3dxvShift = D3DXVECTOR3(0, 0, 0);
 		// 화살표 키 [↑], [↓]를 누르면 로컬 z축 방향으로 이동
-		if (dwDirection & DIR_FORWARD) d3dxvShift += m_d3dxvLook * fDistance;
-		if (dwDirection & DIR_BACKWARD) d3dxvShift -= m_d3dxvLook * fDistance;
+		if (dwDirection & DIR_FRONT) d3dxvShift -= m_d3dxvLook * fDistance;
+		if (dwDirection & DIR_BACK) d3dxvShift += m_d3dxvLook * fDistance;
 		// 화살표 키 [→], [←]를 누르면 로컬 x축 방향으로 이동
 		if (dwDirection & DIR_RIGHT) d3dxvShift += m_d3dxvRight * fDistance;
 		if (dwDirection & DIR_LEFT) d3dxvShift -= m_d3dxvRight * fDistance;

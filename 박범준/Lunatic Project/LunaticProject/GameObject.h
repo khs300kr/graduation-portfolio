@@ -86,6 +86,8 @@ public:
 	D3DXMATRIX m_d3dxmtxScale;
 	D3DXMATRIX m_d3dxmtxTranlate;
 
+	D3DXVECTOR3 m_d3dxvDirection;
+
 	float m_fRotationAngle;
 
 	CMesh **m_ppMeshes;

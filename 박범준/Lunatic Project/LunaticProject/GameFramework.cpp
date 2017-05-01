@@ -180,7 +180,8 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case VK_F1:
 		case VK_F2:
 		case VK_F3:
-m_pPlayer->ChangeCamera(m_pd3dDevice, (wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
+			
+			m_pPlayer->ChangeCamera(m_pd3dDevice, (wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
 			m_pCamera = m_pPlayer->GetCamera();
 			// 씬에 현재 카메라를 설정한다.
 			m_pScene->SetCamera(m_pCamera);
@@ -268,7 +269,11 @@ void CGameFramework::BuildObjects()
 	m_pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 	m_pCamera->GenerateViewMatrix();
 
+	m_pPlayer->ChangeCamera(m_pd3dDevice, (112 - 0x70 + 1), m_GameTimer.GetTimeElapsed());
+	m_pCamera = m_pPlayer->GetCamera();
+	// 씬에 현재 카메라를 설정한다.
 	m_pScene->SetCamera(m_pCamera);
+
 }
 
 void CGameFramework::ReleaseObjects()
@@ -294,12 +299,12 @@ void CGameFramework::ProcessInput()
 		DWORD dwDirection = 0;
 		// 키보드의 상태 정보를 반환한다. 
 		// 방향키와 PageUp/Down 에 대한 정보
-		if (GetAsyncKeyState('W') & 0x8000) dwDirection |= DIR_FORWARD;
-		if (GetAsyncKeyState('S') & 0x8000) dwDirection |= DIR_BACKWARD;
-		if (GetAsyncKeyState('A') & 0x8000) dwDirection |= DIR_LEFT;
-		if (GetAsyncKeyState('D') & 0x8000) dwDirection |= DIR_RIGHT;
-		if (GetAsyncKeyState(VK_PRIOR) & 0x8000) dwDirection |= DIR_UP;
-		if (GetAsyncKeyState(VK_NEXT) & 0x8000) dwDirection |= DIR_DOWN;
+		if (GetAsyncKeyState(VK_UP) & 0x8000) dwDirection |= DIR_BACK;
+		if (GetAsyncKeyState(VK_DOWN) & 0x8000) dwDirection |= DIR_FRONT;
+		if (GetAsyncKeyState(VK_LEFT) & 0x8000) dwDirection |= DIR_LEFT;
+		if (GetAsyncKeyState(VK_RIGHT) & 0x8000) dwDirection |= DIR_RIGHT;
+		//if (GetAsyncKeyState(VK_PRIOR) & 0x8000) dwDirection |= DIR_UP;
+		//if (GetAsyncKeyState(VK_NEXT) & 0x8000) dwDirection |= DIR_DOWN;
 
 		float cxDelta = 0.0f, cyDelta = 0.0f;
 		POINT ptCursorPos;
@@ -330,7 +335,20 @@ void CGameFramework::ProcessInput()
 			}
 			// 플레이어를 dwDirection 방향으로 이동한다(실제로는 속도 벡터를 변경한다). 
 			// 이동 거리는 시간에 비례하도록 한다. 플레이어의 이동 속력은 (50/초)로 가정한다. 만약 플레이어의 이동 속력이 있다면 그 값을 사용한다.
-			if (dwDirection) m_pPlayer->Move(dwDirection, 500.0f * m_GameTimer.GetTimeElapsed(), true);
+			if (dwDirection)
+			{
+				if (dwDirection == DIR_LEFT_BACK || dwDirection == DIR_LEFT_FRONT || dwDirection ==  DIR_RIGHT_BACK || dwDirection ==  DIR_RIGHT_FRONT) // 대각선 이동 이동속도 구현
+				{
+					m_pScene->pSordmanObject->SetSpeed(m_pScene->pSordmanObject->GetRootSpeed());
+				}
+				else
+				{
+					m_pScene->pSordmanObject->SetSpeed(m_pScene->pSordmanObject->GetNormalSpeed());
+				}
+
+				m_pPlayer->Move(dwDirection, m_pScene->pSordmanObject->GetSpeed(), true);
+				m_pScene->pSordmanObject->SetPosition(m_pPlayer->GetPosition());
+			}
 		}
 	}
 	// 플레이어를 실제로 이동하고 카메라를 갱신한다. 중력과 마찰력의 영향을 속도 벡터에 적용한다.

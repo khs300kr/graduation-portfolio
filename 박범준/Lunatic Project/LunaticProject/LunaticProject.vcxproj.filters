@@ -58,6 +58,9 @@
     <Filter Include="소스 파일\99.FBXAnimation">
       <UniqueIdentifier>{8e795054-f897-47fc-b7ca-83e2f4a31a9f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\01.HeroManager">
+      <UniqueIdentifier>{1f6d66fc-8abb-4b27-bc9b-2c56e0003dc2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -120,6 +123,9 @@
     <ClInclude Include="LunaticProject.h">
       <Filter>소스 파일\00.Main</Filter>
     </ClInclude>
+    <ClInclude Include="SordMan.h">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -172,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="LunaticProject.cpp">
       <Filter>소스 파일\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="SordMan.cpp">
+      <Filter>소스 파일\01.HeroManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
