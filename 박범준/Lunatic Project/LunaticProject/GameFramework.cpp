@@ -362,7 +362,7 @@ void CGameFramework::AnimateObjects()
 
 void CGameFramework::FrameAdvance()
 {
-	m_GameTimer.Tick();
+	m_GameTimer.Tick(60);
 
 	ProcessInput();
 	AnimateObjects();

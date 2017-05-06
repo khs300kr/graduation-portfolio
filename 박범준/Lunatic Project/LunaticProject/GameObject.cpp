@@ -148,7 +148,7 @@ void CGameObject::SetMaterial(CMaterial *pMaterial)
 
 void CGameObject::Animate(float fTimeElapsed)
 {
-	// 16.04.26 - 애니메이션이 있는 메쉬의 사이즈는 여기서 조정해준다.
+	// 애니메이션이 있는 메쉬의 사이즈는 여기서 조정해준다.
 	if (GetMesh(0)->GetFBXModelSize() != 0.0f || GetMesh(0)->GetFBXModelSize() != 1.0f)
 	{
 		D3DXMATRIX mtxScale;
