@@ -13,3 +13,15 @@
 
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
+#pragma warning(disable:4996)
+#pragma comment(lib,"ws2_32")
+#include <WinSock2.h>
+#include <winsock.h>
+#include <Windows.h>
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <mutex>
+#include "protocol.h"
+
+enum OPTYPE { OP_SEND, OP_RECV };

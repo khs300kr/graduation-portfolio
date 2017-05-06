@@ -3,13 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lunatic_Server", "Lunatic_Server\Lunatic_Server.vcxproj", "{D31EB2E4-B355-47FE-BFDF-5FF360839278}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{AEBF15BE-19B2-41E3-83E4-245F5173B3ED}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{5CD1A1CE-13E3-4EE2-A5A5-5FA77065EB58}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ServerLibrary", "ServerLibrary\ServerLibrary.vcxproj", "{365771EE-1F94-4C49-877F-0A6C05C02577}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lunatic_Server", "Lunatic_Server\Lunatic_Server.vcxproj", "{735D3FD9-F413-46CE-B431-272D60E0D213}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,28 +13,16 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D31EB2E4-B355-47FE-BFDF-5FF360839278}.Debug|x64.ActiveCfg = Debug|x64
-		{D31EB2E4-B355-47FE-BFDF-5FF360839278}.Debug|x64.Build.0 = Debug|x64
-		{D31EB2E4-B355-47FE-BFDF-5FF360839278}.Debug|x86.ActiveCfg = Debug|Win32
-		{D31EB2E4-B355-47FE-BFDF-5FF360839278}.Debug|x86.Build.0 = Debug|Win32
-		{D31EB2E4-B355-47FE-BFDF-5FF360839278}.Release|x64.ActiveCfg = Release|x64
-		{D31EB2E4-B355-47FE-BFDF-5FF360839278}.Release|x64.Build.0 = Release|x64
-		{D31EB2E4-B355-47FE-BFDF-5FF360839278}.Release|x86.ActiveCfg = Release|Win32
-		{D31EB2E4-B355-47FE-BFDF-5FF360839278}.Release|x86.Build.0 = Release|Win32
-		{365771EE-1F94-4C49-877F-0A6C05C02577}.Debug|x64.ActiveCfg = Debug|x64
-		{365771EE-1F94-4C49-877F-0A6C05C02577}.Debug|x64.Build.0 = Debug|x64
-		{365771EE-1F94-4C49-877F-0A6C05C02577}.Debug|x86.ActiveCfg = Debug|Win32
-		{365771EE-1F94-4C49-877F-0A6C05C02577}.Debug|x86.Build.0 = Debug|Win32
-		{365771EE-1F94-4C49-877F-0A6C05C02577}.Release|x64.ActiveCfg = Release|x64
-		{365771EE-1F94-4C49-877F-0A6C05C02577}.Release|x64.Build.0 = Release|x64
-		{365771EE-1F94-4C49-877F-0A6C05C02577}.Release|x86.ActiveCfg = Release|Win32
-		{365771EE-1F94-4C49-877F-0A6C05C02577}.Release|x86.Build.0 = Release|Win32
+		{735D3FD9-F413-46CE-B431-272D60E0D213}.Debug|x64.ActiveCfg = Debug|x64
+		{735D3FD9-F413-46CE-B431-272D60E0D213}.Debug|x64.Build.0 = Debug|x64
+		{735D3FD9-F413-46CE-B431-272D60E0D213}.Debug|x86.ActiveCfg = Debug|Win32
+		{735D3FD9-F413-46CE-B431-272D60E0D213}.Debug|x86.Build.0 = Debug|Win32
+		{735D3FD9-F413-46CE-B431-272D60E0D213}.Release|x64.ActiveCfg = Release|x64
+		{735D3FD9-F413-46CE-B431-272D60E0D213}.Release|x64.Build.0 = Release|x64
+		{735D3FD9-F413-46CE-B431-272D60E0D213}.Release|x86.ActiveCfg = Release|Win32
+		{735D3FD9-F413-46CE-B431-272D60E0D213}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{D31EB2E4-B355-47FE-BFDF-5FF360839278} = {AEBF15BE-19B2-41E3-83E4-245F5173B3ED}
-		{365771EE-1F94-4C49-877F-0A6C05C02577} = {5CD1A1CE-13E3-4EE2-A5A5-5FA77065EB58}
 	EndGlobalSection
 EndGlobal
