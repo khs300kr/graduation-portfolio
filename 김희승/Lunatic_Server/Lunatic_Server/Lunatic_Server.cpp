@@ -33,8 +33,9 @@ struct OverlappedEx
 
 struct CLIENT
 {
-	int				m_iX;
-	int				m_iZ;
+	float			m_fX;
+	float			m_fY;
+	float			m_fZ;
 	bool			m_bConnect;
 	SOCKET			m_client_socket;
 	OverlappedEx	m_recv_over;
@@ -109,33 +110,35 @@ void SendPutPlayerPacket(int client, int object)
 	packet.id = object;
 	packet.size = sizeof(packet);
 	packet.type = SC_PUT_PLAYER;
-	packet.x = g_Clients[object].m_iX;
-	packet.y = g_Clients[object].m_iZ;
+	packet.x = g_Clients[object].m_fX;
+	packet.y = g_Clients[object].m_fZ;
+	packet.z = g_Clients[object].m_fZ;
+
 
 	Send_Packet(client, &packet);
 }
 
-void SendPositionPacket(int client, int object)
-{
-	sc_packet_pos packet;
-	packet.id = object;
-	packet.size = sizeof(packet);
-	packet.type = SC_POS;
-	packet.x = g_Clients[object].m_iX;
-	packet.y = g_Clients[object].m_iZ;
-
-	Send_Packet(client, &packet);
-}
-
-void SendRemovePlayerPacket(int client, int object)
-{
-	sc_packet_pos packet;
-	packet.id = object;
-	packet.size = sizeof(packet);
-	packet.type = SC_REMOVE_PLAYER;
-
-	Send_Packet(client, &packet);
-}
+//void SendPositionPacket(int client, int object)
+//{
+//	sc_packet_pos packet;
+//	packet.id = object;
+//	packet.size = sizeof(packet);
+//	packet.type = SC_POS;
+//	packet.x = g_Clients[object].m_iX;
+//	packet.y = g_Clients[object].m_iZ;
+//
+//	Send_Packet(client, &packet);
+//}
+//
+//void SendRemovePlayerPacket(int client, int object)
+//{
+//	sc_packet_pos packet;
+//	packet.id = object;
+//	packet.size = sizeof(packet);
+//	packet.type = SC_REMOVE_PLAYER;
+//
+//	Send_Packet(client, &packet);
+//}
 
 
 void Accept_Thread()
@@ -180,8 +183,9 @@ void Accept_Thread()
 			reinterpret_cast<CHAR *>(g_Clients[new_id].m_recv_over.m_IOCP_buf);
 		g_Clients[new_id].m_recv_over.m_Wsabuf.len = sizeof(g_Clients[new_id].m_recv_over.m_IOCP_buf);
 		// 초기위치
-		g_Clients[new_id].m_iX = 4;
-		g_Clients[new_id].m_iZ = 4;
+		g_Clients[new_id].m_fX = 100.f;
+		g_Clients[new_id].m_fY = 0.f;
+		g_Clients[new_id].m_fZ = 0.f;
 
 		// 비동기 입출력 시작
 		DWORD recv_flag = 0;
@@ -192,36 +196,36 @@ void Accept_Thread()
 		// 위치 하기.
 		SendPutPlayerPacket(new_id, new_id);
 
-		for (int i = 0; i < MAX_USER; ++i)
-		{
-			if (g_Clients[i].m_bConnect == true)
-			{
-				if (new_id != i)
-				{
-					SendPutPlayerPacket(new_id, i);
-					SendPutPlayerPacket(i, new_id);
-				}
-			}
-		}// for loop
+		//for (int i = 0; i < MAX_USER; ++i)
+		//{
+		//	if (g_Clients[i].m_bConnect == true)
+		//	{
+		//		if (new_id != i)
+		//		{
+		//			SendPutPlayerPacket(new_id, i);
+		//			SendPutPlayerPacket(i, new_id);
+		//		}
+		//	}
+		//}// for loop
 	}
 }
 
 void ProcessPacket(int id, unsigned char packet[])
 {
-	switch (packet[1])
-	{
-	case CS_UP: if (g_Clients[id].m_iZ > 0) g_Clients[id].m_iZ--; break;
-	case CS_DOWN: if (g_Clients[id].m_iZ < BOARD_HEIGHT - 1) g_Clients[id].m_iZ++; break;
-	case CS_LEFT: if (g_Clients[id].m_iX > 0) g_Clients[id].m_iX--; break;
-	case CS_RIGHT: if (g_Clients[id].m_iX < BOARD_WIDTH - 1) g_Clients[id].m_iX++; break;
-	default: std::cout << "Unknown Packet Type from Client : " << id << std::endl;
-		while (true);
-	}
-	for (int i = 0; i < MAX_USER; ++i)
-	{
-		if (g_Clients[i].m_bConnect == true)
-			SendPositionPacket(i, id);
-	}
+	//switch (packet[1])
+	//{
+	//case CS_UP: if (g_Clients[id].m_iZ > 0) g_Clients[id].m_iZ--; break;
+	//case CS_DOWN: if (g_Clients[id].m_iZ < BOARD_HEIGHT - 1) g_Clients[id].m_iZ++; break;
+	//case CS_LEFT: if (g_Clients[id].m_iX > 0) g_Clients[id].m_iX--; break;
+	//case CS_RIGHT: if (g_Clients[id].m_iX < BOARD_WIDTH - 1) g_Clients[id].m_iX++; break;
+	//default: std::cout << "Unknown Packet Type from Client : " << id << std::endl;
+	//	while (true);
+	//}
+	//for (int i = 0; i < MAX_USER; ++i)
+	//{
+	//	if (g_Clients[i].m_bConnect == true)
+	//		SendPositionPacket(i, id);
+	//}
 }
 
 void DisconnectClient(int id)
@@ -229,11 +233,11 @@ void DisconnectClient(int id)
 	closesocket(g_Clients[id].m_client_socket);
 	g_Clients[id].m_bConnect = false;
 
-	for (int i = 0; i < MAX_USER; ++i)
-	{
-		if (g_Clients[i].m_bConnect == true)
-			SendRemovePlayerPacket(i, id);
-	}
+	//for (int i = 0; i < MAX_USER; ++i)
+	//{
+	//	if (g_Clients[i].m_bConnect == true)
+	//		SendRemovePlayerPacket(i, id);
+	//}
 
 }
 

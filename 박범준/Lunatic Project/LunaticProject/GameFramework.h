@@ -43,6 +43,7 @@ private:
 	CCamera *m_pCamera;
 
 
+
 public:
 	CGameFramework();
 	~CGameFramework();
@@ -69,4 +70,6 @@ public:
 	void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+
+
 };

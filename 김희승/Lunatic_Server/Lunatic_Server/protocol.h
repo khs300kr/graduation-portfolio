@@ -58,16 +58,18 @@ struct sc_packet_pos {
 	BYTE size;
 	BYTE type;
 	WORD id;
-	BYTE x;
-	BYTE y;
+	float x;
+	float y;
+	float z;
 };
 
 struct sc_packet_put_player {
 	BYTE size;
 	BYTE type;
 	WORD id;
-	BYTE x;
-	BYTE y;
+	float x;
+	float y;
+	float z;
 };
 struct sc_packet_remove_player {
 	BYTE size;

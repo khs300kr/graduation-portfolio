@@ -84,7 +84,6 @@ CGameObject::CGameObject(int nMeshes)
 	D3DXMatrixIdentity(&m_d3dxmtxTranlate); 
 	m_d3dxvDirection = D3DXVECTOR3(0, 0, 0);
 	m_fRotationAngle = 0.0f;
-	
 	m_nMeshes = nMeshes;
 	m_ppMeshes = NULL;
 	m_bcMeshBoundingCube = AABB();

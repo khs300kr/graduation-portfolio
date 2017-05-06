@@ -34,7 +34,6 @@ bool CGameFramework::Create(HINSTANCE hInstance, HWND hMainWnd)
 {
 	m_hInstance = hInstance;
 	m_hWnd = hMainWnd;
-
 	//Direct3D 디바이스, 디바이스 컨텍스트, 스왑 체인 등을 생성하는 함수를 호출한다. 
 	if (!CreateDirect3DDisplay()) return(false);
 
@@ -222,6 +221,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 		if (pCamera) pCamera->SetViewport(m_pd3dDeviceContext, 0, 0, m_nWndClientWidth, m_nWndClientHeight, 0.0f, 1.0f);
 		break;
 	}
+
 	case WM_LBUTTONDOWN:
 	case WM_RBUTTONDOWN:
 	case WM_LBUTTONUP:
@@ -237,9 +237,13 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	return(0);
 }
 
+
+
 //다음 함수는 응용 프로그램이 종료될 때 호출된다는 것에 유의하라. 
 void CGameFramework::Destroy()
 {
+	WSACleanup();
+
 	ReleaseObjects();
 
 	if (m_pd3dDeviceContext) m_pd3dDeviceContext->ClearState();
@@ -340,6 +344,7 @@ void CGameFramework::ProcessInput()
 				if (dwDirection == DIR_LEFT_BACK || dwDirection == DIR_LEFT_FRONT || dwDirection ==  DIR_RIGHT_BACK || dwDirection ==  DIR_RIGHT_FRONT) // 대각선 이동 이동속도 구현
 				{
 					m_pScene->pSordmanObject->SetSpeed(m_pScene->pSordmanObject->GetRootSpeed());
+					
 				}
 				else
 				{
@@ -381,3 +386,4 @@ void CGameFramework::FrameAdvance()
 	m_GameTimer.GetFrameRate(m_pszBuffer + 16, 33);
 	::SetWindowText(m_hWnd, m_pszBuffer);
 }
+

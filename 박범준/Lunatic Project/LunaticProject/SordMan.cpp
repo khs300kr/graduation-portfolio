@@ -9,6 +9,8 @@ CSordMan::CSordMan(int nMeshes) : CGameObject(nMeshes)
 	speed = 0.3f;
 	normalspeed = 0.3f;
 	rootspeed = 0.3f / sqrt(2);
+
+	
 	
 }
 

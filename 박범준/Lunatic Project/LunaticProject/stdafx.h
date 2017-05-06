@@ -8,6 +8,16 @@
 #include "targetver.h"
 
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용은 Windows 헤더에서 제외합니다.
+// server
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#define INITGUID
+#include <WinSock2.h>
+#include "protocol.h"
+#pragma comment (lib, "ws2_32.lib")
+
+#define	BUF_SIZE				1024
+#define	WM_SOCKET				WM_USER + 1
+
 // Windows 헤더 파일:
 #include <windows.h>
 
@@ -76,3 +86,4 @@ using namespace std;
 
 #define ANIFRAMETIME			0.0333333f
 #define GetFBXMesh				GetGameObject(0)->GetMesh(0)
+

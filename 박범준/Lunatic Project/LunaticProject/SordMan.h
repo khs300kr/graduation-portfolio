@@ -14,11 +14,14 @@ private:
 	float rootspeed;
 
 
+
+
 public:
 	CSordMan(int nMeshes = 1);
 	~CSordMan();
 
 
+	
 	int GetHp() { return hp; }
 	int GetAttack() { return attack; }
 	float GetSpeed() { return speed; }

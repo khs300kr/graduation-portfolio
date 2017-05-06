@@ -61,6 +61,9 @@
     <Filter Include="소스 파일\01.HeroManager">
       <UniqueIdentifier>{1f6d66fc-8abb-4b27-bc9b-2c56e0003dc2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\69.Server">
+      <UniqueIdentifier>{7c769b82-1f5f-4a55-a02e-17d898f2b5bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -125,6 +128,9 @@
     </ClInclude>
     <ClInclude Include="SordMan.h">
       <Filter>소스 파일\01.HeroManager</Filter>
+    </ClInclude>
+    <ClInclude Include="protocol.h">
+      <Filter>소스 파일\69.Server</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

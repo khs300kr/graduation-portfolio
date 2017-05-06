@@ -45,6 +45,27 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_LUNATICPROJECT));
 
+	// server
+	WSADATA	wsadata;
+	WSAStartup(MAKEWORD(2, 2), &wsadata);
+
+	g_mysocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, 0);
+
+	SOCKADDR_IN ServerAddr;
+	ZeroMemory(&ServerAddr, sizeof(SOCKADDR_IN));
+	ServerAddr.sin_family = AF_INET;
+	ServerAddr.sin_port = htons(MY_SERVER_PORT);
+	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+	int Result = WSAConnect(g_mysocket, (sockaddr *)&ServerAddr, sizeof(ServerAddr), NULL, NULL, NULL, NULL);
+	cout << "Connected\n";
+	WSAAsyncSelect(g_mysocket, g_hWnd, WM_SOCKET, FD_CLOSE | FD_READ);
+
+	send_wsabuf.buf = send_buffer;
+	send_wsabuf.len = BUF_SIZE;
+	recv_wsabuf.buf = recv_buffer;
+	recv_wsabuf.len = BUF_SIZE;
+
 	// 기본 메시지 루프입니다.
 	while (WM_QUIT != msg.message)
 	{
@@ -103,23 +124,20 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-	HWND hWnd;
-
 	hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
 	DWORD dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_BORDER;
 	RECT rc = { 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT };
 	AdjustWindowRect(&rc, dwStyle, FALSE);
 
-	hWnd = CreateWindow(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance, NULL);
-	
-	if (!hWnd)	
+	g_hWnd = CreateWindow(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance, NULL);
+	if (!g_hWnd)
 		return FALSE;
 
-	gGameFramework.Create(hInstance, hWnd);
+	gGameFramework.Create(hInstance, g_hWnd);
 
-	ShowWindow(hWnd, nCmdShow);
-	UpdateWindow(hWnd);
+	ShowWindow(g_hWnd, nCmdShow);
+	UpdateWindow(g_hWnd);
 
 	return TRUE;
 }
@@ -142,6 +160,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	switch (message)
 	{
+	// server
+	case WM_SOCKET:
+	{
+		if (WSAGETSELECTERROR(lParam)) {
+			closesocket((SOCKET)wParam);
+			exit(-1);
+			break;
+		}
+		switch (WSAGETSELECTEVENT(lParam)) {
+		case FD_READ:
+			ReadPacket((SOCKET)wParam);
+			break;
+		case FD_CLOSE:
+			closesocket((SOCKET)wParam);
+			exit(-1);
+			break;
+		}
+	}
 	case WM_SIZE:
 		break;
 	case WM_LBUTTONDOWN:
@@ -180,4 +216,80 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	return (INT_PTR)FALSE;
+}
+
+// server
+void ReadPacket(SOCKET sock)
+{
+	DWORD iobyte, ioflag = 0;
+
+	int ret = WSARecv(sock, &recv_wsabuf, 1, &iobyte, &ioflag, NULL, NULL);
+	if (ret) {
+		int err_code = WSAGetLastError();
+		printf("Recv Error [%d]\n", err_code);
+	}
+
+	BYTE *ptr = reinterpret_cast<BYTE *>(recv_buffer);
+
+	while (0 != iobyte) {
+		if (0 == in_packet_size) in_packet_size = ptr[0];
+		if (iobyte + saved_packet_size >= in_packet_size) {
+			memcpy(packet_buffer + saved_packet_size, ptr, in_packet_size - saved_packet_size);
+			ProcessPacket(packet_buffer);
+			ptr += in_packet_size - saved_packet_size;
+			iobyte -= in_packet_size - saved_packet_size;
+			in_packet_size = 0;
+			saved_packet_size = 0;
+		}
+		else {
+			memcpy(packet_buffer + saved_packet_size, ptr, iobyte);
+			saved_packet_size += iobyte;
+			iobyte = 0;
+		}
+	}
+}
+
+void ProcessPacket(char * ptr)
+{
+	static bool first_time = true;
+	switch (ptr[1])
+	{
+	case SC_PUT_PLAYER:
+	{
+		cout << "Put\n";
+		sc_packet_put_player *my_packet = reinterpret_cast<sc_packet_put_player *>(ptr);
+		int id = my_packet->id;
+		if (first_time) {
+			first_time = false;
+			g_myid = id;
+		}
+		if (id == g_myid) {
+			cout << my_packet->x << endl;
+			//m_pScene->pSordmanObject->SetPosition(my_packet->x, my_packet->y, my_packet->z);
+		}
+		break;
+	}
+	//case SC_POS:
+	//{
+	//	sc_packet_pos *my_packet = reinterpret_cast<sc_packet_pos *>(ptr);
+	//	int other_id = my_packet->id;
+	//	if (other_id == g_myid) {
+	//		player.x = my_packet->x;
+	//		player.y = my_packet->y;
+	//	}
+	//	break;
+	//}
+
+	//case SC_REMOVE_PLAYER:
+	//{
+	//	sc_packet_remove_player *my_packet = reinterpret_cast<sc_packet_remove_player *>(ptr);
+	//	int other_id = my_packet->id;
+	//	if (other_id == g_myid) {
+	//		player.attr &= ~BOB_ATTR_VISIBLE;
+	//	}
+	//	break;
+	//}
+	default:
+		printf("Unknown PACKET type [%d]\n", ptr[1]);
+	}
 }
