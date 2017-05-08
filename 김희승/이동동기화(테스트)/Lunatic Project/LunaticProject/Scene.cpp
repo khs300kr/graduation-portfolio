@@ -65,7 +65,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	// 테스트빌딩
 	pd3dsrvTexture = NULL;
 	CTexture *pBuildingTexture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/buildz4.jpg"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/Objects/house2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pBuildingTexture->SetTexture(0, pd3dsrvTexture);
 	pBuildingTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
@@ -82,12 +82,12 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	// ④ 쉐이더에 적용할 메쉬(들) 생성	
 	CMesh *pTestMesh = new CFBXMesh(pd3dDevice, "../Data/SordMan.data", 0.1f);
 	CMesh *pSordManMesh = new CFBXMesh(pd3dDevice, "../Data/drayer_animation.data", 0.01f);
-	CMesh *pBuildingMesh = new CFBXMesh(pd3dDevice, "../Data/building-commercial_03.data", 1.0f);
+	CMesh *pBuildingMesh = new CFBXMesh(pd3dDevice, "../Data/Objects/house2.data", 1.0f);
 
 	//
 	// 일반 쉐이더 선언부
 	/////////////////////////////////////////////////////////////////////////
-	m_nShaders = 10;	// Skybox
+	m_nShaders = 11;	// Skybox
 	m_ppShaders = new CShader*[m_nShaders];
 
 	// ⑤ SkyBox용 Shader를 생성
@@ -131,11 +131,9 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 		
 
 
-
-
-		/*m_ppShaders[3] = new CTexturedIlluminatedShader(1);
-		m_ppShaders[3]->CreateShader(pd3dDevice);
-		m_ppShaders[3]->BuildObjects(pd3dDevice);
+		m_ppShaders[10] = new CTexturedIlluminatedShader(1);
+		m_ppShaders[10]->CreateShader(pd3dDevice);
+		m_ppShaders[10]->BuildObjects(pd3dDevice);
 
 		CGameObject *pBuildingObject = new CGameObject(1);
 		pBuildingObject->SetMesh(pBuildingMesh);
@@ -143,7 +141,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 		pBuildingObject->SetTexture(pBuildingTexture);
 		pBuildingObject->Rotate(0.0f, 0.0f, 0.0f);
 		pBuildingObject->SetPosition(0.0f, 0.0f, 30.0f);
-		m_ppShaders[3]->AddObject(pBuildingObject);*/
+		m_ppShaders[10]->AddObject(pBuildingObject);
 	}
 	
 	

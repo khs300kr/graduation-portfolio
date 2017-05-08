@@ -361,35 +361,34 @@ void CGameFramework::ProcessInput()
 				
 			}
 
-			for (int i = 0; i < MAX_USER; ++i)
+			
+		}
+		for (int i = 0; i < MAX_USER; ++i)
+		{
+			if (OtherDirection[i])
 			{
-				if (OtherDirection[i])
+				if (OtherDirection[i] == DIR_LEFT_BACK || OtherDirection[i] == DIR_LEFT_FRONT || OtherDirection[i] == DIR_RIGHT_BACK || OtherDirection[i] == DIR_RIGHT_FRONT) // 대각선 이동 이동속도 구현
 				{
-					if (OtherDirection[i] == DIR_LEFT_BACK || OtherDirection[i] == DIR_LEFT_FRONT || OtherDirection[i] == DIR_RIGHT_BACK || OtherDirection[i] == DIR_RIGHT_FRONT) // 대각선 이동 이동속도 구현
-					{
-						
-						m_pScene->pOtherObject[i]->SetSpeed(m_pScene->pOtherObject[i]->GetRootSpeed());
 
-					}
-					else
-					{
-						
-						m_pScene->pOtherObject[i]->SetSpeed(m_pScene->pOtherObject[i]->GetNormalSpeed());
-					}
-					
-					if (OtherDirection[i] & DIR_FRONT) m_pScene->pOtherObject[i]->SetPosition(D3DXVECTOR3(m_pScene->pOtherObject[i]->GetPosition().x, m_pScene->pOtherObject[i]->GetPosition().y, m_pScene->pOtherObject[i]->GetPosition().z - m_pScene->pOtherObject[i]->GetSpeed()));
-					if (OtherDirection[i] & DIR_BACK) m_pScene->pOtherObject[i]->SetPosition(D3DXVECTOR3(m_pScene->pOtherObject[i]->GetPosition().x, m_pScene->pOtherObject[i]->GetPosition().y, m_pScene->pOtherObject[i]->GetPosition().z + m_pScene->pOtherObject[i]->GetSpeed()));
-					if (OtherDirection[i] & DIR_LEFT) m_pScene->pOtherObject[i]->SetPosition(D3DXVECTOR3(m_pScene->pOtherObject[i]->GetPosition().x - m_pScene->pOtherObject[i]->GetSpeed(), m_pScene->pOtherObject[i]->GetPosition().y, m_pScene->pOtherObject[i]->GetPosition().z));
-					if (OtherDirection[i] & DIR_RIGHT) m_pScene->pOtherObject[i]->SetPosition(D3DXVECTOR3(m_pScene->pOtherObject[i]->GetPosition().x + m_pScene->pOtherObject[i]->GetSpeed(), m_pScene->pOtherObject[i]->GetPosition().y, m_pScene->pOtherObject[i]->GetPosition().z));
+					m_pScene->pOtherObject[i]->SetSpeed(m_pScene->pOtherObject[i]->GetRootSpeed());
 
-					//m_pScene->pOtherObject[i]->SetPosition(m_pScene->pOtherObject[i]->GetPosition().x + 1.0f, m_pScene->pOtherObject[i]->GetPosition().y, m_pScene->pOtherObject[i]->GetPosition().z);
-					//m_pScene->pOtherObject[i]->Move(m_pScene->pOtherObject[i]->GetPosition(), OtherDirection[i], m_pScene->pOtherObject[i]->GetSpeed(), true);
 				}
-				
-				
+				else
+				{
+
+					m_pScene->pOtherObject[i]->SetSpeed(m_pScene->pOtherObject[i]->GetNormalSpeed());
+				}
+
+				if (OtherDirection[i] & DIR_FRONT) m_pScene->pOtherObject[i]->SetPosition(D3DXVECTOR3(m_pScene->pOtherObject[i]->GetPosition().x, m_pScene->pOtherObject[i]->GetPosition().y, m_pScene->pOtherObject[i]->GetPosition().z - m_pScene->pOtherObject[i]->GetSpeed()));
+				if (OtherDirection[i] & DIR_BACK) m_pScene->pOtherObject[i]->SetPosition(D3DXVECTOR3(m_pScene->pOtherObject[i]->GetPosition().x, m_pScene->pOtherObject[i]->GetPosition().y, m_pScene->pOtherObject[i]->GetPosition().z + m_pScene->pOtherObject[i]->GetSpeed()));
+				if (OtherDirection[i] & DIR_LEFT) m_pScene->pOtherObject[i]->SetPosition(D3DXVECTOR3(m_pScene->pOtherObject[i]->GetPosition().x - m_pScene->pOtherObject[i]->GetSpeed(), m_pScene->pOtherObject[i]->GetPosition().y, m_pScene->pOtherObject[i]->GetPosition().z));
+				if (OtherDirection[i] & DIR_RIGHT) m_pScene->pOtherObject[i]->SetPosition(D3DXVECTOR3(m_pScene->pOtherObject[i]->GetPosition().x + m_pScene->pOtherObject[i]->GetSpeed(), m_pScene->pOtherObject[i]->GetPosition().y, m_pScene->pOtherObject[i]->GetPosition().z));
+
+				//m_pScene->pOtherObject[i]->SetPosition(m_pScene->pOtherObject[i]->GetPosition().x + 1.0f, m_pScene->pOtherObject[i]->GetPosition().y, m_pScene->pOtherObject[i]->GetPosition().z);
+				//m_pScene->pOtherObject[i]->Move(m_pScene->pOtherObject[i]->GetPosition(), OtherDirection[i], m_pScene->pOtherObject[i]->GetSpeed(), true);
 			}
 
-			
+
 		}
 	}
 	// 플레이어를 실제로 이동하고 카메라를 갱신한다. 중력과 마찰력의 영향을 속도 벡터에 적용한다.
