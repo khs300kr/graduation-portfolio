@@ -1,62 +1,6 @@
 #include "stdafx.h"
+#include "Global.h"
 #include "MiniDump.h"
-
-void error_display(char *msg, int err_no)
-{
-	WCHAR *lpMsgBuf;
-	FormatMessage(
-		FORMAT_MESSAGE_ALLOCATE_BUFFER |
-		FORMAT_MESSAGE_FROM_SYSTEM,
-		NULL, err_no,
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		(LPTSTR)&lpMsgBuf, 0, NULL);
-	std::cout << msg;
-	std::wcout << L"에러" << lpMsgBuf << std::endl;
-	LocalFree(lpMsgBuf);
-	while (true);
-}
-
-struct OverlappedEx
-{
-	// WSAOVERLAPPED 구조체 역할 2가지.
-	// 1. 비동기 입출력을 위한 정보를 운영체제에 전달한다.
-	// 2. 운영체제가 비동기 입출력 결과를 응용프로그램에 알려줄 떄 사용한다.
-	WSAOVERLAPPED	m_Over;
-	// WSABUF (1. 길이 2. 버퍼 시작주소) => Scatter/Gather
-	WSABUF			m_Wsabuf;
-	// IOCP send/recv 버퍼
-	unsigned char	m_IOCP_buf[MAX_BUFF_SIZE];
-	// Send(?) Recv(?)
-	OPTYPE			m_Event_type;
-
-};
-
-struct CLIENT
-{
-	// Pos
-	float			m_fX;
-	float			m_fY;
-	float			m_fZ;
-	// Move
-	DWORD			m_dwDirection;
-	// Animation
-	BYTE			m_Animation;
-
-	bool			m_bConnect;
-	SOCKET			m_client_socket;
-	OverlappedEx	m_recv_over;
-	// recv의 조립 버퍼.
-	unsigned char	packet_buf[MAX_PACKET_SIZE];
-	// 조립을 위한 데이터.
-	int prev_packet_data;	// 조립 중 데이터
-	int curr_packet_size;	// 받은 양
-
-	std::mutex vl_lock;
-};
-
-HANDLE g_Hiocp;
-SOCKET g_ServerSocket;
-CLIENT g_Clients[MAX_USER];
 
 void Init_Server()
 {
@@ -123,6 +67,7 @@ void SendPutPlayerPacket(int client, int object)
 	packet.x = g_Clients[object].m_fX;
 	packet.y = g_Clients[object].m_fZ;
 	packet.z = g_Clients[object].m_fZ;
+	packet.animation = g_Clients[object].m_Animation;
 
 	Send_Packet(client, &packet);
 }
@@ -133,19 +78,107 @@ void SendPositionPacket(int client, int object)
 	packet.id = object;
 	packet.size = sizeof(packet);
 	packet.type = SC_POS;
-	packet.dwDirection = g_Clients[object].m_dwDirection;
+	packet.direction = g_Clients[object].m_dwDirection;
+	packet.x = g_Clients[object].m_fX;
+	packet.y = g_Clients[object].m_fY;
+	packet.z = g_Clients[object].m_fZ;
 
 	Send_Packet(client, &packet);
 }
 
 void SendRemovePlayerPacket(int client, int object)
 {
-	sc_packet_pos packet;
+	sc_packet_remove_player packet;
 	packet.id = object;
 	packet.size = sizeof(packet);
 	packet.type = SC_REMOVE_PLAYER;
 
 	Send_Packet(client, &packet);
+}
+void ProcessPacket(int id, unsigned char packet[])
+{
+	switch (packet[1])
+	{
+	case CS_KEYDOWN_UP:
+	{
+		g_Clients[id].m_dwDirection |= DIR_BACK;
+		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
+		g_Clients[id].m_fX = my_packet->x;
+		g_Clients[id].m_fX = my_packet->y;
+		g_Clients[id].m_fX = my_packet->z;
+		break;
+	}
+	case CS_KEYDOWN_DOWN:
+	{
+		g_Clients[id].m_dwDirection |= DIR_FRONT;
+		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
+		g_Clients[id].m_fX = my_packet->x;
+		g_Clients[id].m_fX = my_packet->y;
+		g_Clients[id].m_fX = my_packet->z;
+		break;
+	}
+	case CS_KEYDOWN_LEFT:
+	{
+		g_Clients[id].m_dwDirection |= DIR_LEFT;
+		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
+		g_Clients[id].m_fX = my_packet->x;
+		g_Clients[id].m_fX = my_packet->y;
+		g_Clients[id].m_fX = my_packet->z;
+		break;
+	}
+	case CS_KEYDOWN_RIGHT:
+	{
+		g_Clients[id].m_dwDirection |= DIR_RIGHT;
+		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
+		g_Clients[id].m_fX = my_packet->x;
+		g_Clients[id].m_fX = my_packet->y;
+		g_Clients[id].m_fX = my_packet->z;
+		break;
+	}
+	case CS_KEYUP_UP:
+	{
+		g_Clients[id].m_dwDirection ^= DIR_BACK;
+		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
+		g_Clients[id].m_fX = my_packet->x;
+		g_Clients[id].m_fX = my_packet->y;
+		g_Clients[id].m_fX = my_packet->z;
+		break;
+	}
+	case CS_KEYUP_DOWN:
+	{
+		g_Clients[id].m_dwDirection ^= DIR_FRONT;
+		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
+		g_Clients[id].m_fX = my_packet->x;
+		g_Clients[id].m_fX = my_packet->y;
+		g_Clients[id].m_fX = my_packet->z;
+		break;
+	}
+	case CS_KEYUP_LEFT:
+	{
+		g_Clients[id].m_dwDirection ^= DIR_LEFT;
+		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
+		g_Clients[id].m_fX = my_packet->x;
+		g_Clients[id].m_fX = my_packet->y;
+		g_Clients[id].m_fX = my_packet->z;
+		break;
+	}
+	case CS_KEYUP_RIGHT:
+	{
+		g_Clients[id].m_dwDirection ^= DIR_RIGHT;
+		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
+		g_Clients[id].m_fX = my_packet->x;
+		g_Clients[id].m_fX = my_packet->y;
+		g_Clients[id].m_fX = my_packet->z;
+		break;
+	}
+	default: std::cout << "Unknown Packet Type from Client : " << id << std::endl;
+		while (true);
+	}
+	for (int i = 0; i < MAX_USER; ++i)
+	{
+		if (g_Clients[i].m_bConnect == true)
+			SendPositionPacket(i, id);
+	}
 }
 
 
@@ -214,53 +247,6 @@ void Accept_Thread()
 				}
 			}
 		}// for loop
-	}
-}
-
-void ProcessPacket(int id, unsigned char packet[])
-{
-	switch (packet[1])
-	{
-	case CS_KEYDOWN_UP:   
-		g_Clients[id].m_dwDirection |= DIR_BACK;    
-		std::cout << g_Clients[id].m_dwDirection << "send to others_Keydown\n";
-		break;
-	case CS_KEYDOWN_DOWN: 
-		g_Clients[id].m_dwDirection |= DIR_FRONT; 
-		std::cout << g_Clients[id].m_dwDirection << "send to others_Keydown\n";
-		break;
-	case CS_KEYDOWN_LEFT: 
-		g_Clients[id].m_dwDirection |= DIR_LEFT;  
-		std::cout << g_Clients[id].m_dwDirection << "send to others_Keydown\n";
-		break;
-	case CS_KEYDOWN_RIGHT: 
-		g_Clients[id].m_dwDirection |= DIR_RIGHT; 
-		std::cout << g_Clients[id].m_dwDirection << "send to others_Keydown\n";
-		break;
-	case CS_KEYUP_UP:  
-		g_Clients[id].m_dwDirection ^= DIR_BACK; 
-		std::cout << g_Clients[id].m_dwDirection << "send to others_KeyUp\n";
-		break;
-	case CS_KEYUP_DOWN:  
-		g_Clients[id].m_dwDirection ^= DIR_FRONT; 
-		std::cout << g_Clients[id].m_dwDirection << "send to others_KeyUp\n";
-		break;
-	case CS_KEYUP_LEFT:  
-		g_Clients[id].m_dwDirection ^= DIR_LEFT; 
-		std::cout << g_Clients[id].m_dwDirection << "send to others_KeyUp\n";
-		break;
-	case CS_KEYUP_RIGHT:  
-		g_Clients[id].m_dwDirection ^= DIR_RIGHT; 
-		std::cout << g_Clients[id].m_dwDirection << "send to others_KeyUp\n";
-		break;
-
-	default: std::cout << "Unknown Packet Type from Client : " << id << std::endl;
-		while (true);
-	}
-	for (int i = 0; i < MAX_USER; ++i)
-	{
-		if (g_Clients[i].m_bConnect == true)
-			SendPositionPacket(i, id);
 	}
 }
 

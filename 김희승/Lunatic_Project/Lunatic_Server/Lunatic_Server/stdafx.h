@@ -24,6 +24,4 @@
 #include <mutex>
 #include "protocol.h"
 
-enum OPTYPE { OP_SEND, OP_RECV };
-
 

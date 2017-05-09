@@ -36,6 +36,9 @@
     <ClInclude Include="MiniDump.h">
       <Filter>소스 파일\Util</Filter>
     </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Lunatic_Server.cpp">
@@ -46,6 +49,9 @@
     </ClCompile>
     <ClCompile Include="MiniDump.cpp">
       <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Global.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
