@@ -175,8 +175,9 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 			m_ppShaders[i+2]->BuildObjects(pd3dDevice);
 
 			pOtherObject[i] = new CHeroManager(1);
-
-			if (pOtherObject[i]->m_Team == A_TEAM)
+			pOtherObject[i]->SetMesh(pHealerMeshA);
+			pOtherObject[i]->SetTexture(pHealerTexture);
+			/*if (pOtherObject[i]->m_Team == A_TEAM)
 			{
 				if (pOtherObject[i]->m_CharSelect == SordMan)
 				{
@@ -216,7 +217,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 					pOtherObject[i]->SetMesh(pBabarianMeshB);
 					pOtherObject[i]->SetTexture(pBabarianTexture);
 				}
-			}
+			}*/
 			pOtherObject[i]->SetMaterial(pNormalMaterial);
 			pOtherObject[i]->SetPosition(0.0f, -3000.0f, 0.0f);
 			pOtherObject[i]->Rotate(0.0f, 0.0f, 0.0f);

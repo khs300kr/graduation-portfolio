@@ -264,14 +264,17 @@ void ProcessPacket(char * ptr)
 		}
 		if (id == g_myid) {
 			cout << "Hero Pos\n";
-			gGameFramework.m_pScene->pMyObject->SetPosition(my_packet->x, my_packet->y, my_packet->z);
-			gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, my_packet->y, my_packet->z));
+			gGameFramework.dwDirection = my_packet->direction;
+			gGameFramework.m_pScene->pMyObject->SetPosition(id * 20.f, 0.f, 0.f);
+			gGameFramework.m_pPlayer->Move(D3DXVECTOR3(id * 20.f,0.f, 0.f));
 		}
 		else {
 			cout << "Other Pos\n";
+			gGameFramework.OtherDirection[id] = my_packet->direction;
+			cout << (int)my_packet->direction << endl;
 			gGameFramework.m_pScene->pOtherObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 		}
-		break;
+		break;	
 	}
 	case SC_POS:
 	{

@@ -64,10 +64,10 @@ void SendPutPlayerPacket(int client, int object)
 	packet.id = object;
 	packet.size = sizeof(packet);
 	packet.type = SC_PUT_PLAYER;
+	packet.direction = g_Clients[object].m_dwDirection;
 	packet.x = g_Clients[object].m_fX;
-	packet.y = g_Clients[object].m_fZ;
+	packet.y = g_Clients[object].m_fY;
 	packet.z = g_Clients[object].m_fZ;
-	packet.animation = g_Clients[object].m_Animation;
 
 	Send_Packet(client, &packet);
 }
@@ -106,7 +106,6 @@ void ProcessPacket(int id, unsigned char* packet)
 		g_Clients[id].m_fX = my_packet->x;
 		g_Clients[id].m_fY = my_packet->y;
 		g_Clients[id].m_fZ = my_packet->z;
-		std::cout << "[x] : " << my_packet->x << " [y] : " << my_packet->y << "[z] : " << my_packet->z << std::endl;
 		break;
 	}
 	case CS_KEYDOWN_DOWN:
@@ -234,9 +233,6 @@ void Accept_Thread()
 		g_Clients[new_id].m_recv_over.m_Wsabuf.len = sizeof(g_Clients[new_id].m_recv_over.m_IOCP_buf);
 		// 초기위치
 		g_Clients[new_id].m_Animation = 0;
-		g_Clients[new_id].m_fX = new_id * 20.f;
-		g_Clients[new_id].m_fY = 0.f;
-		g_Clients[new_id].m_fZ = 0.f;
 		// 비동기 입출력 시작
 		DWORD recv_flag = 0;
 		CreateIoCompletionPort(reinterpret_cast<HANDLE>(client_sock), g_Hiocp, new_id, 0);
@@ -374,14 +370,14 @@ void Close_Server()
 
 int main()
 {
-	//
-	//for (int i = 0; i < MAX_USER; ++i)
-	//{
-	//	g_Clients[i].m_fX = i * 20.f;
-	//	g_Clients[i].m_fY = 0.f;
-	//	g_Clients[i].m_fZ = 0.f;
-	//}
-	//
+	
+	for (int i = 0; i < MAX_USER; ++i)
+	{
+		g_Clients[i].m_fX = 0.f;
+		g_Clients[i].m_fY = 0.f;
+		g_Clients[i].m_fZ = 0.f;
+	}
+	
 	Init_Server();
 	// 서버가 크래쉬 되었을때 처리할 수 있게 하는 MiniDump
 	if (!CMiniDump::Begin())

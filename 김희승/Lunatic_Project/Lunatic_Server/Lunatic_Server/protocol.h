@@ -72,10 +72,10 @@ struct sc_packet_put_player {
 	BYTE size;
 	BYTE type;
 	WORD id;
+	BYTE direction;
 	float x;
 	float y;
 	float z;
-	BYTE animation;
 };
 
 struct sc_packet_pos {
