@@ -95,7 +95,7 @@ void SendRemovePlayerPacket(int client, int object)
 
 	Send_Packet(client, &packet);
 }
-void ProcessPacket(int id, unsigned char packet[])
+void ProcessPacket(int id, unsigned char* packet)
 {
 	switch (packet[1])
 	{
@@ -104,8 +104,9 @@ void ProcessPacket(int id, unsigned char packet[])
 		g_Clients[id].m_dwDirection |= DIR_BACK;
 		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
 		g_Clients[id].m_fX = my_packet->x;
-		g_Clients[id].m_fX = my_packet->y;
-		g_Clients[id].m_fX = my_packet->z;
+		g_Clients[id].m_fY = my_packet->y;
+		g_Clients[id].m_fZ = my_packet->z;
+		std::cout << "[x] : " << my_packet->x << " [y] : " << my_packet->y << "[z] : " << my_packet->z << std::endl;
 		break;
 	}
 	case CS_KEYDOWN_DOWN:
@@ -113,8 +114,9 @@ void ProcessPacket(int id, unsigned char packet[])
 		g_Clients[id].m_dwDirection |= DIR_FRONT;
 		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
 		g_Clients[id].m_fX = my_packet->x;
-		g_Clients[id].m_fX = my_packet->y;
-		g_Clients[id].m_fX = my_packet->z;
+		g_Clients[id].m_fY = my_packet->y;
+		g_Clients[id].m_fZ = my_packet->z;
+
 		break;
 	}
 	case CS_KEYDOWN_LEFT:
@@ -122,8 +124,9 @@ void ProcessPacket(int id, unsigned char packet[])
 		g_Clients[id].m_dwDirection |= DIR_LEFT;
 		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
 		g_Clients[id].m_fX = my_packet->x;
-		g_Clients[id].m_fX = my_packet->y;
-		g_Clients[id].m_fX = my_packet->z;
+		g_Clients[id].m_fY = my_packet->y;
+		g_Clients[id].m_fZ = my_packet->z;
+
 		break;
 	}
 	case CS_KEYDOWN_RIGHT:
@@ -131,8 +134,9 @@ void ProcessPacket(int id, unsigned char packet[])
 		g_Clients[id].m_dwDirection |= DIR_RIGHT;
 		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
 		g_Clients[id].m_fX = my_packet->x;
-		g_Clients[id].m_fX = my_packet->y;
-		g_Clients[id].m_fX = my_packet->z;
+		g_Clients[id].m_fY = my_packet->y;
+		g_Clients[id].m_fZ = my_packet->z;
+
 		break;
 	}
 	case CS_KEYUP_UP:
@@ -140,8 +144,9 @@ void ProcessPacket(int id, unsigned char packet[])
 		g_Clients[id].m_dwDirection ^= DIR_BACK;
 		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
 		g_Clients[id].m_fX = my_packet->x;
-		g_Clients[id].m_fX = my_packet->y;
-		g_Clients[id].m_fX = my_packet->z;
+		g_Clients[id].m_fY = my_packet->y;
+		g_Clients[id].m_fZ = my_packet->z;
+
 		break;
 	}
 	case CS_KEYUP_DOWN:
@@ -149,8 +154,9 @@ void ProcessPacket(int id, unsigned char packet[])
 		g_Clients[id].m_dwDirection ^= DIR_FRONT;
 		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
 		g_Clients[id].m_fX = my_packet->x;
-		g_Clients[id].m_fX = my_packet->y;
-		g_Clients[id].m_fX = my_packet->z;
+		g_Clients[id].m_fY = my_packet->y;
+		g_Clients[id].m_fZ = my_packet->z;
+
 		break;
 	}
 	case CS_KEYUP_LEFT:
@@ -158,8 +164,9 @@ void ProcessPacket(int id, unsigned char packet[])
 		g_Clients[id].m_dwDirection ^= DIR_LEFT;
 		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
 		g_Clients[id].m_fX = my_packet->x;
-		g_Clients[id].m_fX = my_packet->y;
-		g_Clients[id].m_fX = my_packet->z;
+		g_Clients[id].m_fY = my_packet->y;
+		g_Clients[id].m_fZ = my_packet->z;
+
 		break;
 	}
 	case CS_KEYUP_RIGHT:
@@ -167,8 +174,9 @@ void ProcessPacket(int id, unsigned char packet[])
 		g_Clients[id].m_dwDirection ^= DIR_RIGHT;
 		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
 		g_Clients[id].m_fX = my_packet->x;
-		g_Clients[id].m_fX = my_packet->y;
-		g_Clients[id].m_fX = my_packet->z;
+		g_Clients[id].m_fY = my_packet->y;
+		g_Clients[id].m_fZ = my_packet->z;
+
 		break;
 	}
 	default: std::cout << "Unknown Packet Type from Client : " << id << std::endl;
@@ -226,7 +234,9 @@ void Accept_Thread()
 		g_Clients[new_id].m_recv_over.m_Wsabuf.len = sizeof(g_Clients[new_id].m_recv_over.m_IOCP_buf);
 		// 초기위치
 		g_Clients[new_id].m_Animation = 0;
-
+		g_Clients[new_id].m_fX = new_id * 20.f;
+		g_Clients[new_id].m_fY = 0.f;
+		g_Clients[new_id].m_fZ = 0.f;
 		// 비동기 입출력 시작
 		DWORD recv_flag = 0;
 		CreateIoCompletionPort(reinterpret_cast<HANDLE>(client_sock), g_Hiocp, new_id, 0);
@@ -365,12 +375,12 @@ void Close_Server()
 int main()
 {
 	//
-	for (int i = 0; i < MAX_USER; ++i)
-	{
-		g_Clients[i].m_fX = i* 20.f;
-		g_Clients[i].m_fY = 0.f;
-		g_Clients[i].m_fZ = 0.f;
-	}
+	//for (int i = 0; i < MAX_USER; ++i)
+	//{
+	//	g_Clients[i].m_fX = i * 20.f;
+	//	g_Clients[i].m_fY = 0.f;
+	//	g_Clients[i].m_fZ = 0.f;
+	//}
 	//
 	Init_Server();
 	// 서버가 크래쉬 되었을때 처리할 수 있게 하는 MiniDump

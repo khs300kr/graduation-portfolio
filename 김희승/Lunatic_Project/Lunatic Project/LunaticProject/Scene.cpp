@@ -495,12 +495,15 @@ void CScene::ReleaseShaderVariables()
 
 void CScene::SendMovePacket(BYTE type)
 {
-	cs_packet_up *my_packet = reinterpret_cast<cs_packet_up *>(send_buffer);
-	my_packet->size = sizeof(my_packet);
-	send_wsabuf.len = sizeof(my_packet);
+	cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos *>(send_buffer);
+	my_packet->size = sizeof(cs_packet_pos);
+	send_wsabuf.len = sizeof(cs_packet_pos);
 	DWORD iobyte;
 	my_packet->type = type;
-	
+	my_packet->x = pMyObject->GetPosition().x;
+	my_packet->y = pMyObject->GetPosition().y;
+	my_packet->z = pMyObject->GetPosition().z;
+
 	
 	WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 }
