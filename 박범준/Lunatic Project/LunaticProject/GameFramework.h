@@ -23,12 +23,11 @@ private:
 	// 게임 프레임워크에서 사용할 타이머
 	CGameTimer m_GameTimer;
 	// 게임의 장면(Scene)을 관리하는 객체에 대한 포인터
-	CScene *m_pScene;
 	// 프레임 레이트를 주 윈도우의 캡션에 출력하기 위한 문자열
 	_TCHAR m_pszBuffer[60];
 
 	// 플레이어 멤버 변수
-	CPlayer *m_pPlayer;
+	
 
 	// 상수 버퍼
 	ID3D11Buffer *m_pd3dcbColor;
@@ -42,11 +41,11 @@ private:
 
 	CCamera *m_pCamera;
 
-
-
 public:
 	CGameFramework();
 	~CGameFramework();
+	CPlayer *m_pPlayer;
+	CScene *m_pScene;
 
 	CPlayerShader *m_pPlayerShader;
 	
@@ -71,5 +70,11 @@ public:
 	void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
+	// Server Func
 
+	DWORD dwDirection = 0;
+	
+	DWORD OtherDirection[MAX_USER];
+	int ChangeScene;
+	int SelectCount;
 };

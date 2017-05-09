@@ -54,8 +54,8 @@ void CPlayer::Move(DWORD dwDirection, float fDistance, bool bUpdateVelocity)
 		if (dwDirection & DIR_RIGHT) d3dxvShift += m_d3dxvRight * fDistance;
 		if (dwDirection & DIR_LEFT) d3dxvShift -= m_d3dxvRight * fDistance;
 		// [Page Up], [Page Down]을 누르면 로컬 y축 방향으로 이동
-		if (dwDirection & DIR_UP) d3dxvShift += m_d3dxvUp * fDistance;
-		if (dwDirection & DIR_DOWN) d3dxvShift -= m_d3dxvUp * fDistance;
+		//if (dwDirection & DIR_UP) d3dxvShift += m_d3dxvUp * fDistance;
+		//if (dwDirection & DIR_DOWN) d3dxvShift -= m_d3dxvUp * fDistance;
 
 		// 플레이어를 현재 위치 벡터에서 d3dxvShift 벡터 만큼 이동한다.
 		Move(d3dxvShift, bUpdateVelocity);

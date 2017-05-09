@@ -9,7 +9,7 @@ CGameFramework::CGameFramework()
 	m_pDXGISwapChain = NULL;
 	m_pd3dRenderTargetView = NULL;
 	m_pd3dDeviceContext = NULL;
-
+	
 	m_nWndClientWidth = FRAME_BUFFER_WIDTH;
 	m_nWndClientHeight = FRAME_BUFFER_HEIGHT;
 
@@ -23,6 +23,13 @@ CGameFramework::CGameFramework()
 	m_pPlayerShader = NULL;
 
 	m_pCamera = NULL;
+	dwDirection = 0;
+
+	for (int i = 0; i < 7; ++i)
+		OtherDirection[i] = 0;
+
+	ChangeScene = 0;
+	SelectCount = 1;
 }
 
 CGameFramework::~CGameFramework()
@@ -296,22 +303,24 @@ void CGameFramework::ReleaseObjects()
 void CGameFramework::ProcessInput()
 {
 	bool bProcessedByScene = false;
-	if (m_pScene) bProcessedByScene = m_pScene->ProcessInput();
+	m_pScene->ProcessInput();
 	if (!bProcessedByScene)
 	{
 		static UCHAR pKeyBuffer[256];
-		DWORD dwDirection = 0;
+		
 		// 키보드의 상태 정보를 반환한다. 
 		// 방향키와 PageUp/Down 에 대한 정보
-		if (GetAsyncKeyState(VK_UP) & 0x8000) dwDirection |= DIR_BACK;
-		if (GetAsyncKeyState(VK_DOWN) & 0x8000) dwDirection |= DIR_FRONT;
-		if (GetAsyncKeyState(VK_LEFT) & 0x8000) dwDirection |= DIR_LEFT;
-		if (GetAsyncKeyState(VK_RIGHT) & 0x8000) dwDirection |= DIR_RIGHT;
+		//if (GetAsyncKeyState(VK_UP) & 0x8000) dwDirection |= DIR_BACK;
+		//if (GetAsyncKeyState(VK_DOWN) & 0x8000) dwDirection |= DIR_FRONT;
+		//if (GetAsyncKeyState(VK_LEFT) & 0x8000) dwDirection |= DIR_LEFT;
+		//if (GetAsyncKeyState(VK_RIGHT) & 0x8000) dwDirection |= DIR_RIGHT;
+
 		//if (GetAsyncKeyState(VK_PRIOR) & 0x8000) dwDirection |= DIR_UP;
 		//if (GetAsyncKeyState(VK_NEXT) & 0x8000) dwDirection |= DIR_DOWN;
 
 		float cxDelta = 0.0f, cyDelta = 0.0f;
 		POINT ptCursorPos;
+		
 		// 마우스를 캡쳐했으면 마우스가 얼마만큼 이동하였는 가를 계산한다.
 		// 마우스 왼쪽 또는 오른쪽 버튼이 눌러질 때의 메시지(WM_LBUTTONDOWN, WM_RBUTTONDOWN)를 처리할 때 마우스를 캡쳐
 		// 그러므로 마우스가 캡쳐된 것은 마우스 버튼이 눌려진 상태를 의미한다. 마우스를 좌우 또는 상하로 움직이면 플레이어를 x-축 또는 y-축으로 회전한다.
@@ -326,6 +335,8 @@ void CGameFramework::ProcessInput()
 			cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
 			SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
 		}
+		float RotY_Hero = 0;
+
 		// 플레이어를 이동하거나(dwDirection) 회전한다(cxDelta 또는 cyDelta).
 		if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
 		{
@@ -341,19 +352,73 @@ void CGameFramework::ProcessInput()
 			// 이동 거리는 시간에 비례하도록 한다. 플레이어의 이동 속력은 (50/초)로 가정한다. 만약 플레이어의 이동 속력이 있다면 그 값을 사용한다.
 			if (dwDirection)
 			{
-				if (dwDirection == DIR_LEFT_BACK || dwDirection == DIR_LEFT_FRONT || dwDirection ==  DIR_RIGHT_BACK || dwDirection ==  DIR_RIGHT_FRONT) // 대각선 이동 이동속도 구현
+				if (dwDirection == DIR_LEFT_BACK || dwDirection == DIR_LEFT_FRONT || dwDirection ==  DIR_RIGHT_BACK || dwDirection == DIR_RIGHT_FRONT) // 대각선 이동 이동속도 구현
 				{
-					m_pScene->pSordmanObject->SetSpeed(m_pScene->pSordmanObject->GetRootSpeed());
+				
+					if (dwDirection == DIR_LEFT_BACK) RotY_Hero = 135.0f;
+					else if (dwDirection == DIR_LEFT_FRONT) RotY_Hero = 45.0f;
+					else if (dwDirection == DIR_RIGHT_BACK) RotY_Hero = -135.0f;
+					else if (dwDirection == DIR_RIGHT_FRONT) RotY_Hero = -45.0f;
+					m_pScene->pMyObject->SetSpeed(m_pScene->pMyObject->GetRootSpeed());
 					
 				}
 				else
 				{
-					m_pScene->pSordmanObject->SetSpeed(m_pScene->pSordmanObject->GetNormalSpeed());
+					if (dwDirection == DIR_LEFT) RotY_Hero = 90.0f;
+					else if (dwDirection == DIR_RIGHT) RotY_Hero = -90.0f;
+					else if (dwDirection == DIR_FRONT) RotY_Hero = 0.0f;
+					else if (dwDirection == DIR_BACK) RotY_Hero =  180.0f;
+
+					m_pScene->pMyObject->SetSpeed(m_pScene->pMyObject->GetNormalSpeed());
 				}
 
-				m_pPlayer->Move(dwDirection, m_pScene->pSordmanObject->GetSpeed(), true);
-				m_pScene->pSordmanObject->SetPosition(m_pPlayer->GetPosition());
+				m_pPlayer->Move(dwDirection, m_pScene->pMyObject->GetSpeed(), true);
+				m_pScene->pMyObject->SetPosition(m_pPlayer->GetPosition());
+				m_pScene->pMyObject->Rotate(0, RotY_Hero, 0);
+				
 			}
+
+			
+		}
+
+		float RotY[MAX_USER] = {};
+
+		for (int i = 0; i < MAX_USER; ++i)
+		{
+			if (OtherDirection[i])
+			{
+				
+				if (OtherDirection[i] == DIR_LEFT_BACK || OtherDirection[i] == DIR_LEFT_FRONT || OtherDirection[i] == DIR_RIGHT_BACK || OtherDirection[i] == DIR_RIGHT_FRONT) // 대각선 이동 이동속도 구현
+				{
+					if (OtherDirection[i] == DIR_LEFT_BACK) RotY[i] = 135.0f;
+					else if (OtherDirection[i] == DIR_LEFT_FRONT) RotY[i] = 45.0f;
+					else if (OtherDirection[i] == DIR_RIGHT_BACK) RotY[i] = -135.0f;
+					else if (OtherDirection[i] == DIR_RIGHT_FRONT) RotY[i] = -45.0f;
+
+					m_pScene->pOtherObject[i]->SetSpeed(m_pScene->pOtherObject[i]->GetRootSpeed());
+
+				}
+				else
+				{
+					if (OtherDirection[i] == DIR_LEFT) RotY[i] = 90.0f;
+					else if (OtherDirection[i] == DIR_RIGHT) RotY[i] = -90.0f;
+					else if (OtherDirection[i] == DIR_FRONT) RotY[i] = 0.0f;
+					else if (OtherDirection[i] == DIR_BACK) RotY[i] = 180.0f;
+
+					m_pScene->pOtherObject[i]->SetSpeed(m_pScene->pOtherObject[i]->GetNormalSpeed());
+				}
+
+				if (OtherDirection[i] & DIR_FRONT) m_pScene->pOtherObject[i]->SetPosition(D3DXVECTOR3(m_pScene->pOtherObject[i]->GetPosition().x, m_pScene->pOtherObject[i]->GetPosition().y, m_pScene->pOtherObject[i]->GetPosition().z - m_pScene->pOtherObject[i]->GetSpeed()));
+				if (OtherDirection[i] & DIR_BACK) m_pScene->pOtherObject[i]->SetPosition(D3DXVECTOR3(m_pScene->pOtherObject[i]->GetPosition().x, m_pScene->pOtherObject[i]->GetPosition().y, m_pScene->pOtherObject[i]->GetPosition().z + m_pScene->pOtherObject[i]->GetSpeed()));
+				if (OtherDirection[i] & DIR_LEFT) m_pScene->pOtherObject[i]->SetPosition(D3DXVECTOR3(m_pScene->pOtherObject[i]->GetPosition().x - m_pScene->pOtherObject[i]->GetSpeed(), m_pScene->pOtherObject[i]->GetPosition().y, m_pScene->pOtherObject[i]->GetPosition().z));
+				if (OtherDirection[i] & DIR_RIGHT) m_pScene->pOtherObject[i]->SetPosition(D3DXVECTOR3(m_pScene->pOtherObject[i]->GetPosition().x + m_pScene->pOtherObject[i]->GetSpeed(), m_pScene->pOtherObject[i]->GetPosition().y, m_pScene->pOtherObject[i]->GetPosition().z));
+
+				m_pScene->pOtherObject[i]->Rotate(0, RotY[i], 0);
+				//m_pScene->pOtherObject[i]->SetPosition(m_pScene->pOtherObject[i]->GetPosition().x + 1.0f, m_pScene->pOtherObject[i]->GetPosition().y, m_pScene->pOtherObject[i]->GetPosition().z);
+				//m_pScene->pOtherObject[i]->Move(m_pScene->pOtherObject[i]->GetPosition(), OtherDirection[i], m_pScene->pOtherObject[i]->GetSpeed(), true);
+			}
+
+
 		}
 	}
 	// 플레이어를 실제로 이동하고 카메라를 갱신한다. 중력과 마찰력의 영향을 속도 벡터에 적용한다.
@@ -369,19 +434,52 @@ void CGameFramework::FrameAdvance()
 {
 	m_GameTimer.Tick(60);
 
-	ProcessInput();
-	AnimateObjects();
+	if (ChangeScene == 1)
+	{
 
-	float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
-	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
-	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+		ProcessInput();
+		AnimateObjects();
 
-	if (m_pPlayer) m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
+		float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
+		if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
+		if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-	if (m_pScene) m_pScene->Render(m_pd3dDeviceContext, m_pCamera);
-	//if (m_pPlayerShader) m_pPlayerShader->Render(m_pd3dDeviceContext, m_pCamera);
+		if (m_pPlayer) m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
 
-	m_pDXGISwapChain->Present(0, 0);
+		if (m_pScene) m_pScene->Render(m_pd3dDeviceContext, m_pCamera);
+		//if (m_pPlayerShader) m_pPlayerShader->Render(m_pd3dDeviceContext, m_pCamera);
+
+		m_pDXGISwapChain->Present(0, 0);
+	}
+
+	else if (ChangeScene == 0)
+	{
+
+		if (KEY_DOWN(VK_RETURN))
+			ChangeScene = 1;
+		else if (KEY_DOWN(VK_LEFT))
+		{
+			if (SelectCount == 1)
+				SelectCount = 3;
+			else
+				SelectCount--;
+			InvalidateRect(g_hWnd, NULL, false);
+		}
+		else if (KEY_DOWN(VK_RIGHT))
+		{
+			if (SelectCount == 3)
+				SelectCount = 1;
+			else
+				SelectCount++;
+			InvalidateRect(g_hWnd, NULL, false);
+		}
+	
+		
+		
+
+		
+	}
+
 
 	m_GameTimer.GetFrameRate(m_pszBuffer + 16, 33);
 	::SetWindowText(m_hWnd, m_pszBuffer);

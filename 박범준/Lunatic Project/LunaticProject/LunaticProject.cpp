@@ -56,9 +56,9 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	ServerAddr.sin_family = AF_INET;
 	ServerAddr.sin_port = htons(MY_SERVER_PORT);
 	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	//ServerAddr.sin_addr.s_addr = inet_addr("192.168.3.61");
 
 	int Result = WSAConnect(g_mysocket, (sockaddr *)&ServerAddr, sizeof(ServerAddr), NULL, NULL, NULL, NULL);
-	cout << "Connected\n";
 	WSAAsyncSelect(g_mysocket, g_hWnd, WM_SOCKET, FD_CLOSE | FD_READ);
 
 	send_wsabuf.buf = send_buffer;
@@ -80,6 +80,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		}
 	}
 	gGameFramework.Destroy();
+
 
 	return (int) msg.wParam;
 }
@@ -155,11 +156,91 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
+
+	HDC hdc, memdc, memdc2;
+
+	HBITMAP hBackBit, hOldBitmap;
+
+	HPEN Pen, oldPen;
 	PAINTSTRUCT ps;
-	HDC hdc;
+	static HBITMAP background;
 
 	switch (message)
 	{
+	case WM_CREATE:
+		background = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
+		break;
+
+	case WM_PAINT:
+
+
+		if (gGameFramework.ChangeScene == 0)
+		{
+			hdc = BeginPaint(hWnd, &ps);
+
+			memdc = CreateCompatibleDC(hdc);
+			hBackBit = CreateCompatibleBitmap(hdc, 1024, 768);
+			hOldBitmap = (HBITMAP)SelectObject(memdc, hBackBit);
+
+			memdc2 = CreateCompatibleDC(hdc);
+
+			SelectObject(memdc2, background);
+			BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
+
+			//if (gGameFramework.m_pScene->pMyObject->m_Team == A_TEAM)
+		//	{
+			Pen = CreatePen(PS_SOLID, 5, RGB(255, 0, 0));
+			oldPen = (HPEN)SelectObject(memdc, Pen);
+			//}
+			//else if (gGameFramework.m_pScene->pMyObject->m_Team == B_TEAM)
+			//{
+			//	Pen = CreatePen(PS_SOLID, 5, RGB(0, 255, 0));
+			//	oldPen = (HPEN)SelectObject(hdc, Pen);
+			//}
+
+			SelectObject(memdc, GetStockObject(NULL_BRUSH));
+
+			Rectangle(memdc, 229 + ((gGameFramework.SelectCount-1) * 199), 130, 370 + ((gGameFramework.SelectCount-1) * 199), 270);
+
+			//for (int i = 0; i < MAX_USER; ++i)
+			//{
+			//	if (gGameFramework.m_pScene->pOtherObject[i]->m_Team == A_TEAM)
+			//	{
+			//		Pen = CreatePen(PS_SOLID, 5, RGB(255, 0, 0));
+			//		oldPen = (HPEN)SelectObject(hdc, Pen);
+			//	}
+			//	else if (gGameFramework.m_pScene->pOtherObject[i]->m_Team == B_TEAM)
+			//	{
+			//		Pen = CreatePen(PS_SOLID, 5, RGB(0, 255, 0));
+			//		oldPen = (HPEN)SelectObject(hdc, Pen);
+			//	}
+			//	SelectObject(hdc, GetStockObject(NULL_BRUSH));
+
+			//	Rectangle(hdc, 229, 130, 370, 270);
+			//}
+
+
+			//SelectObject(memdc, GetStockObject(NULL_BRUSH));
+			// SRCCOPY : 바탕색을 무시하고 그려라
+
+			SelectObject(memdc, oldPen);
+			DeleteObject(Pen);
+
+			DeleteDC(memdc2);
+
+			BitBlt(hdc, 0, 0, 1024, 768, memdc, 0, 0, SRCCOPY);
+
+			SelectObject(memdc, hOldBitmap);
+			DeleteObject(hBackBit);
+
+			DeleteDC(memdc);
+
+			EndPaint(hWnd, &ps);
+		}
+
+
+
+		break;
 	// server
 	case WM_SOCKET:
 	{
@@ -256,7 +337,6 @@ void ProcessPacket(char * ptr)
 	{
 	case SC_PUT_PLAYER:
 	{
-		cout << "Put\n";
 		sc_packet_put_player *my_packet = reinterpret_cast<sc_packet_put_player *>(ptr);
 		int id = my_packet->id;
 		if (first_time) {
@@ -264,31 +344,52 @@ void ProcessPacket(char * ptr)
 			g_myid = id;
 		}
 		if (id == g_myid) {
-			cout << my_packet->x << endl;
-			//m_pScene->pSordmanObject->SetPosition(my_packet->x, my_packet->y, my_packet->z);
+			cout << "Hero Pos\n";
+			gGameFramework.m_pScene->pMyObject->SetPosition(my_packet->x, my_packet->y, my_packet->z);
+			gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, my_packet->y, my_packet->z));
+		}
+		else {
+			cout << "Other Pos\n";
+			gGameFramework.m_pScene->pOtherObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
+		}
+		break;	
+	}
+	case SC_POS:
+	{
+		sc_packet_pos *my_packet = reinterpret_cast<sc_packet_pos *>(ptr);
+		int id = my_packet->id;
+		if (id == g_myid) {
+			cout << "Hero Move\n";
+			gGameFramework.dwDirection = my_packet->direction;
+			gGameFramework.m_pScene->pMyObject->SetPosition(my_packet->x, my_packet->y, my_packet->z);
+
+			if (my_packet->direction != 0)
+				gGameFramework.m_pScene->m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_RUN);
+			else
+				gGameFramework.m_pScene->m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+		}
+		else {
+			cout << "Other Move\n";
+			gGameFramework.OtherDirection[id] = my_packet->direction;
+			gGameFramework.m_pScene->pOtherObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
+
+			if (my_packet->direction != 0)
+				gGameFramework.m_pScene->m_ppShaders[id + 2]->GetFBXMesh->SetAnimation(ANI_RUN);
+			else
+				gGameFramework.m_pScene->m_ppShaders[id + 2]->GetFBXMesh->SetAnimation(ANI_IDLE);
 		}
 		break;
 	}
-	//case SC_POS:
-	//{
-	//	sc_packet_pos *my_packet = reinterpret_cast<sc_packet_pos *>(ptr);
-	//	int other_id = my_packet->id;
-	//	if (other_id == g_myid) {
-	//		player.x = my_packet->x;
-	//		player.y = my_packet->y;
-	//	}
-	//	break;
-	//}
 
-	//case SC_REMOVE_PLAYER:
-	//{
-	//	sc_packet_remove_player *my_packet = reinterpret_cast<sc_packet_remove_player *>(ptr);
-	//	int other_id = my_packet->id;
-	//	if (other_id == g_myid) {
-	//		player.attr &= ~BOB_ATTR_VISIBLE;
-	//	}
-	//	break;
-	//}
+	case SC_REMOVE_PLAYER:
+	{
+		sc_packet_remove_player *my_packet = reinterpret_cast<sc_packet_remove_player *>(ptr);
+		int id = my_packet->id;
+		if (id != g_myid) {
+			gGameFramework.m_pScene->pOtherObject[id]->SetPosition(0.f,-3000.f,0.f);
+		}
+		break;
+	}
 	default:
 		printf("Unknown PACKET type [%d]\n", ptr[1]);
 	}

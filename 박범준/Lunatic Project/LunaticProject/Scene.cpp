@@ -24,7 +24,8 @@ CScene::CScene()
 	UpKeyDown = false;
 	DownKeyDown = false;
 
-
+	KeyDownForServer = 0;
+	DWORD dwDirection = 0;
 }
 
 
@@ -50,26 +51,34 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 
 	// ② 텍스쳐 리소스를 생성
 	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
-	CTexture *pDrayerTexture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/Drayer_diffuse.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-	pDrayerTexture->SetTexture(0, pd3dsrvTexture);
-	pDrayerTexture->SetSampler(0, pd3dSamplerState);
+
+	pHealerTexture = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/Healer.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pHealerTexture->SetTexture(0, pd3dsrvTexture);
+	pHealerTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 	pd3dsrvTexture = NULL;
-	CTexture *pSordManTexture = new CTexture(1, 1, 0, 0);
+
+	pSordManTexture = new CTexture(1, 1, 0, 0);
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/SordMan.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pSordManTexture->SetTexture(0, pd3dsrvTexture);
 	pSordManTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
+
+	pBabarianTexture = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/Babarian.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pBabarianTexture->SetTexture(0, pd3dsrvTexture);
+	pBabarianTexture->SetSampler(0, pd3dSamplerState);
+	pd3dsrvTexture->Release();
+
 	// 테스트빌딩
 	pd3dsrvTexture = NULL;
 	CTexture *pBuildingTexture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/buildz4.jpg"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/Objects/house1.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pBuildingTexture->SetTexture(0, pd3dsrvTexture);
 	pBuildingTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 	
-
 
 	// ③ Object용 Material과 Shader를 생성 (Skybox는 쉐이더 내부에서 자체적으로 생성)
 	CMaterial *pNormalMaterial = new CMaterial();
@@ -79,14 +88,20 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	pNormalMaterial->m_Material.m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// ④ 쉐이더에 적용할 메쉬(들) 생성	
-	CMesh *pTestMesh = new CFBXMesh(pd3dDevice, "../Data/man1.data", 0.1f);
-	CMesh *pSordManMesh = new CFBXMesh(pd3dDevice, "../Data/drayer_animation.data", 0.01f);
-	CMesh *pBuildingMesh = new CFBXMesh(pd3dDevice, "../Data/building-commercial_03.data", 1.0f);
+	pHealerMeshA = new CFBXMesh(pd3dDevice, "../Data/Healer.data", 0.1f);
+	pHealerMeshB = new CFBXMesh(pd3dDevice, "../Data/Healer.data", 0.1f);
+	pSordManMeshA = new CFBXMesh(pd3dDevice, "../Data/SordMan.data", 0.1f);
+	pSordManMeshB = new CFBXMesh(pd3dDevice, "../Data/SordMan.data", 0.1f);
+	pBabarianMeshA = new CFBXMesh(pd3dDevice, "../Data/Babarian.data", 0.1f);
+	pBabarianMeshB = new CFBXMesh(pd3dDevice, "../Data/Babarian.data", 0.1f);
 
-	//
+	// map objects
+	CMesh *pBuildingMesh = new CFBXMesh(pd3dDevice, "../Data/Objects/house1.data", 0.1f);
+
+	
 	// 일반 쉐이더 선언부
 	/////////////////////////////////////////////////////////////////////////
-	m_nShaders = 4;	// Skybox
+	m_nShaders = 11;	// Skybox
 	m_ppShaders = new CShader*[m_nShaders];
 
 	// ⑤ SkyBox용 Shader를 생성
@@ -95,50 +110,163 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	m_ppShaders[0]->BuildObjects(pd3dDevice);
 
 	{
+
+
+		// My
 		m_ppShaders[1] = new CCharacterShader(1);
 		m_ppShaders[1]->CreateShader(pd3dDevice);
 		m_ppShaders[1]->BuildObjects(pd3dDevice);
 
-		CGameObject *pTestObject = new CGameObject(1);
-		pTestObject->SetMesh(pTestMesh);
-		pTestObject->SetMaterial(pNormalMaterial);
-		pTestObject->SetTexture(pSordManTexture);
-		pTestObject->Rotate(0.0f, 0.0f, 0.0f);
-		pTestObject->SetPosition(20.0f, 0.0f, 0.0f);
-		m_ppShaders[1]->AddObject(pTestObject);
+		pMyObject = new CHeroManager(1);
+
+		if (pMyObject->m_Team == A_TEAM)
+		{
+			if (pMyObject->m_HeroSelect == SordMan)
+			{
+				pMyObject->SetMesh(pSordManMeshA);
+				pMyObject->SetTexture(pSordManTexture);
+
+			}
+			else if (pMyObject->m_HeroSelect == Healer)
+			{
+				pMyObject->SetMesh(pHealerMeshA);
+				pMyObject->SetTexture(pHealerTexture);
+
+			}
+			else if (pMyObject->m_HeroSelect == Babarian)
+			{
+				pMyObject->SetMesh(pBabarianMeshA);
+				pMyObject->SetTexture(pBabarianTexture);
+			}
+		}
+
+		else if (pMyObject->m_Team == B_TEAM)
+		{
+			if (pMyObject->m_HeroSelect == SordMan)
+			{
+				pMyObject->SetMesh(pSordManMeshB);
+				pMyObject->SetTexture(pSordManTexture);
+
+			}
+			else if (pMyObject->m_HeroSelect == Healer)
+			{
+				pMyObject->SetMesh(pHealerMeshB);
+				pMyObject->SetTexture(pHealerTexture);
+
+			}
+			else if (pMyObject->m_HeroSelect == Babarian)
+			{
+				pMyObject->SetMesh(pBabarianMeshB);
+				pMyObject->SetTexture(pBabarianTexture);
+			}
+		}
+		pMyObject->SetMaterial(pNormalMaterial);
+		pMyObject->SetPosition(0.0f, -3000.0f, 0.0f);
+		pMyObject->Rotate(0.0f, 0.0f, 0.0f);
+
+		m_ppShaders[1]->AddObject(pMyObject);
 
 
-		m_ppShaders[2] = new CCharacterShader(1);
-		m_ppShaders[2]->CreateShader(pd3dDevice);
-		m_ppShaders[2]->BuildObjects(pd3dDevice);
+		//Other
+		for (int i = 0; i < MAX_USER; ++i)
+		{
+			m_ppShaders[i+2] = new CCharacterShader(1);
+			m_ppShaders[i+2]->CreateShader(pd3dDevice);
+			m_ppShaders[i+2]->BuildObjects(pd3dDevice);
 
-		pSordmanObject = new CSordMan(1);
-		pSordmanObject->SetMesh(pSordManMesh);
-		pSordmanObject->SetMaterial(pNormalMaterial);
-		pSordmanObject->SetTexture(pDrayerTexture);
-		pSordmanObject->Rotate(-90.0f, 0.0f, 0.0f);
-		pSordmanObject->SetPosition(0.0f, 0.0f, 0.0f);
+			pOtherObject[i] = new CHeroManager(1);
+			pOtherObject[i]->SetMesh(pSordManMeshB);
+			pOtherObject[i]->SetTexture(pSordManTexture);
+			/*if (pOtherObject[i]->m_Team == A_TEAM)
+			{
+				if (pOtherObject[i]->m_HeroSelect == SordMan)
+				{
+					pOtherObject[i]->SetMesh(pSordManMeshA);
+					pOtherObject[i]->SetTexture(pSordManTexture);
+
+				}
+				else if (pOtherObject[i]->m_HeroSelect == Healer)
+				{
+					pOtherObject[i]->SetMesh(pHealerMeshA);
+					pOtherObject[i]->SetTexture(pHealerTexture);
+
+				}
+				else if (pOtherObject[i]->m_HeroSelect == Babarian)
+				{
+					pOtherObject[i]->SetMesh(pBabarianMeshA);
+					pOtherObject[i]->SetTexture(pBabarianTexture);
+				}
+			}
+
+			else if (pOtherObject[i]->m_Team == B_TEAM)
+			{
+				if (pOtherObject[i]->m_HeroSelect == SordMan)
+				{
+					pOtherObject[i]->SetMesh(pSordManMeshB);
+					pOtherObject[i]->SetTexture(pSordManTexture);
+
+				}
+				else if (pOtherObject[i]->m_HeroSelect == Healer)
+				{
+					pOtherObject[i]->SetMesh(pHealerMeshB);
+					pOtherObject[i]->SetTexture(pHealerTexture);
+
+				}
+				else if (pOtherObject[i]->m_HeroSelect == Babarian)
+				{
+					pOtherObject[i]->SetMesh(pBabarianMeshB);
+					pOtherObject[i]->SetTexture(pBabarianTexture);
+				}
+			}*/
+			pOtherObject[i]->SetMaterial(pNormalMaterial);
+			pOtherObject[i]->SetPosition(0.0f, -3000.0f, 0.0f);
+			pOtherObject[i]->Rotate(0.0f, 0.0f, 0.0f);
+
+			m_ppShaders[i+2]->AddObject(pOtherObject[i]);
+		}
 		
-		m_ppShaders[2]->AddObject(pSordmanObject);
 
+		//for (int i = 0; i < MAX_USER; ++i)
+		//{
+		//	m_ppShaders[i+2] = new CCharacterShader(1);
+		//	m_ppShaders[i+2]->CreateShader(pd3dDevice);
+		//	m_ppShaders[i+2]->BuildObjects(pd3dDevice);
+		//
+		//	pOtherObject[i] = new CHeroManager(1);
+		//	pOtherObject[i]->SetMesh(pHealerMesh);
+		//	pOtherObject[i]->SetMaterial(pNormalMaterial);
+		//	pOtherObject[i]->SetTexture(pHealerTexture);
+		//	pOtherObject[i]->SetPosition(0.0f, -3000.0f, -10.0f);
+		//	pOtherObject[i]->Rotate(0.0f, 0.0f, 0.0f);
+		//	
 
-		m_ppShaders[3] = new CTexturedIlluminatedShader(1);
-		m_ppShaders[3]->CreateShader(pd3dDevice);
-		m_ppShaders[3]->BuildObjects(pd3dDevice);
+		//	m_ppShaders[i+2]->AddObject(pOtherObject[i]);
+
+		//}
+		
+
+		m_ppShaders[10] = new CTexturedIlluminatedShader(1);
+		m_ppShaders[10]->CreateShader(pd3dDevice);
+		m_ppShaders[10]->BuildObjects(pd3dDevice);
 
 		CGameObject *pBuildingObject = new CGameObject(1);
 		pBuildingObject->SetMesh(pBuildingMesh);
 		pBuildingObject->SetMaterial(pNormalMaterial);
 		pBuildingObject->SetTexture(pBuildingTexture);
-		pBuildingObject->Rotate(0.0f, 0.0f, 0.0f);
 		pBuildingObject->SetPosition(0.0f, 0.0f, 30.0f);
-		m_ppShaders[3]->AddObject(pBuildingObject);
+		pBuildingObject->Rotate(0.0f, 0.0f, 0.0f);
+		
+		m_ppShaders[10]->AddObject(pBuildingObject);
 	}
 	
 	
 	CreateShaderVariables(pd3dDevice);
 }
 
+void CScene::Create(CHeroManager* Object, int team, int hero)
+{
+
+}
 
 void CScene::ReleaseObjects()
 {
@@ -160,6 +288,8 @@ void CScene::ReleaseObjects()
 }
 
 
+
+
 bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	return false;
@@ -171,33 +301,9 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	switch (nMessageID)
 	{
 	case WM_KEYDOWN:
+
 		switch (wParam)
 		{
-		case VK_LEFT:
-			if (!LeftKeyDown)
-			{
-				LeftKeyDown = true;
-				
-			}
-			break;
-		case VK_RIGHT:
-			if (!RightKeyDown)
-			{
-				RightKeyDown = true;
-			}
-			break;
-		case VK_UP:
-			if (!UpKeyDown)
-			{
-				UpKeyDown = true;
-			}
-			break;
-		case VK_DOWN:
-			if (!DownKeyDown)
-			{
-				DownKeyDown = true;
-			}
-			break;
 
 		case 'Z':
 			if (!bCharaterRun && !bCharaterPunch)
@@ -210,7 +316,7 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		case 'X':
 			if (!bCharaterPunch)
 			{
-				m_ppShaders[2]->GetFBXMesh->SetAnimation(2);
+				m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_ATTACK);
 				
 				bCharaterRun = false;
 				bCharaterPunch = true;
@@ -218,65 +324,26 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		default:
 			break;
 		}
-		break;
+		break;	// Client KeyDown
+
+
+///////////////////////////////////////////////////////////////////////		
+
+
 	case WM_KEYUP:
+
 		switch (wParam)
 		{
-		case VK_LEFT:
-			if (LeftKeyDown)
-			{
-				LeftKeyDown = false;
-				if (bCharaterRun)
-				{
-					m_ppShaders[2]->GetFBXMesh->SetAnimation(0);
-					bCharaterRun = false;
-				}
-			}
-			break;
-		case VK_RIGHT:
-			if (RightKeyDown)
-			{
-				RightKeyDown = false;
-				if (bCharaterRun)
-				{
-					m_ppShaders[2]->GetFBXMesh->SetAnimation(0);
-					bCharaterRun = false;
-				}
-			}
-			break;
-		case VK_UP:
-			if (UpKeyDown)
-			{
-				UpKeyDown = false;
-				if (bCharaterRun)
-				{
-					m_ppShaders[2]->GetFBXMesh->SetAnimation(0);
-					bCharaterRun = false;
-				}
-			}
-			break;
-		case VK_DOWN:
-			if (DownKeyDown)
-			{
-				DownKeyDown = false;
-				if (bCharaterRun)
-				{
-					m_ppShaders[2]->GetFBXMesh->SetAnimation(0);
-					bCharaterRun = false;
-				}
-			}
-			break;
 		case 'Z':
 			if (bCharaterRun)
 			{
-				/*m_ppShaders[2]->GetFBXMesh->SetAnimation(0);
-				bCharaterRun = false;*/
+
 			}
 			break;
 		case 'X':
 			if (bCharaterPunch)
 			{
-				m_ppShaders[2]->GetFBXMesh->SetAnimation(0);
+				m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
 				bCharaterPunch = false;
 			}
 		default:
@@ -290,9 +357,73 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 }
 
 
-bool CScene::ProcessInput()
+void CScene::ProcessInput()
 {
-	return false;
+	if (KEY_DOWN(VK_UP) && !UpKeyDown) {
+		UpKeyDown = true;
+		dwDirection |= DIR_BACK;
+
+		if (dwDirection) SendMovePacket(CS_KEYDOWN_UP);
+	}
+	if (KEY_DOWN(VK_DOWN) && !DownKeyDown) {
+		DownKeyDown = true;
+		dwDirection |= DIR_FRONT;
+		if (dwDirection) SendMovePacket(CS_KEYDOWN_DOWN);
+	}
+	if (KEY_DOWN(VK_LEFT) && !LeftKeyDown) {
+		LeftKeyDown = true;
+		dwDirection |= DIR_LEFT;
+		if (dwDirection) SendMovePacket(CS_KEYDOWN_LEFT);
+	}
+	if (KEY_DOWN(VK_RIGHT) && !RightKeyDown) {
+		RightKeyDown = true;
+		dwDirection |= DIR_RIGHT;
+		if (dwDirection) SendMovePacket(CS_KEYDOWN_RIGHT);
+	}
+
+
+	if (KEY_UP(VK_UP) && UpKeyDown)
+	{
+		UpKeyDown = false;
+		if (bCharaterRun)
+		{
+			m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+			bCharaterRun = false;
+		}
+		SendMovePacket(CS_KEYUP_UP);
+	}	
+	if (KEY_UP(VK_DOWN) && DownKeyDown)
+	{
+		DownKeyDown = false;
+		if (bCharaterRun)
+		{
+			m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+			bCharaterRun = false;
+		}
+		SendMovePacket(CS_KEYUP_DOWN);
+	}
+	if (KEY_UP(VK_LEFT) && LeftKeyDown)
+	{
+		LeftKeyDown = false;
+		if (bCharaterRun)
+		{
+			m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+			bCharaterRun = false;
+		}
+		SendMovePacket(CS_KEYUP_LEFT);
+	}
+	if (KEY_UP(VK_RIGHT) && RightKeyDown)
+	{
+		RightKeyDown = false;
+		if (bCharaterRun)
+		{
+			m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+			bCharaterRun = false;
+		}
+		SendMovePacket(CS_KEYUP_RIGHT);
+	}
+
+
 }
 
 
@@ -363,6 +494,21 @@ void CScene::ReleaseShaderVariables()
 	if (m_pd3dcbLights) m_pd3dcbLights->Release();
 }
 
+void CScene::SendMovePacket(BYTE type)
+{
+	cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos *>(send_buffer);
+	my_packet->size = sizeof(cs_packet_pos);
+	send_wsabuf.len = sizeof(cs_packet_pos);
+	DWORD iobyte;
+	my_packet->type = type;
+	my_packet->x = pMyObject->GetPosition().x;
+	my_packet->y = pMyObject->GetPosition().y;
+	my_packet->z = pMyObject->GetPosition().z;
+
+	
+	WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+}
+
 void CScene::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS *pLights)
 {
 	D3D11_MAPPED_SUBRESOURCE d3dMappedResource;
@@ -407,71 +553,12 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	//cout << m_ppShaders[2]->GetFBXMesh->GetFBXAnimationNum() << " " << m_ppShaders[2]->GetFBXMesh->GetFBXMaxFrameNum() << endl;
 
 	
-	m_ppShaders[1]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed);
-	m_ppShaders[2]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed);
+	m_ppShaders[1]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed); // SordMan
+	m_ppShaders[2]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed); // Healer
+	//m_ppShaders[Babarian]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed); // Babarian
+	
 
 
-	if (LeftKeyDown || RightKeyDown || UpKeyDown || DownKeyDown)
-	{
-		if (LeftKeyDown && UpKeyDown)
-		{
-			pSordmanObject->Rotate(-90.0f, 135.0f, 0.0f);
-			//pSordmanObject->m_d3dxvDirection = D3DXVECTOR3(-1.0f, 0.0f, 1.0f);
-		}
-		else if (LeftKeyDown && DownKeyDown)
-		{
-			pSordmanObject->Rotate(-90.0f, 45.0f, 0.0f);
-			//pSordmanObject->m_d3dxvDirection = D3DXVECTOR3(-1.0f, 0.0f, -1.0f);
-		}
-		else if (RightKeyDown && UpKeyDown)
-		{
-			pSordmanObject->Rotate(-90.0f, -135.0f, 0.0f);
-			//pSordmanObject->m_d3dxvDirection = D3DXVECTOR3(1.0f, 0.0f, 1.0f);
-		}
-		else if (RightKeyDown && DownKeyDown)
-		{
-			pSordmanObject->Rotate(-90.0f, -45.0f, 0.0f);
-			//pSordmanObject->m_d3dxvDirection = D3DXVECTOR3(1.0f, 0.0f, -1.0f);
-		}
-
-		else
-		{
-			if (LeftKeyDown)
-			{
-				pSordmanObject->Rotate(-90.0f, 90.0f, 0.0f);
-				//pSordmanObject->m_d3dxvDirection = D3DXVECTOR3(-1.0f, 0.0f, 0.0f);
-			}
-			else if (RightKeyDown)
-			{
-				pSordmanObject->Rotate(-90.0f, -90.0f, 0.0f);
-				//pSordmanObject->m_d3dxvDirection = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
-			}
-			else if (UpKeyDown)
-			{
-				pSordmanObject->Rotate(-90.0f, 180.0f, 0.0f);
-				//pSordmanObject->m_d3dxvDirection = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
-			}
-			else if (DownKeyDown)
-			{
-				pSordmanObject->Rotate(-90.0f, 0.0f, 0.0f);
-				//pSordmanObject->m_d3dxvDirection = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
-			}
-		}
-
-		if (!bCharaterRun && !bCharaterPunch)
-		{
-			m_ppShaders[2]->GetFBXMesh->SetAnimation(1);
-			bCharaterRun = true;
-			bCharaterPunch = false;
-		}
-	}
-	
-	
-	
-	
-	//m_pCamera->SetPosition(D3DXVECTOR3(pSordmanObject->GetPosition().x, pSordmanObject->GetPosition().y, pSordmanObject->GetPosition().z - 40));
-	
-	//cout << pSordmanObject->m_d3dxvDirection.x << ends << pSordmanObject->m_d3dxvDirection.y << ends << pSordmanObject->m_d3dxvDirection.z << endl;
 }
 
 void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)

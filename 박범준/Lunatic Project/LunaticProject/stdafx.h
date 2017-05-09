@@ -12,11 +12,13 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #define INITGUID
 #include <WinSock2.h>
-#include "protocol.h"
+#include "../../Lunatic_Server/Lunatic_Server/protocol.h"
 #pragma comment (lib, "ws2_32.lib")
 
 #define	BUF_SIZE				1024
 #define	WM_SOCKET				WM_USER + 1
+
+#include "ServerGlobal.h"
 
 // Windows 헤더 파일:
 #include <windows.h>
@@ -44,6 +46,7 @@
 #include <string>
 #include <vector>
 #include <map>
+
 using namespace std;
 
 #define FRAME_BUFFER_WIDTH	1024
@@ -55,18 +58,8 @@ using namespace std;
 // 테스트를 위한 콘솔 띄우기
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 
-// 입력 관련 Define
-#define DIR_BACK		0x01
-#define DIR_FRONT	0x02
-#define DIR_LEFT		0x04
-#define DIR_RIGHT		0x08
-#define DIR_UP			0x10 //Y축으로 이동
-#define DIR_DOWN		0x20
-#define DIR_LEFT_BACK	0x05
-#define DIR_RIGHT_BACK	0x09
-#define DIR_LEFT_FRONT	0x06
-#define DIR_RIGHT_FRONT	0x10
-
+#define KEY_DOWN(vk_code) ((GetAsyncKeyState(vk_code) & 0x8000) ? 1 : 0)
+#define KEY_UP(vk_code)   ((GetAsyncKeyState(vk_code) & 0x8000) ? 0 : 1)
 
 //
 // 쉐이더 슬롯
@@ -87,3 +80,12 @@ using namespace std;
 #define ANIFRAMETIME			0.0333333f
 #define GetFBXMesh				GetGameObject(0)->GetMesh(0)
 
+// Team
+#define A_TEAM 1
+#define B_TEAM 2
+
+
+// Character
+#define SordMan 1
+#define Healer 2
+#define Babarian 3

@@ -3,12 +3,13 @@
 #include "Shader.h"
 #include "SkyBoxShader.h"
 
-#include "SordMan.h"
+#include "HeroManager.h"
 
 #define MAX_LIGHTS		4 
 #define POINT_LIGHT		1.0f
 #define SPOT_LIGHT		2.0f
 #define DIRECTIONAL_LIGHT	3.0f
+
 
 // 1개의 조명을 표현하는 구조체이다. 
 struct LIGHT
@@ -42,7 +43,7 @@ private:
 	int m_nShaders;
 	int m_nInstancingShaders;
 
-	CShader **m_ppShaders;
+	
 	CInstancingShader **m_ppInstancingShaders;
 
 	CCamera *m_pCamera;
@@ -50,28 +51,45 @@ private:
 	LIGHTS *m_pLights;
 	ID3D11Buffer *m_pd3dcbLights;
 
-
-	
-	
-
 	bool LeftKeyDown;
 	bool RightKeyDown;
 	bool UpKeyDown;
 	bool DownKeyDown;
 
+	int KeyDownForServer;
+	DWORD dwDirection;
+
 
 public:
 	CScene();
 	~CScene();
-	CSordMan* pSordmanObject;
 
+	CHeroManager* pMyObject;
+
+	CHeroManager* pOtherObject[MAX_USER];
+
+	CTexture *pHealerTexture;
+	CTexture *pSordManTexture;
+	CTexture *pBabarianTexture;
+
+	CMesh *pSordManMeshA;
+	CMesh *pSordManMeshB;
+	CMesh *pHealerMeshA;
+	CMesh *pHealerMeshB;
+	CMesh *pBabarianMeshA;
+	CMesh *pBabarianMeshB;
+
+	CShader **m_ppShaders;
+
+	void Create(CHeroManager* Object, int team, int hero);
+	
 	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
 	void BuildObjects(ID3D11Device *pd3dDevice);
 	void ReleaseObjects();
 
-	bool ProcessInput();
+	void ProcessInput();
 	void AnimateObjects(float fTimeElapsed);
 	void Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera);
 
@@ -80,4 +98,10 @@ public:
 	void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS *pLights);
 	void ReleaseShaderVariables();
+
+public:
+	// server
+	DWORD Animation_number[MAX_USER] = {};
+	void SendMovePacket(BYTE type);
+
 };

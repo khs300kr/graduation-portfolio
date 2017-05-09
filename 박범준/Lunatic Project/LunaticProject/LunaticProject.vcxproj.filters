@@ -62,7 +62,7 @@
       <UniqueIdentifier>{1f6d66fc-8abb-4b27-bc9b-2c56e0003dc2}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\69.Server">
-      <UniqueIdentifier>{7c769b82-1f5f-4a55-a02e-17d898f2b5bf}</UniqueIdentifier>
+      <UniqueIdentifier>{57471f59-6bdb-46b9-a80d-af4f09a27985}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -129,8 +129,17 @@
     <ClInclude Include="SordMan.h">
       <Filter>소스 파일\01.HeroManager</Filter>
     </ClInclude>
-    <ClInclude Include="protocol.h">
+    <ClInclude Include="ServerGlobal.h">
       <Filter>소스 파일\69.Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Healer.h">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Babarian.h">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClInclude>
+    <ClInclude Include="HeroManager.h">
+      <Filter>소스 파일\01.HeroManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -188,12 +197,27 @@
     <ClCompile Include="SordMan.cpp">
       <Filter>소스 파일\01.HeroManager</Filter>
     </ClCompile>
+    <ClCompile Include="ServerGlobal.cpp">
+      <Filter>소스 파일\69.Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Healer.cpp">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Babarian.cpp">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClCompile>
+    <ClCompile Include="HeroManager.cpp">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="LunaticProject.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\background.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

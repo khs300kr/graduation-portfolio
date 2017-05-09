@@ -158,6 +158,7 @@ void CGameObject::Animate(float fTimeElapsed)
 	m_d3dxmtxWorld = m_d3dxmtxScale * m_d3dxmtxRotate * m_d3dxmtxTranlate;
 }
 
+
 void CGameObject::Render(ID3D11DeviceContext *pd3dDeviceContext, CCamera *pCamera)
 {
 	CShader::UpdateShaderVariable(pd3dDeviceContext, &m_d3dxmtxWorld);
@@ -193,6 +194,27 @@ void CGameObject::SetPosition(float x, float y, float z)
 	//m_d3dxmtxWorld._41 = x;
 	//m_d3dxmtxWorld._42 = y;
 	//m_d3dxmtxWorld._43 = z;
+}
+
+void CGameObject::Move(D3DXVECTOR3 Position, DWORD dwDirection, float fDistance, bool bUpdateVelocity)
+{
+	if (dwDirection)
+	{
+		D3DXVECTOR3 d3dxvShift = Position;
+		// 화살표 키 [↑], [↓]를 누르면 로컬 z축 방향으로 이동
+		if (dwDirection & DIR_FRONT) d3dxvShift.z = -d3dxvShift.z * fDistance;
+		if (dwDirection & DIR_BACK) d3dxvShift.z = d3dxvShift.z  * fDistance;
+		// 화살표 키 [→], [←]를 누르면 로컬 x축 방향으로 이동
+		if (dwDirection & DIR_RIGHT) d3dxvShift.x = d3dxvShift.x * fDistance;
+		if (dwDirection & DIR_LEFT) d3dxvShift.x = -d3dxvShift.x * fDistance;
+		// [Page Up], [Page Down]을 누르면 로컬 y축 방향으로 이동
+		//if (dwDirection & DIR_UP) d3dxvShift += m_d3dxvUp * fDistance;
+		//if (dwDirection & DIR_DOWN) d3dxvShift -= m_d3dxvUp * fDistance;
+
+		//SetPosition(d3dxvShift);
+		// 플레이어를 현재 위치 벡터에서 d3dxvShift 벡터 만큼 이동한다.
+		//Move(d3dxvShift, bUpdateVelocity);
+	}
 }
 
 void CGameObject::SetPosition(D3DXVECTOR3 d3dxvPosition)

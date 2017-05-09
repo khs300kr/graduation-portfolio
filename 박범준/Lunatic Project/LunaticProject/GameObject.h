@@ -108,6 +108,8 @@ public:
 	virtual void SetPosition(float x, float y, float z);
 	virtual void SetPosition(D3DXVECTOR3 d3dxvPosition);
 
+	void Move(D3DXVECTOR3 Position, DWORD dwDirection, float fDistance, bool bUpdateVelocity);
+
 	D3DXVECTOR3 GetPosition();
 
 	void MoveRight(float fDistance = 1.0f);

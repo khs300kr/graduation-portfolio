@@ -2,6 +2,7 @@
 #include "SkyBox.h"
 
 
+
 CSkyBox::CSkyBox(ID3D11Device *pd3dDevice) : CGameObject(1)
 {
 	CSkyBoxMesh *pSkyBoxMesh = new CSkyBoxMesh(pd3dDevice, 2000.0f, 2000.0f, 2000.0f);
