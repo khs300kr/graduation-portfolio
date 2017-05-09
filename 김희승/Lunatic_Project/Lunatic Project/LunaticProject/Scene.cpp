@@ -88,8 +88,8 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	pNormalMaterial->m_Material.m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// ④ 쉐이더에 적용할 메쉬(들) 생성	
-	pHealerMeshA = new CFBXMesh(pd3dDevice, "../Data/Healer.data", 0.15f);
-	pHealerMeshB = new CFBXMesh(pd3dDevice, "../Data/Healer.data", 0.15f);
+	pHealerMeshA = new CFBXMesh(pd3dDevice, "../Data/Healer.data", 0.1f);
+	pHealerMeshB = new CFBXMesh(pd3dDevice, "../Data/Healer.data", 0.1f);
 	pSordManMeshA = new CFBXMesh(pd3dDevice, "../Data/SordMan.data", 0.1f);
 	pSordManMeshB = new CFBXMesh(pd3dDevice, "../Data/SordMan.data", 0.1f);
 	pBabarianMeshA = new CFBXMesh(pd3dDevice, "../Data/Babarian.data", 0.1f);
@@ -175,8 +175,8 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 			m_ppShaders[i+2]->BuildObjects(pd3dDevice);
 
 			pOtherObject[i] = new CHeroManager(1);
-			pOtherObject[i]->SetMesh(pHealerMeshA);
-			pOtherObject[i]->SetTexture(pHealerTexture);
+			pOtherObject[i]->SetMesh(pSordManMeshB);
+			pOtherObject[i]->SetTexture(pSordManTexture);
 			/*if (pOtherObject[i]->m_Team == A_TEAM)
 			{
 				if (pOtherObject[i]->m_CharSelect == SordMan)
@@ -554,7 +554,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 	
 	m_ppShaders[1]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed); // SordMan
-	//m_ppShaders[Healer]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed); // Healer
+	m_ppShaders[2]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed); // Healer
 	//m_ppShaders[Babarian]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed); // Babarian
 	
 

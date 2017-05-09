@@ -4,7 +4,7 @@
 
 CHeroManager::CHeroManager(int nMeshes) : CGameObject(nMeshes)
 {
-	m_CharSelect = Babarian;
+	m_CharSelect = Healer;
 	m_Team = A_TEAM;
 
 	hp = 100;

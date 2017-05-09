@@ -1,9 +1,13 @@
-﻿  Lunatic_Server.cpp
+﻿  stdafx.cpp
+  Global.cpp
+  Lunatic_Server.cpp
+c:\program files (x86)\windows kits\8.1\include\um\dbghelp.h(1544): warning C4091: 'typedef ': 변수를 선언하지 않으면 '' 왼쪽은 무시됩니다. (소스 파일 컴파일 중 Lunatic_Server.cpp)
+c:\program files (x86)\windows kits\8.1\include\um\dbghelp.h(3190): warning C4091: 'typedef ': 변수를 선언하지 않으면 '' 왼쪽은 무시됩니다. (소스 파일 컴파일 중 Lunatic_Server.cpp)
+d:\class\graduation-portfolio\김희승\lunatic_project\lunatic_server\lunatic_server\lunatic_server.cpp(80): warning C4244: '=': 'DWORD'에서 'BYTE'(으)로 변환하면서 데이터가 손실될 수 있습니다. (소스 파일 컴파일 중 Lunatic_Server.cpp)
+d:\class\graduation-portfolio\김희승\lunatic_project\lunatic_server\lunatic_server\lunatic_server.cpp(296): warning C4244: '인수': 'unsigned __int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다. (소스 파일 컴파일 중 Lunatic_Server.cpp)
+d:\class\graduation-portfolio\김희승\lunatic_project\lunatic_server\lunatic_server\lunatic_server.cpp(301): warning C4244: '인수': 'unsigned __int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다. (소스 파일 컴파일 중 Lunatic_Server.cpp)
+  MiniDump.cpp
 c:\program files (x86)\windows kits\8.1\include\um\dbghelp.h(1544): warning C4091: 'typedef ': 변수를 선언하지 않으면 '' 왼쪽은 무시됩니다.
 c:\program files (x86)\windows kits\8.1\include\um\dbghelp.h(3190): warning C4091: 'typedef ': 변수를 선언하지 않으면 '' 왼쪽은 무시됩니다.
-d:\class\graduation-portfolio\김희승\lunatic_project\lunatic_server\lunatic_server\lunatic_server.cpp(67): warning C4244: '=': 'DWORD'에서 'BYTE'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-d:\class\graduation-portfolio\김희승\lunatic_project\lunatic_server\lunatic_server\lunatic_server.cpp(81): warning C4244: '=': 'DWORD'에서 'BYTE'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-d:\class\graduation-portfolio\김희승\lunatic_project\lunatic_server\lunatic_server\lunatic_server.cpp(293): warning C4244: '인수': 'unsigned __int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-d:\class\graduation-portfolio\김희승\lunatic_project\lunatic_server\lunatic_server\lunatic_server.cpp(298): warning C4244: '인수': 'unsigned __int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   Lunatic_Server.vcxproj -> D:\Class\graduation-portfolio\김희승\Lunatic_Project\Lunatic_Server\x64\Debug\Lunatic_Server.exe
   Lunatic_Server.vcxproj -> D:\Class\graduation-portfolio\김희승\Lunatic_Project\Lunatic_Server\x64\Debug\Lunatic_Server.pdb (Full PDB)
