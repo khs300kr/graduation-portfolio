@@ -1,0 +1,11 @@
+﻿  stdafx.cpp
+  Lunatic_Server.cpp
+c:\program files (x86)\windows kits\8.1\include\um\dbghelp.h(1544): warning C4091: 'typedef ': 변수를 선언하지 않으면 '' 왼쪽은 무시됩니다.
+c:\program files (x86)\windows kits\8.1\include\um\dbghelp.h(3190): warning C4091: 'typedef ': 변수를 선언하지 않으면 '' 왼쪽은 무시됩니다.
+c:\users\lincoln\desktop\졸작\애니메이션동기화(테스트)\lunatic_server\lunatic_server\lunatic_server.cpp(301): warning C4244: '인수': 'unsigned __int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\lincoln\desktop\졸작\애니메이션동기화(테스트)\lunatic_server\lunatic_server\lunatic_server.cpp(306): warning C4244: '인수': 'unsigned __int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  MiniDump.cpp
+c:\program files (x86)\windows kits\8.1\include\um\dbghelp.h(1544): warning C4091: 'typedef ': 변수를 선언하지 않으면 '' 왼쪽은 무시됩니다.
+c:\program files (x86)\windows kits\8.1\include\um\dbghelp.h(3190): warning C4091: 'typedef ': 변수를 선언하지 않으면 '' 왼쪽은 무시됩니다.
+  Lunatic_Server.vcxproj -> C:\Users\Lincoln\Desktop\졸작\애니메이션동기화(테스트)\Lunatic_Server\x64\Debug\Lunatic_Server.exe
+  Lunatic_Server.vcxproj -> C:\Users\Lincoln\Desktop\졸작\애니메이션동기화(테스트)\Lunatic_Server\x64\Debug\Lunatic_Server.pdb (Full PDB)
