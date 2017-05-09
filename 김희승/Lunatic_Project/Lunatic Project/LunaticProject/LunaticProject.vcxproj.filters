@@ -132,6 +132,15 @@
     <ClInclude Include="ServerGlobal.h">
       <Filter>소스 파일\69.Server</Filter>
     </ClInclude>
+    <ClInclude Include="Healer.h">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Babarian.h">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClInclude>
+    <ClInclude Include="HeroManager.h">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -190,6 +199,15 @@
     </ClCompile>
     <ClCompile Include="ServerGlobal.cpp">
       <Filter>소스 파일\69.Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Healer.cpp">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Babarian.cpp">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClCompile>
+    <ClCompile Include="HeroManager.cpp">
+      <Filter>소스 파일\01.HeroManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

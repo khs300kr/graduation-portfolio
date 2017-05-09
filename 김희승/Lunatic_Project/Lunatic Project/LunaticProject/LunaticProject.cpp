@@ -264,7 +264,7 @@ void ProcessPacket(char * ptr)
 		}
 		if (id == g_myid) {
 			cout << "Hero Pos\n";
-			gGameFramework.m_pScene->pSordmanObject->SetPosition(my_packet->x, my_packet->y, my_packet->z);
+			gGameFramework.m_pScene->pMyObject->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 			gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, my_packet->y, my_packet->z));
 			
 			

@@ -88,7 +88,9 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Babarian.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="HeroManager.h" />
     <ClInclude Include="CharacterShader.h" />
     <ClInclude Include="CubeMesh.h" />
     <ClInclude Include="CubeObject.h" />
@@ -96,6 +98,7 @@
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameTimer.h" />
+    <ClInclude Include="Healer.h" />
     <ClInclude Include="LunaticProject.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Player.h" />
@@ -111,7 +114,9 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Babarian.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="HeroManager.cpp" />
     <ClCompile Include="CharacterShader.cpp" />
     <ClCompile Include="CubeMesh.cpp" />
     <ClCompile Include="CubeObject.cpp" />
@@ -119,6 +124,7 @@
     <ClCompile Include="GameFramework.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameTimer.cpp" />
+    <ClCompile Include="Healer.cpp" />
     <ClCompile Include="LunaticProject.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Player.cpp" />

@@ -3,7 +3,7 @@
 #include "Shader.h"
 #include "SkyBoxShader.h"
 
-#include "SordMan.h"
+#include "HeroManager.h"
 
 #define MAX_LIGHTS		4 
 #define POINT_LIGHT		1.0f
@@ -63,9 +63,25 @@ private:
 public:
 	CScene();
 	~CScene();
-	CSordMan* pSordmanObject;
-	CSordMan* pOtherObject[MAX_USER];
+
+	CHeroManager* pMyObject;
+
+	CHeroManager* pOtherObject[MAX_USER];
+
+	CTexture *pHealerTexture;
+	CTexture *pSordManTexture;
+	CTexture *pBabarianTexture;
+
+	CMesh *pSordManMeshA;
+	CMesh *pSordManMeshB;
+	CMesh *pHealerMeshA;
+	CMesh *pHealerMeshB;
+	CMesh *pBabarianMeshA;
+	CMesh *pBabarianMeshB;
+
 	CShader **m_ppShaders;
+
+	void Create(CHeroManager* Object, int team, int hero);
 	
 	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);

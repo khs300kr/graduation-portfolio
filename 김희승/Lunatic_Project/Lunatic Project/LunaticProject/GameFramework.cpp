@@ -356,7 +356,7 @@ void CGameFramework::ProcessInput()
 					else if (dwDirection == DIR_LEFT_FRONT) RotY_Hero = 45.0f;
 					else if (dwDirection == DIR_RIGHT_BACK) RotY_Hero = -135.0f;
 					else if (dwDirection == DIR_RIGHT_FRONT) RotY_Hero = -45.0f;
-					m_pScene->pSordmanObject->SetSpeed(m_pScene->pSordmanObject->GetRootSpeed());
+					m_pScene->pMyObject->SetSpeed(m_pScene->pMyObject->GetRootSpeed());
 					
 				}
 				else
@@ -366,12 +366,12 @@ void CGameFramework::ProcessInput()
 					else if (dwDirection == DIR_FRONT) RotY_Hero = 0.0f;
 					else if (dwDirection == DIR_BACK) RotY_Hero =  180.0f;
 
-					m_pScene->pSordmanObject->SetSpeed(m_pScene->pSordmanObject->GetNormalSpeed());
+					m_pScene->pMyObject->SetSpeed(m_pScene->pMyObject->GetNormalSpeed());
 				}
 
-				m_pPlayer->Move(dwDirection, m_pScene->pSordmanObject->GetSpeed(), true);
-				m_pScene->pSordmanObject->SetPosition(m_pPlayer->GetPosition());
-				m_pScene->pSordmanObject->Rotate(0, RotY_Hero, 0);
+				m_pPlayer->Move(dwDirection, m_pScene->pMyObject->GetSpeed(), true);
+				m_pScene->pMyObject->SetPosition(m_pPlayer->GetPosition());
+				m_pScene->pMyObject->Rotate(0, RotY_Hero, 0);
 				
 			}
 
