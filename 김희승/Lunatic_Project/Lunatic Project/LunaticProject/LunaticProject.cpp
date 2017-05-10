@@ -9,6 +9,7 @@
 
 // 전역 변수:
 HINSTANCE hInst;								// 현재 인스턴스입니다.
+
 TCHAR szTitle[MAX_LOADSTRING];					// 제목 표시줄 텍스트입니다.
 TCHAR szWindowClass[MAX_LOADSTRING];			// 기본 창 클래스 이름입니다.
 
@@ -80,6 +81,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		}
 	}
 	gGameFramework.Destroy();
+
 
 	return (int) msg.wParam;
 }
@@ -155,11 +157,97 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
+
+	HDC hdc, memdc, memdc2;
+
+	HBITMAP hBackBit, hOldBitmap;
+
+	HPEN Pen, oldPen;
 	PAINTSTRUCT ps;
-	HDC hdc;
+	static HBITMAP background;
 
 	switch (message)
 	{
+	case WM_CREATE:
+		background = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
+		break;
+
+	case WM_PAINT:
+
+
+		hdc = BeginPaint(hWnd, &ps);
+
+		memdc = CreateCompatibleDC(hdc);
+		hBackBit = CreateCompatibleBitmap(hdc, 1024, 768);
+		hOldBitmap = (HBITMAP)SelectObject(memdc, hBackBit);
+
+		Pen = CreatePen(PS_SOLID, 5, RGB(255, 0, 0));
+		oldPen = (HPEN)SelectObject(memdc, Pen);
+
+		memdc2 = CreateCompatibleDC(hdc);
+
+		SelectObject(memdc2, background);
+
+		if (gGameFramework.ChangeScene == 0)
+		{
+			BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
+
+
+			//if (gGameFramework.m_pScene->pMyObject->m_Team == A_TEAM)
+		//	{
+
+			//}
+			//else if (gGameFramework.m_pScene->pMyObject->m_Team == B_TEAM)
+			//{
+			//	Pen = CreatePen(PS_SOLID, 5, RGB(0, 255, 0));
+			//	oldPen = (HPEN)SelectObject(hdc, Pen);
+			//}
+
+			SelectObject(memdc, GetStockObject(NULL_BRUSH));
+
+			Rectangle(memdc, 229 + ((gGameFramework.SelectCount - 1) * 199), 130, 370 + ((gGameFramework.SelectCount - 1) * 199), 270);
+
+			//for (int i = 0; i < MAX_USER; ++i)
+			//{
+			//	if (gGameFramework.m_pScene->pOtherObject[i]->m_Team == A_TEAM)
+			//	{
+			//		Pen = CreatePen(PS_SOLID, 5, RGB(255, 0, 0));
+			//		oldPen = (HPEN)SelectObject(hdc, Pen);
+			//	}
+			//	else if (gGameFramework.m_pScene->pOtherObject[i]->m_Team == B_TEAM)
+			//	{
+			//		Pen = CreatePen(PS_SOLID, 5, RGB(0, 255, 0));
+			//		oldPen = (HPEN)SelectObject(hdc, Pen);
+			//	}
+			//	SelectObject(hdc, GetStockObject(NULL_BRUSH));
+
+			//	Rectangle(hdc, 229, 130, 370, 270);
+			//}
+		}
+
+		//SelectObject(memdc, GetStockObject(NULL_BRUSH));
+		// SRCCOPY : 바탕색을 무시하고 그려라
+
+		//if (gGameFramework.LoadingScene == true)
+		//{
+		//	TextOut(memdc, 0, 0, L"Loading...", 10);
+		//}
+
+		SelectObject(memdc, oldPen);
+		DeleteObject(Pen);
+		DeleteDC(memdc2);
+
+		BitBlt(hdc, 0, 0, 1024, 768, memdc, 0, 0, SRCCOPY);
+
+		SelectObject(memdc, hOldBitmap);
+		DeleteObject(hBackBit);
+		DeleteDC(memdc);
+
+		EndPaint(hWnd, &ps);
+		
+
+
+		break;
 	// server
 	case WM_SOCKET:
 	{
@@ -254,14 +342,67 @@ void ProcessPacket(char * ptr)
 	static bool first_time = true;
 	switch (ptr[1])
 	{
-	case SC_PUT_PLAYER:
+	case SC_ID:
 	{
-		sc_packet_put_player *my_packet = reinterpret_cast<sc_packet_put_player *>(ptr);
+		sc_packet_id *my_packet = reinterpret_cast<sc_packet_id *>(ptr);
 		int id = my_packet->id;
 		if (first_time) {
 			first_time = false;
 			g_myid = id;
 		}
+		cout << g_myid << endl;
+		break;
+	}
+	case SC_BABARIAN:
+	{
+		sc_packet_char_select *my_packet = reinterpret_cast<sc_packet_char_select *>(ptr);
+		int id = my_packet->id;
+		if (id == g_myid) {
+			cout << "BABA\n";
+			gGameFramework.m_pScene->pMyObject->m_HeroSelect =  SC_BABARIAN - 10;
+
+		}
+		else {
+			gGameFramework.m_pScene->pOtherObject[id]->m_HeroSelect = SC_BABARIAN - 10;
+		}
+
+		break;
+	}
+	case SC_HEALER:
+	{
+		sc_packet_char_select *my_packet = reinterpret_cast<sc_packet_char_select *>(ptr);
+		int id = my_packet->id;
+
+		if (id == g_myid) {
+		cout << "HEALER\n";
+		gGameFramework.m_pScene->pMyObject->m_HeroSelect = SC_HEALER - 10;
+		}
+		else {
+			gGameFramework.m_pScene->pOtherObject[id]->m_HeroSelect = SC_HEALER - 10;
+		}
+
+		break;
+	}
+	case SC_SWORDMAN:
+	{
+		sc_packet_char_select *my_packet = reinterpret_cast<sc_packet_char_select *>(ptr);
+		int id = my_packet->id; 
+
+		if (id == g_myid) {
+		cout << "SWORDMAN\n";
+		gGameFramework.m_pScene->pMyObject->m_HeroSelect = SC_SWORDMAN - 10;
+		}
+		else {
+			gGameFramework.m_pScene->pOtherObject[id]->m_HeroSelect = SC_SWORDMAN - 10;
+		}
+
+		break;
+
+	}
+	case SC_PUT_PLAYER:
+	{
+		sc_packet_put_player *my_packet = reinterpret_cast<sc_packet_put_player *>(ptr);
+		int id = my_packet->id;
 		if (id == g_myid) {
 			cout << "Hero Pos\n";
 			gGameFramework.m_pScene->pMyObject->SetPosition(my_packet->x, my_packet->y, my_packet->z);
@@ -269,6 +410,7 @@ void ProcessPacket(char * ptr)
 		}
 		else {
 			cout << "Other Pos\n";
+			cout << id << endl;
 			gGameFramework.m_pScene->pOtherObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 		}
 		break;	
@@ -305,7 +447,7 @@ void ProcessPacket(char * ptr)
 		sc_packet_remove_player *my_packet = reinterpret_cast<sc_packet_remove_player *>(ptr);
 		int id = my_packet->id;
 		if (id != g_myid) {
-			gGameFramework.m_pScene->pOtherObject[id]->SetPosition(0.f,-3000.f,0.f);
+			//gGameFramework.m_pScene->pOtherObject[id]->SetPosition(0.f,-3000.f,0.f);
 		}
 		break;
 	}

@@ -132,27 +132,27 @@ void CSkyBoxMesh::OnChangeSkyBoxTextures(ID3D11Device *pd3dDevice, int nIndex)
 	// 6개의 스카이 박스 텍스쳐를 생성하여 CTexture 객체에 연결
 	_TCHAR pstrTextureName[80];
 	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
-	_stprintf_s(pstrTextureName, _T("../Data/SkyBox/alphaisland_ft_%d.jpg"), nIndex); // size = 80
+	_stprintf_s(pstrTextureName, _T("../Data/SkyBox/amh_ft_%d.jpg"), nIndex, 80);
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, pstrTextureName, NULL, NULL, &pd3dsrvTexture, NULL);
 	m_pSkyboxTexture->SetTexture(0, pd3dsrvTexture);
 	pd3dsrvTexture->Release();
-	_stprintf_s(pstrTextureName, _T("../Data/SkyBox/alphaisland_bk_%d.jpg"), nIndex);
+	_stprintf_s(pstrTextureName, _T("../Data/SkyBox/amh_bk_%d.jpg"), nIndex, 80);
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, pstrTextureName, NULL, NULL, &pd3dsrvTexture, NULL);
 	m_pSkyboxTexture->SetTexture(1, pd3dsrvTexture);
 	pd3dsrvTexture->Release();
-	_stprintf_s(pstrTextureName, _T("../Data/SkyBox/alphaisland_rt_%d.jpg"), nIndex);
+	_stprintf_s(pstrTextureName, _T("../Data/SkyBox/amh_lf_%d.jpg"), nIndex, 80);
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, pstrTextureName, NULL, NULL, &pd3dsrvTexture, NULL);
 	m_pSkyboxTexture->SetTexture(2, pd3dsrvTexture);
 	pd3dsrvTexture->Release();
-	_stprintf_s(pstrTextureName, _T("../Data/SkyBox/alphaisland_lf_%d.jpg"), nIndex);
+	_stprintf_s(pstrTextureName, _T("../Data/SkyBox/amh_rt_%d.jpg"), nIndex, 80);
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, pstrTextureName, NULL, NULL, &pd3dsrvTexture, NULL);
 	m_pSkyboxTexture->SetTexture(3, pd3dsrvTexture);
 	pd3dsrvTexture->Release();
-	_stprintf_s(pstrTextureName, _T("../Data/SkyBox/alphaisland_up_%d.jpg"), nIndex);
+	_stprintf_s(pstrTextureName, _T("../Data/SkyBox/amh_up_%d.jpg"), nIndex, 80);
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, pstrTextureName, NULL, NULL, &pd3dsrvTexture, NULL);
 	m_pSkyboxTexture->SetTexture(4, pd3dsrvTexture);
 	pd3dsrvTexture->Release();
-	_stprintf_s(pstrTextureName, _T("../Data/SkyBox/alphaisland_dn_%d.jpg"), nIndex);
+	_stprintf_s(pstrTextureName, _T("../Data/SkyBox/amh_dn_%d.jpg"), nIndex, 80);
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, pstrTextureName, NULL, NULL, &pd3dsrvTexture, NULL);
 	m_pSkyboxTexture->SetTexture(5, pd3dsrvTexture);
 	pd3dsrvTexture->Release();

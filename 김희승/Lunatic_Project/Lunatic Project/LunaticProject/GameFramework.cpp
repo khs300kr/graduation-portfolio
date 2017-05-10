@@ -27,6 +27,10 @@ CGameFramework::CGameFramework()
 
 	for (int i = 0; i < 7; ++i)
 		OtherDirection[i] = 0;
+
+	LoadingScene = false;
+	ChangeScene = 0;
+	SelectCount = 1;
 }
 
 CGameFramework::~CGameFramework()
@@ -42,7 +46,7 @@ bool CGameFramework::Create(HINSTANCE hInstance, HWND hMainWnd)
 	if (!CreateDirect3DDisplay()) return(false);
 
 	//렌더링할 객체(게임 월드 객체)를 생성한다. 
-	BuildObjects();
+	//여기//BuildObjects();
 
 	return(true);
 }
@@ -259,14 +263,14 @@ void CGameFramework::Destroy()
 	if (m_pd3dDevice) m_pd3dDevice->Release();
 }
 
-void CGameFramework::BuildObjects()
+void CGameFramework::BuildObjects(int hero_select)
 {
 	//CShader 클래스의 정적(static) 멤버 변수로 선언된 상수 버퍼를 생성한다.
 	CShader::CreateShaderVariables(m_pd3dDevice);
 	CIlluminatedShader::CreateShaderVariables(m_pd3dDevice);
-
 	m_pScene = new CScene();
-	m_pScene->BuildObjects(m_pd3dDevice);
+
+	m_pScene->BuildObjects(m_pd3dDevice, hero_select);
 
 	m_pPlayerShader = new CPlayerShader();
 	m_pPlayerShader->CreateShader(m_pd3dDevice);
@@ -431,19 +435,78 @@ void CGameFramework::FrameAdvance()
 {
 	m_GameTimer.Tick(60);
 
-	ProcessInput();
-	AnimateObjects();
+	if (ChangeScene == 1)
+	{
 
-	float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
-	if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
-	if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+		ProcessInput();
+		AnimateObjects();
 
-	if (m_pPlayer) m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
+		float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
+		if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
+		if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-	if (m_pScene) m_pScene->Render(m_pd3dDeviceContext, m_pCamera);
-	//if (m_pPlayerShader) m_pPlayerShader->Render(m_pd3dDeviceContext, m_pCamera);
+		if (m_pPlayer) m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
 
-	m_pDXGISwapChain->Present(0, 0);
+		if (m_pScene) m_pScene->Render(m_pd3dDeviceContext, m_pCamera);
+		//if (m_pPlayerShader) m_pPlayerShader->Render(m_pd3dDeviceContext, m_pCamera);
+
+		m_pDXGISwapChain->Present(0, 0);
+	}
+
+	else if (ChangeScene == 0)
+	{
+
+		if (KEY_DOWN(VK_RETURN))
+		{
+			LoadingScene = true;
+			//{
+			//	// server send (Select)
+			//	cs_packet_char_select *my_packet = reinterpret_cast<cs_packet_char_select *>(send_buffer);
+			//	my_packet->size = sizeof(cs_packet_char_select);
+			//	send_wsabuf.len = sizeof(cs_packet_char_select);
+			//	DWORD iobyte;
+			//	my_packet->type = SelectCount + 10;
+			//	WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+			//	//
+			//}
+			BuildObjects(1);
+			m_pScene->pMyObject->m_HeroSelect = 1;
+			{
+				// server send (Loading Complete)
+				cs_packet_LoadingComplete *my_packet = reinterpret_cast<cs_packet_LoadingComplete *>(send_buffer);
+				my_packet->size = sizeof(cs_packet_LoadingComplete);
+				send_wsabuf.len = sizeof(cs_packet_LoadingComplete);
+				DWORD iobyte;
+				my_packet->type = CS_LOADINGCOMPLETE;
+				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+				//
+			}
+			ChangeScene = 1;
+		}
+
+		else if (KEY_DOWN(VK_LEFT))
+		{
+			if (SelectCount == 1)
+				SelectCount = 3;
+			else
+				SelectCount--;
+			InvalidateRect(g_hWnd, NULL, false);
+		}
+		else if (KEY_DOWN(VK_RIGHT))
+		{
+			if (SelectCount == 3)
+				SelectCount = 1;
+			else
+				SelectCount++;
+			InvalidateRect(g_hWnd, NULL, false);
+		}
+	
+		
+		
+
+		
+	}
+
 
 	m_GameTimer.GetFrameRate(m_pszBuffer + 16, 33);
 	::SetWindowText(m_hWnd, m_pszBuffer);

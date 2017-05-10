@@ -141,6 +141,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\Data\Menu\background.bmp" />
     <Image Include="LunaticProject.ico" />
     <Image Include="small.ico" />
   </ItemGroup>

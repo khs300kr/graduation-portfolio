@@ -1,0 +1,17 @@
+﻿  stdafx.cpp
+  Global.cpp
+  Lunatic_Server.cpp
+C:\Program Files (x86)\Windows Kits\8.1\Include\um\DbgHelp.h(1544): warning C4091: 'typedef ': 변수를 선언하지 않으면 '' 왼쪽은 무시됩니다.
+C:\Program Files (x86)\Windows Kits\8.1\Include\um\DbgHelp.h(3190): warning C4091: 'typedef ': 변수를 선언하지 않으면 '' 왼쪽은 무시됩니다.
+Lunatic_Server.cpp(306): warning C4244: '인수': 'unsigned __int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+Lunatic_Server.cpp(311): warning C4244: '인수': 'unsigned __int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  MiniDump.cpp
+C:\Program Files (x86)\Windows Kits\8.1\Include\um\DbgHelp.h(1544): warning C4091: 'typedef ': 변수를 선언하지 않으면 '' 왼쪽은 무시됩니다.
+C:\Program Files (x86)\Windows Kits\8.1\Include\um\DbgHelp.h(3190): warning C4091: 'typedef ': 변수를 선언하지 않으면 '' 왼쪽은 무시됩니다.
+  코드를 생성하고 있습니다.
+  13 of 258 functions ( 5.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    9 functions had inline decision re-evaluated but remain unchanged
+  코드를 생성했습니다.
+  Lunatic_Server.vcxproj -> D:\Class\graduation-portfolio\김희승\Lunatic_Project\Lunatic_Server\x64\Release\Lunatic_Server.exe
+  Lunatic_Server.vcxproj -> D:\Class\graduation-portfolio\김희승\Lunatic_Project\Lunatic_Server\x64\Release\Lunatic_Server.pdb (Full PDB)

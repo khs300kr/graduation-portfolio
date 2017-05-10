@@ -17,6 +17,8 @@ void error_display(char *msg, int err_no)
 	while (true);
 }
 
+
 HANDLE g_Hiocp{};
 SOCKET g_ServerSocket{};
 CLIENT g_Clients[MAX_USER]{};
+WORD g_PlayerNum{};

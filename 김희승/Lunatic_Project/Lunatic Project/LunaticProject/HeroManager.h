@@ -14,7 +14,7 @@ private:
 	float rootspeed;
 
 public:
-	int m_CharSelect;
+	int m_HeroSelect;
 	int m_Team;
 
 	CSordMan* m_pSordMan;

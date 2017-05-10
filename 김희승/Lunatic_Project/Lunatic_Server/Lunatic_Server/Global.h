@@ -25,9 +25,11 @@ struct CLIENT
 	float			m_fY;
 	float			m_fZ;
 	// Move
-	DWORD			m_dwDirection;
+	BYTE			m_Direction;
 	// Animation
 	BYTE			m_Animation;
+	// Hero Type
+	BYTE			m_HeroPick;
 
 	bool			m_bConnect;
 	SOCKET			m_client_socket;
@@ -44,3 +46,4 @@ struct CLIENT
 extern HANDLE g_Hiocp;
 extern SOCKET g_ServerSocket;
 extern CLIENT g_Clients[MAX_USER];
+extern WORD g_PlayerNum;

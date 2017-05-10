@@ -15,7 +15,7 @@ void Init_Server()
 	// socket()
 	g_ServerSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
 
-	// Nagle Algorithm on
+	// Nagle Algorithm
 	BOOL NoDelay = TRUE;
 	setsockopt(g_ServerSocket, IPPROTO_TCP, TCP_NODELAY, (const char FAR *)&NoDelay, sizeof(NoDelay));
 
@@ -58,6 +58,26 @@ void Send_Packet(int client, void* packet)
 	std::cout << "Send Packet [" << packet_type << "] To Client : " << client << std::endl;
 }
 
+void SendIDPlayer(int client, int object)
+{
+	sc_packet_id packet;
+	packet.size = sizeof(packet);
+	packet.type = SC_ID;
+	packet.id = object;
+
+	Send_Packet(client, &packet);
+}
+
+void SendHeroPickPacket(int client, int object)
+{
+	sc_packet_char_select packet;
+	packet.size = sizeof(packet);
+	packet.type = g_Clients[object].m_HeroPick;
+	packet.id = object;
+	
+	Send_Packet(client, &packet);
+}
+
 void SendPutPlayerPacket(int client, int object)
 {
 	sc_packet_put_player packet;
@@ -77,7 +97,7 @@ void SendPositionPacket(int client, int object)
 	packet.id = object;
 	packet.size = sizeof(packet);
 	packet.type = SC_POS;
-	packet.direction = g_Clients[object].m_dwDirection;
+	packet.direction = g_Clients[object].m_Direction;
 	packet.x = g_Clients[object].m_fX;
 	packet.y = g_Clients[object].m_fY;
 	packet.z = g_Clients[object].m_fZ;
@@ -94,97 +114,109 @@ void SendRemovePlayerPacket(int client, int object)
 
 	Send_Packet(client, &packet);
 }
-void ProcessPacket(int id, unsigned char* packet)
+
+
+void Do_move(int id, unsigned char packet[])
 {
-	switch (packet[1])
-	{
-	case CS_KEYDOWN_UP:
-	{
-		g_Clients[id].m_dwDirection |= DIR_BACK;
-		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
-		g_Clients[id].m_fX = my_packet->x;
-		g_Clients[id].m_fY = my_packet->y;
-		g_Clients[id].m_fZ = my_packet->z;
-		break;
-	}
-	case CS_KEYDOWN_DOWN:
-	{
-		g_Clients[id].m_dwDirection |= DIR_FRONT;
-		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
-		g_Clients[id].m_fX = my_packet->x;
-		g_Clients[id].m_fY = my_packet->y;
-		g_Clients[id].m_fZ = my_packet->z;
-
-		break;
-	}
-	case CS_KEYDOWN_LEFT:
-	{
-		g_Clients[id].m_dwDirection |= DIR_LEFT;
-		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
-		g_Clients[id].m_fX = my_packet->x;
-		g_Clients[id].m_fY = my_packet->y;
-		g_Clients[id].m_fZ = my_packet->z;
-
-		break;
-	}
-	case CS_KEYDOWN_RIGHT:
-	{
-		g_Clients[id].m_dwDirection |= DIR_RIGHT;
-		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
-		g_Clients[id].m_fX = my_packet->x;
-		g_Clients[id].m_fY = my_packet->y;
-		g_Clients[id].m_fZ = my_packet->z;
-
-		break;
-	}
-	case CS_KEYUP_UP:
-	{
-		g_Clients[id].m_dwDirection ^= DIR_BACK;
-		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
-		g_Clients[id].m_fX = my_packet->x;
-		g_Clients[id].m_fY = my_packet->y;
-		g_Clients[id].m_fZ = my_packet->z;
-
-		break;
-	}
-	case CS_KEYUP_DOWN:
-	{
-		g_Clients[id].m_dwDirection ^= DIR_FRONT;
-		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
-		g_Clients[id].m_fX = my_packet->x;
-		g_Clients[id].m_fY = my_packet->y;
-		g_Clients[id].m_fZ = my_packet->z;
-
-		break;
-	}
-	case CS_KEYUP_LEFT:
-	{
-		g_Clients[id].m_dwDirection ^= DIR_LEFT;
-		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
-		g_Clients[id].m_fX = my_packet->x;
-		g_Clients[id].m_fY = my_packet->y;
-		g_Clients[id].m_fZ = my_packet->z;
-
-		break;
-	}
-	case CS_KEYUP_RIGHT:
-	{
-		g_Clients[id].m_dwDirection ^= DIR_RIGHT;
-		cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
-		g_Clients[id].m_fX = my_packet->x;
-		g_Clients[id].m_fY = my_packet->y;
-		g_Clients[id].m_fZ = my_packet->z;
-
-		break;
-	}
-	default: std::cout << "Unknown Packet Type from Client : " << id << std::endl;
-		while (true);
-	}
+	cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
+	g_Clients[id].m_fX = my_packet->x;
+	g_Clients[id].m_fY = my_packet->y;
+	g_Clients[id].m_fZ = my_packet->z;
 	for (int i = 0; i < MAX_USER; ++i)
 	{
 		if (g_Clients[i].m_bConnect == true)
 			SendPositionPacket(i, id);
 	}
+}
+
+void ProcessPacket(int id, unsigned char packet[])
+{
+	switch (packet[1])
+	{
+	case CS_KEYDOWN_UP:
+		g_Clients[id].m_Direction |= DIR_BACK;
+		Do_move(id, packet);
+		break;
+	case CS_KEYDOWN_DOWN:
+		g_Clients[id].m_Direction |= DIR_FRONT;
+		Do_move(id, packet);
+		break;
+	case CS_KEYDOWN_LEFT:
+		g_Clients[id].m_Direction |= DIR_LEFT;
+		Do_move(id, packet);
+		break;
+	case CS_KEYDOWN_RIGHT:
+		g_Clients[id].m_Direction |= DIR_RIGHT;
+		Do_move(id, packet);
+		break;
+	case CS_KEYUP_UP:
+		g_Clients[id].m_Direction ^= DIR_BACK;
+		Do_move(id, packet);
+		break;
+	case CS_KEYUP_DOWN:
+		g_Clients[id].m_Direction ^= DIR_FRONT;
+		Do_move(id, packet);
+		break;
+	case CS_KEYUP_LEFT:
+		g_Clients[id].m_Direction ^= DIR_LEFT;
+		Do_move(id, packet);
+		break;
+	case CS_KEYUP_RIGHT:
+		g_Clients[id].m_Direction ^= DIR_RIGHT;
+		Do_move(id, packet);
+		break;
+		// Hero Pick
+	case CS_LOADINGCOMPLETE:
+		// 위치하기.
+		++g_PlayerNum;;
+		SendPutPlayerPacket(id, id);
+		if (g_PlayerNum == 2)
+		{
+			for (int i = 0; i < MAX_USER; ++i)
+			{
+				if (g_Clients[i].m_bConnect == true)
+				{
+					if (id != i)
+					{
+						SendPutPlayerPacket(id, i);
+						SendPutPlayerPacket(i, id);
+					}
+				}
+			}// for loop
+		}
+		break;
+	case SC_BABARIAN:
+		g_Clients[id].m_HeroPick = SC_BABARIAN;
+		for (int i = 0; i < MAX_USER; ++i)
+		{
+			if (g_Clients[i].m_bConnect == true)
+				SendHeroPickPacket(i, id);
+		}
+		// 위치 하기.
+
+		break;
+	case SC_HEALER:
+		g_Clients[id].m_HeroPick = SC_HEALER;
+		for (int i = 0; i < MAX_USER; ++i)
+		{
+			if (g_Clients[i].m_bConnect == true)
+				SendHeroPickPacket(i, id);
+		}
+
+		break;
+	case SC_SWORDMAN:
+		g_Clients[id].m_HeroPick = SC_SWORDMAN;
+		for (int i = 0; i < MAX_USER; ++i)
+		{
+			if (g_Clients[i].m_bConnect == true)
+				SendHeroPickPacket(i, id);
+		}
+
+		break;
+	default: std::cout << "Unknown Packet Type from Client : " << id << std::endl;
+		while (true);
+	}
+
 }
 
 
@@ -232,9 +264,9 @@ void Accept_Thread()
 		g_Clients[new_id].m_recv_over.m_Wsabuf.len = sizeof(g_Clients[new_id].m_recv_over.m_IOCP_buf);
 		// 초기위치
 		g_Clients[new_id].m_Animation = 0;
-		g_Clients[new_id].m_fX = 0.f;
-		g_Clients[new_id].m_fY = 0.f;
-		g_Clients[new_id].m_fZ = 0.f;
+		//g_Clients[new_id].m_fX = 0.f;
+		//g_Clients[new_id].m_fY = 0.f;
+		//g_Clients[new_id].m_fZ = 0.f;
 		
 		// 비동기 입출력 시작
 		DWORD recv_flag = 0;
@@ -242,20 +274,7 @@ void Accept_Thread()
 		WSARecv(client_sock, &g_Clients[new_id].m_recv_over.m_Wsabuf, 1,
 			NULL, &recv_flag, &g_Clients[new_id].m_recv_over.m_Over, NULL);
 
-		// 위치 하기.
-		SendPutPlayerPacket(new_id, new_id);
-
-		for (int i = 0; i < MAX_USER; ++i)
-		{
-			if (g_Clients[i].m_bConnect == true)
-			{
-				if (new_id != i)
-				{
-					SendPutPlayerPacket(new_id, i);
-					SendPutPlayerPacket(i, new_id);
-				}
-			}
-		}// for loop
+		SendIDPlayer(new_id, new_id);
 	}
 }
 
@@ -373,6 +392,12 @@ void Close_Server()
 
 int main()
 {
+	for (int i = 0; i < MAX_USER; ++i)
+	{
+		g_Clients[i].m_fX = i * 20.f;
+		g_Clients[i].m_fY = 0.f;
+		g_Clients[i].m_fZ = 0.f;
+	}
 	Init_Server();
 	// 서버가 크래쉬 되었을때 처리할 수 있게 하는 MiniDump
 	if (!CMiniDump::Begin())
