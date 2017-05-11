@@ -46,7 +46,7 @@ bool CGameFramework::Create(HINSTANCE hInstance, HWND hMainWnd)
 	if (!CreateDirect3DDisplay()) return(false);
 
 	//렌더링할 객체(게임 월드 객체)를 생성한다. 
-	//여기//BuildObjects();
+	BuildObjects();
 
 	return(true);
 }
@@ -177,10 +177,64 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 
 void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	if (m_pScene) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+	if (m_pScene && activate) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 
 	switch (nMessageID)
 	{
+	case WM_KEYDOWN:
+		if (ChangeScene == 0)
+		{
+			switch (wParam)
+			{
+			case VK_RETURN:
+				LoadingScene = true;
+				cout << "Loading..." << endl;
+				{
+					// server send (Select)
+					cs_packet_char_select *my_packet = reinterpret_cast<cs_packet_char_select *>(send_buffer);
+					my_packet->size = sizeof(cs_packet_char_select);
+					send_wsabuf.len = sizeof(cs_packet_char_select);
+					DWORD iobyte;
+					my_packet->type = SelectCount + 10;
+					cout << "enter : " << my_packet->type << endl;
+					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+					
+				}
+
+				m_pScene->BuildObjects(m_pd3dDevice);
+
+				{
+					// server send (Loading Complete)
+					cs_packet_LoadingComplete *my_packet = reinterpret_cast<cs_packet_LoadingComplete *>(send_buffer);
+					my_packet->size = sizeof(cs_packet_LoadingComplete);
+					send_wsabuf.len = sizeof(cs_packet_LoadingComplete);
+					DWORD iobyte;
+					my_packet->type = CS_LOADINGCOMPLETE;
+					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+					//
+				}
+
+				ChangeScene = 1;
+				break;
+			case VK_LEFT:
+				if (SelectCount == 1)
+					SelectCount = 3;
+				else
+					SelectCount--;
+				InvalidateRect(g_hWnd, NULL, false);
+				break;
+			case VK_RIGHT:
+				if (SelectCount == 3)
+					SelectCount = 1;
+				else
+					SelectCount++;
+				InvalidateRect(g_hWnd, NULL, false);
+				break;
+			}
+		}
+
+		break;
+
 	case WM_KEYUP:
 		switch (wParam)
 		{
@@ -235,11 +289,13 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	case WM_LBUTTONUP:
 	case WM_RBUTTONUP:
 	case WM_MOUSEMOVE:
-		OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
+		if(activate)
+			OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 	case WM_KEYDOWN:
 	case WM_KEYUP:
-		OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+		if(activate)
+			OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 	}
 	return(0);
@@ -263,14 +319,16 @@ void CGameFramework::Destroy()
 	if (m_pd3dDevice) m_pd3dDevice->Release();
 }
 
-void CGameFramework::BuildObjects(int hero_select)
+void CGameFramework::BuildObjects()
 {
 	//CShader 클래스의 정적(static) 멤버 변수로 선언된 상수 버퍼를 생성한다.
 	CShader::CreateShaderVariables(m_pd3dDevice);
 	CIlluminatedShader::CreateShaderVariables(m_pd3dDevice);
 	m_pScene = new CScene();
 
-	m_pScene->BuildObjects(m_pd3dDevice, hero_select);
+
+	//m_pScene->BuildObjects(m_pd3dDevice);
+	
 
 	m_pPlayerShader = new CPlayerShader();
 	m_pPlayerShader->CreateShader(m_pd3dDevice);
@@ -453,59 +511,6 @@ void CGameFramework::FrameAdvance()
 		m_pDXGISwapChain->Present(0, 0);
 	}
 
-	else if (ChangeScene == 0)
-	{
-
-		if (KEY_DOWN(VK_RETURN))
-		{
-			LoadingScene = true;
-			//{
-			//	// server send (Select)
-			//	cs_packet_char_select *my_packet = reinterpret_cast<cs_packet_char_select *>(send_buffer);
-			//	my_packet->size = sizeof(cs_packet_char_select);
-			//	send_wsabuf.len = sizeof(cs_packet_char_select);
-			//	DWORD iobyte;
-			//	my_packet->type = SelectCount + 10;
-			//	WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
-			//	//
-			//}
-			BuildObjects(1);
-			m_pScene->pMyObject->m_HeroSelect = 1;
-			{
-				// server send (Loading Complete)
-				cs_packet_LoadingComplete *my_packet = reinterpret_cast<cs_packet_LoadingComplete *>(send_buffer);
-				my_packet->size = sizeof(cs_packet_LoadingComplete);
-				send_wsabuf.len = sizeof(cs_packet_LoadingComplete);
-				DWORD iobyte;
-				my_packet->type = CS_LOADINGCOMPLETE;
-				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
-				//
-			}
-			ChangeScene = 1;
-		}
-
-		else if (KEY_DOWN(VK_LEFT))
-		{
-			if (SelectCount == 1)
-				SelectCount = 3;
-			else
-				SelectCount--;
-			InvalidateRect(g_hWnd, NULL, false);
-		}
-		else if (KEY_DOWN(VK_RIGHT))
-		{
-			if (SelectCount == 3)
-				SelectCount = 1;
-			else
-				SelectCount++;
-			InvalidateRect(g_hWnd, NULL, false);
-		}
-	
-		
-		
-
-		
-	}
 
 
 	m_GameTimer.GetFrameRate(m_pszBuffer + 16, 33);

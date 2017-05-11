@@ -11,3 +11,4 @@ extern int		g_myid;
 extern HWND		g_hWnd;
 extern WSABUF	send_wsabuf;
 extern char 	send_buffer[BUF_SIZE];
+extern bool activate;

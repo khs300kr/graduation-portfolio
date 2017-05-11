@@ -9,7 +9,6 @@
 
 // 전역 변수:
 HINSTANCE hInst;								// 현재 인스턴스입니다.
-
 TCHAR szTitle[MAX_LOADSTRING];					// 제목 표시줄 텍스트입니다.
 TCHAR szWindowClass[MAX_LOADSTRING];			// 기본 창 클래스 이름입니다.
 
@@ -79,6 +78,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		{
 			gGameFramework.FrameAdvance();
 		}
+			
 	}
 	gGameFramework.Destroy();
 
@@ -275,10 +275,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEMOVE:
 	case WM_KEYDOWN:
 	case WM_KEYUP:
-		gGameFramework.OnProcessingWindowMessage(hWnd, message, wParam, lParam);
+
+			gGameFramework.OnProcessingWindowMessage(hWnd, message, wParam, lParam);
+
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
+		break;
+	case WM_SETFOCUS:
+		activate = true;
+		break;
+	case WM_KILLFOCUS:
+		activate = false;
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
@@ -353,17 +361,21 @@ void ProcessPacket(char * ptr)
 		cout << g_myid << endl;
 		break;
 	}
+
 	case SC_BABARIAN:
 	{
+		
 		sc_packet_char_select *my_packet = reinterpret_cast<sc_packet_char_select *>(ptr);
 		int id = my_packet->id;
 		if (id == g_myid) {
 			cout << "BABA\n";
 			gGameFramework.m_pScene->pMyObject->m_HeroSelect =  SC_BABARIAN - 10;
+			
 
 		}
 		else {
 			gGameFramework.m_pScene->pOtherObject[id]->m_HeroSelect = SC_BABARIAN - 10;
+
 		}
 
 		break;
@@ -376,6 +388,7 @@ void ProcessPacket(char * ptr)
 		if (id == g_myid) {
 		cout << "HEALER\n";
 		gGameFramework.m_pScene->pMyObject->m_HeroSelect = SC_HEALER - 10;
+	
 		}
 		else {
 			gGameFramework.m_pScene->pOtherObject[id]->m_HeroSelect = SC_HEALER - 10;
@@ -390,7 +403,8 @@ void ProcessPacket(char * ptr)
 
 		if (id == g_myid) {
 		cout << "SWORDMAN\n";
-		gGameFramework.m_pScene->pMyObject->m_HeroSelect = SC_SWORDMAN - 10;
+			gGameFramework.m_pScene->pMyObject->m_HeroSelect = SC_SWORDMAN - 10;
+			
 		}
 		else {
 			gGameFramework.m_pScene->pOtherObject[id]->m_HeroSelect = SC_SWORDMAN - 10;

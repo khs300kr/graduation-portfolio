@@ -58,7 +58,7 @@ public:
 	bool CreateDirect3DDisplay();
 
 	//렌더링할 메쉬, 객체를 생성하고 소멸하는 함수이다. 
-	void BuildObjects(int hero_select);
+	void BuildObjects();
 	void ReleaseObjects();
 
 	//프레임워크의 핵심(사용자 입력, 애니메이션, 렌더링)을 구성하는 함수이다. 

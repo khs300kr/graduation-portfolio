@@ -11,3 +11,4 @@ int		g_myid{};
 HWND	g_hWnd{};
 WSABUF	send_wsabuf{};
 char 	send_buffer[BUF_SIZE]{};
+bool activate{};
