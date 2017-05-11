@@ -46,7 +46,7 @@ bool CGameFramework::Create(HINSTANCE hInstance, HWND hMainWnd)
 	if (!CreateDirect3DDisplay()) return(false);
 
 	//렌더링할 객체(게임 월드 객체)를 생성한다. 
-	BuildObjects();
+	//여기//BuildObjects();
 
 	return(true);
 }
@@ -177,7 +177,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 
 void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	if (m_pScene && activate) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+	if (m_pScene) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 
 	switch (nMessageID)
 	{
@@ -189,19 +189,20 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			case VK_RETURN:
 				LoadingScene = true;
 				cout << "Loading..." << endl;
-				{
-					// server send (Select)
-					cs_packet_char_select *my_packet = reinterpret_cast<cs_packet_char_select *>(send_buffer);
-					my_packet->size = sizeof(cs_packet_char_select);
-					send_wsabuf.len = sizeof(cs_packet_char_select);
-					DWORD iobyte;
-					my_packet->type = SelectCount + 10;
-					cout << "enter : " << my_packet->type << endl;
-					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
-					
-				}
+				//{
+				//	// server send (Select)
+				//	cs_packet_char_select *my_packet = reinterpret_cast<cs_packet_char_select *>(send_buffer);
+				//	my_packet->size = sizeof(cs_packet_char_select);
+				//	send_wsabuf.len = sizeof(cs_packet_char_select);
+				//	DWORD iobyte;
+				//	my_packet->type = SelectCount + 10;
+				//	WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+				//	//
+				//}
 
-				m_pScene->BuildObjects(m_pd3dDevice);
+				BuildObjects();
+				//m_pScene->pMyObject->m_HeroSelect = 1;
+
 
 				{
 					// server send (Loading Complete)
@@ -213,7 +214,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 					//
 				}
-
 				ChangeScene = 1;
 				break;
 			case VK_LEFT:
@@ -232,8 +232,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				break;
 			}
 		}
-
-		break;
 
 	case WM_KEYUP:
 		switch (wParam)
@@ -289,13 +287,11 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	case WM_LBUTTONUP:
 	case WM_RBUTTONUP:
 	case WM_MOUSEMOVE:
-		if(activate)
-			OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
+		OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 	case WM_KEYDOWN:
 	case WM_KEYUP:
-		if(activate)
-			OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+		OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 	}
 	return(0);
@@ -326,9 +322,7 @@ void CGameFramework::BuildObjects()
 	CIlluminatedShader::CreateShaderVariables(m_pd3dDevice);
 	m_pScene = new CScene();
 
-
-	//m_pScene->BuildObjects(m_pd3dDevice);
-	
+	m_pScene->BuildObjects(m_pd3dDevice);
 
 	m_pPlayerShader = new CPlayerShader();
 	m_pPlayerShader->CreateShader(m_pd3dDevice);
@@ -510,8 +504,9 @@ void CGameFramework::FrameAdvance()
 
 		m_pDXGISwapChain->Present(0, 0);
 	}
-
-
+	
+		
+		
 
 	m_GameTimer.GetFrameRate(m_pszBuffer + 16, 33);
 	::SetWindowText(m_hWnd, m_pszBuffer);

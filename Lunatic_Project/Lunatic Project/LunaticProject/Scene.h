@@ -81,7 +81,7 @@ public:
 
 	CShader **m_ppShaders;
 
-	void SetHero();
+	void Create(CHeroManager* Object, int team, int hero);
 	
 	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
@@ -89,6 +89,7 @@ public:
 	void BuildObjects(ID3D11Device *pd3dDevice);
 	void ReleaseObjects();
 
+	void sibal();
 
 	void ProcessInput();
 	void AnimateObjects(float fTimeElapsed);

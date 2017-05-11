@@ -20,8 +20,6 @@ CScene::CScene()
 	m_pLights = NULL;
 	m_pd3dcbLights = NULL;
 
-	pMyObject = new CHeroManager(1);
-
 
 	LeftKeyDown = false;
 	RightKeyDown = false;
@@ -35,6 +33,11 @@ CScene::CScene()
 
 CScene::~CScene()
 {
+}
+
+void CScene::sibal()
+{
+
 }
 
 void CScene::BuildObjects(ID3D11Device *pd3dDevice)
@@ -147,7 +150,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	// 일반 쉐이더 선언부
 	/////////////////////////////////////////////////////////////////////////
 
-	m_nShaders = 10;   // Skybox\포함
+	m_nShaders = 21;   // Skybox\포함
 	m_ppShaders = new CShader*[m_nShaders];
 
 	// ⑤ SkyBox용 Shader를 생성
@@ -162,7 +165,8 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 		m_ppShaders[1]->CreateShader(pd3dDevice);
 		m_ppShaders[1]->BuildObjects(pd3dDevice);
 
-		
+		pMyObject = new CHeroManager(1);
+		pMyObject->m_HeroSelect = Babarian;
 
 		if (pMyObject->m_Team == A_TEAM)
 		{
@@ -288,8 +292,9 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 			pOtherObject[i + 2]->Rotate(0.0f, 0.0f, 0.0f);
 
 			m_ppShaders[i + 4]->AddObject(pOtherObject[i + 2]);
-
 		}
+
+	
 
 
 
@@ -371,149 +376,149 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 		//}
 
 
-		////building1 (왼쪽)
-		//m_ppShaders[10] = new CTexturedIlluminatedShader(1);
-		//m_ppShaders[10]->CreateShader(pd3dDevice);
-		//m_ppShaders[10]->BuildObjects(pd3dDevice);
+		//building1 (왼쪽)
+		m_ppShaders[10] = new CTexturedIlluminatedShader(1);
+		m_ppShaders[10]->CreateShader(pd3dDevice);
+		m_ppShaders[10]->BuildObjects(pd3dDevice);
 
-		//CGameObject *pBuilding1Object = new CGameObject(1);
-		//pBuilding1Object->SetMesh(pBuilding1Mesh);
-		//pBuilding1Object->SetMaterial(pNormalMaterial);
-		//pBuilding1Object->SetTexture(pBuilding1Texture);
-		//pBuilding1Object->Rotate(0.0f, -90.0f, 0.0f);
-		//pBuilding1Object->SetPosition(-300.0f, 25.0f, -350.0f);
-		//m_ppShaders[10]->AddObject(pBuilding1Object);
+		CGameObject *pBuilding1Object = new CGameObject(1);
+		pBuilding1Object->SetMesh(pBuilding1Mesh);
+		pBuilding1Object->SetMaterial(pNormalMaterial);
+		pBuilding1Object->SetTexture(pBuilding1Texture);
+		pBuilding1Object->Rotate(0.0f, -90.0f, 0.0f);
+		pBuilding1Object->SetPosition(-300.0f, 25.0f, -350.0f);
+		m_ppShaders[10]->AddObject(pBuilding1Object);
 
-		////building2 (리스폰) (정면)
-		//m_ppShaders[11] = new CTexturedIlluminatedShader(1);
-		//m_ppShaders[11]->CreateShader(pd3dDevice);
-		//m_ppShaders[11]->BuildObjects(pd3dDevice);
+		//building2 (리스폰) (정면)
+		m_ppShaders[11] = new CTexturedIlluminatedShader(1);
+		m_ppShaders[11]->CreateShader(pd3dDevice);
+		m_ppShaders[11]->BuildObjects(pd3dDevice);
 
-		//CGameObject *pBuilding2Object = new CGameObject(1);
-		//pBuilding2Object->SetMesh(pBuilding2Mesh);
-		//pBuilding2Object->SetMaterial(pNormalMaterial);
-		//pBuilding2Object->SetTexture(pBuilding2Texture);
-		//pBuilding2Object->Rotate(0.0f, 0.0f, 0.0f);
-		//pBuilding2Object->SetPosition(0.0f, 0.0f, 500.0f);
-		//m_ppShaders[11]->AddObject(pBuilding2Object);
+		CGameObject *pBuilding2Object = new CGameObject(1);
+		pBuilding2Object->SetMesh(pBuilding2Mesh);
+		pBuilding2Object->SetMaterial(pNormalMaterial);
+		pBuilding2Object->SetTexture(pBuilding2Texture);
+		pBuilding2Object->Rotate(0.0f, 0.0f, 0.0f);
+		pBuilding2Object->SetPosition(0.0f, 0.0f, 500.0f);
+		m_ppShaders[11]->AddObject(pBuilding2Object);
 
-		////house1
-		//m_ppShaders[12] = new CTexturedIlluminatedShader(1);
-		//m_ppShaders[12]->CreateShader(pd3dDevice);
-		//m_ppShaders[12]->BuildObjects(pd3dDevice);
+		//house1
+		m_ppShaders[12] = new CTexturedIlluminatedShader(1);
+		m_ppShaders[12]->CreateShader(pd3dDevice);
+		m_ppShaders[12]->BuildObjects(pd3dDevice);
 
-		//CGameObject *pHouse1Object = new CGameObject(1);
-		//pHouse1Object->SetMesh(pHouse1Mesh);
-		//pHouse1Object->SetMaterial(pNormalMaterial);
-		//pHouse1Object->SetTexture(pHouse1Texture);
-		//pHouse1Object->Rotate(0.0f, 0.0f, 0.0f);
-		//pHouse1Object->SetPosition(300.0f, 0.0f, 300.0f);
-		//m_ppShaders[12]->AddObject(pHouse1Object);
+		CGameObject *pHouse1Object = new CGameObject(1);
+		pHouse1Object->SetMesh(pHouse1Mesh);
+		pHouse1Object->SetMaterial(pNormalMaterial);
+		pHouse1Object->SetTexture(pHouse1Texture);
+		pHouse1Object->Rotate(0.0f, 0.0f, 0.0f);
+		pHouse1Object->SetPosition(300.0f, 0.0f, 300.0f);
+		m_ppShaders[12]->AddObject(pHouse1Object);
 
-		////house2
-		//m_ppShaders[13] = new CTexturedIlluminatedShader(1);
-		//m_ppShaders[13]->CreateShader(pd3dDevice);
-		//m_ppShaders[13]->BuildObjects(pd3dDevice);
+		//house2
+		m_ppShaders[13] = new CTexturedIlluminatedShader(1);
+		m_ppShaders[13]->CreateShader(pd3dDevice);
+		m_ppShaders[13]->BuildObjects(pd3dDevice);
 
-		//CGameObject *pHouse2Object = new CGameObject(1);
-		//pHouse2Object->SetMesh(pHouse2Mesh);
-		//pHouse2Object->SetMaterial(pNormalMaterial);
-		//pHouse2Object->SetTexture(pHouse2Texture);
-		//pHouse2Object->Rotate(0.0f, 90.0f, 0.0f);
-		//pHouse2Object->SetPosition(400.0f, 60.0f, 600.0f);
-		//m_ppShaders[13]->AddObject(pHouse2Object);
+		CGameObject *pHouse2Object = new CGameObject(1);
+		pHouse2Object->SetMesh(pHouse2Mesh);
+		pHouse2Object->SetMaterial(pNormalMaterial);
+		pHouse2Object->SetTexture(pHouse2Texture);
+		pHouse2Object->Rotate(0.0f, 90.0f, 0.0f);
+		pHouse2Object->SetPosition(400.0f, 60.0f, 600.0f);
+		m_ppShaders[13]->AddObject(pHouse2Object);
 
-		////cityhall
-		//m_ppShaders[14] = new CTexturedIlluminatedShader(1);
-		//m_ppShaders[14]->CreateShader(pd3dDevice);
-		//m_ppShaders[14]->BuildObjects(pd3dDevice);
+		//cityhall
+		m_ppShaders[14] = new CTexturedIlluminatedShader(1);
+		m_ppShaders[14]->CreateShader(pd3dDevice);
+		m_ppShaders[14]->BuildObjects(pd3dDevice);
 
-		//CGameObject *pCityhallObject = new CGameObject(1);
-		//pCityhallObject->SetMesh(pCityhallMesh);
-		//pCityhallObject->SetMaterial(pNormalMaterial);
-		//pCityhallObject->SetTexture(pCityhallTexture);
-		//pCityhallObject->Rotate(0.0f, -90.0f, 0.0f);
-		//pCityhallObject->SetPosition(-300.0f, 100.0f, 0.0f);
-		//m_ppShaders[14]->AddObject(pCityhallObject);
+		CGameObject *pCityhallObject = new CGameObject(1);
+		pCityhallObject->SetMesh(pCityhallMesh);
+		pCityhallObject->SetMaterial(pNormalMaterial);
+		pCityhallObject->SetTexture(pCityhallTexture);
+		pCityhallObject->Rotate(0.0f, -90.0f, 0.0f);
+		pCityhallObject->SetPosition(-300.0f, 100.0f, 0.0f);
+		m_ppShaders[14]->AddObject(pCityhallObject);
 
-		////plane
-		//m_ppShaders[15] = new CTexturedIlluminatedShader(1);
-		//m_ppShaders[15]->CreateShader(pd3dDevice);
-		//m_ppShaders[15]->BuildObjects(pd3dDevice);
+		//plane
+		m_ppShaders[15] = new CTexturedIlluminatedShader(1);
+		m_ppShaders[15]->CreateShader(pd3dDevice);
+		m_ppShaders[15]->BuildObjects(pd3dDevice);
 
-		//CGameObject *pPlaneObject = new CGameObject(1);
-		//pPlaneObject->SetMesh(pPlaneMesh);
-		//pPlaneObject->SetMaterial(pNormalMaterial);
-		//pPlaneObject->SetTexture(pPlaneTexture);
-		//pPlaneObject->Rotate(0.0f, 0.0f, 0.0f);
-		//pPlaneObject->SetPosition(0.0f, 0.0f, 0.0f);
-		//m_ppShaders[15]->AddObject(pPlaneObject);
+		CGameObject *pPlaneObject = new CGameObject(1);
+		pPlaneObject->SetMesh(pPlaneMesh);
+		pPlaneObject->SetMaterial(pNormalMaterial);
+		pPlaneObject->SetTexture(pPlaneTexture);
+		pPlaneObject->Rotate(0.0f, 0.0f, 0.0f);
+		pPlaneObject->SetPosition(0.0f, 0.0f, 0.0f);
+		m_ppShaders[15]->AddObject(pPlaneObject);
 
-		////시티홀 왼쪽으로 3개 house
-		////house1
-		//m_ppShaders[16] = new CTexturedIlluminatedShader(1);
-		//m_ppShaders[16]->CreateShader(pd3dDevice);
-		//m_ppShaders[16]->BuildObjects(pd3dDevice);
+		//시티홀 왼쪽으로 3개 house
+		//house1
+		m_ppShaders[16] = new CTexturedIlluminatedShader(1);
+		m_ppShaders[16]->CreateShader(pd3dDevice);
+		m_ppShaders[16]->BuildObjects(pd3dDevice);
 
-		//CGameObject *pHouse1Object1 = new CGameObject(1);
-		//pHouse1Object1->SetMesh(pHouse1Mesh);
-		//pHouse1Object1->SetMaterial(pNormalMaterial);
-		//pHouse1Object1->SetTexture(pHouse1Texture);
-		//pHouse1Object1->Rotate(0.0f, 0.0f, 0.0f);
-		//pHouse1Object1->SetPosition(-200.0f, 0.0f, 300.0f);
-		//m_ppShaders[16]->AddObject(pHouse1Object1);
+		CGameObject *pHouse1Object1 = new CGameObject(1);
+		pHouse1Object1->SetMesh(pHouse1Mesh);
+		pHouse1Object1->SetMaterial(pNormalMaterial);
+		pHouse1Object1->SetTexture(pHouse1Texture);
+		pHouse1Object1->Rotate(0.0f, 0.0f, 0.0f);
+		pHouse1Object1->SetPosition(-200.0f, 0.0f, 300.0f);
+		m_ppShaders[16]->AddObject(pHouse1Object1);
 
-		////house1
-		//m_ppShaders[17] = new CTexturedIlluminatedShader(1);
-		//m_ppShaders[17]->CreateShader(pd3dDevice);
-		//m_ppShaders[17]->BuildObjects(pd3dDevice);
+		//house1
+		m_ppShaders[17] = new CTexturedIlluminatedShader(1);
+		m_ppShaders[17]->CreateShader(pd3dDevice);
+		m_ppShaders[17]->BuildObjects(pd3dDevice);
 
-		//CGameObject *pHouse1Object2 = new CGameObject(1);
-		//pHouse1Object2->SetMesh(pHouse1Mesh);
-		//pHouse1Object2->SetMaterial(pNormalMaterial);
-		//pHouse1Object2->SetTexture(pHouse1Texture);
-		//pHouse1Object2->Rotate(0.0f, 0.0f, 0.0f);
-		//pHouse1Object2->SetPosition(-300.0f, 0.0f, 300.0f);
-		//m_ppShaders[17]->AddObject(pHouse1Object2);
+		CGameObject *pHouse1Object2 = new CGameObject(1);
+		pHouse1Object2->SetMesh(pHouse1Mesh);
+		pHouse1Object2->SetMaterial(pNormalMaterial);
+		pHouse1Object2->SetTexture(pHouse1Texture);
+		pHouse1Object2->Rotate(0.0f, 0.0f, 0.0f);
+		pHouse1Object2->SetPosition(-300.0f, 0.0f, 300.0f);
+		m_ppShaders[17]->AddObject(pHouse1Object2);
 
-		////house1
-		//m_ppShaders[18] = new CTexturedIlluminatedShader(1);
-		//m_ppShaders[18]->CreateShader(pd3dDevice);
-		//m_ppShaders[18]->BuildObjects(pd3dDevice);
+		//house1
+		m_ppShaders[18] = new CTexturedIlluminatedShader(1);
+		m_ppShaders[18]->CreateShader(pd3dDevice);
+		m_ppShaders[18]->BuildObjects(pd3dDevice);
 
-		//CGameObject *pHouse1Object3 = new CGameObject(1);
-		//pHouse1Object3->SetMesh(pHouse1Mesh);
-		//pHouse1Object3->SetMaterial(pNormalMaterial);
-		//pHouse1Object3->SetTexture(pHouse1Texture);
-		//pHouse1Object3->Rotate(0.0f, 0.0f, 0.0f);
-		//pHouse1Object3->SetPosition(-400.0f, 0.0f, 300.0f);
-		//m_ppShaders[18]->AddObject(pHouse1Object3);
+		CGameObject *pHouse1Object3 = new CGameObject(1);
+		pHouse1Object3->SetMesh(pHouse1Mesh);
+		pHouse1Object3->SetMaterial(pNormalMaterial);
+		pHouse1Object3->SetTexture(pHouse1Texture);
+		pHouse1Object3->Rotate(0.0f, 0.0f, 0.0f);
+		pHouse1Object3->SetPosition(-400.0f, 0.0f, 300.0f);
+		m_ppShaders[18]->AddObject(pHouse1Object3);
 
-		////building2 (리스폰) (뒷면)
-		//m_ppShaders[19] = new CTexturedIlluminatedShader(1);
-		//m_ppShaders[19]->CreateShader(pd3dDevice);
-		//m_ppShaders[19]->BuildObjects(pd3dDevice);
+		//building2 (리스폰) (뒷면)
+		m_ppShaders[19] = new CTexturedIlluminatedShader(1);
+		m_ppShaders[19]->CreateShader(pd3dDevice);
+		m_ppShaders[19]->BuildObjects(pd3dDevice);
 
-		//CGameObject *pBuilding2Object2 = new CGameObject(1);
-		//pBuilding2Object2->SetMesh(pBuilding2Mesh);
-		//pBuilding2Object2->SetMaterial(pNormalMaterial);
-		//pBuilding2Object2->SetTexture(pBuilding2Texture);
-		//pBuilding2Object2->Rotate(0.0f, 180.0f, 0.0f);
-		//pBuilding2Object2->SetPosition(0.0f, 0.0f, -500.0f);
-		//m_ppShaders[19]->AddObject(pBuilding2Object2);
+		CGameObject *pBuilding2Object2 = new CGameObject(1);
+		pBuilding2Object2->SetMesh(pBuilding2Mesh);
+		pBuilding2Object2->SetMaterial(pNormalMaterial);
+		pBuilding2Object2->SetTexture(pBuilding2Texture);
+		pBuilding2Object2->Rotate(0.0f, 180.0f, 0.0f);
+		pBuilding2Object2->SetPosition(0.0f, 0.0f, -500.0f);
+		m_ppShaders[19]->AddObject(pBuilding2Object2);
 
-		////house2 (오른쪽)
-		//m_ppShaders[20] = new CTexturedIlluminatedShader(1);
-		//m_ppShaders[20]->CreateShader(pd3dDevice);
-		//m_ppShaders[20]->BuildObjects(pd3dDevice);
+		//house2 (오른쪽)
+		m_ppShaders[20] = new CTexturedIlluminatedShader(1);
+		m_ppShaders[20]->CreateShader(pd3dDevice);
+		m_ppShaders[20]->BuildObjects(pd3dDevice);
 
-		//CGameObject *pHouse2Object2 = new CGameObject(1);
-		//pHouse2Object2->SetMesh(pHouse2Mesh);
-		//pHouse2Object2->SetMaterial(pNormalMaterial);
-		//pHouse2Object2->SetTexture(pHouse2Texture);
-		//pHouse2Object2->Rotate(0.0f, 0.0f, 0.0f);
-		//pHouse2Object2->SetPosition(0.0f, 60.0f, 0.0f);
-		//m_ppShaders[20]->AddObject(pHouse2Object2);
+		CGameObject *pHouse2Object2 = new CGameObject(1);
+		pHouse2Object2->SetMesh(pHouse2Mesh);
+		pHouse2Object2->SetMaterial(pNormalMaterial);
+		pHouse2Object2->SetTexture(pHouse2Texture);
+		pHouse2Object2->Rotate(0.0f, 0.0f, 0.0f);
+		pHouse2Object2->SetPosition(0.0f, 60.0f, 0.0f);
+		m_ppShaders[20]->AddObject(pHouse2Object2);
 
 	//	cout << pCityhallObject->GetPosition().x << ", " << pCityhallObject->GetPosition().y << ", " << pCityhallObject->GetPosition().z << endl;
    }
@@ -526,10 +531,9 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	CreateShaderVariables(pd3dDevice);
 }
 
-void CScene::SetHero()
+void CScene::Create(CHeroManager* Object, int team, int hero)
 {
-	pMyObject->SetMesh(pBabarianMeshA);
-	pMyObject->SetTexture(pBabarianTexture);
+
 }
 
 void CScene::ReleaseObjects()
@@ -572,7 +576,6 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		case 'Z':
 			if (!bCharaterRun && !bCharaterPunch)
 			{
-				cout << "Z " << pMyObject->m_HeroSelect << endl;
 				/*m_ppShaders[2]->GetFBXMesh->SetAnimation(1);
 				bCharaterRun = true;
 				bCharaterPunch = false;*/
@@ -624,69 +627,73 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 
 void CScene::ProcessInput()
 {
-	if (KEY_DOWN(VK_UP) && !UpKeyDown && activate) {
-		UpKeyDown = true;
-		dwDirection |= DIR_BACK;
+	if (activate)
+	{
+		if (KEY_DOWN(VK_UP) && !UpKeyDown) {
+			UpKeyDown = true;
+			dwDirection |= DIR_BACK;
 
-		if (dwDirection) SendMovePacket(CS_KEYDOWN_UP);
-	}
-	if (KEY_DOWN(VK_DOWN) && !DownKeyDown && activate) {
-		DownKeyDown = true;
-		dwDirection |= DIR_FRONT;
-		if (dwDirection) SendMovePacket(CS_KEYDOWN_DOWN);
-	}
-	if (KEY_DOWN(VK_LEFT) && !LeftKeyDown && activate) {
-		LeftKeyDown = true;
-		dwDirection |= DIR_LEFT;
-		if (dwDirection) SendMovePacket(CS_KEYDOWN_LEFT);
-	}
-	if (KEY_DOWN(VK_RIGHT) && !RightKeyDown && activate) {
-		RightKeyDown = true;
-		dwDirection |= DIR_RIGHT;
-		if (dwDirection) SendMovePacket(CS_KEYDOWN_RIGHT);
-	}
+			if (dwDirection) SendMovePacket(CS_KEYDOWN_UP);
+		}
+		if (KEY_DOWN(VK_DOWN) && !DownKeyDown) {
+			DownKeyDown = true;
+			dwDirection |= DIR_FRONT;
+			if (dwDirection) SendMovePacket(CS_KEYDOWN_DOWN);
+		}
+		if (KEY_DOWN(VK_LEFT) && !LeftKeyDown) {
+			LeftKeyDown = true;
+			dwDirection |= DIR_LEFT;
+			if (dwDirection) SendMovePacket(CS_KEYDOWN_LEFT);
+		}
+		if (KEY_DOWN(VK_RIGHT) && !RightKeyDown) {
+			RightKeyDown = true;
+			dwDirection |= DIR_RIGHT;
+			if (dwDirection) SendMovePacket(CS_KEYDOWN_RIGHT);
+		}
 
 
-	if (KEY_UP(VK_UP) && UpKeyDown && activate)
-	{
-		UpKeyDown = false;
-		if (bCharaterRun)
+		if (KEY_UP(VK_UP) && UpKeyDown)
 		{
-			m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
-			bCharaterRun = false;
+			UpKeyDown = false;
+			if (bCharaterRun)
+			{
+				m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				bCharaterRun = false;
+			}
+			SendMovePacket(CS_KEYUP_UP);
 		}
-		SendMovePacket(CS_KEYUP_UP);
-	}	
-	if (KEY_UP(VK_DOWN) && DownKeyDown && activate)
-	{
-		DownKeyDown = false;
-		if (bCharaterRun)
+		if (KEY_UP(VK_DOWN) && DownKeyDown)
 		{
-			m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
-			bCharaterRun = false;
+			DownKeyDown = false;
+			if (bCharaterRun)
+			{
+				m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				bCharaterRun = false;
+			}
+			SendMovePacket(CS_KEYUP_DOWN);
 		}
-		SendMovePacket(CS_KEYUP_DOWN);
+		if (KEY_UP(VK_LEFT) && LeftKeyDown)
+		{
+			LeftKeyDown = false;
+			if (bCharaterRun)
+			{
+				m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				bCharaterRun = false;
+			}
+			SendMovePacket(CS_KEYUP_LEFT);
+		}
+		if (KEY_UP(VK_RIGHT) && RightKeyDown)
+		{
+			RightKeyDown = false;
+			if (bCharaterRun)
+			{
+				m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				bCharaterRun = false;
+			}
+			SendMovePacket(CS_KEYUP_RIGHT);
+		}
 	}
-	if (KEY_UP(VK_LEFT) && LeftKeyDown && activate)
-	{
-		LeftKeyDown = false;
-		if (bCharaterRun)
-		{
-			m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
-			bCharaterRun = false;
-		}
-		SendMovePacket(CS_KEYUP_LEFT);
-	}
-	if (KEY_UP(VK_RIGHT) && RightKeyDown && activate)
-	{
-		RightKeyDown = false;
-		if (bCharaterRun)
-		{
-			m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
-			bCharaterRun = false;
-		}
-		SendMovePacket(CS_KEYUP_RIGHT);
-	}
+	
 
 
 }
