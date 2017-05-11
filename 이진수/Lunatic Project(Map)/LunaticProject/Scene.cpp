@@ -139,7 +139,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	//
 	// 일반 쉐이더 선언부
 	/////////////////////////////////////////////////////////////////////////
-	m_nShaders = 14;	// Skybox
+	m_nShaders = 19;	// Skybox
 	m_ppShaders = new CShader*[m_nShaders];
 
 	// ⑤ SkyBox용 Shader를 생성
@@ -169,25 +169,25 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 		pSordmanObject->SetMesh(pSordManMesh);
 		pSordmanObject->SetMaterial(pNormalMaterial);
 		pSordmanObject->SetTexture(pSordManTexture);
-		pSordmanObject->Rotate(0.0f, 0.0f, 0.0f);
+		pSordmanObject->Rotate(0.0f, 180.0f, 0.0f);
 		pSordmanObject->SetPosition(0.0f, 0.0f, 0.0f);
 		
 		m_ppShaders[2]->AddObject(pSordmanObject);
 
-		//building1 (왼쪽)
+		//plane
 		m_ppShaders[3] = new CTexturedIlluminatedShader(1);
 		m_ppShaders[3]->CreateShader(pd3dDevice);
 		m_ppShaders[3]->BuildObjects(pd3dDevice);
 
-		CGameObject *pBuilding1Object = new CGameObject(1);
-		pBuilding1Object->SetMesh(pBuilding1Mesh);
-		pBuilding1Object->SetMaterial(pNormalMaterial);
-		pBuilding1Object->SetTexture(pBuilding1Texture);
-		pBuilding1Object->Rotate(0.0f, -90.0f, 0.0f);
-		pBuilding1Object->SetPosition(-300.0f, 25.0f, -350.0f);
-		m_ppShaders[3]->AddObject(pBuilding1Object);
+		CGameObject *pPlaneObject = new CGameObject(1);
+		pPlaneObject->SetMesh(pPlaneMesh);
+		pPlaneObject->SetMaterial(pNormalMaterial);
+		pPlaneObject->SetTexture(pPlaneTexture);
+		pPlaneObject->Rotate(0.0f, 0.0f, 0.0f);
+		pPlaneObject->SetPosition(0.0f, 0.0f, 0.0f);
+		m_ppShaders[3]->AddObject(pPlaneObject);
 
-		//building2 (리스폰) (정면)
+		//building2 (리스폰) (적군)
 		m_ppShaders[4] = new CTexturedIlluminatedShader(1);
 		m_ppShaders[4]->CreateShader(pd3dDevice);
 		m_ppShaders[4]->BuildObjects(pd3dDevice);
@@ -200,125 +200,105 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 		pBuilding2Object->SetPosition(0.0f, 0.0f, 500.0f);
 		m_ppShaders[4]->AddObject(pBuilding2Object);
 
-		//house1
+		//building2 (리스폰) (아군)
 		m_ppShaders[5] = new CTexturedIlluminatedShader(1);
 		m_ppShaders[5]->CreateShader(pd3dDevice);
 		m_ppShaders[5]->BuildObjects(pd3dDevice);
-
-		CGameObject *pHouse1Object = new CGameObject(1);
-		pHouse1Object->SetMesh(pHouse1Mesh);
-		pHouse1Object->SetMaterial(pNormalMaterial);
-		pHouse1Object->SetTexture(pHouse1Texture);
-		pHouse1Object->Rotate(0.0f, 0.0f, 0.0f);
-		pHouse1Object->SetPosition(300.0f, 0.0f, 300.0f);
-		m_ppShaders[5]->AddObject(pHouse1Object);
-
-		//house2
-		m_ppShaders[6] = new CTexturedIlluminatedShader(1);
-		m_ppShaders[6]->CreateShader(pd3dDevice);
-		m_ppShaders[6]->BuildObjects(pd3dDevice);
-
-		CGameObject *pHouse2Object = new CGameObject(1);
-		pHouse2Object->SetMesh(pHouse2Mesh);
-		pHouse2Object->SetMaterial(pNormalMaterial);
-		pHouse2Object->SetTexture(pHouse2Texture);
-		pHouse2Object->Rotate(0.0f, 90.0f, 0.0f);
-		pHouse2Object->SetPosition(400.0f, 60.0f, 600.0f);
-		m_ppShaders[6]->AddObject(pHouse2Object);
-
-		//cityhall
-		m_ppShaders[7] = new CTexturedIlluminatedShader(1);
-		m_ppShaders[7]->CreateShader(pd3dDevice);
-		m_ppShaders[7]->BuildObjects(pd3dDevice);
-
-		CGameObject *pCityhallObject = new CGameObject(1);
-		pCityhallObject->SetMesh(pCityhallMesh);
-		pCityhallObject->SetMaterial(pNormalMaterial);
-		pCityhallObject->SetTexture(pCityhallTexture);
-		pCityhallObject->Rotate(0.0f, -90.0f, 0.0f);
-		pCityhallObject->SetPosition(-300.0f, 100.0f, 0.0f);
-		m_ppShaders[7]->AddObject(pCityhallObject);
-		
-		//plane
-		m_ppShaders[8] = new CTexturedIlluminatedShader(1);
-		m_ppShaders[8]->CreateShader(pd3dDevice);
-		m_ppShaders[8]->BuildObjects(pd3dDevice);
-
-		CGameObject *pPlaneObject = new CGameObject(1);
-		pPlaneObject->SetMesh(pPlaneMesh);
-		pPlaneObject->SetMaterial(pNormalMaterial);
-		pPlaneObject->SetTexture(pPlaneTexture);
-		pPlaneObject->Rotate(0.0f, 0.0f, 0.0f);
-		pPlaneObject->SetPosition(0.0f, 0.0f, 0.0f);
-		m_ppShaders[8]->AddObject(pPlaneObject);
-
-		//시티홀 왼쪽으로 3개 house
-		//house1
-		m_ppShaders[9] = new CTexturedIlluminatedShader(1);
-		m_ppShaders[9]->CreateShader(pd3dDevice);
-		m_ppShaders[9]->BuildObjects(pd3dDevice);
-
-		CGameObject *pHouse1Object1 = new CGameObject(1);
-		pHouse1Object1->SetMesh(pHouse1Mesh);
-		pHouse1Object1->SetMaterial(pNormalMaterial);
-		pHouse1Object1->SetTexture(pHouse1Texture);
-		pHouse1Object1->Rotate(0.0f, 0.0f, 0.0f);
-		pHouse1Object1->SetPosition(-200.0f, 0.0f, 300.0f);
-		m_ppShaders[9]->AddObject(pHouse1Object1);
-
-		//house1
-		m_ppShaders[10] = new CTexturedIlluminatedShader(1);
-		m_ppShaders[10]->CreateShader(pd3dDevice);
-		m_ppShaders[10]->BuildObjects(pd3dDevice);
-
-		CGameObject *pHouse1Object2 = new CGameObject(1);
-		pHouse1Object2->SetMesh(pHouse1Mesh);
-		pHouse1Object2->SetMaterial(pNormalMaterial);
-		pHouse1Object2->SetTexture(pHouse1Texture);
-		pHouse1Object2->Rotate(0.0f, 0.0f, 0.0f);
-		pHouse1Object2->SetPosition(-300.0f, 0.0f, 300.0f);
-		m_ppShaders[10]->AddObject(pHouse1Object2);
-
-		//house1
-		m_ppShaders[11] = new CTexturedIlluminatedShader(1);
-		m_ppShaders[11]->CreateShader(pd3dDevice);
-		m_ppShaders[11]->BuildObjects(pd3dDevice);
-
-		CGameObject *pHouse1Object3 = new CGameObject(1);
-		pHouse1Object3->SetMesh(pHouse1Mesh);
-		pHouse1Object3->SetMaterial(pNormalMaterial);
-		pHouse1Object3->SetTexture(pHouse1Texture);
-		pHouse1Object3->Rotate(0.0f, 0.0f, 0.0f);
-		pHouse1Object3->SetPosition(-400.0f, 0.0f, 300.0f);
-		m_ppShaders[11]->AddObject(pHouse1Object3);
-
-		//building2 (리스폰) (뒷면)
-		m_ppShaders[12] = new CTexturedIlluminatedShader(1);
-		m_ppShaders[12]->CreateShader(pd3dDevice);
-		m_ppShaders[12]->BuildObjects(pd3dDevice);
 
 		CGameObject *pBuilding2Object2 = new CGameObject(1);
 		pBuilding2Object2->SetMesh(pBuilding2Mesh);
 		pBuilding2Object2->SetMaterial(pNormalMaterial);
 		pBuilding2Object2->SetTexture(pBuilding2Texture);
 		pBuilding2Object2->Rotate(0.0f, 180.0f, 0.0f);
-		pBuilding2Object2->SetPosition(0.0f, 0.0f, -500.0f);
-		m_ppShaders[12]->AddObject(pBuilding2Object2);
+		pBuilding2Object2->SetPosition(0.0f, -10.0f, -500.0f);
+		m_ppShaders[5]->AddObject(pBuilding2Object2);
 
-		//house2 (오른쪽)
-		m_ppShaders[13] = new CTexturedIlluminatedShader(1);
-		m_ppShaders[13]->CreateShader(pd3dDevice);
-		m_ppShaders[13]->BuildObjects(pd3dDevice);
 
-		CGameObject *pHouse2Object2 = new CGameObject(1);
-		pHouse2Object2->SetMesh(pHouse2Mesh);
-		pHouse2Object2->SetMaterial(pNormalMaterial);
-		pHouse2Object2->SetTexture(pHouse2Texture);
-		pHouse2Object2->Rotate(0.0f, 0.0f, 0.0f);
-		pHouse2Object2->SetPosition(0.0f, 60.0f, 0.0f);
-		m_ppShaders[13]->AddObject(pHouse2Object2);
+		// 건물 쉐이더 생성
+		for (int i = 6; i < m_nShaders; ++i)
+		{
+			m_ppShaders[i] = new CTexturedIlluminatedShader(1);
+			m_ppShaders[i]->CreateShader(pd3dDevice);
+			m_ppShaders[i]->BuildObjects(pd3dDevice);
 
-		cout << pCityhallObject->GetPosition().x << ", " << pCityhallObject->GetPosition().y << ", " << pCityhallObject->GetPosition().z << endl;
+		}
+
+		// 건물 오브젝트 생성
+		CGameObject *pHouse1Object[14]; 
+		for(int i = 0; i < 14; ++i)
+		{
+			pHouse1Object[i] = new CGameObject(1);
+			pHouse1Object[i]->SetMesh(pHouse1Mesh);
+			pHouse1Object[i]->SetMaterial(pNormalMaterial);
+			pHouse1Object[i]->SetTexture(pHouse1Texture);
+			pHouse1Object[i]->Rotate(0.0f, 0.0f, 0.0f);
+		}
+		// 건물 위치 설정
+		pHouse1Object[0]->SetPosition(50.0f, 0.0f, -300.0f);
+		pHouse1Object[1]->SetPosition(250.0f, 0.0f, -300.0f);
+		pHouse1Object[2]->SetPosition(-150.0f, 0.0f, -300.0f);
+
+		pHouse1Object[3]->SetPosition(150.0f, 0.0f, -150.0f);
+		pHouse1Object[4]->SetPosition(-50.0f, 0.0f, -150.0f);
+
+		pHouse1Object[5]->SetPosition(50.0f, 0.0f, 0.0f);
+		pHouse1Object[6]->SetPosition(250.0f, 0.0f, 0.0f);
+		pHouse1Object[7]->SetPosition(-150.0f, 0.0f, 0.0f);
+
+		pHouse1Object[8]->SetPosition(150.0f, 0.0f, 150.0f);
+		pHouse1Object[9]->SetPosition(-50.0f, 0.0f, 150.0f);
+
+		pHouse1Object[10]->SetPosition(50.0f, 0.0f, 300.0f);
+		pHouse1Object[11]->SetPosition(250.0f, 0.0f, 300.0f);
+		pHouse1Object[12]->SetPosition(-150.0f, 0.0f, 300.0f);
+
+		
+		// 쉐이더에 저장
+		for (int i = 6; i < m_nShaders; ++i)
+		{
+			m_ppShaders[i]->AddObject(pHouse1Object[i - 6]);
+		}
+
+
+		////house1
+		//m_ppShaders[6] = new CTexturedIlluminatedShader(1);
+		//m_ppShaders[6]->CreateShader(pd3dDevice);
+		//m_ppShaders[6]->BuildObjects(pd3dDevice);
+
+		//CGameObject *pHouse1Object = new CGameObject(1);
+		//pHouse1Object->SetMesh(pHouse1Mesh);
+		//pHouse1Object->SetMaterial(pNormalMaterial);
+		//pHouse1Object->SetTexture(pHouse1Texture);
+		//pHouse1Object->Rotate(0.0f, 0.0f, 0.0f);
+		//pHouse1Object->SetPosition(50.0f, 0.0f, -300.0f);
+		//m_ppShaders[6]->AddObject(pHouse1Object);
+
+		////house1
+		//m_ppShaders[7] = new CTexturedIlluminatedShader(1);
+		//m_ppShaders[7]->CreateShader(pd3dDevice);
+		//m_ppShaders[7]->BuildObjects(pd3dDevice);
+
+		//CGameObject *pHouse1Object2 = new CGameObject(1);
+		//pHouse1Object2->SetMesh(pHouse1Mesh);
+		//pHouse1Object2->SetMaterial(pNormalMaterial);
+		//pHouse1Object2->SetTexture(pHouse1Texture);
+		//pHouse1Object2->Rotate(0.0f, 0.0f, 0.0f);
+		//pHouse1Object2->SetPosition(-150.0f, 0.0f, -300.0f);
+		//m_ppShaders[7]->AddObject(pHouse1Object2);
+
+		////house1
+		//m_ppShaders[8] = new CTexturedIlluminatedShader(1);
+		//m_ppShaders[8]->CreateShader(pd3dDevice);
+		//m_ppShaders[8]->BuildObjects(pd3dDevice);
+
+		//CGameObject *pHouse1Object3 = new CGameObject(1);
+		//pHouse1Object3->SetMesh(pHouse1Mesh);
+		//pHouse1Object3->SetMaterial(pNormalMaterial);
+		//pHouse1Object3->SetTexture(pHouse1Texture);
+		//pHouse1Object3->Rotate(0.0f, 0.0f, 0.0f);
+		//pHouse1Object3->SetPosition(250.0f, 0.0f, -300.0f);
+		//m_ppShaders[8]->AddObject(pHouse1Object3);
+	
 	}
 	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, _T("Data\\HeightMap.raw"), 257, 257, 17, 17, d3dxvScale, d3dxColor);
 	//m_pTerrain->SetMaterial(pNormalMaterial);

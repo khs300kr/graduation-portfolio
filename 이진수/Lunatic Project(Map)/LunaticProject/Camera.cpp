@@ -29,7 +29,7 @@ CCamera::CCamera(CCamera *pCamera)
 	else
 	{
 		// 카메라가 없으면 기본 정보를 설정 
-		m_d3dxvPosition = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		m_d3dxvPosition = D3DXVECTOR3(0.0f, 0.0f, -500.0f);
 		m_d3dxvRight = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
 		m_d3dxvUp = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 		m_d3dxvLook = D3DXVECTOR3(0.0f, 0.0f, 1.0f);

@@ -6,7 +6,7 @@ CPlayer::CPlayer(int nMeshes) : CGameObject(nMeshes)
 {
 	m_pCamera = NULL;
 
-	m_d3dxvPosition = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_d3dxvPosition = D3DXVECTOR3(0.0f, 0.0f, -500.0f);
 	m_d3dxvRight = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
 	m_d3dxvUp = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_d3dxvLook = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
