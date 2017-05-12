@@ -168,10 +168,10 @@ void ProcessPacket(int id, unsigned char packet[])
 		// Hero Pick
 	case CS_LOADINGCOMPLETE:
 		// 위치하기.
-		++g_PlayerNum;;
+		//++g_PlayerNum;;
 		SendPutPlayerPacket(id, id);
-		if (g_PlayerNum == 2)
-		{
+		//if (g_PlayerNum == 2)
+		//{
 			for (int i = 0; i < MAX_USER; ++i)
 			{
 				if (g_Clients[i].m_bConnect == true)
@@ -183,7 +183,7 @@ void ProcessPacket(int id, unsigned char packet[])
 					}
 				}
 			}// for loop
-		}
+		//}
 		break;
 	case SC_BABARIAN:
 		g_Clients[id].m_HeroPick = SC_BABARIAN;

@@ -14,6 +14,7 @@ CGameFramework::CGameFramework()
 	m_nWndClientHeight = FRAME_BUFFER_HEIGHT;
 
 	m_pScene = NULL;
+	
 	_tcscpy_s(m_pszBuffer, _T("Lunatic Project ("));
 
 	m_pPlayer = NULL;
@@ -25,7 +26,9 @@ CGameFramework::CGameFramework()
 	m_pCamera = NULL;
 	dwDirection = 0;
 
-	for (int i = 0; i < 7; ++i)
+	
+
+	for (int i = 0; i < MAX_USER-1; ++i)
 		OtherDirection[i] = 0;
 
 	LoadingScene = false;
@@ -46,7 +49,12 @@ bool CGameFramework::Create(HINSTANCE hInstance, HWND hMainWnd)
 	if (!CreateDirect3DDisplay()) return(false);
 
 	//렌더링할 객체(게임 월드 객체)를 생성한다. 
-	//여기//BuildObjects();
+	
+	BuildObjects();
+	m_pScene = new CScene();
+	
+	m_pScene->SetCamera(m_pCamera);
+	
 
 	return(true);
 }
@@ -187,7 +195,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			switch (wParam)
 			{
 			case VK_RETURN:
-				LoadingScene = true;
+				
 				cout << "Loading..." << endl;
 				//{
 				//	// server send (Select)
@@ -199,8 +207,11 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				//	WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 				//	//
 				//}
+				m_pScene->pMyObject->m_HeroSelect = SelectCount;
 
-				BuildObjects();
+				LoadingScene = true;
+				//m_pScene->pMyObject->m_HeroSelect = Babarian;
+				
 				//m_pScene->pMyObject->m_HeroSelect = 1;
 
 
@@ -215,6 +226,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					//
 				}
 				ChangeScene = 1;
+				
 				break;
 			case VK_LEFT:
 				if (SelectCount == 1)
@@ -320,9 +332,7 @@ void CGameFramework::BuildObjects()
 	//CShader 클래스의 정적(static) 멤버 변수로 선언된 상수 버퍼를 생성한다.
 	CShader::CreateShaderVariables(m_pd3dDevice);
 	CIlluminatedShader::CreateShaderVariables(m_pd3dDevice);
-	m_pScene = new CScene();
-
-	m_pScene->BuildObjects(m_pd3dDevice);
+	
 
 	m_pPlayerShader = new CPlayerShader();
 	m_pPlayerShader->CreateShader(m_pd3dDevice);
@@ -336,7 +346,7 @@ void CGameFramework::BuildObjects()
 	m_pPlayer->ChangeCamera(m_pd3dDevice, (112 - 0x70 + 1), m_GameTimer.GetTimeElapsed());
 	m_pCamera = m_pPlayer->GetCamera();
 	// 씬에 현재 카메라를 설정한다.
-	m_pScene->SetCamera(m_pCamera);
+	
 
 }
 
@@ -486,6 +496,13 @@ void CGameFramework::AnimateObjects()
 void CGameFramework::FrameAdvance()
 {
 	m_GameTimer.Tick(60);
+
+	if (LoadingScene)
+	{
+		m_pScene->BuildObjects(m_pd3dDevice);
+		m_pScene->SetHero();
+		LoadingScene = false;
+	}
 
 	if (ChangeScene == 1)
 	{

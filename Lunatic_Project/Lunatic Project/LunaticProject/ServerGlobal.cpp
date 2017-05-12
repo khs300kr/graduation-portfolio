@@ -12,3 +12,4 @@ HWND	g_hWnd{};
 WSABUF	send_wsabuf{};
 char 	send_buffer[BUF_SIZE]{};
 bool activate{};
+bool HeroDataReceive = false;

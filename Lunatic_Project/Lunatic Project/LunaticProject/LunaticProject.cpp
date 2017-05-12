@@ -336,6 +336,7 @@ void ReadPacket(SOCKET sock)
 			in_packet_size = 0;
 			saved_packet_size = 0;
 		}
+
 		else {
 			memcpy(packet_buffer + saved_packet_size, ptr, iobyte);
 			saved_packet_size += iobyte;
@@ -366,7 +367,7 @@ void ProcessPacket(char * ptr)
 		int id = my_packet->id;
 		if (id == g_myid) {
 			cout << "BABA\n";
-			gGameFramework.m_pScene->pMyObject->m_HeroSelect =  SC_BABARIAN - 10;
+			//gGameFramework.m_pScene->pMyObject->m_HeroSelect =  SC_BABARIAN - 10;
 
 		}
 		else {
@@ -382,7 +383,7 @@ void ProcessPacket(char * ptr)
 
 		if (id == g_myid) {
 		cout << "HEALER\n";
-		gGameFramework.m_pScene->pMyObject->m_HeroSelect = SC_HEALER - 10;
+		//gGameFramework.m_pScene->pMyObject->m_HeroSelect = SC_HEALER - 10;
 		}
 		else {
 			gGameFramework.m_pScene->pOtherObject[id]->m_HeroSelect = SC_HEALER - 10;
@@ -397,7 +398,7 @@ void ProcessPacket(char * ptr)
 
 		if (id == g_myid) {
 		cout << "SWORDMAN\n";
-		gGameFramework.m_pScene->pMyObject->m_HeroSelect = SC_SWORDMAN - 10;
+			//gGameFramework.m_pScene->pMyObject->m_HeroSelect = SC_SWORDMAN - 10;
 		}
 		else {
 			gGameFramework.m_pScene->pOtherObject[id]->m_HeroSelect = SC_SWORDMAN - 10;
