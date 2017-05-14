@@ -9,8 +9,12 @@ void SendReadyPacket(int client, int object);
 void SendAllReadyPacket(int client, int object);
 
 // ¿Œ∞‘¿”
+void ProcessPacket(int id, unsigned char packet[]);
+// (Move)
 void SendPutPlayerPacket(int client, int object);
 void SendPositionPacket(int client, int object);
 void Do_move(int id, unsigned char packet[]);
+// (Att)
+void SendAttackPacket(int client, int object);
+
 void SendRemovePlayerPacket(int client, int object);
-void ProcessPacket(int id, unsigned char packet[]);

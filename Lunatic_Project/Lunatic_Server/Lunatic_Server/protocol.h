@@ -1,15 +1,9 @@
+// Server Define
 #define MAX_BUFF_SIZE   4000
 #define MAX_PACKET_SIZE  255
-
-#define BOARD_WIDTH   8
-#define BOARD_HEIGHT  8
-
+#define MY_SERVER_PORT  4000
 #define MAX_USER 8
 
-#define NPC_START  1000
-#define NUM_OF_NPC  10000
-
-#define MY_SERVER_PORT  4000
 
 #define MAX_STR_SIZE  100
 
@@ -24,7 +18,7 @@
 #define CS_CHAT						9
 #define CS_READY					10
 #define CS_LOADCOMPLETE				11
-
+#define CS_ATTACK					12
 
 #define SC_POS           1
 #define SC_PUT_PLAYER    2
@@ -33,10 +27,7 @@
 #define SC_ID			 5 
 #define SC_READY		 6
 #define SC_ALLREADY		 7
-
-//#define SC_BABARIAN		11
-//#define SC_HEALER		12
-//#define SC_SWORDMAN		13
+#define SC_ATTACK		 8
 
 // Client Define
 // 키보드 입력
@@ -62,17 +53,13 @@
 // 팀
 #define A_TEAM 1
 #define B_TEAM 2
-
 // 캐릭터
 #define Empty 0
 #define Babarian 1
 #define SordMan 3
 #define Healer 2
 
-
-
 #pragma pack (push, 1)
-
 // Client -> Server
 // 방
 struct cs_packet_ready {
@@ -99,6 +86,11 @@ struct cs_packet_chat {
 	BYTE size;
 	BYTE type;
 	WCHAR message[MAX_STR_SIZE];
+};
+
+struct cs_packet_attack {
+	BYTE size;
+	BYTE type;
 };
 
 
@@ -147,6 +139,12 @@ struct sc_packet_pos {
 };
 
 struct sc_packet_remove_player {
+	BYTE size;
+	BYTE type;
+	WORD id;
+};
+
+struct sc_packet_attack {
 	BYTE size;
 	BYTE type;
 	WORD id;

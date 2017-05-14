@@ -98,6 +98,16 @@ void Do_move(int id, unsigned char packet[])
 	}
 }
 
+void SendAttackPacket(int client, int object)
+{
+	sc_packet_attack packet;
+	packet.id = object;
+	packet.size = sizeof(packet);
+	packet.type = SC_ATTACK;
+
+	Send_Packet(client, &packet);
+}
+
 void SendRemovePlayerPacket(int client, int object)
 {
 	sc_packet_remove_player packet;
@@ -108,46 +118,11 @@ void SendRemovePlayerPacket(int client, int object)
 	Send_Packet(client, &packet);
 }
 
-
-
-
 void ProcessPacket(int id, unsigned char packet[])
 {
 	switch (packet[1])
 	{
-	case CS_KEYDOWN_UP:
-		g_Clients[id].m_Direction |= DIR_BACK;
-		Do_move(id, packet);
-		break;
-	case CS_KEYDOWN_DOWN:
-		g_Clients[id].m_Direction |= DIR_FRONT;
-		Do_move(id, packet);
-		break;
-	case CS_KEYDOWN_LEFT:
-		g_Clients[id].m_Direction |= DIR_LEFT;
-		Do_move(id, packet);
-		break;
-	case CS_KEYDOWN_RIGHT:
-		g_Clients[id].m_Direction |= DIR_RIGHT;
-		Do_move(id, packet);
-		break;
-	case CS_KEYUP_UP:
-		g_Clients[id].m_Direction ^= DIR_BACK;
-		Do_move(id, packet);
-		break;
-	case CS_KEYUP_DOWN:
-		g_Clients[id].m_Direction ^= DIR_FRONT;
-		Do_move(id, packet);
-		break;
-	case CS_KEYUP_LEFT:
-		g_Clients[id].m_Direction ^= DIR_LEFT;
-		Do_move(id, packet);
-		break;
-	case CS_KEYUP_RIGHT:
-		g_Clients[id].m_Direction ^= DIR_RIGHT;
-		Do_move(id, packet);
-		break;
-
+	// 방
 	case CS_READY:
 	{
 		++g_ReadyNum;
@@ -164,31 +139,47 @@ void ProcessPacket(int id, unsigned char packet[])
 		{
 			g_ReadyNum = 0;
 			for (int i = 0; i < MAX_USER; ++i)
-				if (g_Clients[i].m_bConnect == true) SendAllReadyPacket(i, id);	
+				if (g_Clients[i].m_bConnect == true) SendAllReadyPacket(i, id);
 		}
 		break;
 	}
 	case CS_LOADCOMPLETE:
-	++g_ReadyNum;
-	std::cout << "Loading Num : " << g_ReadyNum << std::endl;
-	SendPutPlayerPacket(id, id);
-	if (g_ReadyNum == g_CCU)	// 나중에 방 인원 수 만큼.
-	{
-		g_ReadyNum = 0;
-		for (int i = 0; i < MAX_USER; ++i)
+		++g_ReadyNum;
+		std::cout << "Loading Num : " << g_ReadyNum << std::endl;
+		SendPutPlayerPacket(id, id);
+		if (g_ReadyNum == g_CCU)	// 나중에 방 인원 수 만큼.
 		{
-			if (g_Clients[i].m_bConnect == true)
+			g_ReadyNum = 0;
+			for (int i = 0; i < MAX_USER; ++i)
 			{
-				if (id != i)
+				if (g_Clients[i].m_bConnect == true)
 				{
-					SendPutPlayerPacket(id, i);
-					SendPutPlayerPacket(i, id);
+					if (id != i)
+					{
+						SendPutPlayerPacket(id, i);
+						SendPutPlayerPacket(i, id);
+					}
 				}
-			}
-		}// for loop
-	}
-	break;
-	
+			}// for loop
+		}
+		break;
+	// 인 게임
+	// (Move)
+	case CS_KEYDOWN_UP:		g_Clients[id].m_Direction |= DIR_BACK;	Do_move(id, packet);	break;
+	case CS_KEYDOWN_DOWN:	g_Clients[id].m_Direction |= DIR_FRONT;	Do_move(id, packet);	break;
+	case CS_KEYDOWN_LEFT:	g_Clients[id].m_Direction |= DIR_LEFT;	Do_move(id, packet);	break;
+	case CS_KEYDOWN_RIGHT:	g_Clients[id].m_Direction |= DIR_RIGHT;	Do_move(id, packet);	break;
+	case CS_KEYUP_UP:		g_Clients[id].m_Direction ^= DIR_BACK;	Do_move(id, packet);	break;
+	case CS_KEYUP_DOWN:		g_Clients[id].m_Direction ^= DIR_FRONT;	Do_move(id, packet);	break;
+	case CS_KEYUP_LEFT:		g_Clients[id].m_Direction ^= DIR_LEFT;	Do_move(id, packet);	break;
+	case CS_KEYUP_RIGHT:	g_Clients[id].m_Direction ^= DIR_RIGHT;	Do_move(id, packet);	break;
+	// (Att)
+	case CS_ATTACK:			
+		for (int i = 0; i < MAX_USER; ++i){
+			if (g_Clients[i].m_bConnect == true)
+				SendAttackPacket(i, id);
+		}break;
+
 	default: std::cout << "Unknown Packet Type from Client : " << id << std::endl;
 		while (true);
 	}

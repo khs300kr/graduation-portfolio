@@ -177,8 +177,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 
 
 	{		
-		
-
 		for (int i = 1; i <= 8; ++i)
 		{
 			m_ppShaders[i] = new CCharacterShader(1);
@@ -400,6 +398,15 @@ void CScene::ProcessInput()
 	
 				bHeroAttack = true;
 				bHeroRun = false;
+
+				cs_packet_attack *my_packet = reinterpret_cast<cs_packet_attack *>(send_buffer);
+				my_packet->size = sizeof(cs_packet_attack);
+				send_wsabuf.len = sizeof(cs_packet_attack);
+				DWORD iobyte;
+				my_packet->type = CS_ATTACK;
+
+				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);	
+
 			}
 		}
 		

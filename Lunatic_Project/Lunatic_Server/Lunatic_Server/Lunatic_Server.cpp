@@ -86,7 +86,7 @@ void Accept_Thread()
 		std::cout << "동접 : " << g_CCU << std::endl;
 
 		// 초기
-		g_Clients[new_id].m_Animation = 0;
+		//g_Clients[new_id].m_Animation = 0;
 
 		
 		// 비동기 입출력 시작

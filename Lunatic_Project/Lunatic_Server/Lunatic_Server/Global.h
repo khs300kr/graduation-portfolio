@@ -27,7 +27,7 @@ struct CLIENT
 	// Move
 	BYTE			m_Direction;
 	// Animation
-	BYTE			m_Animation;
+	//BYTE			m_Animation;
 	// Hero Type
 	BYTE			m_HeroPick;
 

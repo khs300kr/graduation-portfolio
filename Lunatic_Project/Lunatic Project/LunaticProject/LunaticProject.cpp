@@ -436,6 +436,20 @@ void ProcessPacket(char * ptr)
 		}
 		break;
 	}
+
+	case SC_ATTACK:
+	{
+		sc_packet_attack *my_packet = reinterpret_cast<sc_packet_attack *>(ptr);
+		int id = my_packet->id;
+		if (id == g_myid) {
+			cout << "[My]SC_ATTACK_PACKET\n";
+		}
+		else {
+			cout << "[Other]SC_ATTACK_PACKET\n";
+		}
+
+		break;
+	}
 	default:
 		printf("Unknown PACKET type [%d]\n", ptr[1]);
 	}
