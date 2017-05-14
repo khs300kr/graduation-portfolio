@@ -61,13 +61,16 @@ private:
 	CGameObject *pHouse1Object[14]; 
 	CGameObject *BoundBox;
 
+
 	bool LeftKeyDown;
 	bool RightKeyDown;
 	bool UpKeyDown;
 	bool DownKeyDown;
 
 
-	bool ColBox;
+	//bool ColBox;
+
+	HDC							m_hDCFrameBuffer;
 
 public:
 	CScene();
@@ -77,6 +80,7 @@ public:
 	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	bool GetColBox() { return ColBox; };
+	//void SetColBox(bool _SetCol) { ColBox = _SetCol; }
 
 	void BuildObjects(ID3D11Device *pd3dDevice);
 	void ReleaseObjects();
@@ -90,4 +94,8 @@ public:
 	void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS *pLights);
 	void ReleaseShaderVariables();
+
+
+	void CollisionCheck(int i);
+
 };

@@ -346,10 +346,16 @@ void CGameFramework::ProcessInput()
 					m_pScene->pSordmanObject->SetSpeed(m_pScene->pSordmanObject->GetNormalSpeed());
 				}
 
-				if(m_pScene->GetColBox())
-					m_pPlayer->Move(dwDirection, -(m_pScene->pSordmanObject->GetSpeed() * 10.f), false);
+				if (m_pScene->GetColBox())
+				{
+					m_pPlayer->Move(dwDirection, -(m_pScene->pSordmanObject->GetSpeed()) * 5, false);
+					//m_pScene->SetColBox(false);
+				}
 				else
-					m_pPlayer->Move(dwDirection, m_pScene->pSordmanObject->GetSpeed(), true);
+					m_pPlayer->Move(dwDirection, m_pScene->pSordmanObject->GetSpeed() *5, true);
+
+				//m_pPlayer->Move(dwDirection, m_pScene->pSordmanObject->GetSpeed() * 5, true);
+
 				m_pScene->pSordmanObject->SetPosition(m_pPlayer->GetPosition());
 			}
 		}
@@ -362,6 +368,7 @@ void CGameFramework::AnimateObjects()
 {
 	if (m_pScene) m_pScene->AnimateObjects(m_GameTimer.GetTimeElapsed());
 }
+
 
 void CGameFramework::FrameAdvance()
 {
@@ -384,3 +391,4 @@ void CGameFramework::FrameAdvance()
 	m_GameTimer.GetFrameRate(m_pszBuffer + 16, 33);
 	::SetWindowText(m_hWnd, m_pszBuffer);
 }
+

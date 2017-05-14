@@ -103,6 +103,9 @@ public:
 	BoundingOrientedBox		m_xmOOBBTransformed;
 	CGameObject				*m_pCollider;
 	void SetOOBB(XMFLOAT3& xmCenter, XMFLOAT3& xmExtents, XMFLOAT4& xmOrientation) { m_xmOOBBTransformed = m_xmOOBB = BoundingOrientedBox(xmCenter, xmExtents, xmOrientation); }
+	bool ColCheck;
+	void SetColCheck(bool _ColCheck) { ColCheck = _ColCheck; }
+	bool GetColCheck() { return ColCheck; }
 
 
 
