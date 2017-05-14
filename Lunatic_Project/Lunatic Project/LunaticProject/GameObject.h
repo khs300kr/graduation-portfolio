@@ -99,6 +99,15 @@ public:
 	// 객체가 가지는 메쉬 전체에 대한 바운딩 박스
 	AABB m_bcMeshBoundingCube;
 
+	// OOBB 충돌 체크
+	BoundingOrientedBox		m_xmOOBB;
+	BoundingOrientedBox		m_xmOOBBTransformed;
+	CGameObject				*m_pCollider;
+	void SetOOBB(XMFLOAT3& xmCenter, XMFLOAT3& xmExtents, XMFLOAT4& xmOrientation) { m_xmOOBBTransformed = m_xmOOBB = BoundingOrientedBox(xmCenter, xmExtents, xmOrientation); }
+	bool ColCheck;
+	void SetColCheck(bool _ColCheck) { ColCheck = _ColCheck; }
+	bool GetColCheck() { return ColCheck; }
+
 	void SetMaterial(CMaterial *pMaterial);
 	void SetTexture(CTexture *pTexture);
 	virtual void SetMesh(CMesh *pMesh, int nIndex = 0);

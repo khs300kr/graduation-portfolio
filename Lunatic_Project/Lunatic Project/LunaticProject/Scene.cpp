@@ -38,7 +38,7 @@ CScene::CScene()
 	}
 
 
-
+	ColBox = false;
 }
 
 
@@ -159,7 +159,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 
 	CMesh *pBuilding1Mesh = new CFBXMesh(pd3dDevice, "../Data/building/building1/building1.data", 0.6f);
 	CMesh *pBuilding2Mesh = new CFBXMesh(pd3dDevice, "../Data/building/building2/building2.data", 1.f);
-	CMesh *pHouse1Mesh = new CFBXMesh(pd3dDevice, "../Data/building/house1/house1.data", 0.7f);
+	CMesh *pHouse1Mesh = new CFBXMesh(pd3dDevice, "../Data/building/house1/house1.data", 1.0f);
 	CMesh *pHouse2Mesh = new CFBXMesh(pd3dDevice, "../Data/building/house2/house2.data", 0.7f);
 	CMesh *pCityhallMesh = new CFBXMesh(pd3dDevice, "../Data/building/cityhall/cityhall.data", 1.f);
 
@@ -167,7 +167,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	// 일반 쉐이더 선언부
 	/////////////////////////////////////////////////////////////////////////
 
-	m_nShaders = 9;   // Skybox포함
+	m_nShaders = 25;   // Skybox포함
 	m_ppShaders = new CShader*[m_nShaders];
 
 	// ⑤ SkyBox용 Shader를 생성
@@ -186,6 +186,9 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 			m_ppShaders[i]->BuildObjects(pd3dDevice);
 
 		}
+
+		pHeroObject[g_myid]->SetOOBB(XMFLOAT3(pHeroObject[g_myid]->GetPosition().x, pHeroObject[g_myid]->GetPosition().y, pHeroObject[g_myid]->GetPosition().z),
+			XMFLOAT3(0.1f, 0.1f, 0.1f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 
 		for (int i = 0; i < MAX_USER; ++i)
 		{
@@ -220,6 +223,93 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 		}
 
 
+		m_ppShaders[9] = new CTexturedIlluminatedShader(1);
+		m_ppShaders[9]->CreateShader(pd3dDevice);
+		m_ppShaders[9]->BuildObjects(pd3dDevice);
+
+		CGameObject *pPlaneObject = new CGameObject(1);
+		pPlaneObject->SetMesh(pPlaneMesh);
+		pPlaneObject->SetMaterial(pNormalMaterial);
+		pPlaneObject->SetTexture(pPlaneTexture);
+		pPlaneObject->Rotate(0.0f, 0.0f, 0.0f);
+		pPlaneObject->SetPosition(0.0f, 0.0f, 0.0f);
+		m_ppShaders[9]->AddObject(pPlaneObject);
+
+		//building2 (리스폰) (적군)
+		m_ppShaders[10] = new CTexturedIlluminatedShader(1);
+		m_ppShaders[10]->CreateShader(pd3dDevice);
+		m_ppShaders[10]->BuildObjects(pd3dDevice);
+
+		CGameObject *pBuilding2Object = new CGameObject(1);
+		pBuilding2Object->SetMesh(pBuilding2Mesh);
+		pBuilding2Object->SetMaterial(pNormalMaterial);
+		pBuilding2Object->SetTexture(pBuilding2Texture);
+		pBuilding2Object->Rotate(0.0f, 0.0f, 0.0f);
+		pBuilding2Object->SetPosition(0.0f, 0.0f, 500.0f);
+		m_ppShaders[10]->AddObject(pBuilding2Object);
+
+		//building2 (리스폰) (아군)
+		m_ppShaders[11] = new CTexturedIlluminatedShader(1);
+		m_ppShaders[11]->CreateShader(pd3dDevice);
+		m_ppShaders[11]->BuildObjects(pd3dDevice);
+
+		CGameObject *pBuilding2Object2 = new CGameObject(1);
+		pBuilding2Object2->SetMesh(pBuilding2Mesh);
+		pBuilding2Object2->SetMaterial(pNormalMaterial);
+		pBuilding2Object2->SetTexture(pBuilding2Texture);
+		pBuilding2Object2->Rotate(0.0f, 180.0f, 0.0f);
+		pBuilding2Object2->SetPosition(0.0f, -10.0f, -500.0f);
+		m_ppShaders[11]->AddObject(pBuilding2Object2);
+
+
+		// 건물 쉐이더 생성
+		for (int i = 12; i < m_nShaders; ++i)
+		{
+			m_ppShaders[i] = new CTexturedIlluminatedShader(1);
+			m_ppShaders[i]->CreateShader(pd3dDevice);
+			m_ppShaders[i]->BuildObjects(pd3dDevice);
+
+		}
+
+		// 건물 오브젝트 생성
+		//CGameObject *pHouse1Object[14]; 
+		for (int i = 0; i < 13; ++i)
+		{
+			pHouse1Object[i] = new CGameObject(1);
+			pHouse1Object[i]->SetMesh(pHouse1Mesh);
+			pHouse1Object[i]->SetMaterial(pNormalMaterial);
+			pHouse1Object[i]->SetTexture(pHouse1Texture);
+			pHouse1Object[i]->Rotate(0.0f, 0.0f, 0.0f);
+			//pHouse1Object[i]->SetOOBB(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(100.f, 100.f, 100.f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+		}
+		// 건물 위치 설정
+		pHouse1Object[0]->SetPosition(50.0f, 0.0f, -300.0f);
+		pHouse1Object[0]->SetOOBB(XMFLOAT3(-50.0f, 0.0f, -300.0f), XMFLOAT3(90.f, 100.f, 50.f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+
+
+		pHouse1Object[1]->SetPosition(250.0f, 0.0f, -300.0f);
+		pHouse1Object[2]->SetPosition(-150.0f, 0.0f, -300.0f);
+
+		pHouse1Object[3]->SetPosition(150.0f, 0.0f, -150.0f);
+		pHouse1Object[4]->SetPosition(-50.0f, 0.0f, -150.0f);
+
+		pHouse1Object[5]->SetPosition(50.0f, 0.0f, 0.0f);
+		pHouse1Object[6]->SetPosition(250.0f, 0.0f, 0.0f);
+		pHouse1Object[7]->SetPosition(-150.0f, 0.0f, 0.0f);
+
+		pHouse1Object[8]->SetPosition(150.0f, 0.0f, 150.0f);
+		pHouse1Object[9]->SetPosition(-50.0f, 0.0f, 150.0f);
+
+		pHouse1Object[10]->SetPosition(50.0f, 0.0f, 300.0f);
+		pHouse1Object[11]->SetPosition(250.0f, 0.0f, 300.0f);
+		pHouse1Object[12]->SetPosition(-150.0f, 0.0f, 300.0f);
+
+
+		// 쉐이더에 저장
+		for (int i = 12; i < m_nShaders; ++i)
+		{
+			m_ppShaders[i]->AddObject(pHouse1Object[i - 12]);
+		}
 	
    }
    //m_pTerrain = new CHeightMapTerrain(pd3dDevice, _T("Data\\HeightMap.raw"), 257, 257, 17, 17, d3dxvScale, d3dxColor);
@@ -623,6 +713,7 @@ void CScene::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS
 
 void CScene::AnimateObjects(float fTimeElapsed)
 {
+
 	CPlayer *pPlayer = m_pCamera->GetPlayer();
 
 	if (m_pLights && m_pd3dcbLights)
@@ -678,6 +769,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 		}
 	}
 
+	
 
 	for (int i = 0; i < MAX_USER; ++i)
 	{
@@ -685,9 +777,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 		{
 			if (m_ppShaders[i + 1]->GetFBXMesh->GetFBXNowFrameNum() == m_ppShaders[i + 1]->GetFBXMesh->GetFBXMaxFrameNum() - 1)
 			{
-				
-				m_ppShaders[i + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
-				
+				m_ppShaders[i + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);	
 			}
 		}
 
@@ -712,9 +802,21 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 	}
 	
-	//cout << m_ppShaders[1]->GetFBXMesh->GetFBXNowFrameNum() << ends << m_ppShaders[1]->GetFBXMesh->GetFBXMaxFrameNum() << endl;
-	
+	pHeroObject[g_myid]->SetOOBB(XMFLOAT3(pHeroObject[g_myid]->GetPosition().x, pHeroObject[g_myid]->GetPosition().y, pHeroObject[g_myid]->GetPosition().z),
+		XMFLOAT3(0.1f, 0.1f, 0.1f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 
+	if (pHouse1Object[0]->m_xmOOBB.Intersects(pHeroObject[g_myid]->m_xmOOBB))
+	{
+		pHouse1Object[0]->m_pCollider = pHeroObject[g_myid];
+		pHeroObject[g_myid]->m_pCollider = pHouse1Object[0];
+
+		//pHouse1Object[0]->SetColCheck(true);
+		ColBox = true;
+	}
+	else
+	{
+		ColBox = false;
+	}
 
 }
 

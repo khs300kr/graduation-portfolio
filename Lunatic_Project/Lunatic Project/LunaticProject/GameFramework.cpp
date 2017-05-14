@@ -427,33 +427,46 @@ void CGameFramework::ProcessInput()
 				if (dwDirection == DIR_LEFT_BACK || dwDirection == DIR_LEFT_FRONT || dwDirection ==  DIR_RIGHT_BACK || dwDirection == DIR_RIGHT_FRONT) // 대각선 이동 이동속도 구현
 				{
 				
-					if (dwDirection == DIR_LEFT_BACK) RotY_Hero = 135.0f;
-					else if (dwDirection == DIR_LEFT_FRONT) RotY_Hero = 45.0f;
-					else if (dwDirection == DIR_RIGHT_BACK) RotY_Hero = -135.0f;
-					else if (dwDirection == DIR_RIGHT_FRONT) RotY_Hero = -45.0f;
-					m_pScene->pHeroObject[g_myid]->SetSpeed(m_pScene->pHeroObject[g_myid]->GetRootSpeed());
+						if (dwDirection == DIR_LEFT_BACK) RotY_Hero = 135.0f;
+						else if (dwDirection == DIR_LEFT_FRONT) RotY_Hero = 45.0f;
+						else if (dwDirection == DIR_RIGHT_BACK) RotY_Hero = -135.0f;
+						else if (dwDirection == DIR_RIGHT_FRONT) RotY_Hero = -45.0f;
+						m_pScene->pHeroObject[g_myid]->SetSpeed(m_pScene->pHeroObject[g_myid]->GetRootSpeed());
+					
+
 					
 				}
 				else
 				{
-					if (dwDirection == DIR_LEFT) RotY_Hero = 90.0f;
-					else if (dwDirection == DIR_RIGHT) RotY_Hero = -90.0f;
-					else if (dwDirection == DIR_FRONT) RotY_Hero = 0.0f;
-					else if (dwDirection == DIR_BACK) RotY_Hero =  180.0f;
 
-					m_pScene->pHeroObject[g_myid]->SetSpeed(m_pScene->pHeroObject[g_myid]->GetNormalSpeed());
+						if (dwDirection == DIR_LEFT) RotY_Hero = 90.0f;
+						else if (dwDirection == DIR_RIGHT) RotY_Hero = -90.0f;
+						else if (dwDirection == DIR_FRONT) RotY_Hero = 0.0f;
+						else if (dwDirection == DIR_BACK) RotY_Hero = 180.0f;
+
+						m_pScene->pHeroObject[g_myid]->SetSpeed(m_pScene->pHeroObject[g_myid]->GetNormalSpeed());
+					
+
 				}
 
 
 				if (!m_pScene->pHeroObject[g_myid]->bHeroAttack)
 				{
-					m_pPlayer->Move(dwDirection, m_pScene->pHeroObject[g_myid]->GetSpeed(), true);
-					m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
-					m_pScene->pHeroObject[g_myid]->Rotate(0, RotY_Hero, 0);
-				}
+					if (!m_pScene->GetCol())
+					{
+						m_pPlayer->Move(dwDirection, m_pScene->pHeroObject[g_myid]->GetSpeed(), true);
+						m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
+						m_pScene->pHeroObject[g_myid]->Rotate(0, RotY_Hero, 0);
+						
+					}
+					else
+					{
+						m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[g_myid]->GetSpeed(), true);
+						m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
+						m_pScene->pHeroObject[g_myid]->Rotate(0, RotY_Hero, 0);
+					}
 
-				
-				
+				}
 				
 			}
 

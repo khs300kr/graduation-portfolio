@@ -59,7 +59,7 @@ private:
 	DWORD dwDirection;
 
 
-
+	bool ColBox;
 public:
 	CScene();
 	~CScene();
@@ -69,6 +69,9 @@ public:
 	//CHeroManager* pOtherObject[MAX_USER];
 
 	CHeroManager* pHeroObject[MAX_USER];
+
+	CGameObject *pHouse1Object[13];
+
 	
 	CMaterial *pNormalMaterial;
 
@@ -88,9 +91,6 @@ public:
 
 	CShader **m_ppShaders;
 
-	void SetHero();
-	void ChangeMesh_Texture();
-	
 	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
@@ -107,6 +107,8 @@ public:
 	void CreateShaderVariables(ID3D11Device *pd3dDevice);
 	void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS *pLights);
 	void ReleaseShaderVariables();
+
+	bool GetCol() { return ColBox; }
 
 public:
 

@@ -34,7 +34,8 @@
 #include <D3D11.h>
 #include <D3DX11.h>
 #include <mmsystem.h>
-#include <xnamath.h>
+//#include <xnamath.h>
+
 #include <math.h>
 #include <d3dcompiler.h>
 #include <D3DX10math.h>
@@ -46,7 +47,15 @@
 #include <vector>
 #include <map>
 
+#include <DirectXMath.h>
+#include <DirectXPackedVector.h>
+#include <DirectXColors.h>
+#include <DirectXCollision.h>
+
 using namespace std;
+using namespace DirectX;
+using namespace DirectX::PackedVector;
+
 
 #define FRAME_BUFFER_WIDTH	1024
 #define FRAME_BUFFER_HEIGHT	768

@@ -52,12 +52,16 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 	g_mysocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, 0);
 
+	char ipAddr[20];
+	cout << "접속할 서버의 IP주소를 입력하세요 : ";
+	cin >> ipAddr;
+
 	SOCKADDR_IN ServerAddr;
 	ZeroMemory(&ServerAddr, sizeof(SOCKADDR_IN));
 	ServerAddr.sin_family = AF_INET;
 	ServerAddr.sin_port = htons(MY_SERVER_PORT);
 	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	ServerAddr.sin_addr.s_addr = inet_addr("192.168.82.126");
+	ServerAddr.sin_addr.s_addr = inet_addr(ipAddr);
 
 	int Result = WSAConnect(g_mysocket, (sockaddr *)&ServerAddr, sizeof(ServerAddr), NULL, NULL, NULL, NULL);
 	WSAAsyncSelect(g_mysocket, g_hWnd, WM_SOCKET, FD_CLOSE | FD_READ);
@@ -378,7 +382,7 @@ void ProcessPacket(char * ptr)
 		Sleep(3000);
 		gGameFramework.LoadingScene = true;
 		InvalidateRect(g_hWnd, NULL, false);
-		cout << "씨발 올레디다\n";
+		cout << "올레디\n";
 		//gGameFramework.ChangeScene = GAME;
 
 		break;

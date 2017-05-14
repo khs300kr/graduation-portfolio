@@ -88,7 +88,12 @@ void Accept_Thread()
 		// 초기
 		//g_Clients[new_id].m_Animation = 0;
 
-		
+		for (int i = 0; i < MAX_USER; ++i)
+		{
+			g_Clients[i].m_fX = i * 20.f;
+			g_Clients[i].m_fY = 0.f;
+			g_Clients[i].m_fZ = -500.f;
+		}
 		// 비동기 입출력 시작
 		DWORD recv_flag = 0;
 		CreateIoCompletionPort(reinterpret_cast<HANDLE>(client_sock), g_Hiocp, new_id, 0);
@@ -213,12 +218,7 @@ void Close_Server()
 
 int main()
 {
-	for (int i = 0; i < MAX_USER; ++i)
-	{
-		g_Clients[i].m_fX = i * 20.f;
-		g_Clients[i].m_fY = 0.f;
-		g_Clients[i].m_fZ = 0.f;
-	}
+
 	Init_Server();
 	// 서버가 크래쉬 되었을때 처리할 수 있게 하는 MiniDump
 	if (!CMiniDump::Begin())
