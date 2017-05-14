@@ -22,16 +22,21 @@
 #define CS_KEYUP_LEFT				7
 #define CS_KEYUP_RIGHT				8
 #define CS_CHAT						9
-#define CS_LOADINGCOMPLETE			10
+#define CS_READY					10
+#define CS_LOADCOMPLETE				11
+
 
 #define SC_POS           1
 #define SC_PUT_PLAYER    2
 #define SC_REMOVE_PLAYER 3
 #define SC_CHAT			 4
 #define SC_ID			 5 
-#define SC_BABARIAN		11
-#define SC_HEALER		12
-#define SC_SWORDMAN		13
+#define SC_READY		 6
+#define SC_ALLREADY		 7
+
+//#define SC_BABARIAN		11
+//#define SC_HEALER		12
+//#define SC_SWORDMAN		13
 
 // Client Define
 // 키보드 입력
@@ -54,15 +59,34 @@
 #define ANI_HIT			7
 #define ANI_STUN		8
 #define ANI_DIE			9
-// Team
+// 팀
 #define A_TEAM 1
 #define B_TEAM 2
+
+// 캐릭터
+#define Empty 0
+#define Babarian 1
+#define SordMan 3
+#define Healer 2
 
 
 
 #pragma pack (push, 1)
 
 // Client -> Server
+// 방
+struct cs_packet_ready {
+	BYTE size;
+	BYTE type;
+	BYTE hero_pick;
+};
+
+struct cs_packet_LoadingComplete {
+	BYTE size;
+	BYTE type;
+};
+
+// 인게임
 struct cs_packet_pos {
 	BYTE size;
 	BYTE type;
@@ -77,29 +101,32 @@ struct cs_packet_chat {
 	WCHAR message[MAX_STR_SIZE];
 };
 
-struct cs_packet_char_select {
-	BYTE size;
-	BYTE type;
-};
 
-struct cs_packet_LoadingComplete {
-	BYTE size;
-	BYTE type;
-};
 
 // Server -> Client
+// 접속
 struct sc_packet_id {
 	BYTE size;
 	BYTE type;
 	WORD id;
 };
 
-struct sc_packet_char_select {
+// 방
+struct sc_packet_ready {
+	BYTE size;
+	BYTE type;
+	WORD id;
+	BYTE hero_pick;		// 캐릭터 정보.
+};
+
+struct sc_packet_allready
+{
 	BYTE size;
 	BYTE type;
 	WORD id;
 };
 
+// 인게임
 struct sc_packet_put_player {
 	BYTE size;
 	BYTE type;

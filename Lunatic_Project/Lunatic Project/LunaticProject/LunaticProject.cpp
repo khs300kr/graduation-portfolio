@@ -336,6 +336,7 @@ void ProcessPacket(char * ptr)
 	static bool first_time = true;
 	switch (ptr[1])
 	{
+	// 접속
 	case SC_ID:
 	{
 		sc_packet_id *my_packet = reinterpret_cast<sc_packet_id *>(ptr);
@@ -344,58 +345,39 @@ void ProcessPacket(char * ptr)
 			first_time = false;
 			g_myid = id;
 		}
-		cout << g_myid << endl;
+		cout << "내아디 : " << g_myid << endl;
 		break;
 	}
-	case SC_BABARIAN:
+
+	// 방
+	case SC_READY:
 	{
-		sc_packet_char_select *my_packet = reinterpret_cast<sc_packet_char_select *>(ptr);
+		sc_packet_ready *my_packet = reinterpret_cast<sc_packet_ready *>(ptr);
 		int id = my_packet->id;
 		if (id == g_myid) {
-			cout << "BABA\n";
+			cout << "SC_READY\n";
+			cout << "내 캐릭터 선택 : " << (int)my_packet->hero_pick << endl;
+			
 			//gGameFramework.m_pScene->pMyObject->m_HeroSelect =  SC_BABARIAN - 10;
 
 		}
 		else {
-			gGameFramework.m_pScene->pOtherObject[id]->m_HeroSelect = SC_BABARIAN - 10;
+			gGameFramework.m_pScene->pOtherObject[id]->m_HeroSelect = my_packet->hero_pick;
 			gGameFramework.m_pScene->pOtherObject[id]->m_Team = A_TEAM;
 		}
-
 		break;
 	}
-	case SC_HEALER:
-	{
-		sc_packet_char_select *my_packet = reinterpret_cast<sc_packet_char_select *>(ptr);
-		int id = my_packet->id;
+	case SC_ALLREADY:
 
-		if (id == g_myid) {
-		cout << "HEALER\n";
-		//gGameFramework.m_pScene->pMyObject->m_HeroSelect = SC_HEALER - 10;
-		}
-		else {
-			gGameFramework.m_pScene->pOtherObject[id]->m_HeroSelect = SC_HEALER - 10;
-			gGameFramework.m_pScene->pOtherObject[id]->m_Team = A_TEAM;
-		}
-
-		break;
-	}
-	case SC_SWORDMAN:
-	{
-		sc_packet_char_select *my_packet = reinterpret_cast<sc_packet_char_select *>(ptr);
-		int id = my_packet->id; 
-
-		if (id == g_myid) {
-		cout << "SWORDMAN\n";
-			//gGameFramework.m_pScene->pMyObject->m_HeroSelect = SC_SWORDMAN - 10;
-		}
-		else {
-			gGameFramework.m_pScene->pOtherObject[id]->m_HeroSelect = SC_SWORDMAN - 10;
-			gGameFramework.m_pScene->pOtherObject[id]->m_Team = A_TEAM;
-		}
+		Sleep(3000);
+		gGameFramework.LoadingScene = true;
+		InvalidateRect(g_hWnd, NULL, false);
+		cout << "씨발 올레디다\n";
+		//gGameFramework.ChangeScene = GAME;
 
 		break;
 
-	}
+	// 인게임
 	case SC_PUT_PLAYER:
 	{
 		sc_packet_put_player *my_packet = reinterpret_cast<sc_packet_put_player *>(ptr);
@@ -407,7 +389,6 @@ void ProcessPacket(char * ptr)
 		}
 		else {
 			cout << "Other Pos\n";
-			cout << id << endl;
 			gGameFramework.m_pScene->pOtherObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 		}
 		break;	
@@ -417,7 +398,7 @@ void ProcessPacket(char * ptr)
 		sc_packet_pos *my_packet = reinterpret_cast<sc_packet_pos *>(ptr);
 		int id = my_packet->id;
 		if (id == g_myid) {
-			cout << "Hero Move\n";
+			//cout << "Hero Move\n";
 			gGameFramework.dwDirection = my_packet->direction;
 			gGameFramework.m_pScene->pMyObject->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 
@@ -427,14 +408,18 @@ void ProcessPacket(char * ptr)
 				gGameFramework.m_pScene->m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
 		}
 		else {
-			cout << "Other Move\n";
+			//cout << "Other Move\n";
 			gGameFramework.OtherDirection[id] = my_packet->direction;
 			gGameFramework.m_pScene->pOtherObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
+
 
 			if (my_packet->direction != 0)
 				gGameFramework.m_pScene->m_ppShaders[id + 2]->GetFBXMesh->SetAnimation(ANI_RUN);
 			else
 				gGameFramework.m_pScene->m_ppShaders[id + 2]->GetFBXMesh->SetAnimation(ANI_IDLE);
+		
+			cout << "Other id : " << id << endl;
+
 		}
 		break;
 	}

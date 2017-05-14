@@ -73,6 +73,7 @@ public:
 	CTexture *pHealerTexture;
 	CTexture *pSordManTexture;
 	CTexture *pBabarianTexture;
+	CTexture *pTestTexture;
 
 	CMesh *pSordManMeshA;
 	CMesh *pSordManMeshB;
@@ -80,6 +81,8 @@ public:
 	CMesh *pHealerMeshB;
 	CMesh *pBabarianMeshA;
 	CMesh *pBabarianMeshB;
+
+	CMesh *pTestMesh;
 
 	CShader **m_ppShaders;
 

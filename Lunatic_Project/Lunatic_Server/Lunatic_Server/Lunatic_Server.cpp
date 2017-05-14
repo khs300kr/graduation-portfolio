@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Global.h"
 #include "MiniDump.h"
+#include "PacketFunc.h"
 
 void Init_Server()
 {
@@ -35,191 +36,6 @@ void Init_Server()
 
 }
 
-void Send_Packet(int client, void* packet)
-{
-	int packet_size = reinterpret_cast<unsigned char *>(packet)[0];
-	int packet_type = reinterpret_cast<unsigned char *>(packet)[1];
-	OverlappedEx *over = new OverlappedEx;
-	over->m_Event_type = OP_SEND;
-	memcpy(over->m_IOCP_buf, packet, packet_size);
-
-	ZeroMemory(&over->m_Over, sizeof(over->m_Over));
-	over->m_Wsabuf.buf = reinterpret_cast<CHAR *>(over->m_IOCP_buf);
-	over->m_Wsabuf.len = packet_size;
-
-	int ret = WSASend(g_Clients[client].m_client_socket, &over->m_Wsabuf, 1, NULL, 0,
-		&over->m_Over, NULL);
-	if (ret != 0)
-	{
-		int err_no = WSAGetLastError();
-		if (WSA_IO_PENDING != err_no)
-			error_display("Error in SendPacket:", err_no);
-	}
-	std::cout << "Send Packet [" << packet_type << "] To Client : " << client << std::endl;
-}
-
-void SendIDPlayer(int client, int object)
-{
-	sc_packet_id packet;
-	packet.size = sizeof(packet);
-	packet.type = SC_ID;
-	packet.id = object;
-
-	Send_Packet(client, &packet);
-}
-
-void SendHeroPickPacket(int client, int object)
-{
-	sc_packet_char_select packet;
-	packet.size = sizeof(packet);
-	packet.type = g_Clients[object].m_HeroPick;
-	packet.id = object;
-	
-	Send_Packet(client, &packet);
-}
-
-void SendPutPlayerPacket(int client, int object)
-{
-	sc_packet_put_player packet;
-	packet.id = object;
-	packet.size = sizeof(packet);
-	packet.type = SC_PUT_PLAYER;
-	packet.x = g_Clients[object].m_fX;
-	packet.y = g_Clients[object].m_fY;
-	packet.z = g_Clients[object].m_fZ;
-
-	Send_Packet(client, &packet);
-}
-
-void SendPositionPacket(int client, int object)
-{
-	sc_packet_pos packet;
-	packet.id = object;
-	packet.size = sizeof(packet);
-	packet.type = SC_POS;
-	packet.direction = g_Clients[object].m_Direction;
-	packet.x = g_Clients[object].m_fX;
-	packet.y = g_Clients[object].m_fY;
-	packet.z = g_Clients[object].m_fZ;
-
-	Send_Packet(client, &packet);
-}
-
-void SendRemovePlayerPacket(int client, int object)
-{
-	sc_packet_remove_player packet;
-	packet.id = object;
-	packet.size = sizeof(packet);
-	packet.type = SC_REMOVE_PLAYER;
-
-	Send_Packet(client, &packet);
-}
-
-
-void Do_move(int id, unsigned char packet[])
-{
-	cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
-	g_Clients[id].m_fX = my_packet->x;
-	g_Clients[id].m_fY = my_packet->y;
-	g_Clients[id].m_fZ = my_packet->z;
-	for (int i = 0; i < MAX_USER; ++i)
-	{
-		if (g_Clients[i].m_bConnect == true)
-			SendPositionPacket(i, id);
-	}
-}
-
-void ProcessPacket(int id, unsigned char packet[])
-{
-	switch (packet[1])
-	{
-	case CS_KEYDOWN_UP:
-		g_Clients[id].m_Direction |= DIR_BACK;
-		Do_move(id, packet);
-		break;
-	case CS_KEYDOWN_DOWN:
-		g_Clients[id].m_Direction |= DIR_FRONT;
-		Do_move(id, packet);
-		break;
-	case CS_KEYDOWN_LEFT:
-		g_Clients[id].m_Direction |= DIR_LEFT;
-		Do_move(id, packet);
-		break;
-	case CS_KEYDOWN_RIGHT:
-		g_Clients[id].m_Direction |= DIR_RIGHT;
-		Do_move(id, packet);
-		break;
-	case CS_KEYUP_UP:
-		g_Clients[id].m_Direction ^= DIR_BACK;
-		Do_move(id, packet);
-		break;
-	case CS_KEYUP_DOWN:
-		g_Clients[id].m_Direction ^= DIR_FRONT;
-		Do_move(id, packet);
-		break;
-	case CS_KEYUP_LEFT:
-		g_Clients[id].m_Direction ^= DIR_LEFT;
-		Do_move(id, packet);
-		break;
-	case CS_KEYUP_RIGHT:
-		g_Clients[id].m_Direction ^= DIR_RIGHT;
-		Do_move(id, packet);
-		break;
-		// Hero Pick
-	case CS_LOADINGCOMPLETE:
-		// 위치하기.
-		//++g_PlayerNum;;
-		SendPutPlayerPacket(id, id);
-		//if (g_PlayerNum == 2)
-		//{
-			for (int i = 0; i < MAX_USER; ++i)
-			{
-				if (g_Clients[i].m_bConnect == true)
-				{
-					if (id != i)
-					{
-						SendPutPlayerPacket(id, i);
-						SendPutPlayerPacket(i, id);
-					}
-				}
-			}// for loop
-		//}
-		break;
-	case SC_BABARIAN:
-		g_Clients[id].m_HeroPick = SC_BABARIAN;
-		for (int i = 0; i < MAX_USER; ++i)
-		{
-			if (g_Clients[i].m_bConnect == true)
-				SendHeroPickPacket(i, id);
-		}
-		// 위치 하기.
-
-		break;
-	case SC_HEALER:
-		g_Clients[id].m_HeroPick = SC_HEALER;
-		for (int i = 0; i < MAX_USER; ++i)
-		{
-			if (g_Clients[i].m_bConnect == true)
-				SendHeroPickPacket(i, id);
-		}
-
-		break;
-	case SC_SWORDMAN:
-		g_Clients[id].m_HeroPick = SC_SWORDMAN;
-		for (int i = 0; i < MAX_USER; ++i)
-		{
-			if (g_Clients[i].m_bConnect == true)
-				SendHeroPickPacket(i, id);
-		}
-
-		break;
-	default: std::cout << "Unknown Packet Type from Client : " << id << std::endl;
-		while (true);
-	}
-
-}
-
-
 void Accept_Thread()
 {
 	/*
@@ -246,12 +62,13 @@ void Accept_Thread()
 		std::cout << "[TCP서버] 클라이언트 접속 : IP =" << inet_ntoa(ClientAddr.sin_addr) << ", 포트 번호 = " <<
 			ntohs(ClientAddr.sin_port) << "\n";
 #endif
+		g_CCU = 0;
 		// Accet loop 처리.
 		int new_id{ -1 };
 		for (int i = 0; i < MAX_USER; ++i)
-			if (g_Clients[i].m_bConnect == false) { new_id = i; break; }
+			if (g_Clients[i].m_bConnect == false) { new_id = i;	break; }
 		if (new_id == -1) { std::cout << "MAX USER : " << MAX_USER << "명 동접 OVERFLOW\n"; closesocket(client_sock); continue; }
-
+		
 		g_Clients[new_id].m_bConnect = true;
 		g_Clients[new_id].m_client_socket = client_sock;
 		g_Clients[new_id].curr_packet_size = 0;
@@ -262,11 +79,15 @@ void Accept_Thread()
 		g_Clients[new_id].m_recv_over.m_Wsabuf.buf =
 			reinterpret_cast<CHAR *>(g_Clients[new_id].m_recv_over.m_IOCP_buf);
 		g_Clients[new_id].m_recv_over.m_Wsabuf.len = sizeof(g_Clients[new_id].m_recv_over.m_IOCP_buf);
-		// 초기위치
+	
+		// 동접 출력
+		for (int i = 0; i < MAX_USER; ++i)
+			if (g_Clients[i].m_bConnect == true) ++g_CCU;
+		std::cout << "동접 : " << g_CCU << std::endl;
+
+		// 초기
 		g_Clients[new_id].m_Animation = 0;
-		//g_Clients[new_id].m_fX = 0.f;
-		//g_Clients[new_id].m_fY = 0.f;
-		//g_Clients[new_id].m_fZ = 0.f;
+
 		
 		// 비동기 입출력 시작
 		DWORD recv_flag = 0;

@@ -21,4 +21,5 @@ void error_display(char *msg, int err_no)
 HANDLE g_Hiocp{};
 SOCKET g_ServerSocket{};
 CLIENT g_Clients[MAX_USER]{};
-WORD g_PlayerNum{};
+BYTE   g_ReadyNum{};
+WORD   g_CCU{};

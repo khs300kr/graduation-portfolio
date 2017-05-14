@@ -46,4 +46,5 @@ struct CLIENT
 extern HANDLE g_Hiocp;
 extern SOCKET g_ServerSocket;
 extern CLIENT g_Clients[MAX_USER];
-extern WORD g_PlayerNum;
+extern BYTE   g_ReadyNum;
+extern WORD   g_CCU; // CCU(Concurrent Users)

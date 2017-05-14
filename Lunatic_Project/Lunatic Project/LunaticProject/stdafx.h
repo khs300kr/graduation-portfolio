@@ -79,15 +79,6 @@ using namespace std;
 #define ANIFRAMETIME			0.0333333f
 #define GetFBXMesh				GetGameObject(0)->GetMesh(0)
 
-// Team
-#define A_TEAM 1
-#define B_TEAM 2
-
-
-// Character
-#define SordMan 3
-#define Healer 2
-#define Babarian 1
 
 #define MAINMENU 0
 #define LOBBY 1

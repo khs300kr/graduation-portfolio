@@ -19,6 +19,9 @@
     <Filter Include="소스 파일\Util">
       <UniqueIdentifier>{4979acc6-4b32-4dc2-bbbe-be7b06cfa043}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Packet">
+      <UniqueIdentifier>{c53eb8e3-d478-454d-9724-38e3619c34aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -39,6 +42,9 @@
     <ClInclude Include="Global.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
+    <ClInclude Include="PacketFunc.h">
+      <Filter>소스 파일\Packet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Lunatic_Server.cpp">
@@ -52,6 +58,9 @@
     </ClCompile>
     <ClCompile Include="Global.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketFunc.cpp">
+      <Filter>소스 파일\Packet</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

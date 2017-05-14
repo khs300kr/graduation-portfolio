@@ -28,7 +28,7 @@ CGameFramework::CGameFramework()
 
 	
 
-	for (int i = 0; i < MAX_USER-1; ++i)
+	for (int i = 0; i < MAX_USER; ++i)
 		OtherDirection[i] = 0;
 
 	LoadingScene = false;
@@ -208,54 +208,47 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 
 				else if (ChangeScene == ROOM)
 				{
-					cout << "Loading..." << endl;
+					
 					{
-						// server send (Select)
-						cs_packet_char_select *my_packet = reinterpret_cast<cs_packet_char_select *>(send_buffer);
-						my_packet->size = sizeof(cs_packet_char_select);
-						send_wsabuf.len = sizeof(cs_packet_char_select);
+						// server send (Ready)
+						cs_packet_ready *my_packet = reinterpret_cast<cs_packet_ready *>(send_buffer);
+						my_packet->size = sizeof(cs_packet_ready);
+						send_wsabuf.len = sizeof(cs_packet_ready);
 						DWORD iobyte;
-						my_packet->type = SelectCount + 10;
+						my_packet->type = CS_READY;
+						my_packet->hero_pick = SelectCount;
+
 						WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 						//
 					}
 					m_pScene->pMyObject->m_HeroSelect = SelectCount;
+					cout << "캐릭터선택완료" << endl;
 
 
-					
 					//LoadingScene = true;
 					//InvalidateRect(m_hWnd, NULL, false);
-					////m_pScene->pMyObject->m_HeroSelect = Babarian;
-				
-					////m_pScene->pMyObject->m_HeroSelect = 1;
-
-
-					//{
-					//	// server send (Loading Complete)
-					//	cs_packet_LoadingComplete *my_packet = reinterpret_cast<cs_packet_LoadingComplete *>(send_buffer);
-					//	my_packet->size = sizeof(cs_packet_LoadingComplete);
-					//	send_wsabuf.len = sizeof(cs_packet_LoadingComplete);
-					//	DWORD iobyte;
-					//	my_packet->type = CS_LOADINGCOMPLETE;
-					//	WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
-					//	//
-					//}
-					//ChangeScene = GAME;
+	
 				}
 				break;
 			case VK_LEFT:
-				if (SelectCount == 1)
-					SelectCount = 3;
-				else
-					SelectCount--;
-				InvalidateRect(g_hWnd, NULL, false);
+				if (ChangeScene == ROOM)
+				{
+					if (SelectCount == 1)
+						SelectCount = 3;
+					else
+						SelectCount--;
+					InvalidateRect(g_hWnd, NULL, false);
+				}
 				break;
 			case VK_RIGHT:
-				if (SelectCount == 3)
-					SelectCount = 1;
-				else
-					SelectCount++;
-				InvalidateRect(g_hWnd, NULL, false);
+				if (ChangeScene == ROOM)
+				{
+					if (SelectCount == 3)
+						SelectCount = 1;
+					else
+						SelectCount++;
+					InvalidateRect(g_hWnd, NULL, false);
+				}
 				break;
 		
 		}
@@ -515,20 +508,34 @@ void CGameFramework::FrameAdvance()
 {
 	m_GameTimer.Tick(60);
 	
+	
+	//m_pScene->SetHero();
+
 	if (LoadingScene)
 	{
-		
-		m_pScene->BuildObjects(m_pd3dDevice);
-		
-		LoadingScene = false;
-	}
 
-	
-	m_pScene->SetHero();
+		m_pScene->BuildObjects(m_pd3dDevice);
+		LoadingScene = false;
+		
+		// server send (loading complete)
+		cs_packet_LoadingComplete *my_packet = reinterpret_cast<cs_packet_LoadingComplete *>(send_buffer);
+		my_packet->size = sizeof(cs_packet_LoadingComplete);
+		send_wsabuf.len = sizeof(cs_packet_LoadingComplete);
+		DWORD iobyte;
+		my_packet->type = CS_LOADCOMPLETE;
+
+		WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+		//
+
+
+		ChangeScene = GAME;
+
+	}
 
 	if (ChangeScene == GAME)
 	{
-		
+
+
 		ProcessInput();
 		AnimateObjects();
 

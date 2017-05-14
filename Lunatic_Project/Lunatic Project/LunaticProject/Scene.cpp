@@ -34,7 +34,7 @@ CScene::CScene()
 	for(int i = 0; i < MAX_USER; ++i)
 	{
 		pOtherObject[i] = new CHeroManager(1);
-		
+		pOtherObject[i]->SetPosition(0.0f, -3000.0f, 0.0f);
 	}
 
 
@@ -120,10 +120,19 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	pHouse2Texture->SetTexture(0, pd3dsrvTexture);
 	pHouse2Texture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
+
 	//시티홀
 	pd3dsrvTexture = NULL;
 	CTexture *pCityhallTexture = new CTexture(1, 1, 0, 0);
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/building/cityhall/cityhall.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pCityhallTexture->SetTexture(0, pd3dsrvTexture);
+	pCityhallTexture->SetSampler(0, pd3dSamplerState);
+	pd3dsrvTexture->Release();
+
+	//테스트
+	pd3dsrvTexture = NULL;
+	pTestTexture = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/testbox.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pCityhallTexture->SetTexture(0, pd3dsrvTexture);
 	pCityhallTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
@@ -143,6 +152,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	pSordManMeshB = new CFBXMesh(pd3dDevice, "../Data/SordMan.data", 0.1f);
 	pBabarianMeshA = new CFBXMesh(pd3dDevice, "../Data/Babarian.data", 0.1f);
 	pBabarianMeshB = new CFBXMesh(pd3dDevice, "../Data/Babarian.data", 0.1f);
+	pTestMesh = new CFBXMesh(pd3dDevice, "../Data/testbox.data", 0.1f);
 
 	// map objects
 	CMesh *pPlaneMesh = new CFBXMesh(pd3dDevice, "../Data/plane1.data", 1.f);
@@ -197,29 +207,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 			}
 		}
 
-		/*else if (pMyObject->m_Team == B_TEAM)
-		{
-			if (pMyObject->m_HeroSelect == SordMan)
-			{
-				pMyObject->SetMesh(pSordManMeshB);
-				pMyObject->SetTexture(pSordManTexture);
-
-			}
-			else if (pMyObject->m_HeroSelect == Healer)
-			{
-				pMyObject->SetMesh(pHealerMeshB);
-				pMyObject->SetTexture(pHealerTexture);
-
-			}
-			else if (pMyObject->m_HeroSelect == Babarian)
-			{
-				pMyObject->SetMesh(pBabarianMeshB);
-				pMyObject->SetTexture(pBabarianTexture);
-			}
-		}*/
 		pMyObject->SetMaterial(pNormalMaterial);
-		//pMyObject->SetPosition(0.0f, -3000.0f, 0.0f);
-		//pMyObject->Rotate(0.0f, 0.0f, 0.0f);
 
 		m_ppShaders[1]->AddObject(pMyObject);
 		
@@ -234,11 +222,36 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 
 		for (int i = 0; i < MAX_USER; ++i)
 		{
-			pOtherObject[i]->SetMesh(pSordManMeshB);
-			pOtherObject[i]->SetTexture(pSordManTexture);
+			if (i != g_myid)
+			{
+
+			}
+			if (pOtherObject[i]->m_Team == A_TEAM)
+			{
+				if (pOtherObject[i]->m_HeroSelect == SordMan)
+				{
+					pOtherObject[i]->SetMesh(pSordManMeshA);
+					pOtherObject[i]->SetTexture(pSordManTexture);
+
+				}
+				else if (pOtherObject[i]->m_HeroSelect == Healer)
+				{
+					pOtherObject[i]->SetMesh(pHealerMeshA);
+					pOtherObject[i]->SetTexture(pHealerTexture);
+
+				}
+				else if (pOtherObject[i]->m_HeroSelect == Babarian)
+				{
+					pOtherObject[i]->SetMesh(pBabarianMeshA);
+					pOtherObject[i]->SetTexture(pBabarianTexture);
+				}
+			}
+			else
+			{
+				pOtherObject[i]->SetMesh(pSordManMeshB);
+				pOtherObject[i]->SetTexture(pSordManTexture);
+			}
 			pOtherObject[i]->SetMaterial(pNormalMaterial);
-			pOtherObject[i]->SetPosition(0.0f, -3000.0f, 0.0f);
-			//pOtherObject[i]->Rotate(0.0f, 0.0f, 0.0f);
 
 			m_ppShaders[i + 2]->AddObject(pOtherObject[i]);
 		}
@@ -254,35 +267,35 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 
 void CScene::SetHero()
 {
-	for (int i = 0; i < MAX_USER; ++i)
-	{
-		if (i != g_myid)
-		{
-			if (pOtherObject[i]->m_Team == A_TEAM)
-			{
-				if (pOtherObject[i]->m_HeroSelect == Babarian && pOtherObject[i]->GetMesh() != pBabarianMeshA)
-				{
-					pOtherObject[i]->SetMesh(pBabarianMeshA);
-					pOtherObject[i]->SetTexture(pBabarianTexture);
+	//for (int i = 0; i < MAX_USER; ++i)
+	//{
+	//	if (i != g_myid)
+	//	{
+	//		if (pOtherObject[i]->m_Team == A_TEAM)
+	//		{
+	//			if (pOtherObject[i]->m_HeroSelect == Babarian && pOtherObject[i]->GetMesh() != pBabarianMeshA)
+	//			{
+	//				pOtherObject[i]->SetMesh(pBabarianMeshA);
+	//				pOtherObject[i]->SetTexture(pBabarianTexture);
 
-				}
-				else if (pOtherObject[i]->m_HeroSelect == Healer && pOtherObject[i]->GetMesh() != pHealerMeshA)
-				{
-					pOtherObject[i]->SetMesh(pHealerMeshA);
-					pOtherObject[i]->SetTexture(pHealerTexture);
-				}
-				else if (pOtherObject[i]->m_HeroSelect == SordMan && pOtherObject[i]->GetMesh() != pSordManMeshA)
-				{
-					pOtherObject[i]->SetMesh(pSordManMeshA);
-					pOtherObject[i]->SetTexture(pSordManTexture);
-				}
-				else
-					continue;
+	//			}
+	//			else if (pOtherObject[i]->m_HeroSelect == Healer && pOtherObject[i]->GetMesh() != pHealerMeshA)
+	//			{
+	//				pOtherObject[i]->SetMesh(pHealerMeshA);
+	//				pOtherObject[i]->SetTexture(pHealerTexture);
+	//			}
+	//			else if (pOtherObject[i]->m_HeroSelect == SordMan && pOtherObject[i]->GetMesh() != pSordManMeshA)
+	//			{
+	//				pOtherObject[i]->SetMesh(pSordManMeshA);
+	//				pOtherObject[i]->SetTexture(pSordManTexture);
+	//			}
+	//			else
+	//				continue;
 
-			}
-		}
+	//		}
+	//	}
 
-	}
+	//}
 }
 
 void CScene::ChangeMesh_Texture()
@@ -327,8 +340,11 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		switch (wParam)
 		{
 		case 'A':
-			pMyObject->SetMesh(pBabarianMeshA, 0);
-			pMyObject->SetTexture(pBabarianTexture);
+			cout << "my " << g_myid << ends<< pMyObject->m_Team << endl;
+			for (int i = 0; i < MAX_USER; ++i)
+			{
+				cout << i << ends << pOtherObject[i]->GetPosition().y << endl;
+			}
 			break;
 		case 'B':
 			pMyObject->SetMesh(pHealerMeshA, 0);
