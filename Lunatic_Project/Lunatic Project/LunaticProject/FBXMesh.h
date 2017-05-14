@@ -49,6 +49,7 @@ private:
 	int m_nFBXAnimationNum;		// 모델이 실행할 애니메이션의 값을 관리한다.
 	int m_nFBXMaxFrameNum;		// 모델이 실행할 애니메이션의 최대 프레임 수.
 	int m_nFBXNowFrameNum;		// 모델이 진행중인 애니메이션의 현재 프레임 값.
+	
 
 public:
 	CFBXMesh(ID3D11Device *pd3dDevice, char *pszFileName, float fSize);

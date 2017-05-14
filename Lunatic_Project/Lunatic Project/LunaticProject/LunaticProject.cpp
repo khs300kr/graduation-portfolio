@@ -164,12 +164,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	HPEN Pen, oldPen;
 	PAINTSTRUCT ps;
-	static HBITMAP background;
+	static HBITMAP bmp_room, bmp_loading, bmp_mainmenu, bmp_lobby;
 
 	switch (message)
 	{
 	case WM_CREATE:
-		background = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
+		bmp_room = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
+		bmp_loading = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP2));
+		bmp_mainmenu = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP3));
+		bmp_lobby = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP4));
 		break;
 
 	case WM_PAINT:
@@ -186,52 +189,37 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		memdc2 = CreateCompatibleDC(hdc);
 
-		SelectObject(memdc2, background);
 
-		if (gGameFramework.ChangeScene == 0)
+
+		if (gGameFramework.ChangeScene == MAINMENU)
 		{
+			SelectObject(memdc2, bmp_mainmenu);
 			BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
-
-
-			//if (gGameFramework.m_pScene->pMyObject->m_Team == A_TEAM)
-		//	{
-
-			//}
-			//else if (gGameFramework.m_pScene->pMyObject->m_Team == B_TEAM)
-			//{
-			//	Pen = CreatePen(PS_SOLID, 5, RGB(0, 255, 0));
-			//	oldPen = (HPEN)SelectObject(hdc, Pen);
-			//}
-
-			SelectObject(memdc, GetStockObject(NULL_BRUSH));
-
-			Rectangle(memdc, 229 + ((gGameFramework.SelectCount - 1) * 199), 130, 370 + ((gGameFramework.SelectCount - 1) * 199), 270);
-
-			//for (int i = 0; i < MAX_USER; ++i)
-			//{
-			//	if (gGameFramework.m_pScene->pOtherObject[i]->m_Team == A_TEAM)
-			//	{
-			//		Pen = CreatePen(PS_SOLID, 5, RGB(255, 0, 0));
-			//		oldPen = (HPEN)SelectObject(hdc, Pen);
-			//	}
-			//	else if (gGameFramework.m_pScene->pOtherObject[i]->m_Team == B_TEAM)
-			//	{
-			//		Pen = CreatePen(PS_SOLID, 5, RGB(0, 255, 0));
-			//		oldPen = (HPEN)SelectObject(hdc, Pen);
-			//	}
-			//	SelectObject(hdc, GetStockObject(NULL_BRUSH));
-
-			//	Rectangle(hdc, 229, 130, 370, 270);
-			//}
 		}
 
-		//SelectObject(memdc, GetStockObject(NULL_BRUSH));
-		// SRCCOPY : 바탕색을 무시하고 그려라
+		else if (gGameFramework.ChangeScene == LOBBY)
+		{
+			SelectObject(memdc2, bmp_lobby);
+			BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
+		}
 
-		//if (gGameFramework.LoadingScene == true)
-		//{
-		//	TextOut(memdc, 0, 0, L"Loading...", 10);
-		//}
+		else if (gGameFramework.ChangeScene == ROOM)
+		{
+
+			SelectObject(memdc2, bmp_room);
+			BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
+
+			SelectObject(memdc, GetStockObject(NULL_BRUSH));
+			Rectangle(memdc, 229 + ((gGameFramework.SelectCount - 1) * 199), 130, 370 + ((gGameFramework.SelectCount - 1) * 199), 270);
+
+		}
+
+		if (gGameFramework.LoadingScene)
+		{
+			SelectObject(memdc2, bmp_loading);
+			BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
+		}
+
 
 		SelectObject(memdc, oldPen);
 		DeleteObject(Pen);
@@ -244,8 +232,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		DeleteDC(memdc);
 
 		EndPaint(hWnd, &ps);
-		
-
 
 		break;
 	// server
@@ -372,6 +358,7 @@ void ProcessPacket(char * ptr)
 		}
 		else {
 			gGameFramework.m_pScene->pOtherObject[id]->m_HeroSelect = SC_BABARIAN - 10;
+			gGameFramework.m_pScene->pOtherObject[id]->m_Team = A_TEAM;
 		}
 
 		break;
@@ -387,6 +374,7 @@ void ProcessPacket(char * ptr)
 		}
 		else {
 			gGameFramework.m_pScene->pOtherObject[id]->m_HeroSelect = SC_HEALER - 10;
+			gGameFramework.m_pScene->pOtherObject[id]->m_Team = A_TEAM;
 		}
 
 		break;
@@ -402,6 +390,7 @@ void ProcessPacket(char * ptr)
 		}
 		else {
 			gGameFramework.m_pScene->pOtherObject[id]->m_HeroSelect = SC_SWORDMAN - 10;
+			gGameFramework.m_pScene->pOtherObject[id]->m_Team = A_TEAM;
 		}
 
 		break;

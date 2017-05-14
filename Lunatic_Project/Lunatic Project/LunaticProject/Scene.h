@@ -10,7 +10,6 @@
 #define SPOT_LIGHT		2.0f
 #define DIRECTIONAL_LIGHT	3.0f
 
-
 // 1개의 조명을 표현하는 구조체이다. 
 struct LIGHT
 {
@@ -60,6 +59,7 @@ private:
 	DWORD dwDirection;
 
 
+
 public:
 	CScene();
 	~CScene();
@@ -68,6 +68,7 @@ public:
 
 	CHeroManager* pOtherObject[MAX_USER];
 	
+	CMaterial *pNormalMaterial;
 
 	CTexture *pHealerTexture;
 	CTexture *pSordManTexture;
@@ -83,6 +84,7 @@ public:
 	CShader **m_ppShaders;
 
 	void SetHero();
+	void ChangeMesh_Texture();
 	
 	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
@@ -102,6 +104,16 @@ public:
 	void ReleaseShaderVariables();
 
 public:
+	bool bHeroAttack = false;
+	bool bHeroRun = false;
+	bool bHeroQ = false;
+	bool bHeroW = false;
+	bool bHeroE = false;
+	bool bHeroR = false;
+	bool bHeroHit = false;
+	bool bHeroStun = false;
+	bool bHeroDie = false;
+	
 	// server
 	DWORD Animation_number[MAX_USER] = {};
 	void SendMovePacket(BYTE type);

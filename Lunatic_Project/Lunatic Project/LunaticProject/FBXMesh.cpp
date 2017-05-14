@@ -292,9 +292,12 @@ bool CFBXMesh::FBXFrameAdvance(float fTimeElapsed)
 		}
 		else
 		{
+			
 			m_nFBXNowFrameNum = 0;
 			m_fFBXAnimationTime = 0.0f;
 			return true;
+		
+			
 		}
 	}
 	else

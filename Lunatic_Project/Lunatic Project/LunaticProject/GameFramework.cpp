@@ -32,7 +32,7 @@ CGameFramework::CGameFramework()
 		OtherDirection[i] = 0;
 
 	LoadingScene = false;
-	ChangeScene = 0;
+	ChangeScene = MAINMENU;
 	SelectCount = 1;
 }
 
@@ -190,43 +190,58 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 	switch (nMessageID)
 	{
 	case WM_KEYDOWN:
-		if (ChangeScene == 0)
-		{
+
 			switch (wParam)
 			{
 			case VK_RETURN:
-				
-				cout << "Loading..." << endl;
-				//{
-				//	// server send (Select)
-				//	cs_packet_char_select *my_packet = reinterpret_cast<cs_packet_char_select *>(send_buffer);
-				//	my_packet->size = sizeof(cs_packet_char_select);
-				//	send_wsabuf.len = sizeof(cs_packet_char_select);
-				//	DWORD iobyte;
-				//	my_packet->type = SelectCount + 10;
-				//	WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
-				//	//
-				//}
-				m_pScene->pMyObject->m_HeroSelect = SelectCount;
-
-				LoadingScene = true;
-				//m_pScene->pMyObject->m_HeroSelect = Babarian;
-				
-				//m_pScene->pMyObject->m_HeroSelect = 1;
-
-
+				if (ChangeScene == MAINMENU)
 				{
-					// server send (Loading Complete)
-					cs_packet_LoadingComplete *my_packet = reinterpret_cast<cs_packet_LoadingComplete *>(send_buffer);
-					my_packet->size = sizeof(cs_packet_LoadingComplete);
-					send_wsabuf.len = sizeof(cs_packet_LoadingComplete);
-					DWORD iobyte;
-					my_packet->type = CS_LOADINGCOMPLETE;
-					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
-					//
+					ChangeScene = LOBBY;
+					InvalidateRect(g_hWnd, NULL, false);
 				}
-				ChangeScene = 1;
+
+				else if (ChangeScene == LOBBY)
+				{
+					ChangeScene = ROOM;
+					InvalidateRect(g_hWnd, NULL, false);
+				}
+
+				else if (ChangeScene == ROOM)
+				{
+					cout << "Loading..." << endl;
+					{
+						// server send (Select)
+						cs_packet_char_select *my_packet = reinterpret_cast<cs_packet_char_select *>(send_buffer);
+						my_packet->size = sizeof(cs_packet_char_select);
+						send_wsabuf.len = sizeof(cs_packet_char_select);
+						DWORD iobyte;
+						my_packet->type = SelectCount + 10;
+						WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+						//
+					}
+					m_pScene->pMyObject->m_HeroSelect = SelectCount;
+
+
+					
+					//LoadingScene = true;
+					//InvalidateRect(m_hWnd, NULL, false);
+					////m_pScene->pMyObject->m_HeroSelect = Babarian;
 				
+					////m_pScene->pMyObject->m_HeroSelect = 1;
+
+
+					//{
+					//	// server send (Loading Complete)
+					//	cs_packet_LoadingComplete *my_packet = reinterpret_cast<cs_packet_LoadingComplete *>(send_buffer);
+					//	my_packet->size = sizeof(cs_packet_LoadingComplete);
+					//	send_wsabuf.len = sizeof(cs_packet_LoadingComplete);
+					//	DWORD iobyte;
+					//	my_packet->type = CS_LOADINGCOMPLETE;
+					//	WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+					//	//
+					//}
+					//ChangeScene = GAME;
+				}
 				break;
 			case VK_LEFT:
 				if (SelectCount == 1)
@@ -242,7 +257,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					SelectCount++;
 				InvalidateRect(g_hWnd, NULL, false);
 				break;
-			}
+		
 		}
 
 	case WM_KEYUP:
@@ -413,7 +428,7 @@ void CGameFramework::ProcessInput()
 			}
 			// 플레이어를 dwDirection 방향으로 이동한다(실제로는 속도 벡터를 변경한다). 
 			// 이동 거리는 시간에 비례하도록 한다. 플레이어의 이동 속력은 (50/초)로 가정한다. 만약 플레이어의 이동 속력이 있다면 그 값을 사용한다.
-			if (dwDirection)
+			if (dwDirection && ChangeScene == GAME)
 			{
 				if (dwDirection == DIR_LEFT_BACK || dwDirection == DIR_LEFT_FRONT || dwDirection ==  DIR_RIGHT_BACK || dwDirection == DIR_RIGHT_FRONT) // 대각선 이동 이동속도 구현
 				{
@@ -435,9 +450,12 @@ void CGameFramework::ProcessInput()
 					m_pScene->pMyObject->SetSpeed(m_pScene->pMyObject->GetNormalSpeed());
 				}
 
+
 				m_pPlayer->Move(dwDirection, m_pScene->pMyObject->GetSpeed(), true);
 				m_pScene->pMyObject->SetPosition(m_pPlayer->GetPosition());
 				m_pScene->pMyObject->Rotate(0, RotY_Hero, 0);
+				
+				
 				
 			}
 
@@ -448,7 +466,7 @@ void CGameFramework::ProcessInput()
 
 		for (int i = 0; i < MAX_USER; ++i)
 		{
-			if (OtherDirection[i])
+			if (OtherDirection[i] && ChangeScene == GAME)
 			{
 				
 				if (OtherDirection[i] == DIR_LEFT_BACK || OtherDirection[i] == DIR_LEFT_FRONT || OtherDirection[i] == DIR_RIGHT_BACK || OtherDirection[i] == DIR_RIGHT_FRONT) // 대각선 이동 이동속도 구현
@@ -480,9 +498,9 @@ void CGameFramework::ProcessInput()
 				//m_pScene->pOtherObject[i]->SetPosition(m_pScene->pOtherObject[i]->GetPosition().x + 1.0f, m_pScene->pOtherObject[i]->GetPosition().y, m_pScene->pOtherObject[i]->GetPosition().z);
 				//m_pScene->pOtherObject[i]->Move(m_pScene->pOtherObject[i]->GetPosition(), OtherDirection[i], m_pScene->pOtherObject[i]->GetSpeed(), true);
 			}
-
-
 		}
+
+
 	}
 	// 플레이어를 실제로 이동하고 카메라를 갱신한다. 중력과 마찰력의 영향을 속도 벡터에 적용한다.
 	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
@@ -496,17 +514,21 @@ void CGameFramework::AnimateObjects()
 void CGameFramework::FrameAdvance()
 {
 	m_GameTimer.Tick(60);
-
+	
 	if (LoadingScene)
 	{
+		
 		m_pScene->BuildObjects(m_pd3dDevice);
-		m_pScene->SetHero();
+		
 		LoadingScene = false;
 	}
 
-	if (ChangeScene == 1)
-	{
+	
+	m_pScene->SetHero();
 
+	if (ChangeScene == GAME)
+	{
+		
 		ProcessInput();
 		AnimateObjects();
 

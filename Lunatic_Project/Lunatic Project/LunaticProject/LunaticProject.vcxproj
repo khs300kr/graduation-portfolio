@@ -142,6 +142,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Data\Menu\background.bmp" />
+    <Image Include="..\Data\Menu\loading.bmp" />
+    <Image Include="..\Data\Menu\lobby.bmp" />
+    <Image Include="..\Data\Menu\mainmenu.bmp" />
     <Image Include="LunaticProject.ico" />
     <Image Include="small.ico" />
   </ItemGroup>

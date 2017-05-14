@@ -88,3 +88,8 @@ using namespace std;
 #define SordMan 3
 #define Healer 2
 #define Babarian 1
+
+#define MAINMENU 0
+#define LOBBY 1
+#define ROOM 2
+#define GAME 3
