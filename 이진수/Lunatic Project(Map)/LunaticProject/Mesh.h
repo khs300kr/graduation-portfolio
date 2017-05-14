@@ -47,6 +47,38 @@ public:
 	void Update(D3DXMATRIX *pd3dxmtxTransform);
 };
 
+struct VIEWPORT
+{
+	int						m_x;
+	int						m_y;
+	int						m_Width;
+	int						m_Height;
+};
+
+class CVertex
+{
+public:
+	CVertex() { }
+	CVertex(float x, float y, float z, DWORD dwColor = 0x00000000) { m_vPosition = D3DXVECTOR3(x, y, z); m_dwColor = dwColor; }
+	//CVertex(float x, float y, float z) { m_vPosition = D3DXVECTOR3(x, y, z); }
+
+
+	D3DXVECTOR3				m_vPosition;
+	DWORD					m_dwColor;
+};
+
+class CPolygon
+{
+public:
+	CPolygon(int nVertices);
+	virtual ~CPolygon();
+
+	int						m_nVertices;
+	CVertex					*m_pVertices;
+
+	void SetVertex(int nIndex, CVertex vertex);
+	//void Draw(HDC hDCFrameBuffer, CGameObject *pObject, CCamera *pCamera);
+};
 
 class CMesh
 {
@@ -119,6 +151,15 @@ public:
 	virtual bool FBXFrameAdvance(float fTimeElapsed) { return 0; }
 	virtual void SetAnimation(int nFBXAnimationNum) {}
 
+
+public:
+	CMesh(int nPolygons);
+
+	int						m_nPolygons;
+	CPolygon				**m_ppPolygons;
+
+public:
+	void SetPolygon(int nIndex, CPolygon *pPolygon);
 };
 
 class CMeshDiffused : public CMesh

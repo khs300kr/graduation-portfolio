@@ -25,7 +25,7 @@ CScene::CScene()
 	UpKeyDown = false;
 	DownKeyDown = false;
 
-
+	ColBox = false;
 }
 
 
@@ -132,7 +132,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 
 	CMesh *pBuilding1Mesh = new CFBXMesh(pd3dDevice, "../Data/building/building1/building1.data", 0.6f);
 	CMesh *pBuilding2Mesh = new CFBXMesh(pd3dDevice, "../Data/building/building2/building2.data", 1.f);
-	CMesh *pHouse1Mesh = new CFBXMesh(pd3dDevice, "../Data/building/house1/house1.data", 0.7f);
+	CMesh *pHouse1Mesh = new CFBXMesh(pd3dDevice, "../Data/building/house1/housetest.data", 1.0f);
 	CMesh *pHouse2Mesh = new CFBXMesh(pd3dDevice, "../Data/building/house2/house2.data", 0.7f);
 	CMesh *pCityhallMesh = new CFBXMesh(pd3dDevice, "../Data/building/cityhall/cityhall.data", 1.f);
 
@@ -157,7 +157,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 		pTestObject->SetMaterial(pNormalMaterial);
 		pTestObject->SetTexture(pHealerTexture);
 		pTestObject->Rotate(0.0f, 0.0f, 0.0f);
-		pTestObject->SetPosition(20.0f, 0.0f, 0.0f);
+		pTestObject->SetPosition(20.0f, 0.0f, -500.0f);
 		m_ppShaders[1]->AddObject(pTestObject);
 
 
@@ -170,9 +170,22 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 		pSordmanObject->SetMaterial(pNormalMaterial);
 		pSordmanObject->SetTexture(pSordManTexture);
 		pSordmanObject->Rotate(0.0f, 180.0f, 0.0f);
-		pSordmanObject->SetPosition(0.0f, 0.0f, 0.0f);
+		pSordmanObject->SetPosition(0.0f, 0.0f, -500.0f);
+		//pSordmanObject->SetOOBB(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+		pSordmanObject->SetOOBB(XMFLOAT3(pSordmanObject->GetPosition().x, pSordmanObject->GetPosition().y, pSordmanObject->GetPosition().z),
+			XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 		
 		m_ppShaders[2]->AddObject(pSordmanObject);
+
+		
+
+		// 배경 상자
+		CMesh *BoxMesh = BoundBox->CubeMesh(20, BLACK, 0);;
+
+		BoundBox = new CGameObject(1);
+		BoundBox->SetMesh(BoxMesh);
+		BoundBox->SetPosition(pSordmanObject->GetPosition().x, pSordmanObject->GetPosition().y, pSordmanObject->GetPosition().z);
+
 
 		//plane
 		m_ppShaders[3] = new CTexturedIlluminatedShader(1);
@@ -224,7 +237,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 		}
 
 		// 건물 오브젝트 생성
-		CGameObject *pHouse1Object[14]; 
+		//CGameObject *pHouse1Object[14]; 
 		for(int i = 0; i < 14; ++i)
 		{
 			pHouse1Object[i] = new CGameObject(1);
@@ -232,9 +245,11 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 			pHouse1Object[i]->SetMaterial(pNormalMaterial);
 			pHouse1Object[i]->SetTexture(pHouse1Texture);
 			pHouse1Object[i]->Rotate(0.0f, 0.0f, 0.0f);
+			//pHouse1Object[i]->SetOOBB(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(100.f, 100.f, 100.f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 		}
 		// 건물 위치 설정
 		pHouse1Object[0]->SetPosition(50.0f, 0.0f, -300.0f);
+		pHouse1Object[0]->SetOOBB(XMFLOAT3(50.0f, 0.0f, -300.0f), XMFLOAT3(100.f, 100.f, 100.f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 		pHouse1Object[1]->SetPosition(250.0f, 0.0f, -300.0f);
 		pHouse1Object[2]->SetPosition(-150.0f, 0.0f, -300.0f);
 
@@ -722,6 +737,8 @@ void CScene::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS
 
 void CScene::AnimateObjects(float fTimeElapsed)
 {
+	pSordmanObject->SetOOBB(XMFLOAT3(pSordmanObject->GetPosition().x, pSordmanObject->GetPosition().y, pSordmanObject->GetPosition().z),
+		XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 	CPlayer *pPlayer = m_pCamera->GetPlayer();
 	if (m_pLights && m_pd3dcbLights)
 	{
@@ -812,10 +829,45 @@ void CScene::AnimateObjects(float fTimeElapsed)
 			bCharaterPunch = false;
 		}
 	}
+	//for (int i = 0; i < 14; i++) pHouse1Object[i]->m_pCollider = NULL;
+	//for (int i = 0; i < 14; ++i)
+	//{
+	//	if (pHouse1Object[i]->m_xmOOBB.Intersects(pSordmanObject->m_xmOOBB))
+	//	{
+	//		pHouse1Object[i]->m_pCollider = pSordmanObject;
+	//		pSordmanObject->m_pCollider = pHouse1Object[i];
+	//		
+	//		ColBox = true;
+
+	//		//cout << ColBox << endl;
+
+	//		//pSordmanObject->SetPosition(0.f, 0.f, -500.f);
+	//		//pSordmanObject->SetSpeed(-0.3f);
+	//	}
+	//	if (!(pHouse1Object[i]->m_xmOOBB.Intersects(pSordmanObject->m_xmOOBB)))
+	//	{
+	//		//cout << "시발" << endl;
+	//		ColBox = false;
+	//	}
+	//}
+
+
+		if (pHouse1Object[0]->m_xmOOBB.Intersects(pSordmanObject->m_xmOOBB))
+		{
+			pHouse1Object[0]->m_pCollider = pSordmanObject;
+			pSordmanObject->m_pCollider = pHouse1Object[0];
+
+			ColBox = true;
+		}
+		if (!(pHouse1Object[0]->m_xmOOBB.Intersects(pSordmanObject->m_xmOOBB)))
+		{
+			ColBox = false;
+		}
 	
-	
-	
-	
+
+
+
+	cout << ColBox << endl;
 	//m_pCamera->SetPosition(D3DXVECTOR3(pSordmanObject->GetPosition().x, pSordmanObject->GetPosition().y, pSordmanObject->GetPosition().z - 40));
 	
 	//cout << pSordmanObject->m_d3dxvDirection.x << ends << pSordmanObject->m_d3dxvDirection.y << ends << pSordmanObject->m_d3dxvDirection.z << endl;
@@ -832,4 +884,6 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 		m_ppShaders[i]->Render(pd3dDeviceContext, pCamera);
 	}
 	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->Render(pd3dDeviceContext, pCamera);
+
+	BoundBox->Render(pd3dDeviceContext, pCamera);
 }
