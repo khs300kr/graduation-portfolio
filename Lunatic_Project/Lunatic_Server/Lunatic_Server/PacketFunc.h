@@ -16,5 +16,12 @@ void SendPositionPacket(int client, int object);
 void Do_move(int id, unsigned char packet[]);
 // (Att)
 void SendAttackPacket(int client, int object);
+// (Skill)
+void SendSkillQPacket(int client, int object);
+void SendSkillWPacket(int client, int object);
+void SendSkillEPacket(int client, int object);
+void SendSkillRPacket(int client, int object);
+
+
 
 void SendRemovePlayerPacket(int client, int object);

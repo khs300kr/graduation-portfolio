@@ -19,6 +19,10 @@
 #define CS_READY					10
 #define CS_LOADCOMPLETE				11
 #define CS_ATTACK					12
+#define CS_SKILL_Q					13
+#define CS_SKILL_W					14
+#define CS_SKILL_E					15
+#define CS_SKILL_R					16
 
 #define SC_POS           1
 #define SC_PUT_PLAYER    2
@@ -28,6 +32,11 @@
 #define SC_READY		 6
 #define SC_ALLREADY		 7
 #define SC_ATTACK		 8
+#define SC_SKILL_Q		 9
+#define SC_SKILL_W		 10
+#define SC_SKILL_E		 11
+#define SC_SKILL_R		 12
+
 
 // Client Define
 // 키보드 입력
@@ -93,6 +102,25 @@ struct cs_packet_attack {
 	BYTE type;
 };
 
+struct cs_packet_skillQ {
+	BYTE size;
+	BYTE type;
+};
+
+struct cs_packet_skillW {
+	BYTE size;
+	BYTE type;
+};
+
+struct cs_packet_skillE {
+	BYTE size;
+	BYTE type;
+};
+
+struct cs_packet_skillR {
+	BYTE size;
+	BYTE type;
+};
 
 
 // Server -> Client
@@ -149,6 +177,31 @@ struct sc_packet_attack {
 	BYTE type;
 	WORD id;
 };
+
+struct sc_packet_skillQ {
+	BYTE size;
+	BYTE type;
+	WORD id;
+};
+
+struct sc_packet_skillW {
+	BYTE size;
+	BYTE type;
+	WORD id;
+};
+
+struct sc_packet_skillE {
+	BYTE size;
+	BYTE type;
+	WORD id;
+};
+
+struct sc_packet_skillR {
+	BYTE size;
+	BYTE type;
+	WORD id;
+};
+
 
 struct sc_packet_chat {
 	BYTE size;

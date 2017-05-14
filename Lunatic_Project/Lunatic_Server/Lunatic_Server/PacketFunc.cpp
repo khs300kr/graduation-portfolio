@@ -108,6 +108,43 @@ void SendAttackPacket(int client, int object)
 	Send_Packet(client, &packet);
 }
 
+void SendSkillQPacket(int client, int object)
+{
+	sc_packet_skillQ packet;
+	packet.id = object;
+	packet.size = sizeof(packet);
+	packet.type = SC_SKILL_Q;
+
+	Send_Packet(client, &packet);
+}
+void SendSkillWPacket(int client, int object)
+{
+	sc_packet_skillW packet;
+	packet.id = object;
+	packet.size = sizeof(packet);
+	packet.type = SC_SKILL_W;
+
+	Send_Packet(client, &packet);
+}
+void SendSkillEPacket(int client, int object)
+{
+	sc_packet_skillE packet;
+	packet.id = object;
+	packet.size = sizeof(packet);
+	packet.type = SC_SKILL_E;
+
+	Send_Packet(client, &packet);
+}
+void SendSkillRPacket(int client, int object)
+{
+	sc_packet_skillR packet;
+	packet.id = object;
+	packet.size = sizeof(packet);
+	packet.type = SC_SKILL_R;
+
+	Send_Packet(client, &packet);
+}
+
 void SendRemovePlayerPacket(int client, int object)
 {
 	sc_packet_remove_player packet;
@@ -175,11 +212,35 @@ void ProcessPacket(int id, unsigned char packet[])
 	case CS_KEYUP_RIGHT:	g_Clients[id].m_Direction ^= DIR_RIGHT;	Do_move(id, packet);	break;
 	// (Att)
 	case CS_ATTACK:			
+		std::cout << "Attack\n";
 		for (int i = 0; i < MAX_USER; ++i){
 			if (g_Clients[i].m_bConnect == true)
 				SendAttackPacket(i, id);
 		}break;
-
+	case CS_SKILL_Q:
+		std::cout << "Q\n";
+		for (int i = 0; i < MAX_USER; ++i) {
+			if (g_Clients[i].m_bConnect == true)
+				SendSkillQPacket(i, id);
+		}break;
+	case CS_SKILL_W:
+		std::cout << "W\n";
+		for (int i = 0; i < MAX_USER; ++i) {
+			if (g_Clients[i].m_bConnect == true)
+				SendSkillWPacket(i, id);
+		}break;
+	case CS_SKILL_E:
+		std::cout << "E\n";
+		for (int i = 0; i < MAX_USER; ++i) {
+			if (g_Clients[i].m_bConnect == true)
+				SendSkillEPacket(i, id);
+		}break;
+	case CS_SKILL_R:
+		std::cout << "R\n";
+		for (int i = 0; i < MAX_USER; ++i) {
+			if (g_Clients[i].m_bConnect == true)
+				SendSkillRPacket(i, id);
+		}break;
 	default: std::cout << "Unknown Packet Type from Client : " << id << std::endl;
 		while (true);
 	}
