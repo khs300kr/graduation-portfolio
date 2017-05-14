@@ -17,6 +17,16 @@ public:
 	int m_HeroSelect;
 	int m_Team;
 
+	bool bHeroAttack = false;
+	bool bHeroRun = false;
+	bool bHeroQ = false;
+	bool bHeroW = false;
+	bool bHeroE = false;
+	bool bHeroR = false;
+	bool bHeroHit = false;
+	bool bHeroStun = false;
+	bool bHeroDie = false;
+
 	CSordMan* m_pSordMan;
 	CHealer* m_pHealer;
 	CBabarian* m_pBabarian;

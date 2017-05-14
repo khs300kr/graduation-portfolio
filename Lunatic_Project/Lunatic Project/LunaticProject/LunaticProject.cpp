@@ -56,8 +56,8 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	ZeroMemory(&ServerAddr, sizeof(SOCKADDR_IN));
 	ServerAddr.sin_family = AF_INET;
 	ServerAddr.sin_port = htons(MY_SERVER_PORT);
-	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	//ServerAddr.sin_addr.s_addr = inet_addr("192.168.3.61");
+	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	ServerAddr.sin_addr.s_addr = inet_addr("192.168.82.126");
 
 	int Result = WSAConnect(g_mysocket, (sockaddr *)&ServerAddr, sizeof(ServerAddr), NULL, NULL, NULL, NULL);
 	WSAAsyncSelect(g_mysocket, g_hWnd, WM_SOCKET, FD_CLOSE | FD_READ);
@@ -200,7 +200,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		else if (gGameFramework.ChangeScene == LOBBY)
 		{
 			SelectObject(memdc2, bmp_lobby);
+			
+			SelectObject(memdc, GetStockObject(NULL_BRUSH));
+			TextOut(memdc2, 420, 120, L"입장 가능", 5);
 			BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
+
+			
+			
 		}
 
 		else if (gGameFramework.ChangeScene == ROOM)
@@ -413,7 +419,7 @@ void ProcessPacket(char * ptr)
 			gGameFramework.OtherDirection[id] = my_packet->direction;
 			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 
-
+			
 			if (my_packet->direction != 0)
 				gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_RUN);
 			else
@@ -427,16 +433,6 @@ void ProcessPacket(char * ptr)
 		break;
 	}
 
-	case SC_REMOVE_PLAYER:
-	{
-		sc_packet_remove_player *my_packet = reinterpret_cast<sc_packet_remove_player *>(ptr);
-		int id = my_packet->id;
-		if (id != g_myid) {
-			//gGameFramework.m_pScene->pOtherObject[id]->SetPosition(0.f,-3000.f,0.f);
-		}
-		break;
-	}
-
 	case SC_ATTACK:
 	{
 		sc_packet_attack *my_packet = reinterpret_cast<sc_packet_attack *>(ptr);
@@ -446,8 +442,82 @@ void ProcessPacket(char * ptr)
 		}
 		else {
 			cout << "[Other]SC_ATTACK_PACKET\n";
+			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_ATTACK);
 		}
 
+		break;
+	}
+
+	case SC_SKILL_Q:
+	{
+		sc_packet_skillQ *my_packet = reinterpret_cast<sc_packet_skillQ *>(ptr);
+		int id = my_packet->id;
+		if (id == g_myid) {
+			cout << "[My]SC_Q_PACKET\n";
+
+		}
+		else {
+			cout << "[Other]SC_Q_PACKET\n";
+			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_Q);
+		}
+
+		break;
+	}
+
+	case SC_SKILL_W:
+	{
+		sc_packet_skillW *my_packet = reinterpret_cast<sc_packet_skillW *>(ptr);
+		int id = my_packet->id;
+		if (id == g_myid) {
+			cout << "[My]SC_W_PACKET\n";
+		}
+		else {
+			cout << "[Other]SC_W_PACKET\n";
+			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_W);
+		}
+
+		break;
+	}
+
+	case SC_SKILL_E:
+	{
+		sc_packet_skillE *my_packet = reinterpret_cast<sc_packet_skillE *>(ptr);
+		int id = my_packet->id;
+		if (id == g_myid) {
+			cout << "[My]SC_E_PACKET\n";
+		}
+		else {
+			cout << "[Other]SC_E_PACKET\n";
+			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_E);
+		}
+
+		break;
+	}
+
+	case SC_SKILL_R:
+	{
+		sc_packet_skillR *my_packet = reinterpret_cast<sc_packet_skillR *>(ptr);
+		int id = my_packet->id;
+		if (id == g_myid) {
+			cout << "[My]SC_R_PACKET\n";
+		}
+		else {
+			cout << "[Other]SC_R_PACKET\n";
+			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_R);
+		}
+
+		break;
+	}
+
+
+
+	case SC_REMOVE_PLAYER:
+	{
+		sc_packet_remove_player *my_packet = reinterpret_cast<sc_packet_remove_player *>(ptr);
+		int id = my_packet->id;
+		if (id != g_myid) {
+			//gGameFramework.m_pScene->pOtherObject[id]->SetPosition(0.f,-3000.f,0.f);
+		}
 		break;
 	}
 	default:

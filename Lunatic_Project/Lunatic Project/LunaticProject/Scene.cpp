@@ -177,6 +177,8 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 
 
 	{		
+		
+
 		for (int i = 1; i <= 8; ++i)
 		{
 			m_ppShaders[i] = new CCharacterShader(1);
@@ -273,7 +275,7 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 			break;
 
 		case 'Z':
-			if (!bHeroAttack)
+			if (!pHeroObject[g_myid]->bHeroAttack)
 			{
 				
 				/*m_ppShaders[2]->GetFBXMesh->SetAnimation(1);
@@ -325,79 +327,83 @@ void CScene::ProcessInput()
 {
 	if (activate)
 	{
-		if (KEY_DOWN(VK_UP) && !UpKeyDown) {
-			UpKeyDown = true;
-			dwDirection |= DIR_BACK;
+		if (!pHeroObject[g_myid]->bHeroAttack)
+		{
+			if (KEY_DOWN(VK_UP) && !UpKeyDown) {
+				UpKeyDown = true;
+				dwDirection |= DIR_BACK;
 
-			if (dwDirection) SendMovePacket(CS_KEYDOWN_UP);
+				if (dwDirection) SendMovePacket(CS_KEYDOWN_UP);
+			}
+			if (KEY_DOWN(VK_DOWN) && !DownKeyDown) {
+				DownKeyDown = true;
+				dwDirection |= DIR_FRONT;
+				if (dwDirection) SendMovePacket(CS_KEYDOWN_DOWN);
+			}
+			if (KEY_DOWN(VK_LEFT) && !LeftKeyDown) {
+				LeftKeyDown = true;
+				dwDirection |= DIR_LEFT;
+				if (dwDirection) SendMovePacket(CS_KEYDOWN_LEFT);
+			}
+			if (KEY_DOWN(VK_RIGHT) && !RightKeyDown) {
+				RightKeyDown = true;
+				dwDirection |= DIR_RIGHT;
+				if (dwDirection) SendMovePacket(CS_KEYDOWN_RIGHT);
+			}
 		}
-		if (KEY_DOWN(VK_DOWN) && !DownKeyDown) {
-			DownKeyDown = true;
-			dwDirection |= DIR_FRONT;
-			if (dwDirection) SendMovePacket(CS_KEYDOWN_DOWN);
-		}
-		if (KEY_DOWN(VK_LEFT) && !LeftKeyDown) {
-			LeftKeyDown = true;
-			dwDirection |= DIR_LEFT;
-			if (dwDirection) SendMovePacket(CS_KEYDOWN_LEFT);
-		}
-		if (KEY_DOWN(VK_RIGHT) && !RightKeyDown) {
-			RightKeyDown = true;
-			dwDirection |= DIR_RIGHT;
-			if (dwDirection) SendMovePacket(CS_KEYDOWN_RIGHT);
-		}
+
 
 
 		if (KEY_UP(VK_UP) && UpKeyDown)
 		{
 			UpKeyDown = false;
-			if (bHeroRun && !bHeroAttack)
+			if (pHeroObject[g_myid]->bHeroRun)
 			{
-				m_ppShaders[g_myid]->GetFBXMesh->SetAnimation(ANI_IDLE);
-				bHeroRun = false;
+				m_ppShaders[g_myid+1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				pHeroObject[g_myid]->bHeroRun = false;
 			}
 			SendMovePacket(CS_KEYUP_UP);
 		}
 		if (KEY_UP(VK_DOWN) && DownKeyDown)
 		{
 			DownKeyDown = false;
-			if (bHeroRun && !bHeroAttack)
+			if (pHeroObject[g_myid]->bHeroRun)
 			{
-				m_ppShaders[g_myid]->GetFBXMesh->SetAnimation(ANI_IDLE);
-				bHeroRun = false;
+				m_ppShaders[g_myid+1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				pHeroObject[g_myid]->bHeroRun = false;
 			}
 			SendMovePacket(CS_KEYUP_DOWN);
 		}
 		if (KEY_UP(VK_LEFT) && LeftKeyDown)
 		{
 			LeftKeyDown = false;
-			if (bHeroRun && !bHeroAttack)
+			if (pHeroObject[g_myid]->bHeroRun)
 			{
-				m_ppShaders[g_myid]->GetFBXMesh->SetAnimation(ANI_IDLE);
-				bHeroRun = false;
+				m_ppShaders[g_myid+1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				pHeroObject[g_myid]->bHeroRun = false;
 			}
 			SendMovePacket(CS_KEYUP_LEFT);
 		}
 		if (KEY_UP(VK_RIGHT) && RightKeyDown)
 		{
 			RightKeyDown = false;
-			if (bHeroRun && !bHeroAttack)
+			if (pHeroObject[g_myid]->bHeroRun)
 			{
-				m_ppShaders[g_myid]->GetFBXMesh->SetAnimation(ANI_IDLE);
-				bHeroRun = false;
+				m_ppShaders[g_myid+1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				pHeroObject[g_myid]->bHeroRun = false;
 			}
 			SendMovePacket(CS_KEYUP_RIGHT);
 		}
 
 
-		if (KEY_DOWN('S'))
+		if (KEY_DOWN('D'))
 		{
-			if (!bHeroAttack)
+			if (!pHeroObject[g_myid]->bHeroAttack)
 			{
-				m_ppShaders[g_myid]->GetFBXMesh->SetAnimation(ANI_ATTACK);
+				m_ppShaders[g_myid+1]->GetFBXMesh->SetAnimation(ANI_ATTACK);
 	
-				bHeroAttack = true;
-				bHeroRun = false;
+				pHeroObject[g_myid]->bHeroAttack = true;
+				pHeroObject[g_myid]->bHeroRun = false;
 
 				cs_packet_attack *my_packet = reinterpret_cast<cs_packet_attack *>(send_buffer);
 				my_packet->size = sizeof(cs_packet_attack);
@@ -405,10 +411,116 @@ void CScene::ProcessInput()
 				DWORD iobyte;
 				my_packet->type = CS_ATTACK;
 
-				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);	
+				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+			}
 
+			
+		}
+
+		else if (KEY_DOWN('Q'))
+		{
+			if (!pHeroObject[g_myid]->bHeroQ)
+			{
+				m_ppShaders[g_myid+1]->GetFBXMesh->SetAnimation(ANI_Q);
+
+				pHeroObject[g_myid]->bHeroQ = true;
+				pHeroObject[g_myid]->bHeroRun = false;
+
+				cs_packet_skillQ *my_packet = reinterpret_cast<cs_packet_skillQ *>(send_buffer);
+				my_packet->size = sizeof(cs_packet_skillQ);
+				send_wsabuf.len = sizeof(cs_packet_skillQ);
+				DWORD iobyte;
+				my_packet->type = CS_SKILL_Q;
+
+				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 			}
 		}
+		else if (KEY_DOWN('W'))
+		{
+			if (!pHeroObject[g_myid]->bHeroW)
+			{
+				m_ppShaders[g_myid+1]->GetFBXMesh->SetAnimation(ANI_W);
+				
+				pHeroObject[g_myid]->bHeroW = true;
+				pHeroObject[g_myid]->bHeroRun = false;
+
+				cs_packet_skillW *my_packet = reinterpret_cast<cs_packet_skillW *>(send_buffer);
+				my_packet->size = sizeof(cs_packet_skillW);
+				send_wsabuf.len = sizeof(cs_packet_skillW);
+				DWORD iobyte;
+				my_packet->type = CS_SKILL_W;
+
+				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+			}
+		}
+		else if (KEY_DOWN('E'))
+		{
+			if (!pHeroObject[g_myid]->bHeroE)
+			{
+				m_ppShaders[g_myid+1]->GetFBXMesh->SetAnimation(ANI_E);
+
+				pHeroObject[g_myid]->bHeroE = true;
+				pHeroObject[g_myid]->bHeroRun = false;
+
+				cs_packet_skillE *my_packet = reinterpret_cast<cs_packet_skillE *>(send_buffer);
+				my_packet->size = sizeof(cs_packet_skillE);
+				send_wsabuf.len = sizeof(cs_packet_skillE);
+				DWORD iobyte;
+				my_packet->type = CS_SKILL_E;
+
+				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+			}
+		}
+		else if (KEY_DOWN('R'))
+		{
+			if (!pHeroObject[g_myid]->bHeroR)
+			{
+				m_ppShaders[g_myid+1]->GetFBXMesh->SetAnimation(ANI_R);
+
+				pHeroObject[g_myid]->bHeroR = true;
+				pHeroObject[g_myid]->bHeroRun = false;
+
+				cs_packet_skillR *my_packet = reinterpret_cast<cs_packet_skillR *>(send_buffer);
+				my_packet->size = sizeof(cs_packet_skillR);
+				send_wsabuf.len = sizeof(cs_packet_skillR);
+				DWORD iobyte;
+				my_packet->type = CS_SKILL_R;
+
+				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+			}
+		}
+
+		else if (KEY_DOWN('1'))
+		{
+			if (!pHeroObject[g_myid]->bHeroHit)
+			{
+				m_ppShaders[g_myid+1]->GetFBXMesh->SetAnimation(ANI_HIT);
+
+				pHeroObject[g_myid]->bHeroHit = true;
+				pHeroObject[g_myid]->bHeroRun = false;
+			}
+		}
+		else if (KEY_DOWN('2'))
+		{
+			if (!pHeroObject[g_myid]->bHeroStun)
+			{
+				m_ppShaders[g_myid+1]->GetFBXMesh->SetAnimation(ANI_STUN);
+
+				pHeroObject[g_myid]->bHeroStun = true;
+				pHeroObject[g_myid]->bHeroRun = false;
+			}
+		}
+		else if (KEY_DOWN('3'))
+		{
+			if (!pHeroObject[g_myid]->bHeroDie)
+			{
+				m_ppShaders[g_myid+1]->GetFBXMesh->SetAnimation(ANI_DIE);
+
+				pHeroObject[g_myid]->bHeroDie = true;
+				pHeroObject[g_myid]->bHeroRun = false;
+			}
+		}
+
 		
 	}
 	
@@ -544,27 +656,57 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	//cout << m_ppShaders[2]->GetFBXMesh->GetFBXAnimationNum() << " " << m_ppShaders[2]->GetFBXMesh->GetFBXMaxFrameNum() << endl;
 
 	
-	if (bHeroAttack)
+	if (pHeroObject[g_myid]->bHeroAttack || pHeroObject[g_myid]->bHeroQ || pHeroObject[g_myid]->bHeroW || pHeroObject[g_myid]->bHeroE || pHeroObject[g_myid]->bHeroR)
 	{
-		if (m_ppShaders[g_myid]->GetFBXMesh->GetFBXNowFrameNum() == m_ppShaders[g_myid]->GetFBXMesh->GetFBXMaxFrameNum() - 1)
+		if (m_ppShaders[g_myid+1]->GetFBXMesh->GetFBXNowFrameNum() == m_ppShaders[g_myid+1]->GetFBXMesh->GetFBXMaxFrameNum() - 1)
 		{
-			if (bHeroRun || LeftKeyDown || RightKeyDown || UpKeyDown || DownKeyDown)
+			if (pHeroObject[g_myid]->bHeroRun || LeftKeyDown || RightKeyDown || UpKeyDown || DownKeyDown)
 			{
-				m_ppShaders[g_myid]->GetFBXMesh->SetAnimation(ANI_RUN);
+				m_ppShaders[g_myid+1]->GetFBXMesh->SetAnimation(ANI_RUN);
 			}
 			else
 			{
-				m_ppShaders[g_myid]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				m_ppShaders[g_myid+1]->GetFBXMesh->SetAnimation(ANI_IDLE);
 			}
 
-			pHeroObject[g_myid]->SetSpeed(pHeroObject[g_myid]->GetNormalSpeed());
-			bHeroAttack = false;
+			if(pHeroObject[g_myid]->bHeroAttack) pHeroObject[g_myid]->bHeroAttack = false;
+			if (pHeroObject[g_myid]->bHeroQ) pHeroObject[g_myid]->bHeroQ = false;
+			if (pHeroObject[g_myid]->bHeroW) pHeroObject[g_myid]->bHeroW = false;
+			if (pHeroObject[g_myid]->bHeroE) pHeroObject[g_myid]->bHeroE = false;
+			if (pHeroObject[g_myid]->bHeroR) pHeroObject[g_myid]->bHeroR = false;
+
+		}
+	}
+
+
+	for (int i = 0; i < MAX_USER; ++i)
+	{
+		if (i != g_myid)
+		{
+			if (m_ppShaders[i + 1]->GetFBXMesh->GetFBXNowFrameNum() == m_ppShaders[i + 1]->GetFBXMesh->GetFBXMaxFrameNum() - 1)
+			{
+				
+				m_ppShaders[i + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				
+			}
 		}
 
 	}
 
+
+	//if ((m_ppShaders[i + 1]->GetFBXMesh->GetFBXNowFrameNum() == m_ppShaders[i + 1]->GetFBXMesh->GetFBXMaxFrameNum() - 1))
+	//{
+	//	cs_packet_attack *my_packet = reinterpret_cast<cs_packet_attack *>(send_buffer);
+	//	my_packet->size = sizeof(cs_packet_attack);
+	//	send_wsabuf.len = sizeof(cs_packet_attack);
+	//	DWORD iobyte;
+	//	my_packet->type = CS_ATTACK;
+
+	//	WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+	//}
+
 	
-	for (int i = 0; i < MAX_USER; ++i)
+	for (int i = 1; i < MAX_USER+1; ++i)
 	{
 		m_ppShaders[i]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed);
 

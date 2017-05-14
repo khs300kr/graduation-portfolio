@@ -109,15 +109,7 @@ public:
 	void ReleaseShaderVariables();
 
 public:
-	bool bHeroAttack = false;
-	bool bHeroRun = false;
-	bool bHeroQ = false;
-	bool bHeroW = false;
-	bool bHeroE = false;
-	bool bHeroR = false;
-	bool bHeroHit = false;
-	bool bHeroStun = false;
-	bool bHeroDie = false;
+
 	
 	// server
 	DWORD Animation_number[MAX_USER] = {};
