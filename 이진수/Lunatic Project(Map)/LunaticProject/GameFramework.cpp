@@ -346,7 +346,10 @@ void CGameFramework::ProcessInput()
 					m_pScene->pSordmanObject->SetSpeed(m_pScene->pSordmanObject->GetNormalSpeed());
 				}
 
-				m_pPlayer->Move(dwDirection, m_pScene->pSordmanObject->GetSpeed(), true);
+				if(m_pScene->GetColBox())
+					m_pPlayer->Move(dwDirection, -(m_pScene->pSordmanObject->GetSpeed() * 10.f), false);
+				else
+					m_pPlayer->Move(dwDirection, m_pScene->pSordmanObject->GetSpeed(), true);
 				m_pScene->pSordmanObject->SetPosition(m_pPlayer->GetPosition());
 			}
 		}

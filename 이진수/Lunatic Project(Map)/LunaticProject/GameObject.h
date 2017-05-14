@@ -75,7 +75,7 @@ protected:
 	bool m_bActive;
 
 public:
-	//CGameObject();
+	CGameObject();
 	CGameObject(int nMeshes);
 	virtual ~CGameObject();
 
@@ -98,6 +98,13 @@ public:
 
 	// 객체가 가지는 메쉬 전체에 대한 바운딩 박스
 	AABB m_bcMeshBoundingCube;
+	// OOBB 충돌 체크
+	BoundingOrientedBox		m_xmOOBB;
+	BoundingOrientedBox		m_xmOOBBTransformed;
+	CGameObject				*m_pCollider;
+	void SetOOBB(XMFLOAT3& xmCenter, XMFLOAT3& xmExtents, XMFLOAT4& xmOrientation) { m_xmOOBBTransformed = m_xmOOBB = BoundingOrientedBox(xmCenter, xmExtents, xmOrientation); }
+
+
 
 	void SetMaterial(CMaterial *pMaterial);
 	void SetTexture(CTexture *pTexture);
@@ -127,6 +134,9 @@ public:
 
 	// 객체 렌더링 전에 호출할 함수
 	virtual void OnPrepareRender() {}
+
+	//
+	CMesh *CubeMesh(float fSize, DWORD dwColor, int Type);
 };
 
 ///////////// Terrain

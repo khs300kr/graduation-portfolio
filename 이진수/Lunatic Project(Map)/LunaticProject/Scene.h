@@ -10,6 +10,12 @@
 #define SPOT_LIGHT		2.0f
 #define DIRECTIONAL_LIGHT	3.0f
 
+#define RED			RGB(255,20,20)
+#define GREEN		RGB(20,255,20)
+#define BLUE		RGB(20,20,255)
+#define BLACK		RGB(0,0,0)
+#define WHITE		RGB(255,255,255)
+
 // 1개의 조명을 표현하는 구조체이다. 
 struct LIGHT
 {
@@ -52,13 +58,16 @@ private:
 
 	//CHeightMapTerrain *m_pTerrain;
 	
-	
+	CGameObject *pHouse1Object[14]; 
+	CGameObject *BoundBox;
 
 	bool LeftKeyDown;
 	bool RightKeyDown;
 	bool UpKeyDown;
 	bool DownKeyDown;
 
+
+	bool ColBox;
 
 public:
 	CScene();
@@ -67,6 +76,7 @@ public:
 
 	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	bool GetColBox() { return ColBox; };
 
 	void BuildObjects(ID3D11Device *pd3dDevice);
 	void ReleaseObjects();

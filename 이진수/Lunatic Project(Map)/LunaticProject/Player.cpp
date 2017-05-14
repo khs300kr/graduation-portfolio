@@ -200,6 +200,10 @@ void CPlayer::Update(float fTimeElapsed)
 	float fDeceleration = (m_fFriction * fTimeElapsed);
 	if (fDeceleration > fLength) fDeceleration = fLength;
 	m_d3dxvVelocity += d3dxvDeceleration * fDeceleration;
+
+
+	/*m_xmOOBBTransformed.Transform(m_xmOOBB, XMLoadFloat4x4(&(XMFLOAT4X4)m_d3dxmtxWorld));
+	XMStoreFloat4(&m_xmOOBBTransformed.Orientation, XMQuaternionNormalize(XMLoadFloat4(&m_xmOOBBTransformed.Orientation)));*/
 }
 
 CCamera *CPlayer::OnChangeCamera(ID3D11Device *pd3dDevice, DWORD nNewCameraMode, DWORD nCurrentCameraMode)

@@ -155,7 +155,8 @@ void CGameObject::Animate(float fTimeElapsed)
 		D3DXMatrixScaling(&mtxScale, GetMesh(0)->GetFBXModelSize(), GetMesh(0)->GetFBXModelSize(), GetMesh(0)->GetFBXModelSize());
 		m_d3dxmtxScale = mtxScale;
 	}
-
+	/*m_xmOOBBTransformed.Transform(m_xmOOBB, XMLoadFloat4x4(&(XMFLOAT4X4)m_d3dxmtxWorld));
+	XMStoreFloat4(&m_xmOOBBTransformed.Orientation, XMQuaternionNormalize(XMLoadFloat4(&m_xmOOBBTransformed.Orientation)));*/
 	m_d3dxmtxWorld = m_d3dxmtxScale * m_d3dxmtxRotate * m_d3dxmtxTranlate;
 }
 
@@ -291,6 +292,104 @@ void CGameObject::SetTexture(CTexture *pTexture)
 	if (m_pTexture) m_pTexture->AddRef();
 }
 
+
+CMesh *CGameObject::CubeMesh(float fSize, DWORD dwColor, int Type)
+{
+	CMesh *pMesh = new CMesh(6);
+
+	D3DXVECTOR3				vector1;
+	D3DXVECTOR3				vector2;
+
+	int						count = 0;
+
+	CPolygon *pFrontFace = new CPolygon(4);
+	pFrontFace->SetVertex(0, CVertex(-fSize, +fSize, -fSize, dwColor));
+	pFrontFace->SetVertex(1, CVertex(+fSize, +fSize, -fSize, dwColor));
+	pFrontFace->SetVertex(2, CVertex(+fSize, -fSize, -fSize, dwColor));
+	pFrontFace->SetVertex(3, CVertex(-fSize, -fSize, -fSize, dwColor));
+	pMesh->SetPolygon(0, pFrontFace);
+
+	vector1.x = -fSize * 2; vector1.y = 0; vector1.z = 0;
+	vector2.x = 0; vector2.y = fSize * 2; vector2.z = 0;
+	D3DXVec3Cross(&vector1, D3DXVec3Normalize(&vector1, &vector1), D3DXVec3Normalize(&vector2, &vector2));
+
+	//////////////////////////////////////////////////////////////////
+
+	CPolygon *pTopFace = new CPolygon(4);
+	pTopFace->SetVertex(0, CVertex(-fSize, +fSize, +fSize, dwColor));
+	pTopFace->SetVertex(1, CVertex(+fSize, +fSize, +fSize, dwColor));
+	pTopFace->SetVertex(2, CVertex(+fSize, +fSize, -fSize, dwColor));
+	pTopFace->SetVertex(3, CVertex(-fSize, +fSize, -fSize, dwColor));
+	pMesh->SetPolygon(1, pTopFace);
+
+	vector1.x = -fSize * 2; vector1.y = 0; vector1.z = 0;
+	vector2.x = 0; vector2.y = 0; vector2.z = fSize * 2;
+	if (Type) D3DXVec3Cross(&vector1, D3DXVec3Normalize(&vector1, &vector1), D3DXVec3Normalize(&vector2, &vector2));
+	else D3DXVec3Cross(&vector1, D3DXVec3Normalize(&vector2, &vector2), D3DXVec3Normalize(&vector1, &vector1));
+
+
+	//////////////////////////////////////////////////////////////////
+
+	CPolygon *pBackFace = new CPolygon(4);
+	pBackFace->SetVertex(0, CVertex(-fSize, -fSize, +fSize, dwColor));
+	pBackFace->SetVertex(1, CVertex(+fSize, -fSize, +fSize, dwColor));
+	pBackFace->SetVertex(2, CVertex(+fSize, +fSize, +fSize, dwColor));
+	pBackFace->SetVertex(3, CVertex(-fSize, +fSize, +fSize, dwColor));
+	pMesh->SetPolygon(2, pBackFace);
+
+	vector1.x = -fSize * 2; vector1.y = 0; vector1.z = 0;
+	vector2.x = 0; vector2.y = -fSize * 2; vector2.z = 0;
+	if (Type) D3DXVec3Cross(&vector1, D3DXVec3Normalize(&vector1, &vector1), D3DXVec3Normalize(&vector2, &vector2));
+	else D3DXVec3Cross(&vector1, D3DXVec3Normalize(&vector2, &vector2), D3DXVec3Normalize(&vector1, &vector1));
+
+
+	//////////////////////////////////////////////////////////////////
+
+	CPolygon *pBottomFace = new CPolygon(4);
+	pBottomFace->SetVertex(0, CVertex(-fSize, -fSize, -fSize, dwColor));
+	pBottomFace->SetVertex(1, CVertex(+fSize, -fSize, -fSize, dwColor));
+	pBottomFace->SetVertex(2, CVertex(+fSize, -fSize, +fSize, dwColor));
+	pBottomFace->SetVertex(3, CVertex(-fSize, -fSize, +fSize, dwColor));
+	pMesh->SetPolygon(3, pBottomFace);
+
+	vector1.x = -fSize * 2; vector1.y = 0; vector1.z = 0;
+	vector2.x = 0; vector2.y = 0; vector2.z = -fSize * 2;
+	if (Type) D3DXVec3Cross(&vector1, D3DXVec3Normalize(&vector1, &vector1), D3DXVec3Normalize(&vector2, &vector2));
+	else D3DXVec3Cross(&vector1, D3DXVec3Normalize(&vector2, &vector2), D3DXVec3Normalize(&vector1, &vector1));
+
+	//////////////////////////////////////////////////////////////////
+
+	CPolygon *pLeftFace = new CPolygon(4);
+	pLeftFace->SetVertex(0, CVertex(-fSize, +fSize, +fSize, dwColor));
+	pLeftFace->SetVertex(1, CVertex(-fSize, +fSize, -fSize, dwColor));
+	pLeftFace->SetVertex(2, CVertex(-fSize, -fSize, -fSize, dwColor));
+	pLeftFace->SetVertex(3, CVertex(-fSize, -fSize, +fSize, dwColor));
+	pMesh->SetPolygon(4, pLeftFace);
+
+	vector1.x = 0; vector1.y = 0; vector1.z = fSize * 2;
+	vector2.x = 0; vector2.y = fSize * 2; vector2.z = 0;
+	if (Type) D3DXVec3Cross(&vector1, D3DXVec3Normalize(&vector1, &vector1), D3DXVec3Normalize(&vector2, &vector2));
+	else D3DXVec3Cross(&vector1, D3DXVec3Normalize(&vector2, &vector2), D3DXVec3Normalize(&vector1, &vector1));
+
+
+	//////////////////////////////////////////////////////////////////
+
+	CPolygon *pRightFace = new CPolygon(4);
+	pRightFace->SetVertex(0, CVertex(+fSize, +fSize, -fSize, dwColor));
+	pRightFace->SetVertex(1, CVertex(+fSize, +fSize, +fSize, dwColor));
+	pRightFace->SetVertex(2, CVertex(+fSize, -fSize, +fSize, dwColor));
+	pRightFace->SetVertex(3, CVertex(+fSize, -fSize, -fSize, dwColor));
+	pMesh->SetPolygon(5, pRightFace);
+
+	vector1.x = 0; vector1.y = 0; vector1.z = -fSize * 2;
+	vector2.x = 0; vector2.y = fSize * 2; vector2.z = 0;
+	if (Type) D3DXVec3Cross(&vector1, D3DXVec3Normalize(&vector1, &vector1), D3DXVec3Normalize(&vector2, &vector2));
+	else D3DXVec3Cross(&vector1, D3DXVec3Normalize(&vector2, &vector2), D3DXVec3Normalize(&vector1, &vector1));
+
+	D3DXVec3Normalize(&vector1, &vector1);
+
+	return(pMesh);
+}
 
 //////////////// Terrain
 //
