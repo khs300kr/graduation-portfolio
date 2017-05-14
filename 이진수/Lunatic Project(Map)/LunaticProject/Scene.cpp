@@ -136,10 +136,13 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	CMesh *pHouse2Mesh = new CFBXMesh(pd3dDevice, "../Data/building/house2/house2.data", 0.7f);
 	CMesh *pCityhallMesh = new CFBXMesh(pd3dDevice, "../Data/building/cityhall/cityhall.data", 1.f);
 
+
+	
+
 	//
 	// 일반 쉐이더 선언부
 	/////////////////////////////////////////////////////////////////////////
-	m_nShaders = 19;	// Skybox
+	m_nShaders = 20;	// Skybox
 	m_ppShaders = new CShader*[m_nShaders];
 
 	// ⑤ SkyBox용 Shader를 생성
@@ -173,18 +176,9 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 		pSordmanObject->SetPosition(0.0f, 0.0f, -500.0f);
 		//pSordmanObject->SetOOBB(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 		pSordmanObject->SetOOBB(XMFLOAT3(pSordmanObject->GetPosition().x, pSordmanObject->GetPosition().y, pSordmanObject->GetPosition().z),
-			XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+			XMFLOAT3(0.1f, 0.1f, 0.1f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 		
 		m_ppShaders[2]->AddObject(pSordmanObject);
-
-		
-
-		// 배경 상자
-		CMesh *BoxMesh = BoundBox->CubeMesh(20, BLACK, 0);;
-
-		BoundBox = new CGameObject(1);
-		BoundBox->SetMesh(BoxMesh);
-		BoundBox->SetPosition(pSordmanObject->GetPosition().x, pSordmanObject->GetPosition().y, pSordmanObject->GetPosition().z);
 
 
 		//plane
@@ -249,7 +243,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 		}
 		// 건물 위치 설정
 		pHouse1Object[0]->SetPosition(50.0f, 0.0f, -300.0f);
-		pHouse1Object[0]->SetOOBB(XMFLOAT3(50.0f, 0.0f, -300.0f), XMFLOAT3(100.f, 100.f, 100.f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+		pHouse1Object[0]->SetOOBB(XMFLOAT3(50.0f, 0.0f, -300.0f), XMFLOAT3(100.f, 100.f, 50.f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 		pHouse1Object[1]->SetPosition(250.0f, 0.0f, -300.0f);
 		pHouse1Object[2]->SetPosition(-150.0f, 0.0f, -300.0f);
 
@@ -274,6 +268,18 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 			m_ppShaders[i]->AddObject(pHouse1Object[i - 6]);
 		}
 
+		// 배경 상자
+		m_ppShaders[20] = new CCharacterShader(1);
+		m_ppShaders[20]->CreateShader(pd3dDevice);
+		m_ppShaders[20]->BuildObjects(pd3dDevice);
+
+
+		CMesh *BoxMesh = BoundBox->CubeMesh(100, RED, 0);;
+
+		BoundBox = new CGameObject(1);
+		BoundBox->SetMesh(BoxMesh);
+		BoundBox->SetPosition(0, 0, -500);
+		m_ppShaders[20]->AddObject(BoundBox);
 
 		////house1
 		//m_ppShaders[6] = new CTexturedIlluminatedShader(1);
@@ -852,17 +858,17 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	//}
 
 
-		if (pHouse1Object[0]->m_xmOOBB.Intersects(pSordmanObject->m_xmOOBB))
-		{
-			pHouse1Object[0]->m_pCollider = pSordmanObject;
-			pSordmanObject->m_pCollider = pHouse1Object[0];
+	if (pHouse1Object[0]->m_xmOOBB.Intersects(pSordmanObject->m_xmOOBB))
+	{
+		pHouse1Object[0]->m_pCollider = pSordmanObject;
+		pSordmanObject->m_pCollider = pHouse1Object[0];
 
-			ColBox = true;
-		}
-		if (!(pHouse1Object[0]->m_xmOOBB.Intersects(pSordmanObject->m_xmOOBB)))
-		{
-			ColBox = false;
-		}
+		ColBox = true;
+	}
+	if (!(pHouse1Object[0]->m_xmOOBB.Intersects(pSordmanObject->m_xmOOBB)))
+	{
+		ColBox = false;
+	}
 	
 
 
@@ -885,5 +891,5 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 	}
 	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->Render(pd3dDeviceContext, pCamera);
 
-	BoundBox->Render(pd3dDeviceContext, pCamera);
+	//BoundBox->Render(pd3dDeviceContext, pCamera);
 }

@@ -80,6 +80,7 @@ public:
 	//void Draw(HDC hDCFrameBuffer, CGameObject *pObject, CCamera *pCamera);
 };
 
+
 class CMesh
 {
 private:
@@ -161,6 +162,7 @@ public:
 public:
 	void SetPolygon(int nIndex, CPolygon *pPolygon);
 };
+
 
 class CMeshDiffused : public CMesh
 {
