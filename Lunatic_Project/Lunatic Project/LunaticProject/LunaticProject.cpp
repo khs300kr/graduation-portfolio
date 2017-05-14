@@ -358,12 +358,12 @@ void ProcessPacket(char * ptr)
 			cout << "SC_READY\n";
 			cout << "내 캐릭터 선택 : " << (int)my_packet->hero_pick << endl;
 			
-			//gGameFramework.m_pScene->pMyObject->m_HeroSelect =  SC_BABARIAN - 10;
+			//gGameFramework.m_pScene->pHeroObject[g_myid]->m_HeroSelect =  SC_BABARIAN - 10;
 
 		}
 		else {
-			gGameFramework.m_pScene->pOtherObject[id]->m_HeroSelect = my_packet->hero_pick;
-			gGameFramework.m_pScene->pOtherObject[id]->m_Team = A_TEAM;
+			gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect = my_packet->hero_pick;
+			gGameFramework.m_pScene->pHeroObject[id]->m_Team = A_TEAM;
 		}
 		break;
 	}
@@ -384,15 +384,16 @@ void ProcessPacket(char * ptr)
 		int id = my_packet->id;
 		if (id == g_myid) {
 			cout << "Hero Pos\n";
-			gGameFramework.m_pScene->pMyObject->SetPosition(my_packet->x, my_packet->y, my_packet->z);
+			gGameFramework.m_pScene->pHeroObject[g_myid]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 			gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, my_packet->y, my_packet->z));
 		}
 		else {
 			cout << "Other Pos\n";
-			gGameFramework.m_pScene->pOtherObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
+			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 		}
 		break;	
 	}
+
 	case SC_POS:
 	{
 		sc_packet_pos *my_packet = reinterpret_cast<sc_packet_pos *>(ptr);
@@ -400,23 +401,25 @@ void ProcessPacket(char * ptr)
 		if (id == g_myid) {
 			//cout << "Hero Move\n";
 			gGameFramework.dwDirection = my_packet->direction;
-			gGameFramework.m_pScene->pMyObject->SetPosition(my_packet->x, my_packet->y, my_packet->z);
+			gGameFramework.m_pScene->pHeroObject[g_myid]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 
 			if (my_packet->direction != 0)
-				gGameFramework.m_pScene->m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_RUN);
+				gGameFramework.m_pScene->m_ppShaders[g_myid+1]->GetFBXMesh->SetAnimation(ANI_RUN);
 			else
-				gGameFramework.m_pScene->m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				gGameFramework.m_pScene->m_ppShaders[g_myid+1]->GetFBXMesh->SetAnimation(ANI_IDLE);
 		}
 		else {
 			//cout << "Other Move\n";
 			gGameFramework.OtherDirection[id] = my_packet->direction;
-			gGameFramework.m_pScene->pOtherObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
+			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 
 
 			if (my_packet->direction != 0)
-				gGameFramework.m_pScene->m_ppShaders[id + 2]->GetFBXMesh->SetAnimation(ANI_RUN);
+				gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_RUN);
 			else
-				gGameFramework.m_pScene->m_ppShaders[id + 2]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+		
+			
 		
 			cout << "Other id : " << id << endl;
 

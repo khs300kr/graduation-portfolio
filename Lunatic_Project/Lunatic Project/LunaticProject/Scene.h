@@ -64,9 +64,11 @@ public:
 	CScene();
 	~CScene();
 
-	CHeroManager* pMyObject;
+	//CHeroManager* pMyObject;
 
-	CHeroManager* pOtherObject[MAX_USER];
+	//CHeroManager* pOtherObject[MAX_USER];
+
+	CHeroManager* pHeroObject[MAX_USER];
 	
 	CMaterial *pNormalMaterial;
 

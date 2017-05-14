@@ -27,14 +27,14 @@ CScene::CScene()
 	KeyDownForServer = 0;
 	DWORD dwDirection = 0;
 
-	pMyObject = new CHeroManager(1);
-	pMyObject->m_Team = A_TEAM;
-	pMyObject->SetPosition(0.0f, -3000.f, 0.0f);
+	//pHeroObject[g_myid] = new CHeroManager(1);
+	//pHeroObject[g_myid]->m_Team = A_TEAM;
+	//pHeroObject[g_myid]->SetPosition(0.0f, -3000.f, 0.0f);
 
 	for(int i = 0; i < MAX_USER; ++i)
 	{
-		pOtherObject[i] = new CHeroManager(1);
-		pOtherObject[i]->SetPosition(0.0f, -3000.0f, 0.0f);
+		pHeroObject[i] = new CHeroManager(1);
+		pHeroObject[i]->SetPosition(0.0f, -3000.0f, 0.0f);
 	}
 
 
@@ -167,7 +167,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	// 일반 쉐이더 선언부
 	/////////////////////////////////////////////////////////////////////////
 
-	m_nShaders = 10;   // Skybox포함
+	m_nShaders = 9;   // Skybox포함
 	m_ppShaders = new CShader*[m_nShaders];
 
 	// ⑤ SkyBox용 Shader를 생성
@@ -177,83 +177,46 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 
 
 	{		
-
-		// My
-		m_ppShaders[1] = new CCharacterShader(1);
-		m_ppShaders[1]->CreateShader(pd3dDevice);
-		m_ppShaders[1]->BuildObjects(pd3dDevice);
-
-		//pMyObject = new CHeroManager(1);
-		//pMyObject->m_HeroSelect = Babarian;
-
-		if (pMyObject->m_Team == A_TEAM)
-		{
-			if (pMyObject->m_HeroSelect == SordMan)
-			{
-				pMyObject->SetMesh(pSordManMeshA);
-				pMyObject->SetTexture(pSordManTexture);
-
-			}
-			else if (pMyObject->m_HeroSelect == Healer)
-			{
-				pMyObject->SetMesh(pHealerMeshA);
-				pMyObject->SetTexture(pHealerTexture);
-
-			}
-			else if (pMyObject->m_HeroSelect == Babarian)
-			{
-				pMyObject->SetMesh(pBabarianMeshA);
-				pMyObject->SetTexture(pBabarianTexture);
-			}
-		}
-
-		pMyObject->SetMaterial(pNormalMaterial);
-
-		m_ppShaders[1]->AddObject(pMyObject);
 		
 
-		for (int i = 0; i <= 7; ++i)
+		for (int i = 1; i <= 8; ++i)
 		{
-			m_ppShaders[i + 2] = new CCharacterShader(1);
-			m_ppShaders[i + 2]->CreateShader(pd3dDevice);
-			m_ppShaders[i + 2]->BuildObjects(pd3dDevice);
+			m_ppShaders[i] = new CCharacterShader(1);
+			m_ppShaders[i]->CreateShader(pd3dDevice);
+			m_ppShaders[i]->BuildObjects(pd3dDevice);
 
 		}
 
 		for (int i = 0; i < MAX_USER; ++i)
 		{
-			if (i != g_myid)
+			if (pHeroObject[i]->m_Team == A_TEAM)
 			{
-
-			}
-			if (pOtherObject[i]->m_Team == A_TEAM)
-			{
-				if (pOtherObject[i]->m_HeroSelect == SordMan)
+				if (pHeroObject[i]->m_HeroSelect == SordMan)
 				{
-					pOtherObject[i]->SetMesh(pSordManMeshA);
-					pOtherObject[i]->SetTexture(pSordManTexture);
+					pHeroObject[i]->SetMesh(pSordManMeshA);
+					pHeroObject[i]->SetTexture(pSordManTexture);
 
 				}
-				else if (pOtherObject[i]->m_HeroSelect == Healer)
+				else if (pHeroObject[i]->m_HeroSelect == Healer)
 				{
-					pOtherObject[i]->SetMesh(pHealerMeshA);
-					pOtherObject[i]->SetTexture(pHealerTexture);
+					pHeroObject[i]->SetMesh(pHealerMeshA);
+					pHeroObject[i]->SetTexture(pHealerTexture);
 
 				}
-				else if (pOtherObject[i]->m_HeroSelect == Babarian)
+				else if (pHeroObject[i]->m_HeroSelect == Babarian)
 				{
-					pOtherObject[i]->SetMesh(pBabarianMeshA);
-					pOtherObject[i]->SetTexture(pBabarianTexture);
+					pHeroObject[i]->SetMesh(pBabarianMeshA);
+					pHeroObject[i]->SetTexture(pBabarianTexture);
 				}
 			}
 			else
 			{
-				pOtherObject[i]->SetMesh(pSordManMeshB);
-				pOtherObject[i]->SetTexture(pSordManTexture);
+				pHeroObject[i]->SetMesh(pTestMesh);
+				pHeroObject[i]->SetTexture(pTestTexture);
 			}
-			pOtherObject[i]->SetMaterial(pNormalMaterial);
+			pHeroObject[i]->SetMaterial(pNormalMaterial);
 
-			m_ppShaders[i + 2]->AddObject(pOtherObject[i]);
+			m_ppShaders[i + 1]->AddObject(pHeroObject[i]);
 		}
 
 
@@ -265,43 +228,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	CreateShaderVariables(pd3dDevice);
 }
 
-void CScene::SetHero()
-{
-	//for (int i = 0; i < MAX_USER; ++i)
-	//{
-	//	if (i != g_myid)
-	//	{
-	//		if (pOtherObject[i]->m_Team == A_TEAM)
-	//		{
-	//			if (pOtherObject[i]->m_HeroSelect == Babarian && pOtherObject[i]->GetMesh() != pBabarianMeshA)
-	//			{
-	//				pOtherObject[i]->SetMesh(pBabarianMeshA);
-	//				pOtherObject[i]->SetTexture(pBabarianTexture);
 
-	//			}
-	//			else if (pOtherObject[i]->m_HeroSelect == Healer && pOtherObject[i]->GetMesh() != pHealerMeshA)
-	//			{
-	//				pOtherObject[i]->SetMesh(pHealerMeshA);
-	//				pOtherObject[i]->SetTexture(pHealerTexture);
-	//			}
-	//			else if (pOtherObject[i]->m_HeroSelect == SordMan && pOtherObject[i]->GetMesh() != pSordManMeshA)
-	//			{
-	//				pOtherObject[i]->SetMesh(pSordManMeshA);
-	//				pOtherObject[i]->SetTexture(pSordManTexture);
-	//			}
-	//			else
-	//				continue;
-
-	//		}
-	//	}
-
-	//}
-}
-
-void CScene::ChangeMesh_Texture()
-{
-
-}
 
 void CScene::ReleaseObjects()
 {
@@ -340,20 +267,13 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		switch (wParam)
 		{
 		case 'A':
-			cout << "my " << g_myid << ends<< pMyObject->m_Team << endl;
+			cout << "my " << g_myid << ends<< pHeroObject[g_myid]->m_Team << endl;
 			for (int i = 0; i < MAX_USER; ++i)
 			{
-				cout << i << ends << pOtherObject[i]->GetPosition().y << endl;
+				cout << i << ends << pHeroObject[i]->GetPosition().y << endl;
 			}
 			break;
-		case 'B':
-			pMyObject->SetMesh(pHealerMeshA, 0);
-			pMyObject->SetTexture(pHealerTexture);
-			break;
-		case 'C':
-			pMyObject->SetMesh(pSordManMeshA, 0);
-			pMyObject->SetTexture(pSordManTexture);
-			break;
+
 		case 'Z':
 			if (!bHeroAttack)
 			{
@@ -435,7 +355,7 @@ void CScene::ProcessInput()
 			UpKeyDown = false;
 			if (bHeroRun && !bHeroAttack)
 			{
-				m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				m_ppShaders[g_myid]->GetFBXMesh->SetAnimation(ANI_IDLE);
 				bHeroRun = false;
 			}
 			SendMovePacket(CS_KEYUP_UP);
@@ -445,7 +365,7 @@ void CScene::ProcessInput()
 			DownKeyDown = false;
 			if (bHeroRun && !bHeroAttack)
 			{
-				m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				m_ppShaders[g_myid]->GetFBXMesh->SetAnimation(ANI_IDLE);
 				bHeroRun = false;
 			}
 			SendMovePacket(CS_KEYUP_DOWN);
@@ -455,7 +375,7 @@ void CScene::ProcessInput()
 			LeftKeyDown = false;
 			if (bHeroRun && !bHeroAttack)
 			{
-				m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				m_ppShaders[g_myid]->GetFBXMesh->SetAnimation(ANI_IDLE);
 				bHeroRun = false;
 			}
 			SendMovePacket(CS_KEYUP_LEFT);
@@ -465,7 +385,7 @@ void CScene::ProcessInput()
 			RightKeyDown = false;
 			if (bHeroRun && !bHeroAttack)
 			{
-				m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				m_ppShaders[g_myid]->GetFBXMesh->SetAnimation(ANI_IDLE);
 				bHeroRun = false;
 			}
 			SendMovePacket(CS_KEYUP_RIGHT);
@@ -476,8 +396,8 @@ void CScene::ProcessInput()
 		{
 			if (!bHeroAttack)
 			{
-				m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_ATTACK);
-				pMyObject->SetSpeed(0);
+				m_ppShaders[g_myid]->GetFBXMesh->SetAnimation(ANI_ATTACK);
+	
 				bHeroAttack = true;
 				bHeroRun = false;
 			}
@@ -564,9 +484,9 @@ void CScene::SendMovePacket(BYTE type)
 	send_wsabuf.len = sizeof(cs_packet_pos);
 	DWORD iobyte;
 	my_packet->type = type;
-	my_packet->x = pMyObject->GetPosition().x;
-	my_packet->y = pMyObject->GetPosition().y;
-	my_packet->z = pMyObject->GetPosition().z;
+	my_packet->x = pHeroObject[g_myid]->GetPosition().x;
+	my_packet->y = pHeroObject[g_myid]->GetPosition().y;
+	my_packet->z = pHeroObject[g_myid]->GetPosition().z;
 
 	
 	WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
@@ -619,33 +539,29 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	
 	if (bHeroAttack)
 	{
-		if (m_ppShaders[1]->GetFBXMesh->GetFBXNowFrameNum() == m_ppShaders[1]->GetFBXMesh->GetFBXMaxFrameNum() - 1)
+		if (m_ppShaders[g_myid]->GetFBXMesh->GetFBXNowFrameNum() == m_ppShaders[g_myid]->GetFBXMesh->GetFBXMaxFrameNum() - 1)
 		{
 			if (bHeroRun || LeftKeyDown || RightKeyDown || UpKeyDown || DownKeyDown)
 			{
-				m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_RUN);
+				m_ppShaders[g_myid]->GetFBXMesh->SetAnimation(ANI_RUN);
 			}
 			else
 			{
-				m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				m_ppShaders[g_myid]->GetFBXMesh->SetAnimation(ANI_IDLE);
 			}
 
-			pMyObject->SetSpeed(pMyObject->GetNormalSpeed());
+			pHeroObject[g_myid]->SetSpeed(pHeroObject[g_myid]->GetNormalSpeed());
 			bHeroAttack = false;
 		}
 
 	}
 
 	
-	//for (int i = 0; i < MAX_USER; ++i)
-	//{
-	m_ppShaders[1]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed);
-	m_ppShaders[2]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed);
-	m_ppShaders[3]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed);
-	m_ppShaders[4]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed);
-		//m_ppShaders[2]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed);
-		//m_ppShaders[3]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed);
-	//}
+	for (int i = 0; i < MAX_USER; ++i)
+	{
+		m_ppShaders[i]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed);
+
+	}
 	
 	//cout << m_ppShaders[1]->GetFBXMesh->GetFBXNowFrameNum() << ends << m_ppShaders[1]->GetFBXMesh->GetFBXMaxFrameNum() << endl;
 	
