@@ -27,6 +27,28 @@ CScene::CScene()
 	KeyDownForServer = 0;
 	DWORD dwDirection = 0;
 
+	for(int i = 0; i < MAX_USER; ++i)
+		pHeroObject[i] = NULL;
+	for (int i = 0; i < 13; ++i)
+		pHouse1Object[i] = NULL;
+
+	pNormalMaterial = NULL;
+	pHealerTexture = NULL;
+	pSordManTexture = NULL;
+	pBabarianTexture = NULL;
+	pTestTexture = NULL;
+	
+	pSordManMeshA = NULL;
+	pSordManMeshB = NULL;
+	pHealerMeshA = NULL;
+	pHealerMeshB = NULL;
+	pBabarianMeshA = NULL;
+	pBabarianMeshB = NULL;
+	pTestMesh = NULL;
+
+
+
+
 	//pHeroObject[g_myid] = new CHeroManager(1);
 	//pHeroObject[g_myid]->m_Team = A_TEAM;
 	//pHeroObject[g_myid]->SetPosition(0.0f, -3000.f, 0.0f);
@@ -771,17 +793,17 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 	
 
-	for (int i = 0; i < MAX_USER; ++i)
-	{
-		if (i != g_myid)
-		{
-			if (m_ppShaders[i + 1]->GetFBXMesh->GetFBXNowFrameNum() == m_ppShaders[i + 1]->GetFBXMesh->GetFBXMaxFrameNum() - 1)
-			{
-				m_ppShaders[i + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);	
-			}
-		}
+	//for (int i = 0; i < MAX_USER; ++i)
+	//{
+	//	if (i != g_myid)
+	//	{
+	//		if (m_ppShaders[i + 1]->GetFBXMesh->GetFBXNowFrameNum() == m_ppShaders[i + 1]->GetFBXMesh->GetFBXMaxFrameNum() - 1)
+	//		{
+	//			m_ppShaders[i + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);	
+	//		}
+	//	}
 
-	}
+	//}
 
 
 	//if ((m_ppShaders[i + 1]->GetFBXMesh->GetFBXNowFrameNum() == m_ppShaders[i + 1]->GetFBXMesh->GetFBXMaxFrameNum() - 1))
@@ -801,6 +823,8 @@ void CScene::AnimateObjects(float fTimeElapsed)
 		m_ppShaders[i]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed);
 
 	}
+
+
 	
 	pHeroObject[g_myid]->SetOOBB(XMFLOAT3(pHeroObject[g_myid]->GetPosition().x, pHeroObject[g_myid]->GetPosition().y, pHeroObject[g_myid]->GetPosition().z),
 		XMFLOAT3(0.1f, 0.1f, 0.1f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));

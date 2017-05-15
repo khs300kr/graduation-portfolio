@@ -91,6 +91,7 @@ CGameObject::CGameObject(int nMeshes)
 	m_nReferences = 0;
 	m_pMaterial = NULL;
 	m_pTexture = NULL;
+	m_pCollider = NULL;
 
 	if (m_nMeshes > 0) m_ppMeshes = new CMesh*[m_nMeshes];
 	for (int i = 0; i < m_nMeshes; i++)m_ppMeshes[i] = NULL;
