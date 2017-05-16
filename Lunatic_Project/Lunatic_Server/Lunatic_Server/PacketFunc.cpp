@@ -181,24 +181,19 @@ void ProcessPacket(int id, unsigned char packet[])
 		break;
 	}
 	case CS_LOADCOMPLETE:
-		++g_ReadyNum;
-		std::cout << "Loading Num : " << g_ReadyNum << std::endl;
-		SendPutPlayerPacket(id, id);
-		if (g_ReadyNum == g_CCU)	// 나중에 방 인원 수 만큼.
-		{
-			g_ReadyNum = 0;
+		//SendPutPlayerPacket(id, id);
+
 			for (int i = 0; i < MAX_USER; ++i)
 			{
 				if (g_Clients[i].m_bConnect == true)
 				{
-					if (id != i)
-					{
-						SendPutPlayerPacket(id, i);
+				/*	if (i != id)
+					{*/
+						//SendPutPlayerPacket(id, i);
 						SendPutPlayerPacket(i, id);
-					}
+					//}
 				}
 			}// for loop
-		}
 		break;
 	// 인 게임
 	// (Move)

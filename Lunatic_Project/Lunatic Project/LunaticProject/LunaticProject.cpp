@@ -389,6 +389,7 @@ void ProcessPacket(char * ptr)
 		Sleep(3000);
 		gGameFramework.LoadingScene = true;
 		InvalidateRect(g_hWnd, NULL, false);
+
 		// server send (loading complete)
 		cs_packet_LoadingComplete *my_packet = reinterpret_cast<cs_packet_LoadingComplete *>(send_buffer);
 		my_packet->size = sizeof(cs_packet_LoadingComplete);
@@ -396,9 +397,9 @@ void ProcessPacket(char * ptr)
 		DWORD iobyte;
 		my_packet->type = CS_LOADCOMPLETE;
 
+		cout << "send 로딩 컴플릿.\n";
 		WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 		//
-		cout << "올레디\n";
 		//gGameFramework.ChangeScene = GAME;
 
 		break;
@@ -416,9 +417,8 @@ void ProcessPacket(char * ptr)
 			gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, my_packet->y, my_packet->z));
 		}
 		else {
-			cout << "Other Pos\n";
+			cout << "Other Pos [ID] : " << id << endl;
 			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
-			cout << "초기좌표를 설정하는 다른 아이디" << ends << id << endl;
 		}
 		break;	
 	}
