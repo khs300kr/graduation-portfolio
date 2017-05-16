@@ -536,19 +536,14 @@ void CGameFramework::FrameAdvance()
 	if (LoadingScene)
 	{
 
-		m_pScene->BuildObjects(m_pd3dDevice);
+
+
 		LoadingScene = false;
+		m_pScene->BuildObjects(m_pd3dDevice);
 		
-		// server send (loading complete)
-		cs_packet_LoadingComplete *my_packet = reinterpret_cast<cs_packet_LoadingComplete *>(send_buffer);
-		my_packet->size = sizeof(cs_packet_LoadingComplete);
-		send_wsabuf.len = sizeof(cs_packet_LoadingComplete);
-		DWORD iobyte;
-		my_packet->type = CS_LOADCOMPLETE;
+		
 
-		WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
-		//
-
+	
 
 		ChangeScene = GAME;
 

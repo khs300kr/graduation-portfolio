@@ -52,16 +52,23 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 	g_mysocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, 0);
 
-	char ipAddr[20];
-	cout << "접속할 서버의 IP주소를 입력하세요 : ";
-	cin >> ipAddr;
+
 
 	SOCKADDR_IN ServerAddr;
 	ZeroMemory(&ServerAddr, sizeof(SOCKADDR_IN));
 	ServerAddr.sin_family = AF_INET;
 	ServerAddr.sin_port = htons(MY_SERVER_PORT);
-	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+#ifdef _DEBUG
+	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+#else
+	char ipAddr[20];
+	cout << "접속할 서버의 IP주소를 입력하세요 : ";
+	cin >> ipAddr;
 	ServerAddr.sin_addr.s_addr = inet_addr(ipAddr);
+#endif
+
+	
 
 	int Result = WSAConnect(g_mysocket, (sockaddr *)&ServerAddr, sizeof(ServerAddr), NULL, NULL, NULL, NULL);
 	WSAAsyncSelect(g_mysocket, g_hWnd, WM_SOCKET, FD_CLOSE | FD_READ);
@@ -378,14 +385,25 @@ void ProcessPacket(char * ptr)
 		break;
 	}
 	case SC_ALLREADY:
-
+	{
 		Sleep(3000);
 		gGameFramework.LoadingScene = true;
 		InvalidateRect(g_hWnd, NULL, false);
+		// server send (loading complete)
+		cs_packet_LoadingComplete *my_packet = reinterpret_cast<cs_packet_LoadingComplete *>(send_buffer);
+		my_packet->size = sizeof(cs_packet_LoadingComplete);
+		send_wsabuf.len = sizeof(cs_packet_LoadingComplete);
+		DWORD iobyte;
+		my_packet->type = CS_LOADCOMPLETE;
+
+		WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+		//
 		cout << "올레디\n";
 		//gGameFramework.ChangeScene = GAME;
 
 		break;
+	}
+
 
 	// 인게임
 	case SC_PUT_PLAYER:
@@ -400,6 +418,7 @@ void ProcessPacket(char * ptr)
 		else {
 			cout << "Other Pos\n";
 			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
+			cout << "초기좌표를 설정하는 다른 아이디" << ends << id << endl;
 		}
 		break;	
 	}
@@ -423,7 +442,7 @@ void ProcessPacket(char * ptr)
 			gGameFramework.OtherDirection[id] = my_packet->direction;
 			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 
-			
+			cout << "움직이는 중 " << endl;
 			if (my_packet->direction != 0)
 				gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_RUN);
 			else
