@@ -1,2 +1,0 @@
-﻿  TCP_Server.cpp
-LINK : fatal error LNK1104: 'ws32_2.lib' 파일을 열 수 없습니다.
