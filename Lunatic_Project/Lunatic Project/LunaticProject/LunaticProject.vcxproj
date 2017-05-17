@@ -15,6 +15,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>LunaticProject</RootNamespace>
     <ProjectName>LunaticProject</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -142,9 +143,15 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Data\Menu\background.bmp" />
+    <Image Include="..\Data\Menu\chatting.bmp" />
+    <Image Include="..\Data\Menu\create.bmp" />
+    <Image Include="..\Data\Menu\createwindow.bmp" />
     <Image Include="..\Data\Menu\loading.bmp" />
     <Image Include="..\Data\Menu\lobby.bmp" />
     <Image Include="..\Data\Menu\mainmenu.bmp" />
+    <Image Include="..\Data\Menu\quickjoin.bmp" />
+    <Image Include="..\Data\Menu\roombackground.bmp" />
+    <Image Include="..\Data\Menu\whojoin.bmp" />
     <Image Include="LunaticProject.ico" />
     <Image Include="small.ico" />
   </ItemGroup>

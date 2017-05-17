@@ -110,6 +110,11 @@ public:
 
 	bool GetCol() { return ColBox; }
 
+	bool Leftcollision(CHeroManager Circle, CHeroManager Rect);
+	bool Rightcollision(CHeroManager Circle, CHeroManager Rect);
+	bool Upcollision(CHeroManager Circle, CHeroManager Rect);
+	bool Downcollision(CHeroManager Circle, CHeroManager Rect);
+
 public:
 
 	

@@ -229,6 +229,24 @@
     <Image Include="..\Data\Menu\lobby.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="..\Data\Menu\chatting.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\create.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\createwindow.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\quickjoin.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\roombackground.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\whojoin.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BaseEffect.fx">

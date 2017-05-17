@@ -143,6 +143,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	RECT rc = { 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT };
 	AdjustWindowRect(&rc, dwStyle, FALSE);
 
+	//g_hWnd = CreateWindow(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance, NULL);
 	g_hWnd = CreateWindow(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance, NULL);
 	if (!g_hWnd)
 		return FALSE;
@@ -165,25 +166,88 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY	- 종료 메시지를 게시하고 반환합니다.
 //
 //
+
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+
+
 	int wmId, wmEvent;
 
 	HDC hdc, memdc, memdc2;
 
 	HBITMAP hBackBit, hOldBitmap;
+	HFONT hFont, hOldFont;
 
 	HPEN Pen, oldPen;
 	PAINTSTRUCT ps;
-	static HBITMAP bmp_room, bmp_loading, bmp_mainmenu, bmp_lobby;
+	static HBITMAP bmp_room, bmp_loading, bmp_mainmenu;//, bmp_lobby;
+	static HBITMAP bmp_chatwindow, bmp_create, bmp_quickjoin, bmp_whojoin, bmp_roombackground, bmp_createwindow;
+	//HBITMAP
 
+
+	static WCHAR str[100];
+
+
+	static int count;
+	static SIZE size;
+	
 	switch (message)
 	{
 	case WM_CREATE:
+
+		memset(str, 0, NULL);
+
+		CreateCaret(hWnd, NULL, 3, 20);
+		
+
 		bmp_room = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
-		bmp_loading = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP2));
-		bmp_mainmenu = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP3));
-		bmp_lobby = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP4));
+		bmp_loading = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_LOADINGWINDOW));
+		bmp_mainmenu = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_MAINMENU));
+
+		bmp_create = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_CREATE));
+		bmp_quickjoin = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_QUICKJOIN));
+		bmp_whojoin = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_WHOJOIN));
+		bmp_roombackground = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_ROOMBG));
+		bmp_createwindow = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_CREATEWINDOW));
+		bmp_chatwindow = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_CHATWINDOW));
+
+		AddFontResourceA("../data/Fonts/HoonWhitecatR.ttf");
+
+		break;
+
+	case WM_CHAR:
+		if ((wParam == VK_BACK) && (count >= 0))
+		{
+			if (count > 0)
+				count--;
+		}
+		else if (wParam == VK_RETURN)
+		{
+			count = 0;
+		}
+		else if (wParam == VK_ESCAPE)
+		{
+			count = 0;
+		}
+		else if (wParam == VK_TAB)
+		{
+			if (count < 99)
+			{
+				for (int i = 0; i < 4; ++i)
+					str[count++] = ' ';
+			}
+		}
+		else
+		{
+			if (count < 99)
+			{
+				str[count++] = wParam;
+			}
+		}
+		str[count] = '\0';
+
+		InvalidateRect(hWnd, NULL, false);
 		break;
 
 	case WM_PAINT:
@@ -195,39 +259,64 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		hBackBit = CreateCompatibleBitmap(hdc, 1024, 768);
 		hOldBitmap = (HBITMAP)SelectObject(memdc, hBackBit);
 
-		Pen = CreatePen(PS_SOLID, 5, RGB(255, 0, 0));
-		oldPen = (HPEN)SelectObject(memdc, Pen);
-
 		memdc2 = CreateCompatibleDC(hdc);
-
 
 
 		if (gGameFramework.ChangeScene == MAINMENU)
 		{
-			SelectObject(memdc2, bmp_mainmenu);
-			BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
+			DrawBitmap(memdc, memdc2, bmp_mainmenu, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
 		}
 
 		else if (gGameFramework.ChangeScene == LOBBY)
 		{
-			SelectObject(memdc2, bmp_lobby);
-			
-			SelectObject(memdc, GetStockObject(NULL_BRUSH));
-			TextOut(memdc2, 420, 120, L"입장 가능", 5);
-			BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
+			DrawBitmap(memdc, memdc2, bmp_create, 0, 0, 400, 140); // 방만들기
+			DrawBitmap(memdc, memdc2, bmp_quickjoin, 400, 0, 400, 140); // 빠른 참여
+			DrawBitmap(memdc, memdc2, bmp_whojoin, 800, 0, 400, 768); // 접속자
+
+			DrawBitmap(memdc, memdc2, bmp_roombackground, 0, 140, 800, 406); // room background
+			DrawBitmap(memdc, memdc2, bmp_chatwindow, 0, 518, 800, 250); // chatting
+			Rectangle(memdc, 0, 738, 800, 768);
 
 			
+
+
+			hFont = CreateFont(25, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("1훈하얀고양이 R"));
+			hOldFont = (HFONT)SelectObject(memdc, hFont);
+
+			SetBkMode(memdc, TRANSPARENT);
+
+			ShowCaret(hWnd);
+			
+			
+			GetTextExtentPoint(memdc, str, wcslen(str), &size);
+			TextOut(memdc, 0, 740, str, wcslen(str));
+			SetCaretPos(size.cx, 741);
+			
+			
+
+
+			//BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
+
+			SelectObject(memdc2, hFont);
+			DeleteObject(hFont);
 			
 		}
 
 		else if (gGameFramework.ChangeScene == ROOM)
 		{
 
+
 			SelectObject(memdc2, bmp_room);
 			BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
 
+			Pen = CreatePen(PS_SOLID, 5, RGB(255, 0, 0));
+			oldPen = (HPEN)SelectObject(memdc, Pen);
+
 			SelectObject(memdc, GetStockObject(NULL_BRUSH));
 			Rectangle(memdc, 229 + ((gGameFramework.SelectCount - 1) * 199), 130, 370 + ((gGameFramework.SelectCount - 1) * 199), 270);
+
+			SelectObject(memdc, oldPen);
+			DeleteObject(Pen);
 
 		}
 
@@ -238,8 +327,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 
-		SelectObject(memdc, oldPen);
-		DeleteObject(Pen);
+
 		DeleteDC(memdc2);
 
 		BitBlt(hdc, 0, 0, 1024, 768, memdc, 0, 0, SRCCOPY);
@@ -288,6 +376,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		activate = false;
 		break;
 	case WM_DESTROY:
+		HideCaret(hWnd);
+		DestroyCaret();
 		PostQuitMessage(0);
 		break;
 	default:
@@ -389,7 +479,6 @@ void ProcessPacket(char * ptr)
 		Sleep(3000);
 		gGameFramework.LoadingScene = true;
 		InvalidateRect(g_hWnd, NULL, false);
-
 		// server send (loading complete)
 		cs_packet_LoadingComplete *my_packet = reinterpret_cast<cs_packet_LoadingComplete *>(send_buffer);
 		my_packet->size = sizeof(cs_packet_LoadingComplete);
@@ -397,9 +486,9 @@ void ProcessPacket(char * ptr)
 		DWORD iobyte;
 		my_packet->type = CS_LOADCOMPLETE;
 
-		cout << "send 로딩 컴플릿.\n";
 		WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 		//
+		cout << "올레디\n";
 		//gGameFramework.ChangeScene = GAME;
 
 		break;
@@ -417,8 +506,9 @@ void ProcessPacket(char * ptr)
 			gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, my_packet->y, my_packet->z));
 		}
 		else {
-			cout << "Other Pos [ID] : " << id << endl;
+			cout << "Other Pos\n";
 			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
+			cout << "초기좌표를 설정하는 다른 아이디" << ends << id << endl;
 		}
 		break;	
 	}
@@ -546,4 +636,11 @@ void ProcessPacket(char * ptr)
 	default:
 		printf("Unknown PACKET type [%d]\n", ptr[1]);
 	}
+}
+
+
+void DrawBitmap(HDC memdc, HDC memdc2, HBITMAP bitmap, int x, int y, int sizeX, int sizeY)
+{
+	SelectObject(memdc2, bitmap);
+	BitBlt(memdc, x, y, sizeX, sizeY, memdc2, 0, 0, SRCCOPY);
 }

@@ -200,15 +200,9 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					InvalidateRect(g_hWnd, NULL, false);
 				}
 
-				else if (ChangeScene == LOBBY)
-				{
-					ChangeScene = ROOM;
-					InvalidateRect(g_hWnd, NULL, false);
-				}
-
 				else if (ChangeScene == ROOM)
 				{
-					
+
 					{
 						// server send (Ready)
 						cs_packet_ready *my_packet = reinterpret_cast<cs_packet_ready *>(send_buffer);
@@ -228,9 +222,17 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 
 					//LoadingScene = true;
 					//InvalidateRect(m_hWnd, NULL, false);
-	
+
 				}
 				break;
+
+				/*if (ChangeScene == LOBBY)
+				{
+					ChangeScene = ROOM;
+					InvalidateRect(g_hWnd, NULL, false);
+				}
+				break;*/
+			
 			case VK_LEFT:
 				if (ChangeScene == ROOM)
 				{
@@ -533,40 +535,41 @@ void CGameFramework::FrameAdvance()
 	
 	//m_pScene->SetHero();
 
-	if (LoadingScene)
+	if (activate)
 	{
+		if (LoadingScene)
+		{
+			LoadingScene = false;
+			m_pScene->BuildObjects(m_pd3dDevice);
 
 
 
-		LoadingScene = false;
-		m_pScene->BuildObjects(m_pd3dDevice);
-		
-		
+			ChangeScene = GAME;
+
+		}
+
+		if (ChangeScene == GAME)
+		{
+
+
+			ProcessInput();
+			AnimateObjects();
+
+			float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
+			if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
+			if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+			if (m_pPlayer) m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
+
+			if (m_pScene) m_pScene->Render(m_pd3dDeviceContext, m_pCamera);
+			//if (m_pPlayerShader) m_pPlayerShader->Render(m_pd3dDeviceContext, m_pCamera);
+
+			m_pDXGISwapChain->Present(0, 0);
+		}
+
+	}
 
 	
-
-		ChangeScene = GAME;
-
-	}
-
-	if (ChangeScene == GAME)
-	{
-
-
-		ProcessInput();
-		AnimateObjects();
-
-		float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
-		if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
-		if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-
-		if (m_pPlayer) m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
-
-		if (m_pScene) m_pScene->Render(m_pd3dDeviceContext, m_pCamera);
-		//if (m_pPlayerShader) m_pPlayerShader->Render(m_pd3dDeviceContext, m_pCamera);
-
-		m_pDXGISwapChain->Present(0, 0);
-	}
 	
 		
 		

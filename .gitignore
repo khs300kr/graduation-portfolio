@@ -222,3 +222,5 @@ pip-log.txt
 Lunatic_Project/Lunatic_Server/.vs/Lunatic_Server/v14/.suo
 *.suo
 Lunatic_Project/Lunatic_Server/.vs/Lunatic_Project/v14/.suo
+*.aps
+Lunatic_Project/Lunatic Project/LunaticProject/LunaticProject.vcxproj.filters

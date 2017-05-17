@@ -377,21 +377,16 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		switch (wParam)
 		{
 		case 'A':
-			cout << "my " << g_myid << ends<< pHeroObject[g_myid]->m_Team << endl;
-			for (int i = 0; i < MAX_USER; ++i)
-			{
-				cout << i << ends << pHeroObject[i]->GetPosition().y << endl;
-			}
 			break;
 
 		case 'Z':
-			if (!pHeroObject[g_myid]->bHeroAttack)
-			{
+			//if (!pHeroObject[g_myid]->bHeroAttack)
+			//{
 				
 				/*m_ppShaders[2]->GetFBXMesh->SetAnimation(1);
 				bHeroRun = true;
 				bHeroPunch = false;*/
-			}
+			//}
 			break;
 		case 'X':
 			//if (!bHeroAttack)
@@ -733,7 +728,6 @@ void CScene::UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS
 
 void CScene::AnimateObjects(float fTimeElapsed)
 {
-
 	CPlayer *pPlayer = m_pCamera->GetPlayer();
 
 	if (m_pLights && m_pd3dcbLights)
@@ -791,29 +785,8 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 	
 
-	//for (int i = 0; i < MAX_USER; ++i)
-	//{
-	//	if (i != g_myid)
-	//	{
-	//		if (m_ppShaders[i + 1]->GetFBXMesh->GetFBXNowFrameNum() == m_ppShaders[i + 1]->GetFBXMesh->GetFBXMaxFrameNum() - 1)
-	//		{
-	//			m_ppShaders[i + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);	
-	//		}
-	//	}
-
-	//}
 
 
-	//if ((m_ppShaders[i + 1]->GetFBXMesh->GetFBXNowFrameNum() == m_ppShaders[i + 1]->GetFBXMesh->GetFBXMaxFrameNum() - 1))
-	//{
-	//	cs_packet_attack *my_packet = reinterpret_cast<cs_packet_attack *>(send_buffer);
-	//	my_packet->size = sizeof(cs_packet_attack);
-	//	send_wsabuf.len = sizeof(cs_packet_attack);
-	//	DWORD iobyte;
-	//	my_packet->type = CS_ATTACK;
-
-	//	WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
-	//}
 
 	
 	for (int i = 1; i < MAX_USER+1; ++i)
@@ -856,3 +829,78 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 	}
 	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->Render(pd3dDeviceContext, pCamera);
 }
+
+
+
+//bool CScene::Leftcollision(CHeroManager Circle, CHeroManager Rect)
+//{
+//	float Left = (Circle.xTran - 18);
+//	float Top = (Circle.zTran - 18);
+//	float Right = (Circle.xTran + 18);
+//	float Bottom = (Circle.zTran + 18);
+//
+//	float Left2 = (Rect.xTran - 25);
+//	float Top2 = (Rect.zTran - 25);
+//	float Right2 = (Rect.xTran - 25);
+//	float Bottom2 = (Rect.zTran + 25);
+//
+//	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
+//		return true;
+//	else
+//		return false;
+//}
+//
+//bool CScene::Rightcollision(CHeroManager Circle, CHeroManager Rect)
+//{
+//	float Left = (Circle.xTran - 18);
+//	float Top = (Circle.zTran - 18);
+//	float Right = (Circle.xTran + 18);
+//	float Bottom = (Circle.zTran + 18);
+//
+//	float Left2 = (Rect.xTran + 25);
+//	float Top2 = (Rect.zTran - 25);
+//	float Right2 = (Rect.xTran + 25);
+//	float Bottom2 = (Rect.zTran + 25);
+//
+//	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
+//		return true;
+//	else
+//		return false;
+//}
+//
+//bool CScene::Upcollision(CHeroManager Circle, CHeroManager Rect)
+//{
+//	float Left = (Circle.xTran - 18);
+//	float Top = (Circle.zTran - 18);
+//	float Right = (Circle.xTran + 18);
+//	float Bottom = (Circle.zTran + 18);
+//
+//	float Left2 = (Rect.xTran - 25);
+//	float Top2 = (Rect.zTran - 25);
+//	float Right2 = (Rect.xTran + 25);
+//	float Bottom2 = (Rect.zTran - 25);
+//
+//	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
+//		return true;
+//	else
+//		return false;
+//}
+//
+//bool CScene::Downcollision(CHeroManager Circle, CHeroManager Rect)
+//{
+//	float Left = (Circle.xTran - 18);
+//	float Top = (Circle.zTran - 18);
+//	float Right = (Circle.xTran + 18);
+//	float Bottom = (Circle.zTran + 18);
+//
+//	float Left2 = (Rect.xTran - 25);
+//	float Top2 = (Rect.zTran + 25);
+//	float Right2 = (Rect.xTran + 25);
+//	float Bottom2 = (Rect.zTran + 25);
+//
+//	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
+//		return true;
+//	else
+//		return false;
+//}
+
