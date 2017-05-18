@@ -20,14 +20,14 @@ struct OverlappedEx
 
 struct CLIENT
 {
+	// Room
+	bool			m_bLobby;
+	BYTE			m_RoomID;
 	// Pos
+	BYTE			m_Direction;
 	float			m_fX;
 	float			m_fY;
 	float			m_fZ;
-	// Move
-	BYTE			m_Direction;
-	// Animation
-	//BYTE			m_Animation;
 	// Hero Type
 	BYTE			m_HeroPick;
 
@@ -40,11 +40,21 @@ struct CLIENT
 	int prev_packet_data;	// 조립 중 데이터
 	int curr_packet_size;	// 받은 양
 
-	std::mutex vl_lock;
+	mutex vl_lock;
+};
+
+struct Room
+{
+	WCHAR m_title[MAX_ROOMTITLE_SIZE];// 방제(문자열)
+	WCHAR m_password[4];// 비밀번호(문자열)
+	// 비공개(bool)
+	BYTE  m_mode;// 게임모드(BYTE)
+	unordered_set<int> m_RoomID_list;// 인원(BYTE)
 };
 
 extern HANDLE g_Hiocp;
 extern SOCKET g_ServerSocket;
 extern CLIENT g_Clients[MAX_USER];
+extern Room	  g_Room[MAX_ROOM];
 extern BYTE   g_ReadyNum;
 extern WORD   g_CCU; // CCU(Concurrent Users)

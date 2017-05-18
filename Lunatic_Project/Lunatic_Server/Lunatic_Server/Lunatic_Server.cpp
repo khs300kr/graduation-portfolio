@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "Global.h"
 #include "MiniDump.h"
+#include "MemoryLeak.h"
 #include "PacketFunc.h"
 
 void Init_Server()
 {
 	// 윈속초기화
-	std::wcout.imbue(std::locale("korean"));
+	wcout.imbue(locale("korean"));
 	WSADATA wsadata;
 	WSAStartup(MAKEWORD(2, 2), &wsadata);
 
@@ -32,6 +33,7 @@ void Init_Server()
 	for (int i = 0; i < MAX_USER; ++i)
 	{
 		g_Clients[i].m_bConnect = false;
+		g_Clients[i].m_bLobby = false;
 	}
 
 }
@@ -59,7 +61,7 @@ void Accept_Thread()
 		SOCKET client_sock = WSAAccept(g_ServerSocket,
 			reinterpret_cast<sockaddr *>(&ClientAddr), &addr_size, NULL, NULL);
 #ifdef _DEBUG
-		std::cout << "[TCP서버] 클라이언트 접속 : IP =" << inet_ntoa(ClientAddr.sin_addr) << ", 포트 번호 = " <<
+		cout << "[TCP서버] 클라이언트 접속 : IP =" << inet_ntoa(ClientAddr.sin_addr) << ", 포트 번호 = " <<
 			ntohs(ClientAddr.sin_port) << "\n";
 #endif
 		g_CCU = 0;
@@ -67,8 +69,9 @@ void Accept_Thread()
 		int new_id{ -1 };
 		for (int i = 0; i < MAX_USER; ++i)
 			if (g_Clients[i].m_bConnect == false) { new_id = i;	break; }
-		if (new_id == -1) { std::cout << "MAX USER : " << MAX_USER << "명 동접 OVERFLOW\n"; closesocket(client_sock); continue; }
+		if (new_id == -1) { cout << "MAX USER : " << MAX_USER << "명 동접 OVERFLOW\n"; closesocket(client_sock); continue; }
 		
+		g_Clients[new_id].m_bLobby = true;
 		g_Clients[new_id].m_bConnect = true;
 		g_Clients[new_id].m_client_socket = client_sock;
 		g_Clients[new_id].curr_packet_size = 0;
@@ -83,7 +86,7 @@ void Accept_Thread()
 		// 동접 출력
 		for (int i = 0; i < MAX_USER; ++i)
 			if (g_Clients[i].m_bConnect == true) ++g_CCU;
-		std::cout << "동접 : " << g_CCU << std::endl;
+		cout << "동접 : " << g_CCU << endl;
 
 		// 초기
 		//g_Clients[new_id].m_Animation = 0;
@@ -133,7 +136,7 @@ void Worker_Thread()
 			reinterpret_cast<LPWSAOVERLAPPED *>(&over), INFINITE);
 
 		// Error 처리
-		std::cout << "GQCS :";
+		cout << "GQCS :";
 		if (ret == FALSE)
 		{
 			int err_no = WSAGetLastError();
@@ -150,8 +153,8 @@ void Worker_Thread()
 		// Send, Recv 처리
 		if (over->m_Event_type == OP_RECV)
 		{
-			std::cout << "RECV from Client :" << id;
-			std::cout << "  IO_SIZE : " << io_size << std::endl;
+			cout << "RECV from Client :" << id;
+			cout << "  IO_SIZE : " << io_size << endl;
 			unsigned char *buf = g_Clients[id].m_recv_over.m_IOCP_buf;
 			unsigned cu_size = g_Clients[id].curr_packet_size;
 			unsigned pr_size = g_Clients[id].prev_packet_data;
@@ -193,7 +196,7 @@ void Worker_Thread()
 		{
 			if (over->m_Wsabuf.len != io_size)
 			{
-				std::cout << "Send Incomplete Error!\n";
+				cout << "Send Incomplete Error!\n";
 				closesocket(g_Clients[id].m_client_socket);
 				g_Clients[id].m_bConnect = false;
 			}
@@ -202,7 +205,7 @@ void Worker_Thread()
 
 		else
 		{
-			std::cout << "Unknown GQCS event!\n";
+			cout << "Unknown GQCS event!\n";
 			while (true);
 		}//UNKNOWN_GQCS
 
@@ -225,11 +228,11 @@ int main()
 		return 0;
 
 	// 작업자 스레드 생성.
-	std::vector<std::thread *> vWorker_threads;
+	vector<thread *> vWorker_threads;
 	for (int i = 0; i < 6; ++i)			// 코어4 * 1.5 = 6
-		vWorker_threads.push_back(new std::thread{ Worker_Thread });
+		vWorker_threads.push_back(new thread{ Worker_Thread });
 
-	std::thread accept_thread{ Accept_Thread };
+	thread accept_thread{ Accept_Thread };
 	accept_thread.join();
 
 	for (auto d : vWorker_threads)

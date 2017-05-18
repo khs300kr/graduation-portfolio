@@ -3,9 +3,10 @@
 #define MAX_PACKET_SIZE  255
 #define MY_SERVER_PORT  4000
 #define MAX_USER 8
+#define MAX_ROOM 4
 
-
-#define MAX_STR_SIZE  100
+#define MAX_STR_SIZE			100
+#define MAX_ROOMTITLE_SIZE		30
 
 #define CS_KEYDOWN_UP				1
 #define CS_KEYDOWN_DOWN				2
@@ -36,6 +37,9 @@
 #define SC_SKILL_W		 10
 #define SC_SKILL_E		 11
 #define SC_SKILL_R		 12
+
+#define DEATHMATCH		0
+#define	TERRITORY		1
 
 
 // Client Define
@@ -70,6 +74,16 @@
 
 #pragma pack (push, 1)
 // Client -> Server
+// ·Îºñ
+struct cs_packet_makeroom {
+	BYTE size;
+	BYTE type;
+	WCHAR message[MAX_ROOMTITLE_SIZE];
+	WCHAR password[4];
+	BYTE mode;
+	BYTE numPlayer;
+};
+
 // ¹æ
 struct cs_packet_ready {
 	BYTE size;

@@ -23,3 +23,4 @@ SOCKET g_ServerSocket{};
 CLIENT g_Clients[MAX_USER]{};
 BYTE   g_ReadyNum{};
 WORD   g_CCU{};
+Room   g_Room[MAX_ROOM]{};
