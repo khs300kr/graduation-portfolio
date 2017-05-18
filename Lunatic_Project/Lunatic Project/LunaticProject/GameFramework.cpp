@@ -185,77 +185,11 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 
 void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
+
 	if (m_pScene) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 
 	switch (nMessageID)
 	{
-	case WM_KEYDOWN:
-
-			switch (wParam)
-			{
-			case VK_RETURN:
-				if (ChangeScene == MAINMENU)
-				{
-					ChangeScene = LOBBY;
-					InvalidateRect(g_hWnd, NULL, false);
-				}
-
-				else if (ChangeScene == ROOM)
-				{
-
-					{
-						// server send (Ready)
-						cs_packet_ready *my_packet = reinterpret_cast<cs_packet_ready *>(send_buffer);
-						my_packet->size = sizeof(cs_packet_ready);
-						send_wsabuf.len = sizeof(cs_packet_ready);
-						DWORD iobyte;
-						my_packet->type = CS_READY;
-						my_packet->hero_pick = SelectCount;
-
-						WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
-						//
-					}
-					m_pScene->pHeroObject[g_myid]->m_HeroSelect = SelectCount;
-					m_pScene->pHeroObject[g_myid]->m_Team = A_TEAM;
-					cout << "캐릭터선택완료" << endl;
-
-
-					//LoadingScene = true;
-					//InvalidateRect(m_hWnd, NULL, false);
-
-				}
-				break;
-
-				/*if (ChangeScene == LOBBY)
-				{
-					ChangeScene = ROOM;
-					InvalidateRect(g_hWnd, NULL, false);
-				}
-				break;*/
-			
-			case VK_LEFT:
-				if (ChangeScene == ROOM)
-				{
-					if (SelectCount == 1)
-						SelectCount = 3;
-					else
-						SelectCount--;
-					InvalidateRect(g_hWnd, NULL, false);
-				}
-				break;
-			case VK_RIGHT:
-				if (ChangeScene == ROOM)
-				{
-					if (SelectCount == 3)
-						SelectCount = 1;
-					else
-						SelectCount++;
-					InvalidateRect(g_hWnd, NULL, false);
-				}
-				break;
-		
-		}
-
 	case WM_KEYUP:
 		switch (wParam)
 		{

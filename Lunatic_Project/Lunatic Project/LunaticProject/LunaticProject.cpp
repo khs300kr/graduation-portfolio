@@ -6,12 +6,16 @@
 #include "GameFramework.h"
 
 #define MAX_LOADSTRING 100
+#define CHAT_LENGTH 50
+#define ID_EDIT 100
 
 // 전역 변수:
 HINSTANCE hInst;								// 현재 인스턴스입니다.
 
 TCHAR szTitle[MAX_LOADSTRING];					// 제목 표시줄 텍스트입니다.
 TCHAR szWindowClass[MAX_LOADSTRING];			// 기본 창 클래스 이름입니다.
+WNDPROC wpOldEditProc;
+TCHAR str[CHAT_LENGTH];
 
 CGameFramework gGameFramework;
 
@@ -19,6 +23,7 @@ CGameFramework gGameFramework;
 ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK	EditProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
@@ -119,7 +124,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
 	wcex.lpszMenuName	= NULL;	
-	wcex.lpszClassName	= szWindowClass;
+	wcex.lpszClassName	= szWindowClass;	
 	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
 	return RegisterClassEx(&wcex);
@@ -170,8 +175,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-
-
 	int wmId, wmEvent;
 
 	HDC hdc, memdc, memdc2;
@@ -184,21 +187,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static HBITMAP bmp_room, bmp_loading, bmp_mainmenu;//, bmp_lobby;
 	static HBITMAP bmp_chatwindow, bmp_create, bmp_quickjoin, bmp_whojoin, bmp_roombackground, bmp_createwindow;
 	//HBITMAP
+	//
+	static HWND hChat{};
+	SIZE size{};
 
-
-	static WCHAR str[100];
-
-
-	static int count;
-	static SIZE size;
 	
 	switch (message)
 	{
 	case WM_CREATE:
 
-		memset(str, 0, NULL);
-
-		CreateCaret(hWnd, NULL, 3, 20);
 		
 
 		bmp_room = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
@@ -212,42 +209,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		bmp_createwindow = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_CREATEWINDOW));
 		bmp_chatwindow = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_CHATWINDOW));
 
-		AddFontResourceA("../data/Fonts/HoonWhitecatR.ttf");
+		//AddFontResourceA("../data/Fonts/HoonWhitecatR.ttf");
+
+		// Chatting
+		hChat = CreateWindow(L"edit", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER |
+			ES_AUTOHSCROLL, 2000, 2000, 200, 25, hWnd, (HMENU)ID_EDIT, hInst, NULL);
+		PostMessage(hChat, EM_LIMITTEXT, (WPARAM)49, 0);
+		wpOldEditProc = (WNDPROC)SetWindowLongPtr(hChat,
+			GWLP_WNDPROC,
+			(LONG_PTR)EditProc);
 
 		break;
-
-	case WM_CHAR:
-		if ((wParam == VK_BACK) && (count >= 0))
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
 		{
-			if (count > 0)
-				count--;
-		}
-		else if (wParam == VK_RETURN)
-		{
-			count = 0;
-		}
-		else if (wParam == VK_ESCAPE)
-		{
-			count = 0;
-		}
-		else if (wParam == VK_TAB)
-		{
-			if (count < 99)
+		case ID_EDIT:
+			switch (HIWORD(wParam))
 			{
-				for (int i = 0; i < 4; ++i)
-					str[count++] = ' ';
+			case EN_CHANGE:
+				GetWindowText(hChat, str, sizeof(str));
+				break;
 			}
 		}
-		else
-		{
-			if (count < 99)
-			{
-				str[count++] = wParam;
-			}
-		}
-		str[count] = '\0';
-
-		InvalidateRect(hWnd, NULL, false);
+		InvalidateRect(g_hWnd, NULL, false);
 		break;
 
 	case WM_PAINT:
@@ -280,17 +264,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			
 
 
-			hFont = CreateFont(25, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("1훈하얀고양이 R"));
+			hFont = CreateFont(15, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
 			hOldFont = (HFONT)SelectObject(memdc, hFont);
 
 			SetBkMode(memdc, TRANSPARENT);
 
-			ShowCaret(hWnd);
 			
 			
 			GetTextExtentPoint(memdc, str, wcslen(str), &size);
 			TextOut(memdc, 0, 740, str, wcslen(str));
-			SetCaretPos(size.cx, 741);
 			
 			
 
@@ -365,6 +347,76 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_RBUTTONUP:
 	case WM_MOUSEMOVE:
 	case WM_KEYDOWN:
+		switch (wParam)
+		{
+		case VK_SPACE:
+			if (gGameFramework.ChangeScene == MAINMENU)
+			{
+				gGameFramework.ChangeScene = LOBBY;
+				InvalidateRect(g_hWnd, NULL, false);
+			}
+
+			else if (gGameFramework.ChangeScene == ROOM)
+			{
+				{
+					// server send (Ready)
+					cs_packet_ready *my_packet = reinterpret_cast<cs_packet_ready *>(send_buffer);
+					my_packet->size = sizeof(cs_packet_ready);
+					send_wsabuf.len = sizeof(cs_packet_ready);
+					DWORD iobyte;
+					my_packet->type = CS_READY;
+					my_packet->hero_pick = gGameFramework.SelectCount;
+
+					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+					//
+				}
+				gGameFramework.m_pScene->pHeroObject[g_myid]->m_HeroSelect = gGameFramework.SelectCount;
+				gGameFramework.m_pScene->pHeroObject[g_myid]->m_Team = A_TEAM;
+				cout << "캐릭터선택완료" << endl;
+
+
+				//LoadingScene = true;
+				//InvalidateRect(m_hWnd, NULL, false);
+
+			}
+			break;
+
+			/*if (ChangeScene == LOBBY)
+			{
+			ChangeScene = ROOM;
+			InvalidateRect(g_hWnd, NULL, false);
+			}
+			break;*/
+
+		case VK_RETURN:
+			if (gGameFramework.ChangeScene == LOBBY)
+			{
+					SetFocus(hChat);
+			}
+			InvalidateRect(g_hWnd, NULL, false);
+			break;
+		case VK_LEFT:
+			if (gGameFramework.ChangeScene == ROOM)
+			{
+				if (gGameFramework.SelectCount == 1)
+					gGameFramework.SelectCount = 3;
+				else
+					gGameFramework.SelectCount--;
+				InvalidateRect(g_hWnd, NULL, false);
+			}
+			break;
+		case VK_RIGHT:
+			if (gGameFramework.ChangeScene == ROOM)
+			{
+				if (gGameFramework.SelectCount == 3)
+					gGameFramework.SelectCount = 1;
+				else
+					gGameFramework.SelectCount++;
+				InvalidateRect(g_hWnd, NULL, false);
+			}
+			break;
+
+		}
 	case WM_KEYUP:
 		if(activate)
 			gGameFramework.OnProcessingWindowMessage(hWnd, message, wParam, lParam);
@@ -376,14 +428,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		activate = false;
 		break;
 	case WM_DESTROY:
-		HideCaret(hWnd);
-		DestroyCaret();
+		SetWindowLongPtr(hChat, GWLP_WNDPROC, (LONG_PTR)wpOldEditProc);
 		PostQuitMessage(0);
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 	return 0;
+}
+LRESULT CALLBACK EditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	switch (msg)
+	{
+	case WM_KEYDOWN:
+	{
+		if (wParam == VK_RETURN)
+		{
+			// The user pressed Enter, so set the focus to the other control
+			// on the window (where 'hwndOther' is a handle to that window).
+			SetFocus(g_hWnd);
+			memset(str, '\0', sizeof(str));
+			SetWindowTextW(hWnd, '\0');
+			// Indicate that we processed the message.
+			return 0;
+		}
+	}
+	}
+
+	// Pass the messages we don't process here on to the
+	// original window procedure for default handling.
+	return CallWindowProc(wpOldEditProc, hWnd, msg, wParam, lParam);
 }
 
 // 정보 대화 상자의 메시지 처리기입니다.
