@@ -8,6 +8,7 @@
 #define MAX_LOADSTRING 100
 #define CHAT_LENGTH 50
 #define ID_EDIT 100
+#define MAX_CHAT_LINE 30
 
 // 전역 변수:
 HINSTANCE hInst;								// 현재 인스턴스입니다.
@@ -15,7 +16,13 @@ HINSTANCE hInst;								// 현재 인스턴스입니다.
 TCHAR szTitle[MAX_LOADSTRING];					// 제목 표시줄 텍스트입니다.
 TCHAR szWindowClass[MAX_LOADSTRING];			// 기본 창 클래스 이름입니다.
 WNDPROC wpOldEditProc;
-TCHAR str[CHAT_LENGTH];
+TCHAR str[MAX_CHAT_LINE][CHAT_LENGTH];
+
+//vector<TCHAR*> v;
+
+int index = 0;
+int page = 0, maxpage = 0;
+int scrollmax = 11;
 
 CGameFramework gGameFramework;
 
@@ -149,7 +156,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	AdjustWindowRect(&rc, dwStyle, FALSE);
 
 	//g_hWnd = CreateWindow(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance, NULL);
-	g_hWnd = CreateWindow(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance, NULL);
+	g_hWnd = CreateWindow(szWindowClass, szTitle, dwStyle, 100, 30, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance, NULL);
 	if (!g_hWnd)
 		return FALSE;
 
@@ -191,12 +198,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static HWND hChat{};
 	SIZE size{};
 
+	static int wheel;
 	
 	switch (message)
 	{
 	case WM_CREATE:
 
-		
+		wheel = 0;
 
 		bmp_room = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
 		bmp_loading = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_LOADINGWINDOW));
@@ -227,7 +235,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			switch (HIWORD(wParam))
 			{
 			case EN_CHANGE:
-				GetWindowText(hChat, str, sizeof(str));
+				
+				GetWindowText(hChat, str[index], sizeof(str));
 				break;
 			}
 		}
@@ -248,7 +257,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (gGameFramework.ChangeScene == MAINMENU)
 		{
-			DrawBitmap(memdc, memdc2, bmp_mainmenu, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+DrawBitmap(memdc, memdc2, bmp_mainmenu, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
 		}
 
 		else if (gGameFramework.ChangeScene == LOBBY)
@@ -261,7 +270,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			DrawBitmap(memdc, memdc2, bmp_chatwindow, 0, 518, 800, 250); // chatting
 			Rectangle(memdc, 0, 738, 800, 768);
 
-			
 
 
 			hFont = CreateFont(15, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
@@ -269,24 +277,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			SetBkMode(memdc, TRANSPARENT);
 
-			
-			
-			GetTextExtentPoint(memdc, str, wcslen(str), &size);
-			TextOut(memdc, 0, 740, str, wcslen(str));
-			
-			
+
+			for (int i = page; i < page + scrollmax; ++i) // 여기서 메인 채팅 배열을 출력해주어야한다.
+			{
+				if(i != index)
+					TextOut(memdc, 0, 518 + (i * 20) - (page * 20), str[i], wcslen(str[i]));
+			}
+
+
+			GetTextExtentPoint(memdc, str[index], wcslen(str[index]), &size);
+			TextOut(memdc, 0, 740, str[index], wcslen(str[index]));
+
 
 
 			//BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
 
 			SelectObject(memdc2, hFont);
 			DeleteObject(hFont);
-			
+
 		}
 
 		else if (gGameFramework.ChangeScene == ROOM)
 		{
-
 
 			SelectObject(memdc2, bmp_room);
 			BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
@@ -321,7 +333,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		EndPaint(hWnd, &ps);
 
 		break;
-	// server
+		// server
 	case WM_SOCKET:
 	{
 		if (WSAGETSELECTERROR(lParam)) {
@@ -341,12 +353,33 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	case WM_SIZE:
 		break;
+
+	case WM_MOUSEWHEEL:
+		if (gGameFramework.ChangeScene == LOBBY)
+		{
+			if ((short)HIWORD(wParam) < 0)
+			{
+				if (page < maxpage)
+					page++;
+
+			}
+			else
+			{
+				if (page > 0)
+				{
+					page--;
+				}
+			}
+			InvalidateRect(hWnd, NULL, false);
+		}
+		break;
 	case WM_LBUTTONDOWN:
 	case WM_LBUTTONUP:
 	case WM_RBUTTONDOWN:
 	case WM_RBUTTONUP:
 	case WM_MOUSEMOVE:
 	case WM_KEYDOWN:
+
 		switch (wParam)
 		{
 		case VK_SPACE:
@@ -391,10 +424,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case VK_RETURN:
 			if (gGameFramework.ChangeScene == LOBBY)
 			{
-					SetFocus(hChat);
+				SetFocus(hChat);
 			}
+
 			InvalidateRect(g_hWnd, NULL, false);
 			break;
+
 		case VK_LEFT:
 			if (gGameFramework.ChangeScene == ROOM)
 			{
@@ -446,12 +481,34 @@ LRESULT CALLBACK EditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		{
 			// The user pressed Enter, so set the focus to the other control
 			// on the window (where 'hwndOther' is a handle to that window).
+			
 			SetFocus(g_hWnd);
-			memset(str, '\0', sizeof(str));
-			SetWindowTextW(hWnd, '\0');
+
+			if (wcslen(str[index]))
+			{
+				if (index <= MAX_CHAT_LINE)
+					index++;
+
+				else
+				{
+					index = 0;
+				}
+
+				if (index > scrollmax)
+				{
+					page++;
+					maxpage++;
+				}
+
+				SetWindowTextW(hWnd, '\0');
+			}
+
+			//memset(str[index-1], '\0', sizeof(str[index-1]));
+			
 			// Indicate that we processed the message.
 			return 0;
 		}
+
 	}
 	}
 
