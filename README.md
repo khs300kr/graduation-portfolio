@@ -11,3 +11,4 @@
 [FBX 설치](http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=25408427) - FBX SDK 2017.0.1 VS2015 (exe - 94283Kb) 설치  
 [FBX SDK 설정](http://euryale.tistory.com/85)  
 [Git 설명서](https://opentutorials.org/course/1492) 
+[Visual Leak Detector](http://vld.codeplex.com/downloads/get/1537000)
