@@ -3,6 +3,7 @@
 // 들어 있는 포함 파일입니다.
 //
 #pragma once
+#pragma disable(warning:4996)
 
 #include "targetver.h"
 
