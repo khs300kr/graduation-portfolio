@@ -37,13 +37,15 @@ void SendIDPlayer(int client, int object)
 }
 
 // 로비
-void SendChatPacket(int client, int object)
+void SendChatPacket(int client, int object, WCHAR str[MAX_STR_SIZE])
 {
 	sc_packet_chat packet;
 	packet.size = sizeof(packet);
 	packet.type = SC_CHAT;
 	packet.id = object;
+	wcscpy_s(packet.message, str);
 
+	Send_Packet(client, &packet);
 }
 // 방
 void SendReadyPacket(int client, int object)
@@ -170,17 +172,15 @@ void ProcessPacket(int id, unsigned char packet[])
 	{
 	// 로비
 	case CS_CHAT:
-		// Chat Keep Where?
+	{
 		cs_packet_chat *my_packet = reinterpret_cast<cs_packet_chat*>(packet);
+	
 		
-
-
-		//
 		for (int i = 0; i < MAX_USER; ++i) {
 			if (g_Clients[i].m_bConnect == true)
-				SendChatPacket(i, id);
-		}
-		break;
+				SendChatPacket(i, id, my_packet->message);
+		}break;
+	}
 	// 방
 	case CS_READY:
 	{

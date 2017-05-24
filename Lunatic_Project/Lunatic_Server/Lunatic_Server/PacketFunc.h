@@ -5,7 +5,7 @@ void Send_Packet(int client, void* packet);
 void SendIDPlayer(int client, int object);
 
 // ·Îºñ
-void SendChatPacket(int client, int object);
+void SendChatPacket(int client, int object, WCHAR str[MAX_STR_SIZE]);
 
 // ¹æ
 void SendReadyPacket(int client, int object);

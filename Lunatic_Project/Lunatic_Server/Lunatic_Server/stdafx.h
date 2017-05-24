@@ -22,6 +22,7 @@
 #include <thread>
 #include <vector>
 #include <mutex>
+#include <string.>
 #include <chrono>
 #include <unordered_set>
 
