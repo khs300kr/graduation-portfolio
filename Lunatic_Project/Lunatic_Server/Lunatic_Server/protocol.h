@@ -5,8 +5,9 @@
 #define MAX_USER 8
 #define MAX_ROOM 4
 
-#define MAX_STR_SIZE			100
+#define MAX_STR_SIZE			50
 #define MAX_ROOMTITLE_SIZE		30
+#define MAX_ID_LEN				10
 
 #define CS_KEYDOWN_UP				1
 #define CS_KEYDOWN_DOWN				2

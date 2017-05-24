@@ -16,13 +16,15 @@ HINSTANCE hInst;								// 현재 인스턴스입니다.
 TCHAR szTitle[MAX_LOADSTRING];					// 제목 표시줄 텍스트입니다.
 TCHAR szWindowClass[MAX_LOADSTRING];			// 기본 창 클래스 이름입니다.
 WNDPROC wpOldEditProc;
-TCHAR str[MAX_CHAT_LINE][CHAT_LENGTH];
+WCHAR output[MAX_CHAT_LINE][CHAT_LENGTH];
+WCHAR input[MAX_STR_SIZE];
+wstring chat_id;
+vector<wstring> vOutPut;
 
-//vector<TCHAR*> v;
-
-int index = 0;
-int page = 0, maxpage = 0;
-int scrollmax = 11;
+int iLine = 0;
+int iFrontRange = 0;
+int iLastRange = 0;
+bool bScrool = false;
 
 CGameFramework gGameFramework;
 
@@ -198,13 +200,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static HWND hChat{};
 	SIZE size{};
 
-	static int wheel;
 	
 	switch (message)
 	{
 	case WM_CREATE:
+		wcout.imbue(locale("korean"));
 
-		wheel = 0;
 
 		bmp_room = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
 		bmp_loading = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_LOADINGWINDOW));
@@ -236,7 +237,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 			case EN_CHANGE:
 				
-				GetWindowText(hChat, str[index], sizeof(str));
+				GetWindowText(hChat, input, sizeof(input));
 				break;
 			}
 		}
@@ -257,7 +258,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (gGameFramework.ChangeScene == MAINMENU)
 		{
-DrawBitmap(memdc, memdc2, bmp_mainmenu, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+			DrawBitmap(memdc, memdc2, bmp_mainmenu, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
 		}
 
 		else if (gGameFramework.ChangeScene == LOBBY)
@@ -278,15 +279,27 @@ DrawBitmap(memdc, memdc2, bmp_mainmenu, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_H
 			SetBkMode(memdc, TRANSPARENT);
 
 
-			for (int i = page; i < page + scrollmax; ++i) // 여기서 메인 채팅 배열을 출력해주어야한다.
+			//for (int i = page; i < page + scrollmax; ++i) // 여기서 메인 채팅 배열을 출력해주어야한다.
+			//{
+			//	if (i != index)
+			//	{
+			//		TextOut(memdc, 0, 518 + (i * 20) - (page * 20), output[i], wcslen(output[i]));
+			//	}
+			//}
+
+			vector<wstring>::iterator iter = vOutPut.begin() + iFrontRange;
+			for (int i = 0; iter != vOutPut.end() + iLastRange;++i,++iter)
 			{
-				if(i != index)
-					TextOut(memdc, 0, 518 + (i * 20) - (page * 20), str[i], wcslen(str[i]));
+				TextOut(memdc, 0, 518 + (i*20), iter->c_str(), wcslen(iter->c_str()));
 			}
 
+			//for (auto& d : vOutPut)
+			//{
+			//	TextOut(memdc, 0, 20, d.c_str(), wcslen(d.c_str()));
+			//}
 
-			GetTextExtentPoint(memdc, str[index], wcslen(str[index]), &size);
-			TextOut(memdc, 0, 740, str[index], wcslen(str[index]));
+			GetTextExtentPoint(memdc, input, wcslen(input), &size);
+			TextOut(memdc, 0, 740, input, wcslen(input));
 
 
 
@@ -359,15 +372,20 @@ DrawBitmap(memdc, memdc2, bmp_mainmenu, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_H
 		{
 			if ((short)HIWORD(wParam) < 0)
 			{
-				if (page < maxpage)
-					page++;
-
+				if (vOutPut.size() - 11 > iFrontRange && iLine >= 11)
+				{
+					++iFrontRange;
+					++iLastRange;
+					bScrool = true;
+				}
 			}
 			else
 			{
-				if (page > 0)
+				if (iFrontRange > 0)
 				{
-					page--;
+					--iFrontRange;
+					--iLastRange;
+					bScrool = true;
 				}
 			}
 			InvalidateRect(hWnd, NULL, false);
@@ -475,41 +493,57 @@ LRESULT CALLBACK EditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
-	case WM_KEYDOWN:
+	case WM_CHAR:
 	{
-		if (wParam == VK_RETURN)
+		if (wParam == VK_RETURN && gGameFramework.ChangeScene == LOBBY)
 		{
-			// The user pressed Enter, so set the focus to the other control
-			// on the window (where 'hwndOther' is a handle to that window).
-			
 			SetFocus(g_hWnd);
 
-			if (wcslen(str[index]))
-			{
-				if (index <= MAX_CHAT_LINE)
-					index++;
+			if (wcslen(input))
+			{				
+				cs_packet_chat *my_packet = reinterpret_cast<cs_packet_chat *>(send_buffer);
+				my_packet->size = sizeof(cs_packet_chat);
+				send_wsabuf.len = sizeof(cs_packet_chat);
+				DWORD iobyte;
+				my_packet->type = CS_CHAT;
+				wcscpy_s(my_packet->message, input);
+				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 
-				else
-				{
-					index = 0;
-				}
-
-				if (index > scrollmax)
-				{
-					page++;
-					maxpage++;
-				}
-
+				memset(input, '\0', sizeof(input));
 				SetWindowTextW(hWnd, '\0');
 			}
 
-			//memset(str[index-1], '\0', sizeof(str[index-1]));
+
+
+			//if (wcslen(str[index]))
+			//{
+			//	if (index <= MAX_CHAT_LINE)
+			//		index++;
+
+			//	else
+			//	{
+			//		index = 0;
+			//	}
+
+			//	if (index > scrollmax)
+			//	{
+			//		page++;
+			//		maxpage++;
+			//	}
+			//	cs_packet_chat *my_packet = reinterpret_cast<cs_packet_chat *>(send_buffer);
+			//	my_packet->size = sizeof(cs_packet_chat);
+			//	send_wsabuf.len = sizeof(cs_packet_chat);
+			//	DWORD iobyte;
+			//	my_packet->type = CS_CHAT;
+			//	my_packet->message = str[0];
+
+			//}
 			
 			// Indicate that we processed the message.
 			return 0;
-		}
+			}
 
-	}
+		}
 	}
 
 	// Pass the messages we don't process here on to the
@@ -586,7 +620,39 @@ void ProcessPacket(char * ptr)
 		cout << "내아디 : " << g_myid << endl;
 		break;
 	}
+	// 로비
+	case SC_CHAT:
+	{
+		sc_packet_chat *my_packet = reinterpret_cast<sc_packet_chat *>(ptr);
+		int id = my_packet->id;
 
+
+		chat_id = L"client[" + to_wstring(id);
+		chat_id += L"]: ";
+		chat_id += my_packet->message;
+
+		vOutPut.push_back(chat_id);
+		chat_id.clear();
+
+		if (iLine >= 11)
+		{
+			++iFrontRange;
+		}
+		else ++iLine;
+
+
+		if (bScrool)
+		{
+			iLastRange = 0;
+			iFrontRange = vOutPut.size() - 11;
+			bScrool = false;
+		}
+
+
+
+		InvalidateRect(g_hWnd, NULL, false);
+		break;
+	}
 	// 방
 	case SC_READY:
 	{
