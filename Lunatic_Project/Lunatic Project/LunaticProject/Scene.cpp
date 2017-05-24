@@ -27,23 +27,30 @@ CScene::CScene()
 	KeyDownForServer = 0;
 	DWORD dwDirection = 0;
 
+
 	for(int i = 0; i < MAX_USER; ++i)
 		pHeroObject[i] = NULL;
 	for (int i = 0; i < 13; ++i)
 		pHouse1Object[i] = NULL;
+
 
 	pNormalMaterial = NULL;
 	pHealerTexture = NULL;
 	pSordManTexture = NULL;
 	pBabarianTexture = NULL;
 	pTestTexture = NULL;
+	//pMagicianTexture = NULL;
 	
 	pSordManMeshA = NULL;
 	pSordManMeshB = NULL;
+
 	pHealerMeshA = NULL;
 	pHealerMeshB = NULL;
+
 	pBabarianMeshA = NULL;
 	pBabarianMeshB = NULL;
+
+
 	pTestMesh = NULL;
 
 
@@ -59,7 +66,7 @@ CScene::CScene()
 		pHeroObject[i]->SetPosition(0.0f, -3000.0f, 0.0f);
 	}
 
-
+	
 	ColBox = false;
 }
 
@@ -105,6 +112,13 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	pBabarianTexture->SetTexture(0, pd3dsrvTexture);
 	pBabarianTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
+
+	pMagicianTexture = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/Magician.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pMagicianTexture->SetTexture(0, pd3dsrvTexture);
+	pMagicianTexture->SetSampler(0, pd3dSamplerState);
+	pd3dsrvTexture->Release();
+
 
 	//바닥
 	pd3dsrvTexture = NULL;
@@ -168,16 +182,19 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	pNormalMaterial->m_Material.m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// ④ 쉐이더에 적용할 메쉬(들) 생성	
-	pHealerMeshA = new CFBXMesh(pd3dDevice, "../Data/Healer.data", 0.1f);
+	pHealerMeshA = new CFBXMesh(pd3dDevice, "../Data/Healer.data", 0.1f); // 160
 	pHealerMeshB = new CFBXMesh(pd3dDevice, "../Data/Healer.data", 0.1f);
 	pSordManMeshA = new CFBXMesh(pd3dDevice, "../Data/SordMan.data", 0.1f);
 	pSordManMeshB = new CFBXMesh(pd3dDevice, "../Data/SordMan.data", 0.1f);
 	pBabarianMeshA = new CFBXMesh(pd3dDevice, "../Data/Babarian.data", 0.1f);
 	pBabarianMeshB = new CFBXMesh(pd3dDevice, "../Data/Babarian.data", 0.1f);
+	pMagicianMeshA = new CFBXMesh(pd3dDevice, "../Data/Magician.data", 0.1f);
+	pMagicianMeshB = new CFBXMesh(pd3dDevice, "../Data/Magician.data", 0.1f);
+
 	pTestMesh = new CFBXMesh(pd3dDevice, "../Data/testbox.data", 0.1f);
 
 	// map objects
-	CMesh *pPlaneMesh = new CFBXMesh(pd3dDevice, "../Data/plane1.data", 1.f);
+	CMesh *pPlaneMesh = new CFBXMesh(pd3dDevice, "../Data/plane1.data", 1.0f);
 
 	CMesh *pBuilding1Mesh = new CFBXMesh(pd3dDevice, "../Data/building/building1/building1.data", 0.6f);
 	CMesh *pBuilding2Mesh = new CFBXMesh(pd3dDevice, "../Data/building/building2/building2.data", 1.f);
@@ -199,8 +216,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 
 
 	{		
-		
-
 
 		//pHeroObject[g_myid]->SetOOBB(XMFLOAT3(pHeroObject[g_myid]->GetPosition().x, pHeroObject[g_myid]->GetPosition().y, pHeroObject[g_myid]->GetPosition().z),
 		//	XMFLOAT3(0.1f, 0.1f, 0.1f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
@@ -240,7 +255,9 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 			pHeroObject[i]->SetMaterial(pNormalMaterial);
 
 			m_ppShaders[i + 1]->AddObject(pHeroObject[i]);
+
 		}
+
 
 
 		//m_ppShaders[9] = new CTexturedIlluminatedShader(1);
@@ -758,7 +775,6 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	for (int i = 0; i < m_nShaders; i++) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
 	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->AnimateObjects(fTimeElapsed);
 
-	//cout << m_ppShaders[2]->GetFBXMesh->GetFBXAnimationNum() << " " << m_ppShaders[2]->GetFBXMesh->GetFBXMaxFrameNum() << endl;
 
 	
 	if (pHeroObject[g_myid]->bHeroAttack || pHeroObject[g_myid]->bHeroQ || pHeroObject[g_myid]->bHeroW || pHeroObject[g_myid]->bHeroE || pHeroObject[g_myid]->bHeroR)
@@ -785,16 +801,12 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 	
 
-
-
-
 	
 	for (int i = 1; i < MAX_USER+1; ++i)
 	{
 		m_ppShaders[i]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed);
 
 	}
-
 
 	
 	//pHeroObject[g_myid]->SetOOBB(XMFLOAT3(pHeroObject[g_myid]->GetPosition().x, pHeroObject[g_myid]->GetPosition().y, pHeroObject[g_myid]->GetPosition().z),
@@ -822,85 +834,87 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 	for (int i = 0; i < m_nShaders; ++i)
 	{
 		
-		if (i == 1 || i == 2 || i == 3 || i == 4 || i == 5 || i == 6 || i == 7 || i == 8) // i번째 뼈대의 행렬 변경하자.
+		if (i == 1 || i == 2 || i == 3 || i == 4 || i == 5 || i == 6 || i == 7 || i == 8 || i == 9) // i번째 뼈대의 행렬 변경하자.
 			m_ppShaders[i]->GetFBXMesh->UpdateBoneTransform(pd3dDeviceContext, m_ppShaders[i]->GetFBXMesh->GetFBXAnimationNum(), m_ppShaders[i]->GetFBXMesh->GetFBXNowFrameNum());
 
 		m_ppShaders[i]->Render(pd3dDeviceContext, pCamera);
 	}
 	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->Render(pd3dDeviceContext, pCamera);
+
 }
 
 
+bool CScene::Rightcollision(CHeroManager* Object1, CHeroManager* Object2)
+{
+	float Left = (Object1->GetPosition().x - 3.0f);
+	float Top = (Object1->GetPosition().z - 3.0f);
+	float Right = (Object1->GetPosition().x + 3.0f);
+	float Bottom = (Object1->GetPosition().z + 3.0f);
 
-//bool CScene::Leftcollision(CHeroManager Circle, CHeroManager Rect)
-//{
-//	float Left = (Circle.xTran - 18);
-//	float Top = (Circle.zTran - 18);
-//	float Right = (Circle.xTran + 18);
-//	float Bottom = (Circle.zTran + 18);
-//
-//	float Left2 = (Rect.xTran - 25);
-//	float Top2 = (Rect.zTran - 25);
-//	float Right2 = (Rect.xTran - 25);
-//	float Bottom2 = (Rect.zTran + 25);
-//
-//	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
-//		return true;
-//	else
-//		return false;
-//}
-//
-//bool CScene::Rightcollision(CHeroManager Circle, CHeroManager Rect)
-//{
-//	float Left = (Circle.xTran - 18);
-//	float Top = (Circle.zTran - 18);
-//	float Right = (Circle.xTran + 18);
-//	float Bottom = (Circle.zTran + 18);
-//
-//	float Left2 = (Rect.xTran + 25);
-//	float Top2 = (Rect.zTran - 25);
-//	float Right2 = (Rect.xTran + 25);
-//	float Bottom2 = (Rect.zTran + 25);
-//
-//	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
-//		return true;
-//	else
-//		return false;
-//}
-//
-//bool CScene::Upcollision(CHeroManager Circle, CHeroManager Rect)
-//{
-//	float Left = (Circle.xTran - 18);
-//	float Top = (Circle.zTran - 18);
-//	float Right = (Circle.xTran + 18);
-//	float Bottom = (Circle.zTran + 18);
-//
-//	float Left2 = (Rect.xTran - 25);
-//	float Top2 = (Rect.zTran - 25);
-//	float Right2 = (Rect.xTran + 25);
-//	float Bottom2 = (Rect.zTran - 25);
-//
-//	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
-//		return true;
-//	else
-//		return false;
-//}
-//
-//bool CScene::Downcollision(CHeroManager Circle, CHeroManager Rect)
-//{
-//	float Left = (Circle.xTran - 18);
-//	float Top = (Circle.zTran - 18);
-//	float Right = (Circle.xTran + 18);
-//	float Bottom = (Circle.zTran + 18);
-//
-//	float Left2 = (Rect.xTran - 25);
-//	float Top2 = (Rect.zTran + 25);
-//	float Right2 = (Rect.xTran + 25);
-//	float Bottom2 = (Rect.zTran + 25);
-//
-//	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
-//		return true;
-//	else
-//		return false;
-//}
+	float Left2 = (Object2->GetPosition().x - 3.0f);
+	float Top2 = (Object2->GetPosition().z - 3.0f);
+	float Right2 = (Object2->GetPosition().x - 3.0f);
+	float Bottom2 = (Object2->GetPosition().z + 3.0f);
+
+	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
+		return true;
+	else
+		return false;
+}
+
+
+bool CScene::Leftcollision(CHeroManager* Object1, CHeroManager* Object2)
+{
+	
+	float Left = (Object1->GetPosition().x - 3.0f);
+	float Top = (Object1->GetPosition().z - 3.0f);
+	float Right = (Object1->GetPosition().x + 3.0f);
+	float Bottom = (Object1->GetPosition().z + 3.0f);
+
+	float Left2 = (Object2->GetPosition().x + 3.0f);
+	float Top2 = (Object2->GetPosition().z - 3.0f);
+	float Right2 = (Object2->GetPosition().x + 3.0f);
+	float Bottom2 = (Object2->GetPosition().z + 3.0f);
+
+	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
+		return true;
+	else
+		return false;
+}
+
+bool CScene::Downcollision(CHeroManager* Object1, CHeroManager* Object2)
+{
+	float Left = (Object1->GetPosition().x - 3.0f);
+	float Top = (Object1->GetPosition().z - 3.0f);
+	float Right = (Object1->GetPosition().x + 3.0f);
+	float Bottom = (Object1->GetPosition().z + 3.0f);
+
+	float Left2 = (Object2->GetPosition().x - 3.0f);
+	float Top2 = (Object2->GetPosition().z - 3.0f);
+	float Right2 = (Object2->GetPosition().x + 3.0f);
+	float Bottom2 = (Object2->GetPosition().z - 3.0f);
+
+	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
+		return true;
+	else
+		return false;
+}
+
+bool CScene::Upcollision(CHeroManager* Object1, CHeroManager* Object2)
+{
+	float Left = (Object1->GetPosition().x - 3.0f);
+	float Top = (Object1->GetPosition().z - 3.0f);
+	float Right = (Object1->GetPosition().x + 3.0f);
+	float Bottom = (Object1->GetPosition().z + 3.0f);
+
+	float Left2 = (Object2->GetPosition().x - 3.0f);
+	float Top2 = (Object2->GetPosition().z + 3.0f);
+	float Right2 = (Object2->GetPosition().x + 3.0f);
+	float Bottom2 = (Object2->GetPosition().z + 3.0f);
+
+	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
+		return true;
+	else
+		return false;
+}
 

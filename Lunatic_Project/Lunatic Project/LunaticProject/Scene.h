@@ -70,6 +70,7 @@ public:
 
 	CHeroManager* pHeroObject[MAX_USER];
 
+
 	CGameObject *pHouse1Object[13];
 
 	
@@ -78,6 +79,8 @@ public:
 	CTexture *pHealerTexture;
 	CTexture *pSordManTexture;
 	CTexture *pBabarianTexture;
+	CTexture *pMagicianTexture;
+
 	CTexture *pTestTexture;
 
 	CMesh *pSordManMeshA;
@@ -86,6 +89,13 @@ public:
 	CMesh *pHealerMeshB;
 	CMesh *pBabarianMeshA;
 	CMesh *pBabarianMeshB;
+
+	CMesh *pMagicianMeshA;
+	CMesh *pMagicianMeshB;
+
+	CCubeMeshDiffused* bound;
+
+
 
 	CMesh *pTestMesh;
 
@@ -110,11 +120,14 @@ public:
 	void ReleaseShaderVariables();
 
 	bool GetCol() { return ColBox; }
+	
+	bool Leftcollision(CHeroManager* Object1, CHeroManager* Object2);
 
-	bool Leftcollision(CHeroManager Circle, CHeroManager Rect);
-	bool Rightcollision(CHeroManager Circle, CHeroManager Rect);
-	bool Upcollision(CHeroManager Circle, CHeroManager Rect);
-	bool Downcollision(CHeroManager Circle, CHeroManager Rect);
+	bool Rightcollision(CHeroManager* Object1, CHeroManager* Object2);
+
+	bool Upcollision(CHeroManager* Object1, CHeroManager* Object2);
+
+	bool Downcollision(CHeroManager* Object1, CHeroManager* Object2);
 
 public:
 

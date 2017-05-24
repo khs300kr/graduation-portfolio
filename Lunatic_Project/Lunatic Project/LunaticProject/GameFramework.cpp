@@ -32,7 +32,7 @@ CGameFramework::CGameFramework()
 		OtherDirection[i] = 0;
 
 	LoadingScene = false;
-	ChangeScene = MAINMENU;
+	ChangeScene = ROOM;
 	SelectCount = 1;
 }
 
@@ -385,25 +385,49 @@ void CGameFramework::ProcessInput()
 
 				}
 
-
-				if (!m_pScene->pHeroObject[g_myid]->bHeroAttack)
-				{
-					if (!m_pScene->GetCol())
-					{
-						m_pPlayer->Move(dwDirection, m_pScene->pHeroObject[g_myid]->GetSpeed(), true);
-						m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
-						m_pScene->pHeroObject[g_myid]->Rotate(0, RotY_Hero, 0);
-						
-					}
-					else
-					{
-						m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[g_myid]->GetSpeed(), true);
-						m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
-						m_pScene->pHeroObject[g_myid]->Rotate(0, RotY_Hero, 0);
-					}
-
-				}
 				
+						if (!m_pScene->pHeroObject[g_myid]->bHeroAttack)
+						{
+							m_pPlayer->Move(dwDirection, m_pScene->pHeroObject[g_myid]->GetSpeed(), true);
+							m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
+							m_pScene->pHeroObject[g_myid]->Rotate(0, RotY_Hero, 0);
+						}
+				
+						
+
+						for (int i = 0; i < MAX_USER; ++i)
+						{
+							if (i != g_myid)
+							{
+								if (m_pScene->Rightcollision(m_pScene->pHeroObject[g_myid], m_pScene->pHeroObject[i]))
+								{
+									m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x - m_pScene->pHeroObject[g_myid]->GetSpeed(), m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[g_myid]->GetSpeed() - 0.5f, true);
+									m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
+									break;
+								}
+								else if (m_pScene->Leftcollision(m_pScene->pHeroObject[g_myid], m_pScene->pHeroObject[i]))
+								{
+									m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x + m_pScene->pHeroObject[g_myid]->GetSpeed(), m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[g_myid]->GetSpeed() - 0.5f, true);
+									m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
+									break;
+								}
+								else if (m_pScene->Upcollision(m_pScene->pHeroObject[g_myid], m_pScene->pHeroObject[i]))
+								{
+									m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z + m_pScene->pHeroObject[g_myid]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[g_myid]->GetSpeed() - 0.5f, true);
+									m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
+									break;
+								}
+								else if (m_pScene->Downcollision(m_pScene->pHeroObject[g_myid], m_pScene->pHeroObject[i]))
+								{
+									m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z - m_pScene->pHeroObject[g_myid]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[g_myid]->GetSpeed() - 0.5f, true);
+									m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
+									break;
+								}
+							}
+							
+						}
+						
+
 			}
 
 			
@@ -481,11 +505,10 @@ void CGameFramework::FrameAdvance()
 			ChangeScene = GAME;
 
 		}
+	}
 
 		if (ChangeScene == GAME)
 		{
-
-
 			ProcessInput();
 			AnimateObjects();
 
@@ -501,7 +524,7 @@ void CGameFramework::FrameAdvance()
 			m_pDXGISwapChain->Present(0, 0);
 		}
 
-	}
+	
 
 	
 	
