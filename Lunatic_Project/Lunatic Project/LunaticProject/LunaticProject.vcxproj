@@ -150,6 +150,7 @@
     <Image Include="..\Data\Menu\lobby.bmp" />
     <Image Include="..\Data\Menu\mainmenu.bmp" />
     <Image Include="..\Data\Menu\quickjoin.bmp" />
+    <Image Include="..\Data\Menu\room.bmp" />
     <Image Include="..\Data\Menu\roombackground.bmp" />
     <Image Include="..\Data\Menu\whojoin.bmp" />
     <Image Include="LunaticProject.ico" />

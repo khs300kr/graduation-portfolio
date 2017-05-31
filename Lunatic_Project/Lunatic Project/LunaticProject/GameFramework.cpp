@@ -32,7 +32,7 @@ CGameFramework::CGameFramework()
 		OtherDirection[i] = 0;
 
 	LoadingScene = false;
-	ChangeScene = ROOM;
+	ChangeScene = MAINMENU;
 	SelectCount = 1;
 }
 

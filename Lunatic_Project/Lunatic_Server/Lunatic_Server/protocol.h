@@ -73,6 +73,12 @@
 #define SordMan 3
 #define Healer 2
 
+// 방 상태
+#define Empty 0 // 비어있음
+#define Comein 1 // 입장가능
+#define Full 2 // 입장불가
+#define InGame 3 // 게임중
+
 #pragma pack (push, 1)
 // Client -> Server
 // 로비

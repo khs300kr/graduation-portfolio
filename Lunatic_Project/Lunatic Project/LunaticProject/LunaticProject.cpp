@@ -180,7 +180,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY	- 종료 메시지를 게시하고 반환합니다.
 //
 //
-
+typedef struct Room
+{
+	int xPos; // 방 xPos
+	int yPos; // 방 yPos
+	int roomInfo; // 방 정보
+	int people; // 유저가 방에 몇명 들어왔는지?
+}Room;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -193,11 +199,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	HPEN Pen, oldPen;
 	PAINTSTRUCT ps;
-	static HBITMAP bmp_room, bmp_loading, bmp_mainmenu;//, bmp_lobby;
-	static HBITMAP bmp_chatwindow, bmp_create, bmp_quickjoin, bmp_whojoin, bmp_roombackground, bmp_createwindow;
+	static HBITMAP bmp_background, bmp_loading, bmp_mainmenu;//, bmp_lobby;
+	static HBITMAP bmp_chatwindow, bmp_create, bmp_quickjoin, bmp_whojoin, bmp_roombackground, bmp_createwindow, bmp_room;
 	//HBITMAP
 	//
 	static HWND hChat{};
+	static Room room[3][2];
 	SIZE size{};
 
 	
@@ -207,7 +214,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		wcout.imbue(locale("korean"));
 
 
-		bmp_room = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
+		bmp_background = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
 		bmp_loading = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_LOADINGWINDOW));
 		bmp_mainmenu = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_MAINMENU));
 
@@ -215,10 +222,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		bmp_quickjoin = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_QUICKJOIN));
 		bmp_whojoin = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_WHOJOIN));
 		bmp_roombackground = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_ROOMBG));
+		bmp_room = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_ROOM));
 		bmp_createwindow = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_CREATEWINDOW));
 		bmp_chatwindow = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_CHATWINDOW));
 
 		//AddFontResourceA("../data/Fonts/HoonWhitecatR.ttf");
+
+
+		// room
+		for (int i = 0; i < 3; ++i) 
+		{
+			for (int j = 0; j < 2; ++j)
+			{
+				room[i][j].xPos = 30 + (j * 400); // 방의 X
+				room[i][j].yPos = 160 + (i * 120); // 방의 Y
+				room[i][j].roomInfo = Empty; // 방 정보
+				room[i][j].people = 0; // 유저가 몇명 방에 들어왔는지?
+			}
+		}
+
+
+
 
 		// Chatting
 		hChat = CreateWindow(L"edit", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER |
@@ -272,6 +296,40 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Rectangle(memdc, 0, 738, 800, 768);
 
 
+			hFont = CreateFont(30, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
+			hOldFont = (HFONT)SelectObject(memdc, hFont);
+
+			SetBkMode(memdc, TRANSPARENT);
+
+
+
+			for (int i = 0; i < 3; ++i)
+			{
+				for (int j = 0; j < 2; ++j)
+				{
+					DrawBitmap(memdc, memdc2, bmp_room, room[i][j].xPos, room[i][j].yPos, 335, 102); // 방 박스 출력
+
+					switch (room[i][j].roomInfo)
+					{
+					case Empty:
+						TextOut(memdc, room[i][j].xPos + 30, room[i][j].yPos + 30, L"생성가능", 4);
+						break;
+					case Comein:
+						TextOut(memdc, room[i][j].xPos + 30, room[i][j].yPos + 30, L"입장가능", 4);
+						break;
+					case Full:
+						TextOut(memdc, room[i][j].xPos + 30, room[i][j].yPos + 30, L"입장불가", 4);
+						break;
+					case InGame:
+						TextOut(memdc, room[i][j].xPos + 30, room[i][j].yPos + 30, L"게임중", 3);
+						break;
+					}
+					WCHAR s[] = L"(-/8)";
+					//room[i][j].people; //치환해야함
+					TextOut(memdc, room[i][j].xPos + 275, room[i][j].yPos + 68, s, 5);
+				}
+			}
+			
 
 			hFont = CreateFont(15, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
 			hOldFont = (HFONT)SelectObject(memdc, hFont);
@@ -279,13 +337,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SetBkMode(memdc, TRANSPARENT);
 
 
-			//for (int i = page; i < page + scrollmax; ++i) // 여기서 메인 채팅 배열을 출력해주어야한다.
-			//{
-			//	if (i != index)
-			//	{
-			//		TextOut(memdc, 0, 518 + (i * 20) - (page * 20), output[i], wcslen(output[i]));
-			//	}
-			//}
+
+
+
 
 			vector<wstring>::iterator iter = vOutPut.begin() + iFrontRange;
 			for (int i = 0; iter != vOutPut.end() + iLastRange;++i,++iter)
@@ -313,7 +367,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		else if (gGameFramework.ChangeScene == ROOM)
 		{
 
-			SelectObject(memdc2, bmp_room);
+			SelectObject(memdc2, bmp_background);
 			BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
 
 			Pen = CreatePen(PS_SOLID, 5, RGB(255, 0, 0));
