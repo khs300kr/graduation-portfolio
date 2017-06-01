@@ -324,9 +324,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						TextOut(memdc, room[i][j].xPos + 30, room[i][j].yPos + 30, L"게임중", 3);
 						break;
 					}
-					WCHAR s[] = L"(-/8)";
-					//room[i][j].people; //치환해야함
-					TextOut(memdc, room[i][j].xPos + 275, room[i][j].yPos + 68, s, 5);
+
+					wchar_t s[6];
+					wsprintf(s, L"(%d/8)", room[i][j].people);
+					TextOut(memdc, room[i][j].xPos + 260, room[i][j].yPos + 68, s, 5); // (0/8) 인원수 출력
 				}
 			}
 			
