@@ -79,6 +79,10 @@
 #define Full 2 // 입장불가
 #define InGame 3 // 게임중
 
+// 게임모드
+#define DeathMatch 0
+#define CPMatch 1
+
 #pragma pack (push, 1)
 // Client -> Server
 // 로비

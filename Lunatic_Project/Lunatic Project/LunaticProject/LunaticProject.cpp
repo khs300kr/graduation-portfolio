@@ -26,6 +26,11 @@ int iFrontRange = 0;
 int iLastRange = 0;
 bool bScrool = false;
 
+
+bool RoomCreateWindow = false; // 방만들기 윈도우 활성화
+WCHAR RoomName[20];
+WCHAR RoomPassword[20];
+
 CGameFramework gGameFramework;
 
 // 이 코드 모듈에 들어 있는 함수의 정방향 선언입니다.
@@ -188,6 +193,14 @@ typedef struct Room
 	int people; // 유저가 방에 몇명 들어왔는지?
 }Room;
 
+bool MouseInbox(int left, int top, int right, int bottom, int x, int y)
+{
+	if (left < x && right > x && top < y  && bottom > y)
+		return true;
+	else
+		return false;
+}
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId, wmEvent;
@@ -206,6 +219,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static HWND hChat{};
 	static Room room[3][2];
 	SIZE size{};
+	
+	static bool IsPassword;
+	static int GameMode;
+
 
 	
 	switch (message)
@@ -240,8 +257,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				room[i][j].people = 0; // 유저가 몇명 방에 들어왔는지?
 			}
 		}
-
-
+		
+		GameMode = DeathMatch; //DeathMatch
+		IsPassword = false;
 
 
 		// Chatting
@@ -260,8 +278,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			switch (HIWORD(wParam))
 			{
 			case EN_CHANGE:
+				if(!RoomCreateWindow)
+					GetWindowText(hChat, input, sizeof(input));
+				else
+				{
+					GetWindowText(hChat, RoomName, sizeof(RoomName));
+				}
 				
-				GetWindowText(hChat, input, sizeof(input));
 				break;
 			}
 		}
@@ -330,15 +353,61 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					TextOut(memdc, room[i][j].xPos + 260, room[i][j].yPos + 68, s, 5); // (0/8) 인원수 출력
 				}
 			}
-			
 
-			hFont = CreateFont(15, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
-			hOldFont = (HFONT)SelectObject(memdc, hFont);
+
+
 
 			SetBkMode(memdc, TRANSPARENT);
 
+			if (RoomCreateWindow) //방만들기 눌렀을 때
+			{
+				hFont = CreateFont(30, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
+				hOldFont = (HFONT)SelectObject(memdc, hFont);
+
+				DrawBitmap(memdc, memdc2, bmp_createwindow, 240, 170, 544, 408);
+				
+				Rectangle(memdc, 370, 300, 720, 340); // 방제목 입력
+				Rectangle(memdc, 370, 343, 720, 383); // 비밀번호 입력
+
+				Rectangle(memdc, 730, 343, 770, 383); // 비밀번호 체크박스
+				Rectangle(memdc, 520, 397, 550, 427); //데스매치 체크박스
+				Rectangle(memdc, 670, 397, 700, 427); //점령전 체크박스
 
 
+
+				
+				Pen = CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
+				oldPen = (HPEN)SelectObject(memdc, Pen);
+
+				SelectObject(memdc, GetStockObject(NULL_BRUSH));
+
+				if(IsPassword)
+					Ellipse(memdc, 735, 348, 765, 378);
+
+				if (GameMode == DeathMatch)
+					Ellipse(memdc, 522, 399, 548, 425);
+				else
+					Ellipse(memdc, 672, 399, 698, 425);
+
+				SelectObject(memdc, oldPen);
+				DeleteObject(Pen);
+
+
+				TextOut(memdc, 370, 305, RoomName, wcslen(RoomName));
+
+				SelectObject(memdc2, hFont);
+				DeleteObject(hFont);
+
+			}
+
+
+
+
+			
+
+
+			hFont = CreateFont(15, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
+			hOldFont = (HFONT)SelectObject(memdc, hFont);
 
 
 
@@ -353,6 +422,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//	TextOut(memdc, 0, 20, d.c_str(), wcslen(d.c_str()));
 			//}
 
+			//채팅창 출력
 			GetTextExtentPoint(memdc, input, wcslen(input), &size);
 			TextOut(memdc, 0, 740, input, wcslen(input));
 
@@ -401,6 +471,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		EndPaint(hWnd, &ps);
 
 		break;
+
 		// server
 	case WM_SOCKET:
 	{
@@ -446,15 +517,100 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			InvalidateRect(hWnd, NULL, false);
 		}
 		break;
+
+
 	case WM_LBUTTONDOWN:
-	case WM_LBUTTONUP:
+	{
+		if (gGameFramework.ChangeScene == LOBBY)
+		{
+			int mx = LOWORD(lParam);
+			int my = HIWORD(lParam);
+
+			if (!RoomCreateWindow && MouseInbox(0, 0, 400, 140, mx, my)) // 방만들기
+			{
+				RoomCreateWindow = true;
+				
+				SetFocus(hWnd);
+				memset(input, '\0', sizeof(input));
+				SetWindowTextW(hChat, '\0');
+			}
+
+			else if (RoomCreateWindow) // 방만들기 윈도우가 활성화 되어있을 때
+			{
+				if (!MouseInbox(240, 170, 784, 578, mx, my) || MouseInbox(536, 473, 696, 541, mx, my)) //취소를 누르거나 방만들기윈도우 밖을 누르면 방만들기윈도우를 제거한다.
+				{
+					RoomCreateWindow = false; // 방만들기 윈도우 헤제
+					
+					SetFocus(hWnd);
+					memset(RoomName, '\0', sizeof(RoomName));
+					SetWindowTextW(hChat, '\0');
+				}
+					
+
+				else if (MouseInbox(325, 473, 484, 541, mx, my)) // 확인을 누르면 방에 입장
+				{
+					EnterRoom();
+				}
+
+				else if (GameMode != DeathMatch && MouseInbox(378, 397, 548, 425, mx, my)) // 데스매치 클릭
+				{
+					GameMode = DeathMatch;
+				}
+				else if (GameMode != CPMatch && MouseInbox(567, 397, 698, 425, mx, my)) // 점령전 클릭
+				{
+					GameMode = CPMatch;
+				}
+				else if (MouseInbox(370, 300, 720, 340, mx, my)) // 방제목 활성화
+				{
+					SetFocus(hChat); // 방제목 활성화
+				}
+				else if (MouseInbox(730, 343, 770, 383, mx, my)) // 비밀번호 체크박스 활성화
+				{
+					IsPassword = !IsPassword; // 비밀번호 체크박스 활성화
+				}
+
+
+			}
+
+			if (!RoomCreateWindow && MouseInbox(400, 0, 800, 140, mx, my)) // 빠른참여
+			{
+				cout << "빠른 참여" << endl;
+			}
+
+			
+			
+
+			cout << mx << ends << my << endl;
+
+
+			InvalidateRect(hWnd, NULL, false);
+		}
+		
+	}
+		break;
+
+
 	case WM_RBUTTONDOWN:
+		break;
+
+	case WM_LBUTTONUP:
 	case WM_RBUTTONUP:
+		break;
 	case WM_MOUSEMOVE:
+		break;
+
 	case WM_KEYDOWN:
 
 		switch (wParam)
 		{
+		case VK_ESCAPE:
+			if (gGameFramework.ChangeScene == LOBBY && RoomCreateWindow) //방만들기 윈도우가 열려있을 경우
+			{
+				RoomCreateWindow = false;
+				InvalidateRect(hWnd, NULL, false);
+			}
+			break;
+
 		case VK_SPACE:
 			if (gGameFramework.ChangeScene == MAINMENU)
 			{
@@ -487,17 +643,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 
-			/*if (ChangeScene == LOBBY)
-			{
-			ChangeScene = ROOM;
-			InvalidateRect(g_hWnd, NULL, false);
-			}
-			break;*/
-
 		case VK_RETURN:
-			if (gGameFramework.ChangeScene == LOBBY)
+			if (gGameFramework.ChangeScene == MAINMENU)
 			{
-				SetFocus(hChat);
+				gGameFramework.ChangeScene = LOBBY;
+			}
+
+			else if (gGameFramework.ChangeScene == LOBBY)
+			{
+				if(!RoomCreateWindow) // 방만들기 윈도우가 없을 때
+					SetFocus(hChat);
 			}
 
 			InvalidateRect(g_hWnd, NULL, false);
@@ -525,6 +680,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 
 		}
+
+
 	case WM_KEYUP:
 		if(activate)
 			gGameFramework.OnProcessingWindowMessage(hWnd, message, wParam, lParam);
@@ -552,21 +709,28 @@ LRESULT CALLBACK EditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 		if (wParam == VK_RETURN && gGameFramework.ChangeScene == LOBBY)
 		{
-			SetFocus(g_hWnd);
+			
 
-			if (wcslen(input))
-			{				
-				cs_packet_chat *my_packet = reinterpret_cast<cs_packet_chat *>(send_buffer);
-				my_packet->size = sizeof(cs_packet_chat);
-				send_wsabuf.len = sizeof(cs_packet_chat);
-				DWORD iobyte;
-				my_packet->type = CS_CHAT;
-				wcscpy_s(my_packet->message, input);
-				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+			if (!RoomCreateWindow)
+			{
+				SetFocus(g_hWnd);
 
-				memset(input, '\0', sizeof(input));
-				SetWindowTextW(hWnd, '\0');
+				if (wcslen(input))
+				{
+					cs_packet_chat *my_packet = reinterpret_cast<cs_packet_chat *>(send_buffer);
+					my_packet->size = sizeof(cs_packet_chat);
+					send_wsabuf.len = sizeof(cs_packet_chat);
+					DWORD iobyte;
+					my_packet->type = CS_CHAT;
+					wcscpy_s(my_packet->message, input);
+					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+
+					memset(input, '\0', sizeof(input));
+					SetWindowTextW(hWnd, '\0');
+				}
 			}
+			
+
 
 
 
@@ -895,4 +1059,10 @@ void DrawBitmap(HDC memdc, HDC memdc2, HBITMAP bitmap, int x, int y, int sizeX, 
 {
 	SelectObject(memdc2, bitmap);
 	BitBlt(memdc, x, y, sizeX, sizeY, memdc2, 0, 0, SRCCOPY);
+}
+
+void EnterRoom()
+{
+	gGameFramework.ChangeScene = ROOM; // 여기서 방정보가 전부 입력이 되지 않으면 못넘어가게 구현해야함
+	vOutPut.clear();
 }

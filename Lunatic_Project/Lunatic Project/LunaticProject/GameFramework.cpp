@@ -168,13 +168,13 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 	case WM_LBUTTONDOWN:
 	case WM_RBUTTONDOWN:
 		//마우스 캡쳐를 하고 현재 마우스 위치를 가져온다.
-		SetCapture(hWnd);
-		GetCursorPos(&m_ptOldCursorPos);
+		//SetCapture(hWnd);
+		//GetCursorPos(&m_ptOldCursorPos);
 		break;
 	case WM_LBUTTONUP:
 	case WM_RBUTTONUP:
 		// 마우스 캡쳐를 해제한다.
-		ReleaseCapture();
+		//ReleaseCapture();
 		break;
 	case WM_MOUSEMOVE:
 		break;
