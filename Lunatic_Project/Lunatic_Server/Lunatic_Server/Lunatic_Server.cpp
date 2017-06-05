@@ -56,7 +56,10 @@ void Init_Server()
 	}
 
 }
+void DB_Thread()
+{
 
+}
 void Accept_Thread()
 {
 	/*
@@ -243,6 +246,9 @@ int main()
 	for (int i = 0; i < 6; ++i)			// 内绢4 * 1.5 = 6
 		vWorker_threads.push_back(new thread{ Worker_Thread });
 
+	// DB_thread 积己.
+	thread DB_thread{ DB_Thread };
+
 	// Accept_thread 积己.
 	thread accept_thread{ Accept_Thread };
 	
@@ -250,6 +256,7 @@ int main()
 	//thread timer_thread{ Timer_Thread };
 
 	// Threads Join
+	DB_thread.join();
 	accept_thread.join();
 	//timer_thread.join();
 	for (auto d : vWorker_threads)
