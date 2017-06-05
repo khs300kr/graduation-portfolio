@@ -1,8 +1,27 @@
 #include "stdafx.h"
 #include "Global.h"
 #include "MiniDump.h"
-#include "MemoryLeak.h"
 #include "PacketFunc.h"
+
+void DisconnectClient(int id)
+{
+	closesocket(g_Clients[id].m_client_socket);
+	g_Clients[id].m_bConnect = false;
+
+	for (int i = 0; i < MAX_USER; ++i)
+	{
+		if (g_Clients[i].m_bConnect == true)
+			SendRemovePlayerPacket(i, id);
+	}
+
+}
+
+void Close_Server()
+{
+	closesocket(g_ServerSocket);
+	CloseHandle(g_Hiocp);
+	WSACleanup();
+}
 
 void Init_Server()
 {
@@ -107,18 +126,17 @@ void Accept_Thread()
 	}
 }
 
-void DisconnectClient(int id)
-{
-	closesocket(g_Clients[id].m_client_socket);
-	g_Clients[id].m_bConnect = false;
-
-	for (int i = 0; i < MAX_USER; ++i)
-	{
-		if (g_Clients[i].m_bConnect == true)
-			SendRemovePlayerPacket(i, id);
-	}
-
-}
+//void Timer_Thread()
+//{
+//	for (;;)
+//	{
+//		Sleep(10);	// CPU 부하 방지.
+//		for (;;)
+//		{
+//
+//		}
+//	}
+//}
 
 void Worker_Thread()
 {
@@ -212,29 +230,28 @@ void Worker_Thread()
 	}//Worker_Loop
 }
 
-void Close_Server()
-{
-	closesocket(g_ServerSocket);
-	CloseHandle(g_Hiocp);
-	WSACleanup();
-}
 
 int main()
 {
-
 	Init_Server();
-	// 서버가 크래쉬 되었을때 처리할 수 있게 하는 MiniDump
-	if (!CMiniDump::Begin())
-		return 0;
 
-	// 작업자 스레드 생성.
+	// 서버가 크래쉬 되었을때 처리할 수 있게 하는 MiniDump
+	if (!CMiniDump::Begin()) return 0;
+
+	// Worker_thread 생성.
 	vector<thread *> vWorker_threads;
 	for (int i = 0; i < 6; ++i)			// 코어4 * 1.5 = 6
 		vWorker_threads.push_back(new thread{ Worker_Thread });
 
+	// Accept_thread 생성.
 	thread accept_thread{ Accept_Thread };
-	accept_thread.join();
+	
+	// Timer_thread 생성.
+	//thread timer_thread{ Timer_Thread };
 
+	// Threads Join
+	accept_thread.join();
+	//timer_thread.join();
 	for (auto d : vWorker_threads)
 	{
 		d->join();

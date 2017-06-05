@@ -25,7 +25,9 @@
 #include <string.>
 #include <chrono>
 #include <unordered_set>
-
+#include "MemoryLeak.h"
 #include "protocol.h"
-
+// DB
+#define UNICODE
+#include <sqlext.h>
 using namespace std;

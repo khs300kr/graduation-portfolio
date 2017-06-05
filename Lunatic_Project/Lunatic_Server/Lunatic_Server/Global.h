@@ -43,7 +43,7 @@ struct CLIENT
 	mutex vl_lock;
 };
 
-struct Room
+struct ROOM
 {
 	WCHAR m_title[MAX_ROOMTITLE_SIZE];// 방제(문자열)
 	WCHAR m_password[4];// 비밀번호(문자열)
@@ -52,9 +52,16 @@ struct Room
 	unordered_set<int> m_RoomID_list;// 인원(BYTE)
 };
 
+// Server
 extern HANDLE g_Hiocp;
 extern SOCKET g_ServerSocket;
 extern CLIENT g_Clients[MAX_USER];
-extern Room	  g_Room[MAX_ROOM];
+extern ROOM	  g_Room[MAX_ROOM];
 extern BYTE   g_ReadyNum;
 extern WORD   g_CCU; // CCU(Concurrent Users)
+
+// DB
+extern SQLHENV henv;
+extern SQLHDBC hdbc;
+extern SQLHSTMT hstmt;
+extern SQLRETURN retcode;

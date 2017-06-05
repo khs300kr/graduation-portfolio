@@ -17,10 +17,16 @@ void error_display(char *msg, int err_no)
 	while (true);
 }
 
-
+// Server
 HANDLE g_Hiocp{};
 SOCKET g_ServerSocket{};
 CLIENT g_Clients[MAX_USER]{};
 BYTE   g_ReadyNum{};
 WORD   g_CCU{};
-Room   g_Room[MAX_ROOM]{};
+ROOM   g_Room[MAX_ROOM]{};
+
+// DB
+SQLHENV henv{};
+SQLHDBC hdbc{};
+SQLHSTMT hstmt{};
+SQLRETURN retcode{};
