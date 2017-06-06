@@ -26,9 +26,6 @@ void Init_DB(void)
 			// Set login timeout to 5 seconds  
 			if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
 				SQLSetConnectAttr(hdbc, SQL_LOGIN_TIMEOUT, (SQLPOINTER)5, 0);
-
-				// Connect to data source  
-				retcode = SQLConnect(hdbc, (SQLWCHAR*)L"Lunatic_Project", SQL_NTS, (SQLWCHAR*)NULL, 0, NULL, 0);
 			}
 		}
 	}
@@ -36,17 +33,20 @@ void Init_DB(void)
 
 void Client_Login(char id[], char password[],int ci)
 {
+	// Connect to data source  
+	retcode = SQLConnect(hdbc, (SQLWCHAR*)L"Lunatic_Project", SQL_NTS, (SQLWCHAR*)NULL, 0, NULL, 0);
+
 	// Allocate statement handle  
 	if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
 	{
 		retcode = SQLAllocHandle(SQL_HANDLE_STMT, hdbc, &hstmt);
 
-		sprintf(sql_buf, "EXEC dbo.save_cl_pos %s, %s", id, password);
+		sprintf(sql_buf, "EXEC dbo.client_login %s, %s", id, password);
 		MultiByteToWideChar(CP_UTF8, 0, sql_buf, strlen(sql_buf), sql_data, sizeof sql_data / sizeof *sql_data);
 		sql_data[strlen(sql_buf)] = '\0';
 
 
-		retcode = SQLExecDirect(hstmt, (SQLWCHAR *)L"EXEC dbo.client_login", SQL_NTS);
+		retcode = SQLExecDirect(hstmt, sql_data, SQL_NTS);
 
 		if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
 		{
@@ -57,18 +57,16 @@ void Client_Login(char id[], char password[],int ci)
 			// Fetch and print each row of data. On an error, display a message and exit.  
 
 			retcode = SQLFetch(hstmt);
-			if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO)
-				cout << "error\n";
-				if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
-				{
-					wcout << "connect ID : " << szID << endl;
-					SendIDPlayer(ci, ci);
-				}
-				else
-				{
-					cout << "No ID\n";
-					SendLoginFailed(ci, ci);
-				}
+			if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+			{
+				wcout << "connect ID : " << szID << endl;
+				SendIDPlayer(ci, ci);
+			}
+			else
+			{
+				cout << "No ID\n";
+				SendLoginFailed(ci, ci);
+			}
 		}
 
 		// Process data  
@@ -76,6 +74,7 @@ void Client_Login(char id[], char password[],int ci)
 			SQLCancel(hstmt);
 			SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
 		}
+		SQLDisconnect(hdbc);
 	}
 }
 

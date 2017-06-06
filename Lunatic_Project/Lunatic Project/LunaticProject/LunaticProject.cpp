@@ -30,9 +30,11 @@ enum { RNOPE, RNAME, RPASSWORD };
 
 // 메인메뉴
 bool onLogin = false; // 로그인 윈도우가 출력중인지?
-char user_id[20]{}; // 로그인 유저 아이디
-char user_password[20]{}; // 로그인 유저 비밀번호
+char user_id[MAX_ID_LEN]{}; // 로그인 유저 아이디
+char user_password[MAX_PASSWORD_LEN]{}; // 로그인 유저 비밀번호
 int LoginChat = RNOPE; // 0 아무것도아님 1 Name입력 2 Password입력
+bool IsLogin = true; // 아이디 비밀번호가 맞았는지 틀렸는지?
+
 
 // 로비
 bool RoomCreateWindow = false; // 방만들기 윈도우 활성화
@@ -372,7 +374,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				}
 
-				else if (len > 14)
+				else if (len > MAX_ID_LEN - 2)
 				{
 					break;
 				}
@@ -407,7 +409,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				}
 
-				else if (len > 14)
+				else if (len > MAX_PASSWORD_LEN - 2)
 				{
 					break;
 				}
@@ -483,6 +485,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					TextOut(memdc, 372 + (i * 15), 343, L"*", 1);
 				}
 
+				if (!IsLogin)
+				{
+					TextOut(memdc, 300, 397, L"아이디와 비밀번호를 확인해주세요.", 18);
+				}
+
+
+
 				SelectObject(memdc2, hFont);
 				DeleteObject(hFont);
 
@@ -520,13 +529,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					case Empty:
 						TextOut(memdc, room[i][j].xPos + 30, room[i][j].yPos + 30, L"생성가능", 4);
 						break;
-					case Comein:
+					case JOINABLE:
 						TextOut(memdc, room[i][j].xPos + 30, room[i][j].yPos + 30, L"입장가능", 4);
 						break;
-					case Full:
+					case FULL:
 						TextOut(memdc, room[i][j].xPos + 30, room[i][j].yPos + 30, L"입장불가", 4);
 						break;
-					case InGame:
+					case PLAYING:
 						TextOut(memdc, room[i][j].xPos + 30, room[i][j].yPos + 30, L"게임중", 3);
 						break;
 					}
@@ -750,7 +759,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				if (MouseInbox(325, 472, 485, 542, mx, my)) // 로그인 확인 버튼
 				{
-					gGameFramework.ChangeScene = LOBBY;
+					if (strlen(user_id) != 0 && strlen(user_password) != 0)
+					{
+						// server send (Ready)
+						cs_packet_login *my_packet = reinterpret_cast<cs_packet_login *>(send_buffer);
+						my_packet->size = sizeof(cs_packet_login);
+						send_wsabuf.len = sizeof(cs_packet_login);
+						DWORD iobyte;
+						my_packet->type = CS_LOGIN;
+						strcpy_s(my_packet->id, user_id);
+						strcpy_s(my_packet->password, user_password);
+						WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+						//
+					}
+
 				}
 				else if (MouseInbox(536, 472, 697, 542, mx, my)) // 로그인 취소를 누르거나 방만들기윈도우 밖을 누르면 방만들기윈도우를 제거한다.
 				{
@@ -937,7 +959,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case VK_RETURN:
 			if (gGameFramework.ChangeScene == MAINMENU)
 			{
-				gGameFramework.ChangeScene = LOBBY;
+				if (strlen(user_id) != 0 && strlen(user_password) != 0)
+				{
+					// server send (Ready)
+					cs_packet_login *my_packet = reinterpret_cast<cs_packet_login *>(send_buffer);
+					my_packet->size = sizeof(cs_packet_login);
+					send_wsabuf.len = sizeof(cs_packet_login);
+					DWORD iobyte;
+					my_packet->type = CS_LOGIN;
+					strcpy_s(my_packet->id, user_id);
+					strcpy_s(my_packet->password, user_password);
+					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+					//
+				}
+
 			}
 
 			else if (gGameFramework.ChangeScene == LOBBY)
@@ -1126,9 +1161,21 @@ void ProcessPacket(char * ptr)
 			g_myid = id;
 		}
 		cout << "내아디 : " << g_myid << endl;
+		IsLogin = true;
+		gGameFramework.ChangeScene = LOBBY;
+		InvalidateRect(g_hWnd, NULL, false);
 		break;
 	}
-	// 로비
+	case SC_LOGIN_FAILED:
+	{
+		sc_packet_loginfailed *my_packet = reinterpret_cast<sc_packet_loginfailed *>(ptr);
+		cout << my_packet->id << endl;
+
+		IsLogin = false;
+		InvalidateRect(g_hWnd, NULL, false);
+		break;
+	}
+	// 로비	
 	case SC_CHAT:
 	{
 		sc_packet_chat *my_packet = reinterpret_cast<sc_packet_chat *>(ptr);

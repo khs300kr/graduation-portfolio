@@ -7,7 +7,8 @@
 
 #define MAX_STR_SIZE			50
 #define MAX_ROOMTITLE_SIZE		30
-#define MAX_ID_LEN				10
+#define MAX_ID_LEN				15
+#define MAX_PASSWORD_LEN		15
 
 #define CS_KEYDOWN_UP				1
 #define CS_KEYDOWN_DOWN				2
@@ -69,8 +70,8 @@
 // 캐릭터
 #define Empty		0
 #define Babarian	1
-#define SordMan		3
 #define Healer		2
+#define SordMan		3
 
 // 방 상태
 #define EMPTY		0		// 비어있음
@@ -87,8 +88,8 @@
 struct cs_packet_login {
 	BYTE size;
 	BYTE type;
-	char id[10];
-	char password[10];
+	char id[MAX_ID_LEN];
+	char password[MAX_PASSWORD_LEN];
 };
 
 // 로비
