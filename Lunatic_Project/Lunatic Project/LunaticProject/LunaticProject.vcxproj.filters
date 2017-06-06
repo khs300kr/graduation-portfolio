@@ -250,6 +250,9 @@
     <Image Include="..\Data\Menu\room.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="..\Data\Menu\loginwindow.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BaseEffect.fx">

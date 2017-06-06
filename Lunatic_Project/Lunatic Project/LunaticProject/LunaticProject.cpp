@@ -26,13 +26,20 @@ int iFrontRange = 0;
 int iLastRange = 0;
 bool bScrool = false;
 
-
-bool RoomCreateWindow = false; // 방만들기 윈도우 활성화
 enum { RNOPE, RNAME, RPASSWORD };
-int RoomCreateChat = RNOPE; // 0 아무것도아님 1 Name입력 2 Password입력
 
-WCHAR RoomName[MAX_STR_SIZE]; // 방만들기 방제목
-char RoomPassword[16]; // 방만들기 비밀번호
+// 메인메뉴
+bool onLogin = false; // 로그인 윈도우가 출력중인지?
+char user_id[20]{}; // 로그인 유저 아이디
+char user_password[20]{}; // 로그인 유저 비밀번호
+int LoginChat = RNOPE; // 0 아무것도아님 1 Name입력 2 Password입력
+
+// 로비
+bool RoomCreateWindow = false; // 방만들기 윈도우 활성화
+
+int RoomCreateChat = RNOPE; // 0 아무것도아님 1 Name입력 2 Password입력
+WCHAR RoomName[MAX_STR_SIZE]{}; // 방만들기 방제목
+char RoomPassword[16]{}; // 방만들기 비밀번호
 
 CGameFramework gGameFramework;
 
@@ -216,7 +223,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HPEN Pen, oldPen;
 	HBRUSH Brush, oldBrush;
 	PAINTSTRUCT ps;
-	static HBITMAP bmp_background, bmp_loading, bmp_mainmenu;//, bmp_lobby;
+	static HBITMAP bmp_background, bmp_loading, bmp_mainmenu, bmp_loginwindow;//, bmp_lobby;
 	static HBITMAP bmp_chatwindow, bmp_create, bmp_quickjoin, bmp_whojoin, bmp_roombackground, bmp_createwindow, bmp_room;
 	//HBITMAP
 	//
@@ -246,6 +253,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		bmp_room = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_ROOM));
 		bmp_createwindow = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_CREATEWINDOW));
 		bmp_chatwindow = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_CHATWINDOW));
+		bmp_loginwindow = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_LOGINWINDOW));
 
 		//AddFontResourceA("../data/Fonts/HoonWhitecatR.ttf");
 
@@ -300,38 +308,126 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_CHAR: //비밀번호 입력
 
-		if (IsPassword && RoomCreateChat == RPASSWORD)
+		if (gGameFramework.ChangeScene == LOBBY)
 		{
-			int len = strlen(RoomPassword);
-
-
-			if (wParam == VK_BACK)
+			if (IsPassword && RoomCreateChat == RPASSWORD)
 			{
-				if (len > 0)
+				int len = strlen(RoomPassword);
+
+
+				if (wParam == VK_BACK)
 				{
-					len--;
-					RoomPassword[len] = '\0';
+					if (len > 0)
+					{
+						len--;
+						RoomPassword[len] = '\0';
+					}
+
 				}
 
-			}
+				else if (len > 14)
+				{
+					break;
+				}
 
-			else if (len > 14)
-			{
-				break;
-			}
-
-			else if (wParam == VK_RETURN)
-				break;
-			else
-			{
-				RoomPassword[len++] = wParam;
-				RoomPassword[len] = '\0';
+				else if (wParam == VK_RETURN)
+					break;
+				else if (wParam == VK_TAB)
+				{
+					if (IsPassword)
+						RoomCreateChat = RNAME;
+					else
+						break;
+				}
+				else
+				{
+					RoomPassword[len++] = wParam;
+					RoomPassword[len] = '\0';
+				}
 				
 			}
-
+			else if (RoomCreateChat == RNAME)
+			{
+				if (wParam == VK_TAB)
+					RoomCreateChat = RPASSWORD;
+			}
 
 			InvalidateRect(hWnd, NULL, false);
 		}
+
+		else if (gGameFramework.ChangeScene == MAINMENU)
+		{
+			if (LoginChat == RNAME) // 아이디 입력창 활성화
+			{
+				int len = strlen(user_id);
+
+
+				if (wParam == VK_BACK)
+				{
+					if (len > 0)
+					{
+						len--;
+						user_id[len] = '\0';
+					}
+
+				}
+
+				else if (len > 14)
+				{
+					break;
+				}
+
+				else if (wParam == VK_RETURN)
+					break;
+
+				else if (wParam == VK_TAB)
+				{
+					LoginChat = RPASSWORD;
+				}
+
+				else
+				{
+					user_id[len++] = wParam;
+					user_id[len] = '\0';
+				}
+
+			}
+			else if (LoginChat == RPASSWORD)
+			{
+				int len = strlen(user_password);
+
+
+				if (wParam == VK_BACK)
+				{
+					if (len > 0)
+					{
+						len--;
+						user_password[len] = '\0';
+					}
+
+				}
+
+				else if (len > 14)
+				{
+					break;
+				}
+
+				else if (wParam == VK_RETURN)
+					break;
+				else if (wParam == VK_TAB)
+				{
+					LoginChat = RNAME;
+				}
+				else
+				{
+					user_password[len++] = wParam;
+					user_password[len] = '\0';
+				}
+			}
+
+			InvalidateRect(hWnd, NULL, false);
+		}
+		
 
 		break;
 
@@ -350,6 +446,49 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (gGameFramework.ChangeScene == MAINMENU)
 		{
 			DrawBitmap(memdc, memdc2, bmp_mainmenu, 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+			if (!onLogin)
+			{
+				Rectangle(memdc, 400, 600, 600, 680);
+			}
+			else // 로그인 윈도우가 활성화 되었을 때
+			{
+				DrawBitmap(memdc, memdc2, bmp_loginwindow, 240, 170, 544, 408);
+				Rectangle(memdc, 370, 300, 720, 340); // 방제목 입력
+				Rectangle(memdc, 370, 343, 720, 383); // 비밀번호 입력
+
+
+				Pen = CreatePen(PS_SOLID, 4, RGB(0, 0, 0));
+				oldPen = (HPEN)SelectObject(memdc, Pen);
+
+				SelectObject(memdc, GetStockObject(NULL_BRUSH));
+
+				if (LoginChat == RNAME)
+					Rectangle(memdc, 370, 300, 720, 340); // 선택된 입력박스
+				else if (LoginChat == RPASSWORD)
+					Rectangle(memdc, 370, 343, 720, 383); // 선택된 입력박스
+
+				SelectObject(memdc, oldPen);
+				DeleteObject(Pen);
+				SelectObject(memdc, GetStockObject(WHITE_BRUSH));
+
+				hFont = CreateFont(30, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
+				hOldFont = (HFONT)SelectObject(memdc, hFont);
+				SetBkMode(memdc, TRANSPARENT);
+
+				
+				TextOutA(memdc, 370, 305, user_id, strlen(user_id));
+				
+				for (int i = 0; i < strlen(user_password); ++i)
+				{
+					TextOut(memdc, 372 + (i * 15), 343, L"*", 1);
+				}
+
+				SelectObject(memdc2, hFont);
+				DeleteObject(hFont);
+
+
+			}
+				
 		}
 
 		else if (gGameFramework.ChangeScene == LOBBY)
@@ -595,11 +734,53 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_LBUTTONDOWN:
 	{
-		if (gGameFramework.ChangeScene == LOBBY)
+		int mx = LOWORD(lParam);
+		int my = HIWORD(lParam);
+		
+		if (gGameFramework.ChangeScene == MAINMENU)
 		{
-			int mx = LOWORD(lParam);
-			int my = HIWORD(lParam);
+			if (!onLogin)
+			{
+				if (MouseInbox(400, 600, 597, 676, mx, my)) // 메인메뉴 로그인 버튼
+				{
+					onLogin = true; // 로그인 윈도우를 활성화 한다.
+				}
+			}
+			else
+			{
+				if (MouseInbox(325, 472, 485, 542, mx, my)) // 로그인 확인 버튼
+				{
+					gGameFramework.ChangeScene = LOBBY;
+				}
+				else if (MouseInbox(536, 472, 697, 542, mx, my)) // 로그인 취소를 누르거나 방만들기윈도우 밖을 누르면 방만들기윈도우를 제거한다.
+				{
+					onLogin = false;
+					LoginChat = RNOPE;
 
+					memset(user_id, '\0', sizeof(user_id));
+					SetWindowTextW(hChat, '\0');
+					memset(user_password, '\0', sizeof(user_password));
+					SetWindowTextW(hChat, '\0');
+				}
+				else if (MouseInbox(370, 300, 720, 340, mx, my)) // 아이디 입력창 활성화
+				{
+					LoginChat = RNAME;
+				}
+				else if (MouseInbox(370, 343, 720, 383, mx, my)) // 비밀번호 입력창 활성화
+				{
+					LoginChat = RPASSWORD;
+				}
+
+			}
+			
+
+			
+
+			InvalidateRect(hWnd, NULL, false);
+		}
+
+		else if (gGameFramework.ChangeScene == LOBBY)
+		{
 			if (!RoomCreateWindow && MouseInbox(0, 0, 400, 140, mx, my)) // 방만들기
 			{
 				RoomCreateWindow = true;
@@ -689,11 +870,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			
 			
 
-			cout << mx << ends << my << endl;
+			
 
 
 			InvalidateRect(hWnd, NULL, false);
 		}
+		cout << mx << ends << my << endl;
 		
 	}
 		break;
@@ -839,8 +1021,6 @@ LRESULT CALLBACK EditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				}
 			}
 			
-
-
 
 
 			//if (wcslen(str[index]))

@@ -148,6 +148,7 @@
     <Image Include="..\Data\Menu\createwindow.bmp" />
     <Image Include="..\Data\Menu\loading.bmp" />
     <Image Include="..\Data\Menu\lobby.bmp" />
+    <Image Include="..\Data\Menu\loginwindow.bmp" />
     <Image Include="..\Data\Menu\mainmenu.bmp" />
     <Image Include="..\Data\Menu\quickjoin.bmp" />
     <Image Include="..\Data\Menu\room.bmp" />
