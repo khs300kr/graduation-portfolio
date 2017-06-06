@@ -667,14 +667,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SelectObject(memdc2, bmp_background);
 			BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
 
-			Pen = CreatePen(PS_SOLID, 5, RGB(255, 0, 0));
-			oldPen = (HPEN)SelectObject(memdc, Pen);
+			//Pen = CreatePen(PS_SOLID, 5, RGB(255, 0, 0));
+			//oldPen = (HPEN)SelectObject(memdc, Pen);
 
-			SelectObject(memdc, GetStockObject(NULL_BRUSH));
-			Rectangle(memdc, 229 + ((gGameFramework.SelectCount - 1) * 199), 130, 370 + ((gGameFramework.SelectCount - 1) * 199), 270);
+			//SelectObject(memdc, GetStockObject(NULL_BRUSH));
+			//Rectangle(memdc, 229 + ((gGameFramework.SelectCount - 1) * 199), 130, 370 + ((gGameFramework.SelectCount - 1) * 199), 270);
 
-			SelectObject(memdc, oldPen);
-			DeleteObject(Pen);
+			//SelectObject(memdc, oldPen);
+			//DeleteObject(Pen);
 
 		}
 

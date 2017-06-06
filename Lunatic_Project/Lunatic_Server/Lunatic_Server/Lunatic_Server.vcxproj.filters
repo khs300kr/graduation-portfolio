@@ -22,6 +22,9 @@
     <Filter Include="소스 파일\Packet">
       <UniqueIdentifier>{c53eb8e3-d478-454d-9724-38e3619c34aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\DB">
+      <UniqueIdentifier>{314f1db3-fb99-4dbc-a602-bed6b2e2cfd5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -45,6 +48,9 @@
     <ClInclude Include="PacketFunc.h">
       <Filter>소스 파일\Packet</Filter>
     </ClInclude>
+    <ClInclude Include="DataBaseFunc.h">
+      <Filter>소스 파일\DB</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Lunatic_Server.cpp">
@@ -61,6 +67,9 @@
     </ClCompile>
     <ClCompile Include="PacketFunc.cpp">
       <Filter>소스 파일\Packet</Filter>
+    </ClCompile>
+    <ClCompile Include="DataBaseFunc.cpp">
+      <Filter>소스 파일\DB</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

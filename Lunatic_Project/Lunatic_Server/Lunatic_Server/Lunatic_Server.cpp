@@ -238,7 +238,7 @@ void Worker_Thread()
 int main()
 {
 	Init_Server();
-	Init_DB();
+	//Init_DB();
 	
 
 	// 서버가 크래쉬 되었을때 처리할 수 있게 하는 MiniDump
@@ -269,6 +269,6 @@ int main()
 	}
 
 	CMiniDump::End();	// MiniDump를 끝냅니다.
-	Close_DB();
+	//Close_DB();
 	Close_Server();
 }

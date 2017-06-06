@@ -140,6 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DataBaseFunc.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="MemoryLeak.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -154,6 +155,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DataBaseFunc.cpp" />
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="Lunatic_Server.cpp" />
     <ClCompile Include="MiniDump.cpp">
