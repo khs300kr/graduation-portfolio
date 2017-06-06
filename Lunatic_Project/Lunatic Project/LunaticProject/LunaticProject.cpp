@@ -28,8 +28,11 @@ bool bScrool = false;
 
 
 bool RoomCreateWindow = false; // 방만들기 윈도우 활성화
-WCHAR RoomName[20];
-WCHAR RoomPassword[20];
+enum { RNOPE, RNAME, RPASSWORD };
+int RoomCreateChat = RNOPE; // 0 아무것도아님 1 Name입력 2 Password입력
+
+WCHAR RoomName[MAX_STR_SIZE]; // 방만들기 방제목
+char RoomPassword[16]; // 방만들기 비밀번호
 
 CGameFramework gGameFramework;
 
@@ -211,6 +214,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HFONT hFont, hOldFont;
 
 	HPEN Pen, oldPen;
+	HBRUSH Brush, oldBrush;
 	PAINTSTRUCT ps;
 	static HBITMAP bmp_background, bmp_loading, bmp_mainmenu;//, bmp_lobby;
 	static HBITMAP bmp_chatwindow, bmp_create, bmp_quickjoin, bmp_whojoin, bmp_roombackground, bmp_createwindow, bmp_room;
@@ -258,14 +262,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 		}
 		
-		GameMode = DeathMatch; //DeathMatch
+		GameMode = DEATHMATCH; //DeathMatch
 		IsPassword = false;
 
 
 		// Chatting
 		hChat = CreateWindow(L"edit", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER |
 			ES_AUTOHSCROLL, 2000, 2000, 200, 25, hWnd, (HMENU)ID_EDIT, hInst, NULL);
-		PostMessage(hChat, EM_LIMITTEXT, (WPARAM)49, 0);
+
+		
+		PostMessage(hChat, EM_LIMITTEXT, (WPARAM)MAX_STR_SIZE - 1, 0);
 		wpOldEditProc = (WNDPROC)SetWindowLongPtr(hChat,
 			GWLP_WNDPROC,
 			(LONG_PTR)EditProc);
@@ -282,13 +288,51 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					GetWindowText(hChat, input, sizeof(input));
 				else
 				{
-					GetWindowText(hChat, RoomName, sizeof(RoomName));
+					if(RoomCreateChat == RNAME)
+						GetWindowText(hChat, RoomName, sizeof(RoomName));
 				}
 				
 				break;
 			}
 		}
 		InvalidateRect(g_hWnd, NULL, false);
+		break;
+
+	case WM_CHAR: //비밀번호 입력
+
+		if (IsPassword && RoomCreateChat == RPASSWORD)
+		{
+			int len = strlen(RoomPassword);
+
+
+			if (wParam == VK_BACK)
+			{
+				if (len > 0)
+				{
+					len--;
+					RoomPassword[len] = '\0';
+				}
+
+			}
+
+			else if (len > 14)
+			{
+				break;
+			}
+
+			else if (wParam == VK_RETURN)
+				break;
+			else
+			{
+				RoomPassword[len++] = wParam;
+				RoomPassword[len] = '\0';
+				
+			}
+
+
+			InvalidateRect(hWnd, NULL, false);
+		}
+
 		break;
 
 	case WM_PAINT:
@@ -357,25 +401,43 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-			SetBkMode(memdc, TRANSPARENT);
+			
 
 			if (RoomCreateWindow) //방만들기 눌렀을 때
 			{
 				hFont = CreateFont(30, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
 				hOldFont = (HFONT)SelectObject(memdc, hFont);
+				SetBkMode(memdc, TRANSPARENT);
 
 				DrawBitmap(memdc, memdc2, bmp_createwindow, 240, 170, 544, 408);
 				
+
 				Rectangle(memdc, 370, 300, 720, 340); // 방제목 입력
 				Rectangle(memdc, 370, 343, 720, 383); // 비밀번호 입력
 
+
+				Pen = CreatePen(PS_SOLID, 4, RGB(0, 0, 0));
+				oldPen = (HPEN)SelectObject(memdc, Pen);
+
+				SelectObject(memdc, GetStockObject(NULL_BRUSH));
+
+				if(RoomCreateChat == RNAME)
+					Rectangle(memdc, 370, 300, 720, 340); // 선택된 입력박스
+				else if(RoomCreateChat == RPASSWORD)
+					Rectangle(memdc, 370, 343, 720, 383); // 선택된 입력박스
+
+				SelectObject(memdc, oldPen);
+				DeleteObject(Pen);
+				SelectObject(memdc, GetStockObject(WHITE_BRUSH));
+
+
 				Rectangle(memdc, 730, 343, 770, 383); // 비밀번호 체크박스
+				
+
 				Rectangle(memdc, 520, 397, 550, 427); //데스매치 체크박스
 				Rectangle(memdc, 670, 397, 700, 427); //점령전 체크박스
 
 
-
-				
 				Pen = CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
 				oldPen = (HPEN)SelectObject(memdc, Pen);
 
@@ -384,16 +446,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if(IsPassword)
 					Ellipse(memdc, 735, 348, 765, 378);
 
-				if (GameMode == DeathMatch)
+				if (GameMode == DEATHMATCH)
 					Ellipse(memdc, 522, 399, 548, 425);
 				else
 					Ellipse(memdc, 672, 399, 698, 425);
 
 				SelectObject(memdc, oldPen);
-				DeleteObject(Pen);
-
+				DeleteObject(Pen); 
 
 				TextOut(memdc, 370, 305, RoomName, wcslen(RoomName));
+
+				for (int i = 0; i < strlen(RoomPassword); ++i)
+				{
+					TextOut(memdc, 372 + (i*15), 343, L"*", 1);
+				}
+				
+
+				if (!IsPassword)
+				{
+					Brush = CreateSolidBrush(RGB(128, 128, 128));
+					oldBrush = (HBRUSH)SelectObject(memdc, Brush);
+
+					Rectangle(memdc, 372, 343, 718, 383); // 비밀번호 체크박스
+
+					SelectObject(memdc, oldBrush);
+					DeleteObject(Brush);
+				}
 
 				SelectObject(memdc2, hFont);
 				DeleteObject(hFont);
@@ -402,13 +480,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-
-			
-
-
 			hFont = CreateFont(15, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
 			hOldFont = (HFONT)SelectObject(memdc, hFont);
-
 
 
 			vector<wstring>::iterator iter = vOutPut.begin() + iFrontRange;
@@ -434,6 +507,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			DeleteObject(hFont);
 
 		}
+
 
 		else if (gGameFramework.ChangeScene == ROOM)
 		{
@@ -539,6 +613,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				if (!MouseInbox(240, 170, 784, 578, mx, my) || MouseInbox(536, 473, 696, 541, mx, my)) //취소를 누르거나 방만들기윈도우 밖을 누르면 방만들기윈도우를 제거한다.
 				{
+					if (IsPassword)
+						IsPassword = false;
+
 					RoomCreateWindow = false; // 방만들기 윈도우 헤제
 					
 					SetFocus(hWnd);
@@ -549,27 +626,59 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				else if (MouseInbox(325, 473, 484, 541, mx, my)) // 확인을 누르면 방에 입장
 				{
+					if (IsPassword)
+						IsPassword = false;
+
+					SetFocus(g_hWnd);
 					EnterRoom();
+
 				}
 
-				else if (GameMode != DeathMatch && MouseInbox(378, 397, 548, 425, mx, my)) // 데스매치 클릭
+				else if (GameMode != DEATHMATCH && MouseInbox(378, 397, 548, 425, mx, my)) // 데스매치 클릭
 				{
-					GameMode = DeathMatch;
+					GameMode = DEATHMATCH;
 				}
-				else if (GameMode != CPMatch && MouseInbox(567, 397, 698, 425, mx, my)) // 점령전 클릭
+
+				else if (GameMode != TERRITORY && MouseInbox(567, 397, 698, 425, mx, my)) // 점령전 클릭
 				{
-					GameMode = CPMatch;
+					GameMode = TERRITORY;
 				}
+
 				else if (MouseInbox(370, 300, 720, 340, mx, my)) // 방제목 활성화
 				{
+					RoomCreateChat = RNAME;
 					SetFocus(hChat); // 방제목 활성화
 				}
+
+				else if (MouseInbox(370, 343, 720, 383, mx, my)) // 비밀번호 활성화
+				{
+					if (IsPassword)
+					{
+						RoomCreateChat = RPASSWORD;
+						SetFocus(g_hWnd);
+					}
+
+				}
+
 				else if (MouseInbox(730, 343, 770, 383, mx, my)) // 비밀번호 체크박스 활성화
 				{
 					IsPassword = !IsPassword; // 비밀번호 체크박스 활성화
+
+					if (IsPassword)
+					{
+						RoomCreateChat = RPASSWORD;
+						SetFocus(g_hWnd);
+					}
+						
+					else
+						RoomCreateChat = RNOPE;
+
+						
 				}
-
-
+				else //창을 누르면
+				{
+					RoomCreateChat = RNOPE;
+				}
 			}
 
 			if (!RoomCreateWindow && MouseInbox(400, 0, 800, 140, mx, my)) // 빠른참여
