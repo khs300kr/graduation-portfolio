@@ -2,6 +2,7 @@
 #include "Global.h"
 #include "MiniDump.h"
 #include "PacketFunc.h"
+#include "DataBaseFunc.h"
 
 void DisconnectClient(int id)
 {
@@ -125,7 +126,7 @@ void Accept_Thread()
 		WSARecv(client_sock, &g_Clients[new_id].m_recv_over.m_Wsabuf, 1,
 			NULL, &recv_flag, &g_Clients[new_id].m_recv_over.m_Over, NULL);
 
-		SendIDPlayer(new_id, new_id);
+		//SendIDPlayer(new_id, new_id);
 	}
 }
 
@@ -237,6 +238,8 @@ void Worker_Thread()
 int main()
 {
 	Init_Server();
+	Init_DB();
+	
 
 	// 서버가 크래쉬 되었을때 처리할 수 있게 하는 MiniDump
 	if (!CMiniDump::Begin()) return 0;
@@ -247,7 +250,7 @@ int main()
 		vWorker_threads.push_back(new thread{ Worker_Thread });
 
 	// DB_thread 생성.
-	thread DB_thread{ DB_Thread };
+	//thread DB_thread{ DB_Thread };
 
 	// Accept_thread 생성.
 	thread accept_thread{ Accept_Thread };
@@ -256,7 +259,7 @@ int main()
 	//thread timer_thread{ Timer_Thread };
 
 	// Threads Join
-	DB_thread.join();
+	//DB_thread.join();
 	accept_thread.join();
 	//timer_thread.join();
 	for (auto d : vWorker_threads)
@@ -266,5 +269,6 @@ int main()
 	}
 
 	CMiniDump::End();	// MiniDump를 끝냅니다.
+	Close_DB();
 	Close_Server();
 }

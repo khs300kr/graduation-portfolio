@@ -25,6 +25,8 @@
 #define CS_SKILL_W					14
 #define CS_SKILL_E					15
 #define CS_SKILL_R					16
+#define CS_REGISTER					17
+#define CS_LOGIN					18
 
 #define SC_POS           1
 #define SC_PUT_PLAYER    2
@@ -38,10 +40,7 @@
 #define SC_SKILL_W		 10
 #define SC_SKILL_E		 11
 #define SC_SKILL_R		 12
-
-#define DEATHMATCH		0
-#define	TERRITORY		1
-
+#define SC_LOGIN_FAILED  13
 
 // Client Define
 // 키보드 입력
@@ -68,29 +67,36 @@
 #define A_TEAM 1
 #define B_TEAM 2
 // 캐릭터
-#define Empty 0
-#define Babarian 1
-#define SordMan 3
-#define Healer 2
+#define Empty		0
+#define Babarian	1
+#define SordMan		3
+#define Healer		2
 
 // 방 상태
-#define Empty 0 // 비어있음
-#define Comein 1 // 입장가능
-#define Full 2 // 입장불가
-#define InGame 3 // 게임중
+#define EMPTY		0		// 비어있음
+#define JOINABLE	1		// 입장가능
+#define FULL		2		// 입장불가
+#define PLAYING		3		// 게임중
 
-// 게임모드
-#define DeathMatch 0
-#define CPMatch 1
+#define DEATHMATCH		0
+#define	TERRITORY		1
 
 #pragma pack (push, 1)
 // Client -> Server
+// 메인 메뉴
+struct cs_packet_login {
+	BYTE size;
+	BYTE type;
+	char id[10];
+	char password[10];
+};
+
 // 로비
 struct cs_packet_makeroom {
 	BYTE size;
 	BYTE type;
 	WCHAR message[MAX_ROOMTITLE_SIZE];
-	WCHAR password[4];
+	char password[4];
 	BYTE mode;
 	BYTE numPlayer;
 };
@@ -151,6 +157,12 @@ struct cs_packet_skillR {
 // Server -> Client
 // 접속
 struct sc_packet_id {
+	BYTE size;
+	BYTE type;
+	WORD id;
+};
+
+struct sc_packet_loginfailed {
 	BYTE size;
 	BYTE type;
 	WORD id;
@@ -226,7 +238,6 @@ struct sc_packet_skillR {
 	BYTE type;
 	WORD id;
 };
-
 
 struct sc_packet_chat {
 	BYTE size;

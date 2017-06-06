@@ -3,6 +3,7 @@
 void Send_Packet(int client, void* packet);
 // 접속
 void SendIDPlayer(int client, int object);
+void SendLoginFailed(int client, int object);
 
 // 로비
 void SendChatPacket(int client, int object, WCHAR str[MAX_STR_SIZE]);

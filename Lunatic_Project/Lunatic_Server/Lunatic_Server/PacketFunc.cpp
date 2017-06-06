@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Global.h"
 #include "PacketFunc.h"
+#include "DataBaseFunc.h"
 
 void Send_Packet(int client, void* packet)
 {
@@ -32,6 +33,16 @@ void SendIDPlayer(int client, int object)
 	packet.size = sizeof(packet);
 	packet.type = SC_ID;
 	packet.id = object;
+
+	Send_Packet(client, &packet);
+}
+
+void SendLoginFailed(int client, int object)
+{
+	sc_packet_id packet;
+	packet.size = sizeof(packet);
+	packet.id = object;
+	packet.type = SC_LOGIN_FAILED;
 
 	Send_Packet(client, &packet);
 }
@@ -170,12 +181,23 @@ void ProcessPacket(int id, unsigned char packet[])
 {
 	switch (packet[1])
 	{
+	// 메인 메뉴
+	case CS_REGISTER:
+	{
+		break;
+	}
+	case CS_LOGIN:
+	{
+		cs_packet_login* my_packet = reinterpret_cast<cs_packet_login*>(packet);
+		cout << my_packet->id << endl;
+		cout << my_packet->password << endl;
+		Client_Login(my_packet->id, my_packet->password, id);
+		break;
+	}
 	// 로비
 	case CS_CHAT:
 	{
 		cs_packet_chat *my_packet = reinterpret_cast<cs_packet_chat*>(packet);
-	
-		
 		for (int i = 0; i < MAX_USER; ++i) {
 			if (g_Clients[i].m_bConnect == true)
 				SendChatPacket(i, id, my_packet->message);
