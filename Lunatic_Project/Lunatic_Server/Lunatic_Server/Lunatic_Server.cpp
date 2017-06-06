@@ -8,13 +8,13 @@ void DisconnectClient(int id)
 {
 	closesocket(g_Clients[id].m_client_socket);
 	g_Clients[id].m_bConnect = false;
+	g_Clients[id].m_bLobby = false;
 
 	for (int i = 0; i < MAX_USER; ++i)
 	{
 		if (g_Clients[i].m_bConnect == true)
 			SendRemovePlayerPacket(i, id);
 	}
-
 }
 
 void Close_Server()
@@ -57,10 +57,9 @@ void Init_Server()
 	}
 
 }
-void DB_Thread()
-{
 
-}
+void DB_Thread(){}
+
 void Accept_Thread()
 {
 	/*
@@ -94,7 +93,6 @@ void Accept_Thread()
 			if (g_Clients[i].m_bConnect == false) { new_id = i;	break; }
 		if (new_id == -1) { cout << "MAX USER : " << MAX_USER << "명 동접 OVERFLOW\n"; closesocket(client_sock); continue; }
 		
-		g_Clients[new_id].m_bLobby = true;
 		g_Clients[new_id].m_bConnect = true;
 		g_Clients[new_id].m_client_socket = client_sock;
 		g_Clients[new_id].curr_packet_size = 0;
@@ -114,12 +112,13 @@ void Accept_Thread()
 		// 초기
 		//g_Clients[new_id].m_Animation = 0;
 
-		for (int i = 0; i < MAX_USER; ++i)
-		{
-			g_Clients[i].m_fX = i * 20.f;
-			g_Clients[i].m_fY = 0.f;
-			g_Clients[i].m_fZ = -500.f;
-		}
+		//for (int i = 0; i < MAX_USER; ++i)
+		//{
+		//	g_Clients[i].m_fX = i * 20.f;
+		//	g_Clients[i].m_fY = 0.f;
+		//	g_Clients[i].m_fZ = -500.f;
+		//}
+
 		// 비동기 입출력 시작
 		DWORD recv_flag = 0;
 		CreateIoCompletionPort(reinterpret_cast<HANDLE>(client_sock), g_Hiocp, new_id, 0);
@@ -221,6 +220,7 @@ void Worker_Thread()
 				cout << "Send Incomplete Error!\n";
 				closesocket(g_Clients[id].m_client_socket);
 				g_Clients[id].m_bConnect = false;
+				g_Clients[id].m_bLobby = false;
 			}
 			delete over;
 		}//OP_SEND

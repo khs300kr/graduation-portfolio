@@ -24,6 +24,7 @@ CLIENT g_Clients[MAX_USER]{};
 BYTE   g_ReadyNum{};
 WORD   g_CCU{};
 ROOM   g_Room[MAX_ROOM]{};
+BYTE   g_RoomNum{};
 
 // DB
 SQLHENV henv{};

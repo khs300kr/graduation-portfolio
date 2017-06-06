@@ -201,6 +201,7 @@ typedef struct Room
 {
 	int xPos; // 방 xPos
 	int yPos; // 방 yPos
+	WCHAR roomName[MAX_ROOMTITLE_SIZE];
 	int roomInfo; // 방 정보
 	int people; // 유저가 방에 몇명 들어왔는지?
 }Room;
@@ -269,6 +270,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				room[i][j].yPos = 160 + (i * 120); // 방의 Y
 				room[i][j].roomInfo = Empty; // 방 정보
 				room[i][j].people = 0; // 유저가 몇명 방에 들어왔는지?
+				memset(room[i][j].roomName, 0, sizeof(room[i][j].roomName));
 			}
 		}
 		
@@ -511,7 +513,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Rectangle(memdc, 0, 738, 800, 768);
 
 
-			hFont = CreateFont(30, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
+			hFont = CreateFont(20, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
 			hOldFont = (HFONT)SelectObject(memdc, hFont);
 
 			SetBkMode(memdc, TRANSPARENT);
@@ -524,19 +526,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					DrawBitmap(memdc, memdc2, bmp_room, room[i][j].xPos, room[i][j].yPos, 335, 102); // 방 박스 출력
 
+					TextOut(memdc, room[i][j].xPos + 30, room[i][j].yPos + 30, room[i][j].roomName, wcslen(room[i][j].roomName));
+					
 					switch (room[i][j].roomInfo)
 					{
 					case Empty:
-						TextOut(memdc, room[i][j].xPos + 30, room[i][j].yPos + 30, L"생성가능", 4);
+						TextOut(memdc, room[i][j].xPos + 200, room[i][j].yPos + 30, L"생성가능", 4);
 						break;
 					case JOINABLE:
-						TextOut(memdc, room[i][j].xPos + 30, room[i][j].yPos + 30, L"입장가능", 4);
+						TextOut(memdc, room[i][j].xPos + 200, room[i][j].yPos + 30, L"입장가능", 4);
 						break;
 					case FULL:
-						TextOut(memdc, room[i][j].xPos + 30, room[i][j].yPos + 30, L"입장불가", 4);
+						TextOut(memdc, room[i][j].xPos + 200, room[i][j].yPos + 30, L"입장불가", 4);
 						break;
 					case PLAYING:
-						TextOut(memdc, room[i][j].xPos + 30, room[i][j].yPos + 30, L"게임중", 3);
+						TextOut(memdc, room[i][j].xPos + 200, room[i][j].yPos + 30, L"게임중", 3);
 						break;
 					}
 
@@ -829,10 +833,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				else if (MouseInbox(325, 473, 484, 541, mx, my)) // 확인을 누르면 방에 입장
 				{
+
+					SetFocus(g_hWnd);
+
+					cs_packet_makeroom *my_packet = reinterpret_cast<cs_packet_makeroom *>(send_buffer);
+					my_packet->size = sizeof(cs_packet_makeroom);
+					send_wsabuf.len = sizeof(cs_packet_makeroom);
+					DWORD iobyte;
+					my_packet->type = CS_MAKE_ROOM;
+					wcscpy_s(my_packet->roomtitle, RoomName);
+					if(IsPassword)
+						strcpy_s(my_packet->password, RoomPassword);
+					my_packet->mode = GameMode;
+					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+
 					if (IsPassword)
 						IsPassword = false;
 
-					SetFocus(g_hWnd);
 					EnterRoom();
 
 				}
@@ -1047,7 +1064,7 @@ LRESULT CALLBACK EditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 					my_packet->size = sizeof(cs_packet_chat);
 					send_wsabuf.len = sizeof(cs_packet_chat);
 					DWORD iobyte;
-					my_packet->type = CS_CHAT;
+					my_packet->type = CS_LOBBY_CHAT;
 					wcscpy_s(my_packet->message, input);
 					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 
@@ -1056,31 +1073,6 @@ LRESULT CALLBACK EditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				}
 			}
 			
-
-
-			//if (wcslen(str[index]))
-			//{
-			//	if (index <= MAX_CHAT_LINE)
-			//		index++;
-
-			//	else
-			//	{
-			//		index = 0;
-			//	}
-
-			//	if (index > scrollmax)
-			//	{
-			//		page++;
-			//		maxpage++;
-			//	}
-			//	cs_packet_chat *my_packet = reinterpret_cast<cs_packet_chat *>(send_buffer);
-			//	my_packet->size = sizeof(cs_packet_chat);
-			//	send_wsabuf.len = sizeof(cs_packet_chat);
-			//	DWORD iobyte;
-			//	my_packet->type = CS_CHAT;
-			//	my_packet->message = str[0];
-
-			//}
 			
 			// Indicate that we processed the message.
 			return 0;
@@ -1175,8 +1167,9 @@ void ProcessPacket(char * ptr)
 		InvalidateRect(g_hWnd, NULL, false);
 		break;
 	}
+
 	// 로비	
-	case SC_CHAT:
+	case SC_LOBBY_CHAT:
 	{
 		sc_packet_chat *my_packet = reinterpret_cast<sc_packet_chat *>(ptr);
 		int id = my_packet->id;

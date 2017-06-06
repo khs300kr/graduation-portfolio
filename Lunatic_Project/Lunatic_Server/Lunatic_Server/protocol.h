@@ -2,11 +2,12 @@
 #define MAX_BUFF_SIZE   4000
 #define MAX_PACKET_SIZE  255
 #define MY_SERVER_PORT  4000
-#define MAX_USER 8
-#define MAX_ROOM 4
+#define MAX_USER 40
+#define MAX_ROOM 6
 
 #define MAX_STR_SIZE			50
-#define MAX_ROOMTITLE_SIZE		30
+#define MAX_ROOMTITLE_SIZE		20
+#define MAX_ROOMPASSWORD_SIZE	10
 #define MAX_ID_LEN				15
 #define MAX_PASSWORD_LEN		15
 
@@ -18,30 +19,36 @@
 #define CS_KEYUP_DOWN				6
 #define CS_KEYUP_LEFT				7
 #define CS_KEYUP_RIGHT				8
-#define CS_CHAT						9
-#define CS_READY					10
-#define CS_LOADCOMPLETE				11
-#define CS_ATTACK					12
-#define CS_SKILL_Q					13
-#define CS_SKILL_W					14
-#define CS_SKILL_E					15
-#define CS_SKILL_R					16
-#define CS_REGISTER					17
-#define CS_LOGIN					18
+#define CS_LOBBY_CHAT				9
+#define CS_ROOM_CHAT				10
+#define CS_GAME_CHAT				11
+#define CS_READY					12
+#define CS_LOADCOMPLETE				13
+#define CS_ATTACK					14
+#define CS_SKILL_Q					15
+#define CS_SKILL_W					16
+#define CS_SKILL_E					17
+#define CS_SKILL_R					18
+#define CS_REGISTER					19
+#define CS_LOGIN					20
+#define CS_MAKE_ROOM				21
 
 #define SC_POS           1
 #define SC_PUT_PLAYER    2
 #define SC_REMOVE_PLAYER 3
-#define SC_CHAT			 4
-#define SC_ID			 5 
-#define SC_READY		 6
-#define SC_ALLREADY		 7
-#define SC_ATTACK		 8
-#define SC_SKILL_Q		 9
-#define SC_SKILL_W		 10
-#define SC_SKILL_E		 11
-#define SC_SKILL_R		 12
-#define SC_LOGIN_FAILED  13
+#define SC_LOBBY_CHAT	 4
+#define SC_ROOM_CHAT	 5
+#define SC_GAME_CHAT	 6
+#define SC_ID			 7 
+#define SC_READY		 8
+#define SC_ALLREADY		 9
+#define SC_ATTACK		 10
+#define SC_SKILL_Q		 11
+#define SC_SKILL_W		 12
+#define SC_SKILL_E		 13
+#define SC_SKILL_R		 14
+#define SC_LOGIN_FAILED  15
+#define SC_SHOW_ROOM	 16
 
 // Client Define
 // 키보드 입력
@@ -79,8 +86,8 @@
 #define FULL		2		// 입장불가
 #define PLAYING		3		// 게임중
 
-#define DEATHMATCH		0
-#define	TERRITORY		1
+#define DEATHMATCH		1
+#define	TERRITORY		2
 
 #pragma pack (push, 1)
 // Client -> Server
@@ -96,10 +103,9 @@ struct cs_packet_login {
 struct cs_packet_makeroom {
 	BYTE size;
 	BYTE type;
-	WCHAR message[MAX_ROOMTITLE_SIZE];
-	char password[4];
+	WCHAR roomtitle[MAX_ROOMTITLE_SIZE];
+	char password[MAX_ROOMPASSWORD_SIZE];
 	BYTE mode;
-	BYTE numPlayer;
 };
 
 // 방
@@ -168,7 +174,16 @@ struct sc_packet_loginfailed {
 	BYTE type;
 	WORD id;
 };
-
+// 로비
+struct sc_packet_showroom {
+	BYTE size;
+	BYTE type;
+	WORD id;
+	BYTE room_id;
+	WCHAR roomtitle[MAX_ROOMTITLE_SIZE];
+	char password[MAX_ROOMPASSWORD_SIZE];
+	BYTE mode;
+};
 // 방
 struct sc_packet_ready {
 	BYTE size;

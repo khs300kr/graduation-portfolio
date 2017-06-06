@@ -60,6 +60,7 @@ void Client_Login(char id[], char password[],int ci)
 			if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
 			{
 				wcout << "connect ID : " << szID << endl;
+				g_Clients[ci].m_bLobby = true;
 				SendIDPlayer(ci, ci);
 			}
 			else
