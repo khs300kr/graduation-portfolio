@@ -30,4 +30,4 @@ BYTE   g_RoomNum{};
 SQLHENV henv{};
 SQLHDBC hdbc{};
 SQLHSTMT hstmt{};
-SQLRETURN retcode{};
+SQLRETURN retcode{};;

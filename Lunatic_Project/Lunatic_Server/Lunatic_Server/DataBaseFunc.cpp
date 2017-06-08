@@ -31,7 +31,7 @@ void Init_DB(void)
 	}
 }
 
-void Client_Login(char id[], char password[],int ci)
+void Client_Login(char id[], char password[], int ci)
 {
 	// Connect to data source  
 	retcode = SQLConnect(hdbc, (SQLWCHAR*)L"Lunatic_Project", SQL_NTS, (SQLWCHAR*)NULL, 0, NULL, 0);
@@ -53,7 +53,7 @@ void Client_Login(char id[], char password[],int ci)
 			// Bind columns 1, 2, and 3  
 			retcode = SQLBindCol(hstmt, 1, SQL_C_WCHAR, szID, ID_LEN, &cbID);
 			retcode = SQLBindCol(hstmt, 2, SQL_C_WCHAR, szPassword, PASSWORD_LEN, &cbPasswrod);
-				
+
 			// Fetch and print each row of data. On an error, display a message and exit.  
 
 			retcode = SQLFetch(hstmt);
@@ -62,6 +62,9 @@ void Client_Login(char id[], char password[],int ci)
 				wcout << "connect ID : " << szID << endl;
 				g_Clients[ci].m_bLobby = true;
 				SendIDPlayer(ci, ci);
+				// 방정보 패킷을 보낸다.
+
+
 			}
 			else
 			{
@@ -81,7 +84,6 @@ void Client_Login(char id[], char password[],int ci)
 
 void Close_DB(void)
 {
-	SQLDisconnect(hdbc);
 	SQLFreeHandle(SQL_HANDLE_DBC, hdbc);
 	SQLFreeHandle(SQL_HANDLE_ENV, henv);
 }

@@ -20,6 +20,8 @@ struct OverlappedEx
 
 struct CLIENT
 {
+	// DB_ID
+	char			m_ID[MAX_ID_LEN];
 	// Room
 	bool			m_bLobby;
 	BYTE			m_RoomID;
@@ -31,15 +33,13 @@ struct CLIENT
 	// Hero Type
 	BYTE			m_HeroPick;
 
+	//
 	bool			m_bConnect;
 	SOCKET			m_client_socket;
 	OverlappedEx	m_recv_over;
-	// recv의 조립 버퍼.
 	unsigned char	packet_buf[MAX_PACKET_SIZE];
-	// 조립을 위한 데이터.
 	int prev_packet_data;	// 조립 중 데이터
 	int curr_packet_size;	// 받은 양
-
 	mutex vl_lock;
 };
 
@@ -47,11 +47,11 @@ struct ROOM
 {
 	WCHAR m_title[MAX_ROOMTITLE_SIZE];// 방제(문자열)
 	char m_password[MAX_ROOMPASSWORD_SIZE];// 비밀번호(문자열)
-	// 비공개(bool)
+										   // 비공개(bool)
 	BYTE  m_mode;// 게임모드(BYTE)
+	BYTE  m_RoomStatus;
 	unordered_set<int> m_RoomID_list;// 인원(BYTE)
 };
-
 // Server
 extern HANDLE g_Hiocp;
 extern SOCKET g_ServerSocket;

@@ -27,15 +27,6 @@ void Send_Packet(int client, void* packet)
 }
 
 // 접속
-void SendRoomInfo(int client, int object)
-{
-	sc_packet_showroom packet;
-	packet.size = sizeof(packet);
-	packet.type = SC_SHOW_ROOM;
-	packet.id = object;
-	
-	Send_Packet(client, &packet);
-}
 void SendIDPlayer(int client, int object)
 {
 	sc_packet_id packet;
@@ -56,6 +47,7 @@ void SendLoginFailed(int client, int object)
 	Send_Packet(client, &packet);
 }
 
+
 // 로비
 void SendChatPacket(int client, int object, WCHAR str[MAX_STR_SIZE])
 {
@@ -64,9 +56,26 @@ void SendChatPacket(int client, int object, WCHAR str[MAX_STR_SIZE])
 	packet.type = SC_LOBBY_CHAT;
 	packet.id = object;
 	wcscpy_s(packet.message, str);
+	strcpy(packet.DB_id, g_Clients[object].m_ID);
 
 	Send_Packet(client, &packet);
 }
+
+void SendRoomInfo(int client, int object, int room_id)
+{
+	sc_packet_roominfo packet;
+	packet.size = sizeof(packet);
+	packet.type = SC_ROOM_INFO;
+	packet.id = object;
+	wcscpy_s(packet.roomtitle, g_Room[room_id].m_title);
+	strcpy_s(packet.password, g_Room[room_id].m_password);
+	packet.mode = g_Room[room_id].m_mode;
+	packet.roomstatus = g_Room[room_id].m_RoomStatus;
+	packet.room_id = room_id;
+	
+	Send_Packet(client, &packet);
+}
+
 // 방
 void SendReadyPacket(int client, int object)
 {
@@ -191,44 +200,73 @@ void ProcessPacket(int id, unsigned char packet[])
 	switch (packet[1])
 	{
 	// 메인 메뉴
-	case CS_REGISTER:
-	{
-		break;
-	}
 	case CS_LOGIN:
 	{
 		cs_packet_login* my_packet = reinterpret_cast<cs_packet_login*>(packet);
-		cout << my_packet->id << endl;
+		strcpy_s(g_Clients[id].m_ID, my_packet->id);
+		cout << g_Clients[id].m_ID << endl;
 		cout << my_packet->password << endl;
 		g_Clients[id].vl_lock.lock();
 		Client_Login(my_packet->id, my_packet->password, id);
 		g_Clients[id].vl_lock.unlock();
+		for (int i = 0; i < MAX_ROOM; ++i)
+		{
+			if (g_Room[i].m_RoomID_list.size() == 0) break;
+			for (int j = 0; j < MAX_USER; ++j) {
+				if(g_Clients[j].m_bConnect == true && g_Clients[j].m_bLobby == true)
+					SendRoomInfo(j, id, i);
+			}
+		}
 		break;
 	}
 	// 로비
 	case CS_LOBBY_CHAT:
 	{
-		cs_packet_chat* my_packet = reinterpret_cast<cs_packet_chat*>(packet);
-		for (int i = 0; i < MAX_USER; ++i) {
-			if (g_Clients[i].m_bLobby == true)
+		cs_packet_chat *my_packet = reinterpret_cast<cs_packet_chat*>(packet);
+		cout << my_packet->id << endl;
+			for (int i = 0; i < MAX_USER; ++i) {
+			if (g_Clients[i].m_bConnect == true && g_Clients[i].m_bLobby == true)
 				SendChatPacket(i, id, my_packet->message);
 		}break;
 	}
 	case CS_MAKE_ROOM:
 	{
-		g_Clients[id].m_RoomID = 0;		// 최초 방장.
-		g_Clients[id].m_bLobby = false;
+		if (g_RoomNum > MAX_ROOM) cout << "방 갯수 초과\n"; break;
 
+		// 룸 정보 서버 저장.
 		cs_packet_makeroom* my_packet = reinterpret_cast<cs_packet_makeroom*>(packet);
 		wcscpy(g_Room[g_RoomNum].m_title, my_packet->roomtitle);
 		strcpy_s(g_Room[g_RoomNum].m_password, my_packet->password);
-		g_Room[g_RoomNum].m_mode = my_packet->mode;
 
+		g_Clients[id].vl_lock.lock();		//////////////////// LOCK
+		g_Clients[id].m_RoomID = 0;			// 최초 방장 아이디는 0
+		g_Clients[id].m_bLobby = false;		// 로비 탈출.
+
+		g_Room[g_RoomNum].m_mode = my_packet->mode;
+		g_Room[g_RoomNum].m_RoomStatus = ROOM_JOINABLE;
+		g_Room[g_RoomNum].m_RoomID_list.insert(id);
+		g_Clients[id].vl_lock.unlock();		//////////////////// UNLOCK
+	
+		// 룸 정보 출력.
+		cout << "룸 정보 출력 \n";
 		wcout << my_packet->roomtitle << endl;
 		cout << my_packet->password << endl;
 		cout << (short)my_packet->mode << endl;
+		cout << g_RoomNum << "의 인원 수 : " << g_Room[g_RoomNum].m_RoomID_list.size() << endl;
 
-		++g_RoomNum;
+		// 접속 && 로비 - 방정보 send
+		for (int i = 0; i < MAX_USER; ++i) {
+			if (g_Clients[id].m_bConnect == true && g_Clients[id].m_bLobby == true)
+			{
+				SendRoomInfo(i, id, g_RoomNum);
+			}
+		}
+
+		++g_RoomNum; // 우선 순서대로 룸 생성.
+		break;
+	}
+	case CS_JOIN_ROOM:
+	{
 		break;
 	}
 

@@ -2,7 +2,7 @@
 #define MAX_BUFF_SIZE   4000
 #define MAX_PACKET_SIZE  255
 #define MY_SERVER_PORT  4000
-#define MAX_USER 40
+#define MAX_USER 8
 #define MAX_ROOM 6
 
 #define MAX_STR_SIZE			50
@@ -10,6 +10,7 @@
 #define MAX_ROOMPASSWORD_SIZE	10
 #define MAX_ID_LEN				15
 #define MAX_PASSWORD_LEN		15
+
 
 #define CS_KEYDOWN_UP				1
 #define CS_KEYDOWN_DOWN				2
@@ -32,6 +33,7 @@
 #define CS_REGISTER					19
 #define CS_LOGIN					20
 #define CS_MAKE_ROOM				21
+#define CS_JOIN_ROOM				22
 
 #define SC_POS           1
 #define SC_PUT_PLAYER    2
@@ -48,7 +50,8 @@
 #define SC_SKILL_E		 13
 #define SC_SKILL_R		 14
 #define SC_LOGIN_FAILED  15
-#define SC_SHOW_ROOM	 16
+#define SC_ROOM_INFO	 16
+
 
 // Client Define
 // 키보드 입력
@@ -75,19 +78,20 @@
 #define A_TEAM 1
 #define B_TEAM 2
 // 캐릭터
-#define Empty		0
-#define Babarian	1
-#define Healer		2
-#define SordMan		3
+#define Empty 0
+#define Babarian 1
+#define SordMan 3
+#define Healer 2
 
 // 방 상태
-#define EMPTY		0		// 비어있음
-#define JOINABLE	1		// 입장가능
-#define FULL		2		// 입장불가
-#define PLAYING		3		// 게임중
+#define ROOM_EMPTY    0  // 비어있음
+#define ROOM_JOINABLE 1  // 입장가능
+#define FULL		  2  // 입장불가
+#define INGAME		  3  // 게임중
 
-#define DEATHMATCH		1
-#define	TERRITORY		2
+// 방모드
+#define DEATHMATCH		0
+#define	TERRITORY		1
 
 #pragma pack (push, 1)
 // Client -> Server
@@ -120,6 +124,13 @@ struct cs_packet_LoadingComplete {
 	BYTE type;
 };
 
+struct cs_packet_chat {
+	BYTE size;
+	BYTE type;
+	WCHAR message[MAX_STR_SIZE];
+	char id[MAX_ID_LEN];
+};
+
 // 인게임
 struct cs_packet_pos {
 	BYTE size;
@@ -127,12 +138,6 @@ struct cs_packet_pos {
 	float x;
 	float y;
 	float z;
-};
-
-struct cs_packet_chat {
-	BYTE size;
-	BYTE type;
-	WCHAR message[MAX_STR_SIZE];
 };
 
 struct cs_packet_attack {
@@ -175,7 +180,7 @@ struct sc_packet_loginfailed {
 	WORD id;
 };
 // 로비
-struct sc_packet_showroom {
+struct sc_packet_roominfo {
 	BYTE size;
 	BYTE type;
 	WORD id;
@@ -183,7 +188,9 @@ struct sc_packet_showroom {
 	WCHAR roomtitle[MAX_ROOMTITLE_SIZE];
 	char password[MAX_ROOMPASSWORD_SIZE];
 	BYTE mode;
+	BYTE roomstatus;
 };
+
 // 방
 struct sc_packet_ready {
 	BYTE size;
@@ -260,5 +267,6 @@ struct sc_packet_chat {
 	BYTE type;
 	WORD id;
 	WCHAR message[MAX_STR_SIZE];
+	char DB_id[MAX_ID_LEN];
 };
 #pragma pack (pop)

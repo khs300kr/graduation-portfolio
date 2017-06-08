@@ -7,6 +7,7 @@ void SendLoginFailed(int client, int object);
 
 // ·Îºñ
 void SendChatPacket(int client, int object, WCHAR str[MAX_STR_SIZE]);
+void SendRoomInfo(int client, int object, int room_id);
 
 // ¹æ
 void SendReadyPacket(int client, int object);
