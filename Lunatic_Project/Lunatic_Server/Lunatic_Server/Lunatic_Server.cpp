@@ -104,7 +104,7 @@ void Accept_Thread()
 		WSARecv(client_sock, &g_Clients[new_id].m_recv_over.m_Wsabuf, 1,
 			NULL, &recv_flag, &g_Clients[new_id].m_recv_over.m_Over, NULL);
 
-		//SendIDPlayer(new_id, new_id);
+		SendIDPlayer(new_id, new_id);
 	}
 }
 
@@ -223,7 +223,7 @@ void Close_Server()
 int main()
 {
 	Init_Server();
-	Init_DB();
+	//Init_DB();
 	// 서버가 크래쉬 되었을때 처리할 수 있게 하는 MiniDump
 	if (!CMiniDump::Begin())
 		return 0;
@@ -243,6 +243,6 @@ int main()
 	}
 
 	CMiniDump::End();	// MiniDump를 끝냅니다.
-	Close_DB();
+	//Close_DB();
 	Close_Server();
 }

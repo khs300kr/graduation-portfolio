@@ -62,9 +62,6 @@ void Client_Login(char id[], char password[], int ci)
 				wcout << "connect ID : " << szID << endl;
 				g_Clients[ci].m_bLobby = true;
 				SendIDPlayer(ci, ci);
-				// 방정보 패킷을 보낸다.
-
-
 			}
 			else
 			{
