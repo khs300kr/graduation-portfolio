@@ -79,30 +79,75 @@ void CLobby::Draw(HDC memdc, HDC memdc2)
 		}
 	}
 
-	//if (RoomCreateWindow) //방만들기 눌렀을 때
-	//{
-	//	hFont = CreateFont(30, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
-	//	hOldFont = (HFONT)SelectObject(memdc, hFont);
-	//	SetBkMode(memdc, TRANSPARENT);
+	if (RoomCreateWindow) //방만들기 눌렀을 때
+	{
+		hFont = CreateFont(30, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
+		hOldFont = (HFONT)SelectObject(memdc, hFont);
+		SetBkMode(memdc, TRANSPARENT);
 
-	//	DrawBitmap(memdc, memdc2, bmp_createwindow, 240, 170, 544, 408);
+		DrawBitmap(memdc, memdc2, bmp_createwindow, 240, 170, 544, 408);
 
-	//	Rectangle(memdc, 370, 300, 720, 340); // 방제목 입력
-	//	Rectangle(memdc, 370, 343, 720, 383); // 비밀번호 입력
+		Rectangle(memdc, 370, 300, 720, 340); // 방제목 입력
+		Rectangle(memdc, 370, 343, 720, 383); // 비밀번호 입력
 
-	//	Pen = CreatePen(PS_SOLID, 4, RGB(0, 0, 0));
-	//	oldPen = (HPEN)SelectObject(memdc, Pen);
+		Pen = CreatePen(PS_SOLID, 4, RGB(0, 0, 0));
+		oldPen = (HPEN)SelectObject(memdc, Pen);
 
-	//	SelectObject(memdc, GetStockObject(NULL_BRUSH));
+		SelectObject(memdc, GetStockObject(NULL_BRUSH));
 
-	//	if (RoomCreateChat == RNAME)
-	//		Rectangle(memdc, 370, 300, 720, 340); // 선택된 입력박스
-	//	else if (RoomCreateChat == RPASSWORD)
-	//		Rectangle(memdc, 370, 343, 720, 383); // 선택된 입력박스
+		if (RoomCreateChat == RNAME)
+			Rectangle(memdc, 370, 300, 720, 340); // 선택된 입력박스
+		else if (RoomCreateChat == RPASSWORD)
+			Rectangle(memdc, 370, 343, 720, 383); // 선택된 입력박스
 
 
-	//	
-	//}
+		SelectObject(memdc, oldPen);
+		DeleteObject(Pen);
+		SelectObject(memdc, GetStockObject(WHITE_BRUSH));
+
+
+		Rectangle(memdc, 730, 343, 770, 383); // 비밀번호 체크박스
+		Rectangle(memdc, 520, 397, 550, 427); //데스매치 체크박스
+		Rectangle(memdc, 670, 397, 700, 427); //점령전 체크박스
+
+		Pen = CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
+		oldPen = (HPEN)SelectObject(memdc, Pen);
+
+		SelectObject(memdc, GetStockObject(NULL_BRUSH));
+
+		if (IsPassword)
+			Ellipse(memdc, 735, 348, 765, 378);
+
+		if (GameMode == DEATHMATCH)
+			Ellipse(memdc, 522, 399, 548, 425);
+		else
+			Ellipse(memdc, 672, 399, 698, 425);
+
+		SelectObject(memdc, oldPen);
+		DeleteObject(Pen);
+
+		TextOut(memdc, 370, 305, RoomName, wcslen(RoomName));
+
+		for (int i = 0; i < strlen(RoomPassword); ++i)
+		{
+			TextOut(memdc, 372 + (i * 15), 343, L"*", 1);
+		}
+
+
+		if (!IsPassword)
+		{
+			Brush = CreateSolidBrush(RGB(128, 128, 128));
+			oldBrush = (HBRUSH)SelectObject(memdc, Brush);
+
+			Rectangle(memdc, 372, 343, 718, 383); // 비밀번호 체크박스
+
+			SelectObject(memdc, oldBrush);
+			DeleteObject(Brush);
+		}
+
+		SelectObject(memdc2, hFont);
+		DeleteObject(hFont);
+	}
 
 
 
@@ -117,3 +162,4 @@ void CLobby::DrawBitmap(HDC memdc, HDC memdc2, HBITMAP bitmap, int x, int y, int
 	SelectObject(memdc2, bitmap);
 	BitBlt(memdc, x, y, sizeX, sizeY, memdc2, 0, 0, SRCCOPY);
 }
+
