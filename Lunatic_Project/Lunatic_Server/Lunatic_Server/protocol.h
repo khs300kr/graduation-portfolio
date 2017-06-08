@@ -192,12 +192,12 @@ struct sc_packet_loginfailed {
 struct sc_packet_roominfo {
 	BYTE size;
 	BYTE type;
-	WORD id;
 	BYTE room_id;
 	WCHAR roomtitle[MAX_ROOMTITLE_SIZE];
-	char password[MAX_ROOMPASSWORD_SIZE];
 	BYTE mode;
 	BYTE roomstatus;
+	BYTE playercount;
+	bool m_private;
 };
 
 struct sc_packet_join_room {

@@ -47,7 +47,7 @@ struct ROOM
 {
 	WCHAR m_title[MAX_ROOMTITLE_SIZE];// 방제(문자열)
 	char m_password[MAX_ROOMPASSWORD_SIZE];// 비밀번호(문자열)
-										   // 비공개(bool)
+	bool m_private;						   // 비공개(bool)
 	BYTE  m_mode;// 게임모드(BYTE)
 	BYTE  m_RoomStatus;
 	unordered_set<int> m_RoomID_list;// 인원(BYTE)

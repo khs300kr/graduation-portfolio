@@ -66,12 +66,12 @@ void SendRoomInfo(int client, int object, int room_id)
 	sc_packet_roominfo packet;
 	packet.size = sizeof(packet);
 	packet.type = SC_ROOM_INFO;
-	packet.id = object;
 	wcscpy_s(packet.roomtitle, g_Room[room_id].m_title);
-	strcpy_s(packet.password, g_Room[room_id].m_password);
 	packet.mode = g_Room[room_id].m_mode;
 	packet.roomstatus = g_Room[room_id].m_RoomStatus;
 	packet.room_id = room_id;
+	packet.playercount = g_Room[room_id].m_RoomID_list.size();
+	packet.m_private = g_Room[room_id].m_private;
 	
 	Send_Packet(client, &packet);
 }
@@ -251,16 +251,27 @@ void ProcessPacket(int id, unsigned char packet[])
 	}
 	case CS_MAKE_ROOM:
 	{
-		if (g_RoomNum > MAX_ROOM) cout << "방 갯수 초과\n"; break;
+		if (g_RoomNum > MAX_ROOM) { cout << "방 갯수 초과\n"; break; }
 
 		// 룸 정보 서버 저장.
 		cs_packet_makeroom* my_packet = reinterpret_cast<cs_packet_makeroom*>(packet);
+		g_Clients[id].m_RoomID = 0;			// 최초 방장 아이디는 0
+		g_Clients[id].m_bLobby = false;		// 로비 탈출.
+
+		g_Clients[id].vl_lock.lock();		//////////////////// LOCK
 		wcscpy(g_Room[g_RoomNum].m_title, my_packet->roomtitle);
 		strcpy_s(g_Room[g_RoomNum].m_password, my_packet->password);
 
-		g_Clients[id].vl_lock.lock();		//////////////////// LOCK
-		g_Clients[id].m_RoomID = 0;			// 최초 방장 아이디는 0
-		g_Clients[id].m_bLobby = false;		// 로비 탈출.
+		if (g_Room[g_RoomNum].m_password[0] == '\0')
+		{
+			g_Room[g_RoomNum].m_private = false;
+			cout << "private\n";
+		}
+		else
+		{
+			g_Room[g_RoomNum].m_private = true;
+			cout << "public\n";
+		}
 
 		g_Room[g_RoomNum].m_mode = my_packet->mode;
 		g_Room[g_RoomNum].m_RoomStatus = ROOM_JOINABLE;
@@ -272,11 +283,12 @@ void ProcessPacket(int id, unsigned char packet[])
 		wcout << my_packet->roomtitle << endl;
 		cout << my_packet->password << endl;
 		cout << (short)my_packet->mode << endl;
-		cout << g_RoomNum << "의 인원 수 : " << g_Room[g_RoomNum].m_RoomID_list.size() << endl;
+		cout << "인원 수 : " << g_Room[g_RoomNum].m_RoomID_list.size() << endl;
 
 		// 접속 && 로비 - 방정보 send
-		for (int i = 0; i < MAX_USER; ++i) {
-			if (g_Clients[id].m_bConnect == true && g_Clients[id].m_bLobby == true)
+		for (int i = 0; i < MAX_USER; ++i) 
+		{
+			if ((g_Clients[i].m_bConnect == true) && (g_Clients[i].m_bLobby == true))
 			{
 				SendRoomInfo(i, id, g_RoomNum);
 			}
