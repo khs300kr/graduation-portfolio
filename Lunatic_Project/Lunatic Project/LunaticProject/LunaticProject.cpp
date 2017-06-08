@@ -538,6 +538,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					gMainMenu.onLogin = true; // 로그인 윈도우를 활성화 한다.
 				}
+
 			}
 			else
 			{
@@ -585,14 +586,69 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		else if (gGameFramework.ChangeScene == LOBBY)
 		{
-			if (!gLobby.RoomCreateWindow && MouseInbox(0, 0, 400, 140, mx, my)) // 방만들기
+			if (!gLobby.RoomCreateWindow ) // 방만들기
 			{
-				gLobby.RoomCreateWindow = true;
-				gLobby.RoomCreateChat = gLobby.RNOPE;
+				if (MouseInbox(0, 0, 400, 140, mx, my))
+				{
+					gLobby.RoomCreateWindow = true;
+					gLobby.RoomCreateChat = gLobby.RNOPE;
 
-				SetFocus(hWnd);
-				memset(input, '\0', sizeof(input));
-				SetWindowTextW(hChat, '\0');
+					SetFocus(hWnd);
+					memset(input, '\0', sizeof(input));
+					SetWindowTextW(hChat, '\0');
+				}
+
+				else if (MouseInbox(400, 0, 800, 140, mx, my)) // 빠른참여
+				{
+					cout << "빠른 참여" << endl;
+				}
+
+
+				for (int i = 0; i < 6; ++i)
+				{
+					if (MouseInbox(gLobby.room[i].xPos, gLobby.room[i].yPos, gLobby.room[i].xPos + 335, gLobby.room[i].yPos + 102, mx, my))
+					{
+						if (gLobby.clickcount == 0) // 처음누르면 박스를 그림
+						{
+							gLobby.clickcount++;
+							gLobby.whatclick = i;
+							//cout << "첫번째 누른거" << ends << i;
+							//break;
+						}
+						//else if (gLobby.clickcount == 1 && gLobby.whatclick == i) // 두번누르면 ( 이전에 눌렀던거랑 같으면)
+						//{
+
+							
+							cs_packet_joinroom *my_packet = reinterpret_cast<cs_packet_joinroom *>(send_buffer);
+							my_packet->size = sizeof(cs_packet_joinroom);
+							send_wsabuf.len = sizeof(cs_packet_joinroom);
+							DWORD iobyte;
+
+							my_packet->type = CS_JOIN_ROOM;
+
+							my_packet->roomid = gLobby.whatclick;
+							WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+
+							gLobby.whatclick = -1;
+							gLobby.clickcount = 0;
+							//cout << "두번째 누른거" << ends << i;
+							cout << "보냄 " << endl;
+							//break;
+						//}
+
+					}
+					//else
+					//{
+					//	if (gLobby.clickcount == 1)
+					//	{
+					//		gLobby.whatclick = -1;
+					//		gLobby.clickcount = 0;
+					//		cout << "취소" << endl;
+					//		break;
+					//	}
+					//}
+				}
+				
 			}
 
 			else if (gLobby.RoomCreateWindow) // 방만들기 윈도우가 활성화 되어있을 때
@@ -682,11 +738,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					gLobby.RoomCreateChat = gLobby.RNOPE;
 				}
-			}
-
-			if (!gLobby.RoomCreateWindow && MouseInbox(400, 0, 800, 140, mx, my)) // 빠른참여
-			{
-				cout << "빠른 참여" << endl;
 			}
 
 
@@ -946,6 +997,32 @@ void ProcessPacket(char * ptr)
 		
 		InvalidateRect(g_hWnd, NULL, false);
 
+		break;
+	}
+
+	case SC_JOIN_ROOM:
+	{
+		sc_packet_join_room *my_packet = reinterpret_cast<sc_packet_join_room *>(ptr);
+
+		EnterRoom();
+
+		InvalidateRect(g_hWnd, NULL, false);
+		break;
+	}
+
+	case SC_JOIN_FAIL_FULL:
+	{
+		sc_packet_join_fail *my_packet = reinterpret_cast<sc_packet_join_fail *>(ptr);
+
+		InvalidateRect(g_hWnd, NULL, false);
+		break;
+	}
+
+	case SC_JOIN_FAIL_INGAME:
+	{
+		sc_packet_join_fail *my_packet = reinterpret_cast<sc_packet_join_fail *>(ptr);
+
+		InvalidateRect(g_hWnd, NULL, false);
 		break;
 	}
 		

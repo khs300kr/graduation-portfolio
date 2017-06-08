@@ -57,6 +57,7 @@ void CLobby::Draw(HDC memdc, HDC memdc2)
 	{
 		DrawBitmap(memdc, memdc2, bmp_room, room[i].xPos, room[i].yPos, 335, 102); // 방 박스 출력
 
+
 		TextOut(memdc, room[i].xPos + 5, room[i].yPos + 5, room[i].roomtitle, wcslen(room[i].roomtitle));
 
 		if (room[i].roomstatus) // 방이 비어있으면 출력하지 않음
@@ -94,6 +95,20 @@ void CLobby::Draw(HDC memdc, HDC memdc2)
 		wchar_t s[6];
 		wsprintf(s, L"(%d/8)", room[i].playercount);
 		TextOut(memdc, room[i].xPos + 260, room[i].yPos + 68, s, 5); // (0/8) 인원수 출력
+
+		if (clickcount == 1)
+		{
+			Pen = CreatePen(PS_SOLID, 4, RGB(0, 0, 0));
+			oldPen = (HPEN)SelectObject(memdc, Pen);
+			SelectObject(memdc, GetStockObject(NULL_BRUSH));
+
+			Rectangle(memdc, room[whatclick].xPos, room[whatclick].yPos, room[whatclick].xPos + 335, room[whatclick].yPos + 102); // 방제목 입력
+
+			
+			SelectObject(memdc, oldPen);
+			DeleteObject(Pen);
+			SelectObject(memdc, GetStockObject(WHITE_BRUSH));
+		}
 		
 	}
 
