@@ -4,8 +4,11 @@ typedef struct Room
 {
 	int xPos; // 방 xPos
 	int yPos; // 방 yPos
-	int roomInfo; // 방 정보
-	int people; // 유저가 방에 몇명 들어왔는지?
+	WCHAR roomtitle[MAX_ROOMTITLE_SIZE];
+	int roomstatus; // 방 상태 ( 비었는지 꽉찼는지 게임중인지)
+	int mode; // 데스매치? 점령전?
+	int playercount; // 유저가 방에 몇명 들어왔는지?
+	int _private; // 암호가 있는지?
 }Room;
 
 class CLobby
@@ -14,7 +17,7 @@ public:
 	CLobby();
 	~CLobby();
 
-	Room room[3][2];
+	Room room[6];
 
 	void Create(HINSTANCE hInst);
 

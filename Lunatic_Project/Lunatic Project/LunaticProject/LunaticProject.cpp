@@ -290,12 +290,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		memdc2 = CreateCompatibleDC(hdc);
 
-		if (gGameFramework.ChangeScene == MAINMENU) gMainMenu.Draw(memdc, memdc2);
+		if (gGameFramework.ChangeScene == MAINMENU) 
+			gMainMenu.Draw(memdc, memdc2);
+
 		else if (gGameFramework.ChangeScene == LOBBY)
 		{
 			gLobby.Draw(memdc, memdc2);
+			
 			//채팅창 출력
-
 			vector<wstring>::iterator iter = vOutPut.begin() + iFrontRange;
 			for (int i = 0; iter != vOutPut.end() + iLastRange; ++i, ++iter)
 			{
@@ -335,6 +337,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		EndPaint(hWnd, &ps);
 
 		break;
+
 	// server
 	case WM_SOCKET:
 	{
@@ -578,6 +581,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			InvalidateRect(hWnd, NULL, false);
 		}
+
+
 		else if (gGameFramework.ChangeScene == LOBBY)
 		{
 			if (!gLobby.RoomCreateWindow && MouseInbox(0, 0, 400, 140, mx, my)) // 방만들기
@@ -610,16 +615,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 					SetFocus(g_hWnd);
 
-					/*cs_packet_makeroom *my_packet = reinterpret_cast<cs_packet_makeroom *>(send_buffer);
+					cs_packet_makeroom *my_packet = reinterpret_cast<cs_packet_makeroom *>(send_buffer);
 					my_packet->size = sizeof(cs_packet_makeroom);
 					send_wsabuf.len = sizeof(cs_packet_makeroom);
 					DWORD iobyte;
+
 					my_packet->type = CS_MAKE_ROOM;
+
 					wcscpy_s(my_packet->roomtitle, gLobby.RoomName);
 					if (gLobby.IsPassword)
 						strcpy_s(my_packet->password, gLobby.RoomPassword);
+
 					my_packet->mode = gLobby.GameMode;
-					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);*/
+			
+					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 
 					if (gLobby.IsPassword)
 						gLobby.IsPassword = false;
@@ -924,6 +933,22 @@ void ProcessPacket(char * ptr)
 		InvalidateRect(g_hWnd, NULL, false);
 		break;
 	}
+
+	case SC_ROOM_INFO:
+	{
+		sc_packet_roominfo *my_packet = reinterpret_cast<sc_packet_roominfo *>(ptr);
+
+		wcscpy_s(gLobby.room[my_packet->room_id].roomtitle, my_packet->roomtitle);
+		gLobby.room[my_packet->room_id].roomstatus = my_packet->roomstatus;
+		gLobby.room[my_packet->room_id].mode = my_packet->mode;
+		gLobby.room[my_packet->room_id].playercount = my_packet->playercount;
+		gLobby.room[my_packet->room_id]._private = my_packet->m_private;
+		
+		InvalidateRect(g_hWnd, NULL, false);
+
+		break;
+	}
+		
 		
 
 	// 방

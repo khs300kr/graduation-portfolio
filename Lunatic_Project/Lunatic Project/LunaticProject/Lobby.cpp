@@ -7,14 +7,16 @@ CLobby::CLobby()
 {
 	// 로비에서 보이는 룸
 
+	int k = 0;
+
 	for (int i = 0; i < 3; ++i)
 	{
 		for (int j = 0; j < 2; ++j)
 		{
-			room[i][j].xPos = 30 + (j * 400); // 방의 X
-			room[i][j].yPos = 160 + (i * 120); // 방의 Y
-			room[i][j].roomInfo = Empty; // 방 정보
-			room[i][j].people = 0; // 유저가 몇명 방에 들어왔는지?
+			room[k].xPos = 30 + (j * 400); // 방의 X
+			room[k].yPos = 160 + (i * 120); // 방의 Y
+			room[k].roomstatus = Empty; // 방 정보
+			room[k++].playercount = 0; // 유저가 몇명 방에 들어왔는지?
 		}
 	}
 
@@ -47,36 +49,52 @@ void CLobby::Draw(HDC memdc, HDC memdc2)
 
 	Rectangle(memdc, 0, 738, 800, 768); // 맨 밑 채팅창
 
-	hFont = CreateFont(30, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
+	hFont = CreateFont(18, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
 	hOldFont = (HFONT)SelectObject(memdc, hFont);
 	SetBkMode(memdc, TRANSPARENT);
 
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 6; ++i)
 	{
-		for (int j = 0; j < 2; ++j)
+		DrawBitmap(memdc, memdc2, bmp_room, room[i].xPos, room[i].yPos, 335, 102); // 방 박스 출력
+
+		TextOut(memdc, room[i].xPos + 5, room[i].yPos + 5, room[i].roomtitle, wcslen(room[i].roomtitle));
+
+		if (room[i].roomstatus) // 방이 비어있으면 출력하지 않음
 		{
-			DrawBitmap(memdc, memdc2, bmp_room, room[i][j].xPos, room[i][j].yPos, 335, 102); // 방 박스 출력
+			if (room[i].mode == DEATHMATCH)
+				TextOut(memdc, room[i].xPos + 25, room[i].yPos + 25, L"데스매치", 5);
+			else
+				TextOut(memdc, room[i].xPos + 25, room[i].yPos + 25, L"점령전", 3);
 
-			switch (room[i][j].roomInfo)
-			{
-			case ROOM_EMPTY:
-				TextOut(memdc, room[i][j].xPos + 30, room[i][j].yPos + 30, L"생성가능", 4);
-				break;
-			case ROOM_JOINABLE:
-				TextOut(memdc, room[i][j].xPos + 30, room[i][j].yPos + 30, L"입장가능", 4);
-				break;
-			case FULL:
-				TextOut(memdc, room[i][j].xPos + 30, room[i][j].yPos + 30, L"입장불가", 4);
-				break;
-			case INGAME:
-				TextOut(memdc, room[i][j].xPos + 30, room[i][j].yPos + 30, L"게임중", 3);
-				break;
-			}
 
-			wchar_t s[6];
-			wsprintf(s, L"(%d/8)", room[i][j].people);
-			TextOut(memdc, room[i][j].xPos + 260, room[i][j].yPos + 68, s, 5); // (0/8) 인원수 출력
+			if (!room[i]._private)
+				TextOut(memdc, room[i].xPos + 40, room[i].yPos + 40, L"공개", 2);
+			else
+				TextOut(memdc, room[i].xPos + 40, room[i].yPos + 40, L"비공개", 3);
 		}
+
+
+		switch (room[i].roomstatus)
+		{
+
+		case ROOM_EMPTY:
+			TextOut(memdc, room[i].xPos + 50, room[i].yPos + 30, L"생성가능", 4);
+			break;
+		case ROOM_JOINABLE:
+			TextOut(memdc, room[i].xPos + 50, room[i].yPos + 30, L"입장가능", 4);
+			break;
+		case FULL:
+			TextOut(memdc, room[i].xPos + 50, room[i].yPos + 30, L"입장불가", 4);
+			break;
+		case INGAME:
+			TextOut(memdc, room[i].xPos + 50, room[i].yPos + 30, L"게임중", 3);
+			break;
+		}
+
+		wchar_t s[6];
+		wsprintf(s, L"(%d/8)", room[i].playercount);
+		TextOut(memdc, room[i].xPos + 260, room[i].yPos + 68, s, 5); // (0/8) 인원수 출력
+		
 	}
 
 	if (RoomCreateWindow) //방만들기 눌렀을 때
