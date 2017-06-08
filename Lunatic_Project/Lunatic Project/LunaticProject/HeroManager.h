@@ -35,7 +35,7 @@ public:
 	~CHeroManager();
 
 	int GetHp() { return hp; }
-	float GetAttack() { return attack; }
+	int GetAttack() { return attack; }
 	float GetSpeed() { return speed; }
 	float GetNormalSpeed() { return normalspeed; }
 	float GetRootSpeed() { return rootspeed; }

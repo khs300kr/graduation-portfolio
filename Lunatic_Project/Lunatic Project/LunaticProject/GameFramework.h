@@ -21,8 +21,7 @@ private:
 	// 렌더 타겟 뷰 인터페이스에 대한 포인터이다. 
 	ID3D11RenderTargetView *m_pd3dRenderTargetView;
 
-	// 게임 프레임워크에서 사용할 타이머
-	CGameTimer m_GameTimer;
+
 	// 게임의 장면(Scene)을 관리하는 객체에 대한 포인터
 	// 프레임 레이트를 주 윈도우의 캡션에 출력하기 위한 문자열
 	_TCHAR m_pszBuffer[60];
@@ -40,18 +39,23 @@ private:
 	// 마지막으로 마우스 버튼을 클릭할 때의 마우스 커서의 위치이다.
 	POINT	m_ptOldCursorPos;
 
-	CCamera *m_pCamera;
+	
 
 public:
 	CGameFramework();
 	~CGameFramework();
 	CPlayer *m_pPlayer;
 	CScene *m_pScene;
+	CCamera *m_pCamera;
 
 	CPlayerShader *m_pPlayerShader;
 	
 	bool Create(HINSTANCE hInstance, HWND hMainWnd);
 	void Destroy();
+
+	ID3D11Device* Getpd3dDevice() { return m_pd3dDevice; }
+	// 게임 프레임워크에서 사용할 타이머
+	CGameTimer m_GameTimer;
 
 	//디바이스, 스왑 체인, 디바이스 컨텍스트, 디바이스와 관련된 뷰를 생성하는 함수이다. 
 	bool CreateRenderTargetDepthStencilView();
@@ -69,8 +73,6 @@ public:
 	//윈도우의 메시지(키보드, 마우스 입력)를 처리하는 함수이다. 
 	void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	
-
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
 	// Server Func

@@ -168,13 +168,13 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 	case WM_LBUTTONDOWN:
 	case WM_RBUTTONDOWN:
 		//마우스 캡쳐를 하고 현재 마우스 위치를 가져온다.
-		//SetCapture(hWnd);
-		//GetCursorPos(&m_ptOldCursorPos);
+		SetCapture(hWnd);
+		GetCursorPos(&m_ptOldCursorPos);
 		break;
 	case WM_LBUTTONUP:
 	case WM_RBUTTONUP:
 		// 마우스 캡쳐를 해제한다.
-		//ReleaseCapture();
+		ReleaseCapture();
 		break;
 	case WM_MOUSEMOVE:
 		break;
@@ -185,32 +185,11 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 
 void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-
-	if (m_pScene) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+	//if (m_pScene) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 
 	switch (nMessageID)
 	{
-	case WM_KEYUP:
-		switch (wParam)
-		{
-		case VK_F1:
-		case VK_F2:
-		case VK_F3:
-			
-			m_pPlayer->ChangeCamera(m_pd3dDevice, (wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
-			m_pCamera = m_pPlayer->GetCamera();
-			// 씬에 현재 카메라를 설정한다.
-			m_pScene->SetCamera(m_pCamera);
-			break;
-		case VK_ESCAPE:
-			::PostQuitMessage(0);
-			break;
-		default:
-			break;
-		}
-		break;
-	default:
-		break;
+	
 	}
 }
 
@@ -385,49 +364,48 @@ void CGameFramework::ProcessInput()
 
 				}
 
-				
-						if (!m_pScene->pHeroObject[g_myid]->bHeroAttack)
+
+				if (!m_pScene->pHeroObject[g_myid]->bHeroAttack)
+				{
+					m_pPlayer->Move(dwDirection, m_pScene->pHeroObject[g_myid]->GetSpeed(), true);
+					m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
+					m_pScene->pHeroObject[g_myid]->Rotate(0, RotY_Hero, 0);
+				}
+
+
+
+				for (int i = 0; i < MAX_USER; ++i)
+				{
+					if (i != g_myid)
+					{
+						if (m_pScene->Rightcollision(m_pScene->pHeroObject[g_myid], m_pScene->pHeroObject[i]))
 						{
-							m_pPlayer->Move(dwDirection, m_pScene->pHeroObject[g_myid]->GetSpeed(), true);
+							m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x - m_pScene->pHeroObject[g_myid]->GetSpeed(), m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[g_myid]->GetSpeed() - 0.5f, true);
 							m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
-							m_pScene->pHeroObject[g_myid]->Rotate(0, RotY_Hero, 0);
+							break;
 						}
-				
-						
-
-						for (int i = 0; i < MAX_USER; ++i)
+						else if (m_pScene->Leftcollision(m_pScene->pHeroObject[g_myid], m_pScene->pHeroObject[i]))
 						{
-							if (i != g_myid)
-							{
-								if (m_pScene->Rightcollision(m_pScene->pHeroObject[g_myid], m_pScene->pHeroObject[i]))
-								{
-									m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x - m_pScene->pHeroObject[g_myid]->GetSpeed(), m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[g_myid]->GetSpeed() - 0.5f, true);
-									m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
-									break;
-								}
-								else if (m_pScene->Leftcollision(m_pScene->pHeroObject[g_myid], m_pScene->pHeroObject[i]))
-								{
-									m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x + m_pScene->pHeroObject[g_myid]->GetSpeed(), m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[g_myid]->GetSpeed() - 0.5f, true);
-									m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
-									break;
-								}
-								else if (m_pScene->Upcollision(m_pScene->pHeroObject[g_myid], m_pScene->pHeroObject[i]))
-								{
-									m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z + m_pScene->pHeroObject[g_myid]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[g_myid]->GetSpeed() - 0.5f, true);
-									m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
-									break;
-								}
-								else if (m_pScene->Downcollision(m_pScene->pHeroObject[g_myid], m_pScene->pHeroObject[i]))
-								{
-									m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z - m_pScene->pHeroObject[g_myid]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[g_myid]->GetSpeed() - 0.5f, true);
-									m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
-									break;
-								}
-							}
-							
+							m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x + m_pScene->pHeroObject[g_myid]->GetSpeed(), m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[g_myid]->GetSpeed() - 0.5f, true);
+							m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
+							break;
 						}
-						
+						else if (m_pScene->Upcollision(m_pScene->pHeroObject[g_myid], m_pScene->pHeroObject[i]))
+						{
+							m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z + m_pScene->pHeroObject[g_myid]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[g_myid]->GetSpeed() - 0.5f, true);
+							m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
+							break;
+						}
+						else if (m_pScene->Downcollision(m_pScene->pHeroObject[g_myid], m_pScene->pHeroObject[i]))
+						{
+							m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z - m_pScene->pHeroObject[g_myid]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[g_myid]->GetSpeed() - 0.5f, true);
+							m_pScene->pHeroObject[g_myid]->SetPosition(m_pPlayer->GetPosition());
+							break;
+						}
+					}
 
+				}
+				
 			}
 
 			
@@ -493,40 +471,40 @@ void CGameFramework::FrameAdvance()
 	
 	//m_pScene->SetHero();
 
-	if (activate)
+	if (LoadingScene)
 	{
-		if (LoadingScene)
-		{
-			LoadingScene = false;
-			m_pScene->BuildObjects(m_pd3dDevice);
 
 
 
-			ChangeScene = GAME;
+		LoadingScene = false;
+		m_pScene->BuildObjects(m_pd3dDevice);
+		
+		
 
-		}
+	
+
+		ChangeScene = GAME;
+		InvalidateRect(g_hWnd, NULL, false);
 	}
 
-		if (ChangeScene == GAME)
-		{
-			ProcessInput();
-			AnimateObjects();
+	if (ChangeScene == GAME)
+	{
 
-			float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
-			if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
-			if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-			if (m_pPlayer) m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
+		ProcessInput();
+		AnimateObjects();
 
-			if (m_pScene) m_pScene->Render(m_pd3dDeviceContext, m_pCamera);
-			//if (m_pPlayerShader) m_pPlayerShader->Render(m_pd3dDeviceContext, m_pCamera);
+		float fClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
+		if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
+		if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-			m_pDXGISwapChain->Present(0, 0);
-		}
+		if (m_pPlayer) m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
 
-	
+		if (m_pScene) m_pScene->Render(m_pd3dDeviceContext, m_pCamera);
+		//if (m_pPlayerShader) m_pPlayerShader->Render(m_pd3dDeviceContext, m_pCamera);
 
-	
+		m_pDXGISwapChain->Present(0, 0);
+	}
 	
 		
 		

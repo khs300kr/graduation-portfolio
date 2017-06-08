@@ -15,7 +15,6 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>LunaticProject</RootNamespace>
     <ProjectName>LunaticProject</ProjectName>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -89,6 +88,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Lunatic_Server\Lunatic_Server\protocol.h" />
     <ClInclude Include="Babarian.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="HeroManager.h" />
@@ -100,10 +100,13 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Healer.h" />
+    <ClInclude Include="Lobby.h" />
     <ClInclude Include="LunaticProject.h" />
+    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Room.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ServerGlobal.h" />
     <ClInclude Include="Shader.h" />
@@ -126,9 +129,12 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="Healer.cpp" />
+    <ClCompile Include="Lobby.cpp" />
     <ClCompile Include="LunaticProject.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Room.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ServerGlobal.cpp" />
     <ClCompile Include="Shader.cpp" />

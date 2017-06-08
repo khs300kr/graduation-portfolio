@@ -3,7 +3,6 @@
 // 들어 있는 포함 파일입니다.
 //
 #pragma once
-#pragma disable(warning:4996)
 
 #include "targetver.h"
 
@@ -14,8 +13,6 @@
 #include <WinSock2.h>
 #include "../../Lunatic_Server/Lunatic_Server/protocol.h"
 #pragma comment (lib, "ws2_32.lib")
-#pragma comment (lib, "imm32.lib") //한글 입력기
-
 
 #define	BUF_SIZE				1024
 #define	WM_SOCKET				WM_USER + 1

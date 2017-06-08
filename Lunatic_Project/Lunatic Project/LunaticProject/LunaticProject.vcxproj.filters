@@ -64,6 +64,9 @@
     <Filter Include="소스 파일\69.Server">
       <UniqueIdentifier>{57471f59-6bdb-46b9-a80d-af4f09a27985}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\00.Main\03.UI">
+      <UniqueIdentifier>{9a5ea463-a5d3-4a4f-bdcc-0185b443c934}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -141,6 +144,18 @@
     <ClInclude Include="HeroManager.h">
       <Filter>소스 파일\01.HeroManager</Filter>
     </ClInclude>
+    <ClInclude Include="Lobby.h">
+      <Filter>소스 파일\00.Main\03.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenu.h">
+      <Filter>소스 파일\00.Main\03.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>소스 파일\00.Main\03.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Lunatic_Server\Lunatic_Server\protocol.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -209,6 +224,15 @@
     <ClCompile Include="HeroManager.cpp">
       <Filter>소스 파일\01.HeroManager</Filter>
     </ClCompile>
+    <ClCompile Include="Lobby.cpp">
+      <Filter>소스 파일\00.Main\03.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenu.cpp">
+      <Filter>소스 파일\00.Main\03.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>소스 파일\00.Main\03.UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -238,19 +262,19 @@
     <Image Include="..\Data\Menu\createwindow.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="..\Data\Menu\loginwindow.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
     <Image Include="..\Data\Menu\quickjoin.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\room.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="..\Data\Menu\roombackground.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="..\Data\Menu\whojoin.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\room.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\loginwindow.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

@@ -70,7 +70,6 @@ public:
 
 	CHeroManager* pHeroObject[MAX_USER];
 
-
 	CGameObject *pHouse1Object[13];
 
 	
@@ -79,8 +78,6 @@ public:
 	CTexture *pHealerTexture;
 	CTexture *pSordManTexture;
 	CTexture *pBabarianTexture;
-	CTexture *pMagicianTexture;
-
 	CTexture *pTestTexture;
 
 	CMesh *pSordManMeshA;
@@ -90,20 +87,12 @@ public:
 	CMesh *pBabarianMeshA;
 	CMesh *pBabarianMeshB;
 
-	CMesh *pMagicianMeshA;
-	CMesh *pMagicianMeshB;
-
-	CCubeMeshDiffused* bound;
-
-
-
 	CMesh *pTestMesh;
 
 	CShader **m_ppShaders;
 
 	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	
 
 	void BuildObjects(ID3D11Device *pd3dDevice);
 	void ReleaseObjects();
@@ -119,8 +108,8 @@ public:
 	void UpdateShaderVariable(ID3D11DeviceContext *pd3dDeviceContext, LIGHTS *pLights);
 	void ReleaseShaderVariables();
 
-	bool GetCol() { return ColBox; }
-	
+	//bool GetCol() { return ColBox; }
+
 	bool Leftcollision(CHeroManager* Object1, CHeroManager* Object2);
 
 	bool Rightcollision(CHeroManager* Object1, CHeroManager* Object2);
