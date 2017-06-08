@@ -208,7 +208,7 @@ LRESULT CALLBACK EditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		{
 
 
-			//if (!RoomCreateWindow)
+			if (!gLobby.RoomCreateWindow)
 			{
 				SetFocus(g_hWnd);
 
@@ -388,13 +388,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			switch (HIWORD(wParam))
 			{
 			case EN_CHANGE:
-				//if (!RoomCreateWindow)
+				if (!gLobby.RoomCreateWindow)
 					GetWindowText(hChat, input, sizeof(input));
-				//else
-				//{
-				//	if (RoomCreateChat == RNAME)
-				//		GetWindowText(hChat, RoomName, sizeof(RoomName));
-				//}
+				else
+				{
+					if (gLobby.RoomCreateChat == gLobby.RNAME)
+						GetWindowText(hChat, gLobby.RoomName, sizeof(gLobby.RoomName));
+				}
 
 				break;
 			}
@@ -471,8 +471,55 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					gMainMenu.user_password[len] = '\0';
 				}
 			}
+			InvalidateRect(hWnd, NULL, false);
 		}
-		InvalidateRect(hWnd, NULL, false);
+
+		if (gGameFramework.ChangeScene == LOBBY)
+		{
+			if (gLobby.IsPassword && gLobby.RoomCreateChat == gLobby.RPASSWORD)
+			{
+				int len = strlen(gLobby.RoomPassword);
+
+
+				if (wParam == VK_BACK)
+				{
+					if (len > 0)
+					{
+						len--;
+						gLobby.RoomPassword[len] = '\0';
+					}
+
+				}
+
+				else if (len > MAX_PASSWORD_LEN - 2)
+				{
+					break;
+				}
+
+				else if (wParam == VK_RETURN)
+					break;
+				else if (wParam == VK_TAB)
+				{
+					if (gLobby.IsPassword)
+						gLobby.RoomCreateChat = gLobby.RNAME;
+					else
+						break;
+				}
+				else
+				{
+					gLobby.RoomPassword[len++] = wParam;
+					gLobby.RoomPassword[len] = '\0';
+				}
+
+			}
+			else if (gLobby.RoomCreateChat == gLobby.RNAME)
+			{
+				if (wParam == VK_TAB)
+					gLobby.RoomCreateChat = gLobby.RPASSWORD;
+			}
+
+			InvalidateRect(hWnd, NULL, false);
+		}
 		break;
 
 	case WM_LBUTTONDOWN:
@@ -528,6 +575,111 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 
 			}
+
+			InvalidateRect(hWnd, NULL, false);
+		}
+		else if (gGameFramework.ChangeScene == LOBBY)
+		{
+			if (!gLobby.RoomCreateWindow && MouseInbox(0, 0, 400, 140, mx, my)) // 방만들기
+			{
+				gLobby.RoomCreateWindow = true;
+				gLobby.RoomCreateChat = gLobby.RNOPE;
+
+				SetFocus(hWnd);
+				memset(input, '\0', sizeof(input));
+				SetWindowTextW(hChat, '\0');
+			}
+
+			else if (gLobby.RoomCreateWindow) // 방만들기 윈도우가 활성화 되어있을 때
+			{
+				if (!MouseInbox(240, 170, 784, 578, mx, my) || MouseInbox(536, 473, 696, 541, mx, my)) //취소를 누르거나 방만들기윈도우 밖을 누르면 방만들기윈도우를 제거한다.
+				{
+					if (gLobby.IsPassword)
+						gLobby.IsPassword = false;
+
+					gLobby.RoomCreateWindow = false; // 방만들기 윈도우 헤제
+
+					SetFocus(hWnd);
+					memset(gLobby.RoomName, '\0', sizeof(gLobby.RoomName));
+					SetWindowTextW(hChat, '\0');
+				}
+
+
+				else if (MouseInbox(325, 473, 484, 541, mx, my)) // 확인을 누르면 방에 입장
+				{
+
+					SetFocus(g_hWnd);
+
+					/*cs_packet_makeroom *my_packet = reinterpret_cast<cs_packet_makeroom *>(send_buffer);
+					my_packet->size = sizeof(cs_packet_makeroom);
+					send_wsabuf.len = sizeof(cs_packet_makeroom);
+					DWORD iobyte;
+					my_packet->type = CS_MAKE_ROOM;
+					wcscpy_s(my_packet->roomtitle, gLobby.RoomName);
+					if (gLobby.IsPassword)
+						strcpy_s(my_packet->password, gLobby.RoomPassword);
+					my_packet->mode = gLobby.GameMode;
+					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);*/
+
+					if (gLobby.IsPassword)
+						gLobby.IsPassword = false;
+
+					EnterRoom();
+
+				}
+
+				else if (gLobby.GameMode != DEATHMATCH && MouseInbox(378, 397, 548, 425, mx, my)) // 데스매치 클릭
+				{
+					gLobby.GameMode = DEATHMATCH;
+				}
+
+				else if (gLobby.GameMode != TERRITORY && MouseInbox(567, 397, 698, 425, mx, my)) // 점령전 클릭
+				{
+					gLobby.GameMode = TERRITORY;
+				}
+
+				else if (MouseInbox(370, 300, 720, 340, mx, my)) // 방제목 활성화
+				{
+					gLobby.RoomCreateChat = gLobby.RNAME;
+					SetFocus(hChat); // 방제목 활성화
+				}
+
+				else if (MouseInbox(370, 343, 720, 383, mx, my)) // 비밀번호 활성화
+				{
+					if (gLobby.IsPassword)
+					{
+						gLobby.RoomCreateChat = gLobby.RPASSWORD;
+						SetFocus(g_hWnd);
+					}
+
+				}
+
+				else if (MouseInbox(730, 343, 770, 383, mx, my)) // 비밀번호 체크박스 활성화
+				{
+					gLobby.IsPassword = !gLobby.IsPassword; // 비밀번호 체크박스 활성화
+
+					if (gLobby.IsPassword)
+					{
+						gLobby.RoomCreateChat = gLobby.RPASSWORD;
+						SetFocus(g_hWnd);
+					}
+
+					else
+						gLobby.RoomCreateChat = gLobby.RNOPE;
+
+
+				}
+				else //창을 누르면
+				{
+					gLobby.RoomCreateChat = gLobby.RNOPE;
+				}
+			}
+
+			if (!gLobby.RoomCreateWindow && MouseInbox(400, 0, 800, 140, mx, my)) // 빠른참여
+			{
+				cout << "빠른 참여" << endl;
+			}
+
 
 			InvalidateRect(hWnd, NULL, false);
 		}
@@ -954,4 +1106,10 @@ void ProcessPacket(char * ptr)
 	default:
 		printf("Unknown PACKET type [%d]\n", ptr[1]);
 	}
+}
+
+void EnterRoom()
+{
+	gGameFramework.ChangeScene = ROOM; // 여기서 방정보가 전부 입력이 되지 않으면 못넘어가게 구현해야함
+	vOutPut.clear();
 }

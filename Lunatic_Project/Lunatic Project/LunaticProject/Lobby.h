@@ -23,6 +23,7 @@ public:
 
 	HFONT hFont, hOldFont;
 	HPEN Pen, oldPen;
+	HBRUSH Brush, oldBrush;
 	// 로비
 	bool RoomCreateWindow = false; // 방만들기 윈도우 활성화
 
@@ -31,9 +32,11 @@ public:
 	WCHAR RoomName[MAX_ROOMTITLE_SIZE]{}; // 방만들기 방제목
 	char RoomPassword[MAX_PASSWORD_LEN]{}; // 방만들기 비밀번호
 
-
+	bool IsPassword = false;
+	int GameMode = DEATHMATCH;
 	
 	void Draw(HDC memdc, HDC memdc2);
 	void DrawBitmap(HDC memdc, HDC memdc2, HBITMAP bitmap, int x, int y, int sizeX, int sizeY);
+	
 };
 
