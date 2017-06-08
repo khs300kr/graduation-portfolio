@@ -76,6 +76,26 @@ void SendRoomInfo(int client, int object, int room_id)
 	Send_Packet(client, &packet);
 }
 
+void SendJoinRoom(int client, int object)
+{
+	sc_packet_join_room packet;
+	packet.size = sizeof(packet);
+	packet.type = SC_JOIN_ROOM;
+	packet.id = object;
+
+	Send_Packet(client, &packet);
+}
+
+void SendJoinFail(int client, int object,int roomstatus)
+{
+	sc_packet_join_fail packet;
+	packet.size = sizeof(packet);
+	roomstatus == FULL ? packet.type = FULL : packet.type == INGAME;
+	packet.id = object;
+
+	Send_Packet(client, &packet);
+}
+
 // 방
 void SendReadyPacket(int client, int object)
 {
@@ -267,6 +287,21 @@ void ProcessPacket(int id, unsigned char packet[])
 	}
 	case CS_JOIN_ROOM:
 	{
+		cs_packet_joinroom* my_packet = reinterpret_cast<cs_packet_joinroom*>(packet);
+		int room_id = my_packet->roomid;
+		
+		// 입장 fail 처리.
+		if (g_Room[room_id].m_RoomStatus == FULL) SendJoinFail(id, id, FULL); break;
+		if (g_Room[room_id].m_RoomStatus == INGAME) SendJoinFail(id, id, INGAME); break;
+
+		g_Clients[id].vl_lock.lock();	////////////////////LOCK
+		g_Room[room_id].m_RoomID_list.insert(id);
+		g_Clients[id].vl_lock.unlock();	////////////////////UNLOCK
+
+		if (g_Room[room_id].m_RoomID_list.size() == 8)
+			g_Room[room_id].m_RoomStatus = FULL;
+
+		SendJoinRoom(id, id);
 		break;
 	}
 

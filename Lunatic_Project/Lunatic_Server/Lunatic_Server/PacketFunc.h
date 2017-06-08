@@ -8,6 +8,8 @@ void SendLoginFailed(int client, int object);
 // ·Îºñ
 void SendChatPacket(int client, int object, WCHAR str[MAX_STR_SIZE]);
 void SendRoomInfo(int client, int object, int room_id);
+void SendJoinFail(int client, int object, int roomstatus);
+void SendJoinRoom(int client, int object);
 
 // ¹æ
 void SendReadyPacket(int client, int object);

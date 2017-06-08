@@ -38,10 +38,10 @@
 #define SC_POS           1
 #define SC_PUT_PLAYER    2
 #define SC_REMOVE_PLAYER 3
-#define SC_LOBBY_CHAT	 4
-#define SC_ROOM_CHAT	 5
-#define SC_GAME_CHAT	 6
-#define SC_ID			 7 
+#define SC_LOBBY_CHAT	 4	// 로비용 채팅
+#define SC_ROOM_CHAT	 5	// 룸용 채팅
+#define SC_GAME_CHAT	 6	// 게임 내 채팅
+#define SC_ID			 7
 #define SC_READY		 8
 #define SC_ALLREADY		 9
 #define SC_ATTACK		 10
@@ -49,8 +49,11 @@
 #define SC_SKILL_W		 12
 #define SC_SKILL_E		 13
 #define SC_SKILL_R		 14
-#define SC_LOGIN_FAILED  15
+#define SC_LOGIN_FAILED  15	
 #define SC_ROOM_INFO	 16
+#define SC_JOIN_ROOM	 17
+#define SC_JOIN_FAIL_FULL	 18	
+#define SC_JOIN_FAIL_INGAME	 19
 
 
 // Client Define
@@ -110,6 +113,12 @@ struct cs_packet_makeroom {
 	WCHAR roomtitle[MAX_ROOMTITLE_SIZE];
 	char password[MAX_ROOMPASSWORD_SIZE];
 	BYTE mode;
+};
+
+struct cs_packet_joinroom {
+	BYTE size;
+	BYTE type;
+	BYTE roomid;
 };
 
 // 방
@@ -189,6 +198,18 @@ struct sc_packet_roominfo {
 	char password[MAX_ROOMPASSWORD_SIZE];
 	BYTE mode;
 	BYTE roomstatus;
+};
+
+struct sc_packet_join_room {
+	BYTE size;
+	BYTE type;
+	WORD id;
+};
+
+struct sc_packet_join_fail {
+	BYTE size;
+	BYTE type;
+	WORD id;
 };
 
 // 방
