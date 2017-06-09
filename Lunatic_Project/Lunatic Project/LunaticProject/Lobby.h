@@ -39,7 +39,7 @@ public:
 
 	int clickcount = 0;
 	int firstclick = -1;
-	int whatclick = -1;
+	int whatclick;
 
 	//HBITMAP
 	HBITMAP bmp_chatwindow, bmp_create, bmp_quickjoin, bmp_whojoin, bmp_roombackground, bmp_createwindow, bmp_room;

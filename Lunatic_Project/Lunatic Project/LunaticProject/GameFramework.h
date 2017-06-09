@@ -82,5 +82,5 @@ public:
 	DWORD OtherDirection[MAX_USER];
 	int ChangeScene;
 	bool LoadingScene;
-	int SelectCount;
+	
 };

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SordMan.h"
+#include "SwordMan.h"
 #include "Healer.h"
 #include "Babarian.h"
 
@@ -27,7 +27,7 @@ public:
 	bool bHeroStun = false;
 	bool bHeroDie = false;
 
-	CSordMan* m_pSordMan;
+	CSwordMan* m_pSwordMan;
 	CHealer* m_pHealer;
 	CBabarian* m_pBabarian;
 

@@ -129,9 +129,6 @@
     <ClInclude Include="LunaticProject.h">
       <Filter>소스 파일\00.Main</Filter>
     </ClInclude>
-    <ClInclude Include="SordMan.h">
-      <Filter>소스 파일\01.HeroManager</Filter>
-    </ClInclude>
     <ClInclude Include="ServerGlobal.h">
       <Filter>소스 파일\69.Server</Filter>
     </ClInclude>
@@ -155,6 +152,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Lunatic_Server\Lunatic_Server\protocol.h">
       <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SwordMan.h">
+      <Filter>소스 파일\01.HeroManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -209,9 +209,6 @@
     <ClCompile Include="LunaticProject.cpp">
       <Filter>소스 파일\00.Main</Filter>
     </ClCompile>
-    <ClCompile Include="SordMan.cpp">
-      <Filter>소스 파일\01.HeroManager</Filter>
-    </ClCompile>
     <ClCompile Include="ServerGlobal.cpp">
       <Filter>소스 파일\69.Server</Filter>
     </ClCompile>
@@ -232,6 +229,9 @@
     </ClCompile>
     <ClCompile Include="Room.cpp">
       <Filter>소스 파일\00.Main\03.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="SwordMan.cpp">
+      <Filter>소스 파일\01.HeroManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

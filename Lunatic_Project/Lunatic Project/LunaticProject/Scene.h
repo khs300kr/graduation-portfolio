@@ -59,7 +59,7 @@ private:
 	DWORD dwDirection;
 
 
-	bool ColBox;
+
 public:
 	CScene();
 	~CScene();
@@ -71,6 +71,11 @@ public:
 	CHeroManager* pHeroObject[MAX_USER];
 
 	CGameObject *pHouse1Object[13];
+
+
+	int myGame_id = -1;
+	int MyRoomNumber = -1;
+	
 
 	
 	CMaterial *pNormalMaterial;

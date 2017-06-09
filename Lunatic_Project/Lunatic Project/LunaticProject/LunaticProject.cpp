@@ -160,7 +160,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	gGameFramework.Create(hInstance, g_hWnd);
 	gMainMenu.Create(hInstance);
 	gLobby.Create(hInstance);
-	//gMa.Create(hInstance);
+	gRoom.Create(hInstance);
 
 	ShowWindow(g_hWnd, nCmdShow);
 	UpdateWindow(g_hWnd);
@@ -240,7 +240,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	HPEN Pen, oldPen;
 	PAINTSTRUCT ps;
-	static HBITMAP bmp_background, bmp_loading;//, bmp_lobby;
+	static HBITMAP bmp_loading;//, bmp_lobby;
 	
 	static HWND hChat{};
 
@@ -249,7 +249,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 
-		bmp_background = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
+		
 		bmp_loading = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_LOADINGWINDOW));
 
 
@@ -279,22 +279,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			gMainMenu.Draw(memdc, memdc2);
 
 		else if (gGameFramework.ChangeScene == LOBBY)
-		{
 			gLobby.Draw(memdc, memdc2);
-			
-			
-		}
 
 		else if (gGameFramework.ChangeScene == ROOM)
 		{
-
-			SelectObject(memdc2, bmp_background);
-			BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
-
-			SelectObject(memdc, GetStockObject(NULL_BRUSH));
-			Rectangle(memdc, 229 + ((gGameFramework.SelectCount - 1) * 199), 130, 370 + ((gGameFramework.SelectCount - 1) * 199), 270);
-
+			gRoom.Draw(memdc, memdc2);
 		}
+
 
 		if (gGameFramework.LoadingScene)
 		{
@@ -397,6 +388,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			gLobby.L_ButtonDown(hWnd, hChat, mx, my);
 			InvalidateRect(hWnd, NULL, false);
 		}
+
+		else if (gGameFramework.ChangeScene == ROOM)
+		{
+			gRoom.L_ButtonDown(mx, my);
+			InvalidateRect(hWnd, NULL, false);
+		}
 	}
 
 
@@ -442,13 +439,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					send_wsabuf.len = sizeof(cs_packet_ready);
 					DWORD iobyte;
 					my_packet->type = CS_READY;
-					my_packet->hero_pick = gGameFramework.SelectCount;
+					my_packet->hero_pick = gRoom.HeroSelect;
+					my_packet->roomnumber = gGameFramework.m_pScene->MyRoomNumber;
 
 					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 					//
 				}
-				gGameFramework.m_pScene->pHeroObject[g_myid]->m_HeroSelect = gGameFramework.SelectCount;
-				gGameFramework.m_pScene->pHeroObject[g_myid]->m_Team = A_TEAM;
+				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->m_HeroSelect = gRoom.HeroSelect;
+				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->m_Team = A_TEAM;
 				cout << "캐릭터선택완료" << endl;
 
 			}
@@ -457,10 +455,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case VK_LEFT:
 			if (gGameFramework.ChangeScene == ROOM)
 			{
-				if (gGameFramework.SelectCount == 1)
-					gGameFramework.SelectCount = 3;
+				if (gRoom.HeroSelect == 1)
+					gRoom.HeroSelect = 3;
 				else
-					gGameFramework.SelectCount--;
+					gRoom.HeroSelect--;
 				InvalidateRect(g_hWnd, NULL, false);
 			}
 			break;
@@ -468,10 +466,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case VK_RIGHT:
 			if (gGameFramework.ChangeScene == ROOM)
 			{
-				if (gGameFramework.SelectCount == 3)
-					gGameFramework.SelectCount = 1;
+				if (gRoom.HeroSelect == 3)
+					gRoom.HeroSelect = 1;
 				else
-					gGameFramework.SelectCount++;
+					gRoom.HeroSelect++;
 				InvalidateRect(g_hWnd, NULL, false);
 				break;
 			}
@@ -594,8 +592,7 @@ void ProcessPacket(char * ptr)
 	case SC_LOGIN_FAILED:
 	{
 		sc_packet_loginfailed *my_packet = reinterpret_cast<sc_packet_loginfailed *>(ptr);
-		cout << my_packet->id << endl;
-
+		
 		gMainMenu.IsLogin = false;
 
 		InvalidateRect(g_hWnd, NULL, false);
@@ -644,11 +641,11 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_roominfo *my_packet = reinterpret_cast<sc_packet_roominfo *>(ptr);
 
-		wcscpy_s(gLobby.room[my_packet->room_id].roomtitle, my_packet->roomtitle);
-		gLobby.room[my_packet->room_id].roomstatus = my_packet->roomstatus;
-		gLobby.room[my_packet->room_id].mode = my_packet->mode;
-		gLobby.room[my_packet->room_id].playercount = my_packet->playercount;
-		gLobby.room[my_packet->room_id]._private = my_packet->m_private;
+		wcscpy_s(gLobby.room[my_packet->room_number].roomtitle, my_packet->roomtitle);
+		gLobby.room[my_packet->room_number].roomstatus = my_packet->roomstatus;
+		gLobby.room[my_packet->room_number].mode = my_packet->mode;
+		gLobby.room[my_packet->room_number].playercount = my_packet->playercount;
+		gLobby.room[my_packet->room_number]._private = my_packet->m_private;
 		
 		InvalidateRect(g_hWnd, NULL, false);
 
@@ -659,7 +656,10 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_join_room *my_packet = reinterpret_cast<sc_packet_join_room *>(ptr);
 
-		EnterRoom();
+		gGameFramework.m_pScene->MyRoomNumber = my_packet->roomnumber;
+		gGameFramework.m_pScene->myGame_id = my_packet->game_id;
+
+		EnterRoom(); // 방에 입장한다.
 
 		InvalidateRect(g_hWnd, NULL, false);
 		break;
@@ -696,6 +696,19 @@ void ProcessPacket(char * ptr)
 		break;
 	}
 
+	case SC_QUICK_JOIN:
+	{
+		sc_packet_quick_join *my_packet = reinterpret_cast<sc_packet_quick_join *>(ptr);
+
+		gGameFramework.m_pScene->MyRoomNumber = my_packet->roomnumber;
+		gGameFramework.m_pScene->myGame_id = my_packet->game_id;
+
+		EnterRoom(); // 방에 입장한다.
+
+		InvalidateRect(g_hWnd, NULL, false);
+		break;
+	}
+
 	
 		
 		
@@ -705,7 +718,7 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_ready *my_packet = reinterpret_cast<sc_packet_ready *>(ptr);
 		int id = my_packet->id;
-		if (id == g_myid) {
+		if (id == gGameFramework.m_pScene->myGame_id) {
 			cout << "SC_READY\n";
 			cout << "내 캐릭터 선택 : " << (int)my_packet->hero_pick << endl;
 			
@@ -729,11 +742,10 @@ void ProcessPacket(char * ptr)
 		send_wsabuf.len = sizeof(cs_packet_LoadingComplete);
 		DWORD iobyte;
 		my_packet->type = CS_LOADCOMPLETE;
-
+		my_packet->roomnumber = gGameFramework.m_pScene->MyRoomNumber;
 		WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 		//
 		cout << "올레디\n";
-		//gGameFramework.ChangeScene = GAME;
 
 		break;
 	}
@@ -744,9 +756,9 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_put_player *my_packet = reinterpret_cast<sc_packet_put_player *>(ptr);
 		int id = my_packet->id;
-		if (id == g_myid) {
+		if (id == gGameFramework.m_pScene->myGame_id) {
 			cout << "Hero Pos\n";
-			gGameFramework.m_pScene->pHeroObject[g_myid]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
+			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 			gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, my_packet->y, my_packet->z));
 		}
 		else {
@@ -761,15 +773,15 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_pos *my_packet = reinterpret_cast<sc_packet_pos *>(ptr);
 		int id = my_packet->id;
-		if (id == g_myid) {
+		if (id == gGameFramework.m_pScene->myGame_id) {
 			//cout << "Hero Move\n";
 			gGameFramework.dwDirection = my_packet->direction;
-			gGameFramework.m_pScene->pHeroObject[g_myid]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
+			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 
 			if (my_packet->direction != 0)
-				gGameFramework.m_pScene->m_ppShaders[g_myid+1]->GetFBXMesh->SetAnimation(ANI_RUN);
+				gGameFramework.m_pScene->m_ppShaders[gGameFramework.m_pScene->myGame_id + 1]->GetFBXMesh->SetAnimation(ANI_RUN);
 			else
-				gGameFramework.m_pScene->m_ppShaders[g_myid+1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				gGameFramework.m_pScene->m_ppShaders[gGameFramework.m_pScene->myGame_id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
 		}
 		else {
 			//cout << "Other Move\n";
@@ -794,7 +806,7 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_attack *my_packet = reinterpret_cast<sc_packet_attack *>(ptr);
 		int id = my_packet->id;
-		if (id == g_myid) {
+		if (id == gGameFramework.m_pScene->myGame_id) {
 			cout << "[My]SC_ATTACK_PACKET\n";
 		}
 		else {
@@ -809,7 +821,7 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_skillQ *my_packet = reinterpret_cast<sc_packet_skillQ *>(ptr);
 		int id = my_packet->id;
-		if (id == g_myid) {
+		if (id == gGameFramework.m_pScene->myGame_id) {
 			cout << "[My]SC_Q_PACKET\n";
 
 		}
@@ -825,7 +837,7 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_skillW *my_packet = reinterpret_cast<sc_packet_skillW *>(ptr);
 		int id = my_packet->id;
-		if (id == g_myid) {
+		if (id == gGameFramework.m_pScene->myGame_id) {
 			cout << "[My]SC_W_PACKET\n";
 		}
 		else {
@@ -840,7 +852,7 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_skillE *my_packet = reinterpret_cast<sc_packet_skillE *>(ptr);
 		int id = my_packet->id;
-		if (id == g_myid) {
+		if (id == gGameFramework.m_pScene->myGame_id) {
 			cout << "[My]SC_E_PACKET\n";
 		}
 		else {
@@ -855,7 +867,7 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_skillR *my_packet = reinterpret_cast<sc_packet_skillR *>(ptr);
 		int id = my_packet->id;
-		if (id == g_myid) {
+		if (id == gGameFramework.m_pScene->myGame_id) {
 			cout << "[My]SC_R_PACKET\n";
 		}
 		else {
@@ -872,7 +884,7 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_remove_player *my_packet = reinterpret_cast<sc_packet_remove_player *>(ptr);
 		int id = my_packet->id;
-		if (id != g_myid) {
+		if (id != gGameFramework.m_pScene->myGame_id) {
 			//gGameFramework.m_pScene->pOtherObject[id]->SetPosition(0.f,-3000.f,0.f);
 		}
 		break;

@@ -3,7 +3,7 @@
 #include "GameObject.h"
 
 
-class CSordMan
+class CSwordMan
 {
 private:
 
@@ -11,8 +11,8 @@ private:
 
 
 public:
-	CSordMan();
-	~CSordMan();
+	CSwordMan();
+	~CSwordMan();
 
 
 

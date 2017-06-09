@@ -15,10 +15,12 @@ CLobby::CLobby()
 		{
 			room[k].xPos = 30 + (j * 400); // 방의 X
 			room[k].yPos = 160 + (i * 120); // 방의 Y
-			room[k].roomstatus = Empty; // 방 정보
+			room[k].roomstatus = EMPTY; // 방 정보
 			room[k++].playercount = 0; // 유저가 몇명 방에 들어왔는지?
 		}
 	}
+
+	whatclick = -1;
 
 }
 
@@ -263,6 +265,7 @@ void CLobby::L_ButtonDown(HWND hWnd, HWND hChat, int mx, int my)
 			SetFocus(hWnd);
 			memset(input, '\0', sizeof(input));
 			SetWindowTextW(hChat, '\0');
+
 		}
 
 		else if (MouseInbox(400, 0, 800, 140, mx, my)) // 빠른참여
@@ -300,13 +303,14 @@ void CLobby::L_ButtonDown(HWND hWnd, HWND hChat, int mx, int my)
 
 				my_packet->type = CS_JOIN_ROOM;
 
-				my_packet->roomid = whatclick;
+				my_packet->roomnumber = whatclick;
 				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 
-				whatclick = -1;
+				//whatclick = -1;
 				clickcount = 0;
+				break;
 				//cout << "두번째 누른거" << ends << i;
-				cout << "보냄 " << endl;
+				
 				//break;
 				//}
 
@@ -357,6 +361,7 @@ void CLobby::L_ButtonDown(HWND hWnd, HWND hChat, int mx, int my)
 				strcpy_s(my_packet->password, RoomPassword);
 
 			my_packet->mode = GameMode;
+			
 
 			WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 
