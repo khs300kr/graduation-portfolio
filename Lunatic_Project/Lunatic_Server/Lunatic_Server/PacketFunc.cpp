@@ -86,11 +86,21 @@ void SendJoinRoom(int client, int object)
 	Send_Packet(client, &packet);
 }
 
+void SendQuickJoinFail(int client, int object)
+{
+	sc_packet_join_fail packet;
+	packet.size = sizeof(packet);
+	packet.type = SC_QUICK_JOIN_FAIL;
+	packet.id = object;
+
+	Send_Packet(client, &packet);
+}
+
 void SendJoinFail(int client, int object,int roomstatus)
 {
 	sc_packet_join_fail packet;
 	packet.size = sizeof(packet);
-	roomstatus == FULL ? packet.type = SC_JOIN_FAIL_FULL : packet.type == SC_JOIN_FAIL_INGAME;
+	roomstatus == FULL ? (packet.type == SC_JOIN_FAIL_FULL) : (roomstatus == INGAME ? packet.type = SC_JOIN_FAIL_INGAME : packet.type = SC_JOIN_FAIL_EMPTY);
 	packet.id = object;
 
 	Send_Packet(client, &packet);
@@ -305,6 +315,7 @@ void ProcessPacket(int id, unsigned char packet[])
 		// 입장 fail 처리.
 		if (g_Room[room_id].m_RoomStatus == FULL) { SendJoinFail(id, id, FULL); break; }
 		if (g_Room[room_id].m_RoomStatus == INGAME){ SendJoinFail(id, id, INGAME); break; }
+		if (g_Room[room_id].m_RoomStatus == ROOM_EMPTY) { SendJoinFail(id, id, ROOM_EMPTY); break; }
 
 		g_Clients[id].m_bLobby = false;
 		
@@ -322,6 +333,31 @@ void ProcessPacket(int id, unsigned char packet[])
 		break;
 	}
 
+	case CS_QUICK_JOIN:
+	{
+		int new_room{ -1 };
+		for (int i = 0; i < MAX_ROOM; ++i)
+		{
+			if (g_Room[i].m_RoomStatus == ROOM_JOINABLE) {
+				new_room = i; break;}
+		}
+		if (new_room == -1) { SendQuickJoinFail(id, id); break; }
+
+		g_Clients[id].m_bLobby = false;
+
+		g_Clients[id].vl_lock.lock();	////////////////////LOCK
+		g_Room[new_room].m_RoomID_list.insert(id);
+		g_Clients[id].vl_lock.unlock();	////////////////////UNLOCK
+		g_Clients[id].m_RoomID = g_Room[new_room].m_RoomID_list.size();
+
+		if (g_Room[new_room].m_RoomID_list.size() == 8)
+			g_Room[new_room].m_RoomStatus = FULL;
+
+		// RoomID 포함해야함.
+		SendJoinRoom(id, id);
+
+		break;
+	}
 	// 방
 	case CS_READY:
 	{

@@ -8,8 +8,8 @@
 #define MAX_STR_SIZE			50
 #define MAX_ROOMTITLE_SIZE		20
 #define MAX_ROOMPASSWORD_SIZE	10
-#define MAX_ID_LEN				15
-#define MAX_PASSWORD_LEN		15
+#define MAX_ID_LEN				10
+#define MAX_PASSWORD_LEN		10
 
 
 #define CS_KEYDOWN_UP				1
@@ -34,27 +34,29 @@
 #define CS_LOGIN					20
 #define CS_MAKE_ROOM				21
 #define CS_JOIN_ROOM				22
+#define CS_QUICK_JOIN				23
 
-#define SC_POS           1
-#define SC_PUT_PLAYER    2
-#define SC_REMOVE_PLAYER 3
-#define SC_LOBBY_CHAT	 4	// 로비용 채팅
-#define SC_ROOM_CHAT	 5	// 룸용 채팅
-#define SC_GAME_CHAT	 6	// 게임 내 채팅
-#define SC_ID			 7
-#define SC_READY		 8
-#define SC_ALLREADY		 9
-#define SC_ATTACK		 10
-#define SC_SKILL_Q		 11
-#define SC_SKILL_W		 12
-#define SC_SKILL_E		 13
-#define SC_SKILL_R		 14
-#define SC_LOGIN_FAILED  15	
-#define SC_ROOM_INFO	 16
-#define SC_JOIN_ROOM	 17
+#define SC_POS				 1
+#define SC_PUT_PLAYER		 2
+#define SC_REMOVE_PLAYER	 3
+#define SC_LOBBY_CHAT		 4	// 로비용 채팅
+#define SC_ROOM_CHAT		 5	// 룸용 채팅
+#define SC_GAME_CHAT		 6	// 게임 내 채팅
+#define SC_ID				 7
+#define SC_READY			 8
+#define SC_ALLREADY			 9
+#define SC_ATTACK			 10
+#define SC_SKILL_Q			 11
+#define SC_SKILL_W			 12
+#define SC_SKILL_E			 13
+#define SC_SKILL_R			 14
+#define SC_LOGIN_FAILED		 15	
+#define SC_ROOM_INFO		 16
+#define SC_JOIN_ROOM		 17
 #define SC_JOIN_FAIL_FULL	 18	
 #define SC_JOIN_FAIL_INGAME	 19
-
+#define SC_JOIN_FAIL_EMPTY	 20
+#define SC_QUICK_JOIN_FAIL	 21
 
 // Client Define
 // 키보드 입력
@@ -119,6 +121,11 @@ struct cs_packet_joinroom {
 	BYTE size;
 	BYTE type;
 	BYTE roomid;
+};
+
+struct cs_packet_quickjoin {
+	BYTE size;
+	BYTE type;
 };
 
 // 방
