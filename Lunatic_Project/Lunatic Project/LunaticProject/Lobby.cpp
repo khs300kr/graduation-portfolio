@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Lobby.h"
-#include "LunaticProject.h"
+
 
 
 CLobby::CLobby()
@@ -188,6 +188,16 @@ void CLobby::Draw(HDC memdc, HDC memdc2)
 	hFont = CreateFont(15, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
 	hOldFont = (HFONT)SelectObject(memdc, hFont);
 
+	//채팅창 출력
+	vector<wstring>::iterator iter = vOutPut.begin() + iFrontRange;
+	for (int i = 0; iter != vOutPut.end() + iLastRange; ++i, ++iter)
+	{
+		TextOut(memdc, 0, 518 + (i * 20), iter->c_str(), wcslen(iter->c_str()));
+	}
+
+	GetTextExtentPoint(memdc, input, wcslen(input), &size);
+	TextOut(memdc, 0, 740, input, wcslen(input));
+
 }
 
 void CLobby::DrawBitmap(HDC memdc, HDC memdc2, HBITMAP bitmap, int x, int y, int sizeX, int sizeY)
@@ -195,4 +205,236 @@ void CLobby::DrawBitmap(HDC memdc, HDC memdc2, HBITMAP bitmap, int x, int y, int
 	SelectObject(memdc2, bitmap);
 	BitBlt(memdc, x, y, sizeX, sizeY, memdc2, 0, 0, SRCCOPY);
 }
+
+void CLobby::Password_Input(WPARAM wParam)
+{
+	if (IsPassword && RoomCreateChat == RPASSWORD) // 방만들기 비밀번호 입력
+	{
+		int len = strlen(RoomPassword);
+
+		if (wParam == VK_BACK)
+		{
+			if (len > 0)
+			{
+				len--;
+				RoomPassword[len] = '\0';
+			}
+
+		}
+
+		else if (len > MAX_PASSWORD_LEN - 2)
+		{
+			return;
+		}
+
+		else if (wParam == VK_RETURN)
+			return;
+		else if (wParam == VK_TAB)
+		{
+			if (IsPassword)
+				RoomCreateChat = RNAME;
+			else
+				return;
+		}
+		else
+		{
+			RoomPassword[len++] = wParam;
+			RoomPassword[len] = '\0';
+		}
+
+	}
+	else if (RoomCreateChat == RNAME)
+	{
+		if (wParam == VK_TAB)
+			RoomCreateChat = RPASSWORD;
+	}
+
+}
+
+void CLobby::L_ButtonDown(HWND hWnd, HWND hChat, int mx, int my)
+{
+	if (!RoomCreateWindow) // 방만들기
+	{
+		if (MouseInbox(0, 0, 400, 140, mx, my))
+		{
+			RoomCreateWindow = true;
+			RoomCreateChat = RNOPE;
+
+			SetFocus(hWnd);
+			memset(input, '\0', sizeof(input));
+			SetWindowTextW(hChat, '\0');
+		}
+
+		else if (MouseInbox(400, 0, 800, 140, mx, my)) // 빠른참여
+		{
+
+			cs_packet_quickjoin *my_packet = reinterpret_cast<cs_packet_quickjoin *>(send_buffer);
+			my_packet->size = sizeof(cs_packet_quickjoin);
+			send_wsabuf.len = sizeof(cs_packet_quickjoin);
+			DWORD iobyte;
+			my_packet->type = CS_QUICK_JOIN;
+
+			WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+		}
+
+
+		for (int i = 0; i < 6; ++i)
+		{
+			if (MouseInbox(room[i].xPos, room[i].yPos, room[i].xPos + 335, room[i].yPos + 102, mx, my))
+			{
+				if (clickcount == 0) // 처음누르면 박스를 그림
+				{
+					clickcount++;
+					whatclick = i;
+					//cout << "첫번째 누른거" << ends << i;
+					//break;
+				}
+				//else if (gLobby.clickcount == 1 && gLobby.whatclick == i) // 두번누르면 ( 이전에 눌렀던거랑 같으면)
+				//{
+
+
+				cs_packet_joinroom *my_packet = reinterpret_cast<cs_packet_joinroom *>(send_buffer);
+				my_packet->size = sizeof(cs_packet_joinroom);
+				send_wsabuf.len = sizeof(cs_packet_joinroom);
+				DWORD iobyte;
+
+				my_packet->type = CS_JOIN_ROOM;
+
+				my_packet->roomid = whatclick;
+				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+
+				whatclick = -1;
+				clickcount = 0;
+				//cout << "두번째 누른거" << ends << i;
+				cout << "보냄 " << endl;
+				//break;
+				//}
+
+			}
+			//else
+			//{
+			//	if (gLobby.clickcount == 1)
+			//	{
+			//		gLobby.whatclick = -1;
+			//		gLobby.clickcount = 0;
+			//		cout << "취소" << endl;
+			//		break;
+			//	}
+			//}
+		}
+
+	}
+
+	else if (RoomCreateWindow) // 방만들기 윈도우가 활성화 되어있을 때
+	{
+		if (!MouseInbox(240, 170, 784, 578, mx, my) || MouseInbox(536, 473, 696, 541, mx, my)) //취소를 누르거나 방만들기윈도우 밖을 누르면 방만들기윈도우를 제거한다.
+		{
+			if (IsPassword)
+				IsPassword = false;
+
+			RoomCreateWindow = false; // 방만들기 윈도우 헤제
+
+			SetFocus(hWnd);
+			memset(RoomName, '\0', sizeof(RoomName));
+			SetWindowTextW(hChat, '\0');
+		}
+
+
+		else if (MouseInbox(325, 473, 484, 541, mx, my)) // 확인을 누르면 방에 입장
+		{
+
+			SetFocus(g_hWnd);
+
+			cs_packet_makeroom *my_packet = reinterpret_cast<cs_packet_makeroom *>(send_buffer);
+			my_packet->size = sizeof(cs_packet_makeroom);
+			send_wsabuf.len = sizeof(cs_packet_makeroom);
+			DWORD iobyte;
+
+			my_packet->type = CS_MAKE_ROOM;
+
+			wcscpy_s(my_packet->roomtitle, RoomName);
+			if (IsPassword)
+				strcpy_s(my_packet->password, RoomPassword);
+
+			my_packet->mode = GameMode;
+
+			WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+
+			if (IsPassword)
+				IsPassword = false;
+
+			EnterRoom();
+
+		}
+
+		else if (GameMode != DEATHMATCH && MouseInbox(378, 397, 548, 425, mx, my)) // 데스매치 클릭
+		{
+			GameMode = DEATHMATCH;
+		}
+
+		else if (GameMode != TERRITORY && MouseInbox(567, 397, 698, 425, mx, my)) // 점령전 클릭
+		{
+			GameMode = TERRITORY;
+		}
+
+		else if (MouseInbox(370, 300, 720, 340, mx, my)) // 방제목 활성화
+		{
+			RoomCreateChat = RNAME;
+			SetFocus(hChat); // 방제목 활성화
+		}
+
+		else if (MouseInbox(370, 343, 720, 383, mx, my)) // 비밀번호 활성화
+		{
+			if (IsPassword)
+			{
+				RoomCreateChat = RPASSWORD;
+				SetFocus(hWnd);
+			}
+
+		}
+
+		else if (MouseInbox(730, 343, 770, 383, mx, my)) // 비밀번호 체크박스 활성화
+		{
+			IsPassword = !IsPassword; // 비밀번호 체크박스 활성화
+
+			if (IsPassword)
+			{
+				RoomCreateChat = RPASSWORD;
+				SetFocus(hWnd);
+			}
+
+			else
+				RoomCreateChat = RNOPE;
+
+
+		}
+		else //창을 누르면
+		{
+			RoomCreateChat = RNOPE;
+		}
+	}
+}
+
+void CLobby::MouseWheel(WPARAM wParam)
+{
+	if ((short)HIWORD(wParam) < 0)
+	{
+		if (vOutPut.size() - 11 > iFrontRange && iLine >= 11)
+		{
+			++iFrontRange;
+			++iLastRange;
+			bScrool = true;
+		}
+	}
+	else
+	{
+		if (iFrontRange > 0)
+		{
+			--iFrontRange;
+			--iLastRange;
+			bScrool = true;
+		}
+	}
+}
+
 

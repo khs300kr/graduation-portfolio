@@ -17,6 +17,11 @@
 #define	BUF_SIZE				1024
 #define	WM_SOCKET				WM_USER + 1
 
+#define MAX_LOADSTRING 100
+#define CHAT_LENGTH 50
+#define ID_EDIT 100
+#define MAX_CHAT_LINE 30
+
 #include "ServerGlobal.h"
 
 // Windows 헤더 파일:

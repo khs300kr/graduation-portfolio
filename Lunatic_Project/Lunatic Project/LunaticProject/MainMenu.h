@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include "LunaticProject.h"
 
 class CMainMenu
 {
@@ -31,5 +31,9 @@ public:
 
 	void Draw(HDC memdc, HDC memdc2);
 	void DrawBitmap(HDC memdc, HDC memdc2, HBITMAP bitmap, int x, int y, int sizeX, int sizeY);
+
+	void ID_PASSWORD_Input(WPARAM wParam);
+
+	void L_ButtonDown(HWND hChat, int mx, int my);
 };
 

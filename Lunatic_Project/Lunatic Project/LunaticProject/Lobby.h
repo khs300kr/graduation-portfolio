@@ -1,5 +1,7 @@
 #pragma once
 
+#include "LunaticProject.h"
+
 typedef struct Room
 {
 	int xPos; // 방 xPos
@@ -11,11 +13,25 @@ typedef struct Room
 	int _private; // 암호가 있는지?
 }Room;
 
+
 class CLobby
 {
 public:
 	CLobby();
 	~CLobby();
+
+	
+	WCHAR output[MAX_CHAT_LINE][CHAT_LENGTH];
+	WCHAR input[MAX_STR_SIZE];
+	wstring chat_id;
+	vector<wstring> vOutPut;
+	SIZE size{};
+
+	int iLine = 0;
+	int iFrontRange = 0;
+	int iLastRange = 0;
+	bool bScrool = false;
+
 
 	Room room[6];
 
@@ -44,6 +60,10 @@ public:
 	
 	void Draw(HDC memdc, HDC memdc2);
 	void DrawBitmap(HDC memdc, HDC memdc2, HBITMAP bitmap, int x, int y, int sizeX, int sizeY);
+	void Password_Input(WPARAM wParam);
+
+	void L_ButtonDown(HWND hWnd, HWND hChat, int mx, int my);
+	void MouseWheel(WPARAM wParam);
 	
 };
 
