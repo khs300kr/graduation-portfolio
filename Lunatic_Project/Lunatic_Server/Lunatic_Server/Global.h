@@ -52,6 +52,7 @@ struct ROOM
 	BYTE  m_RoomStatus;
 	unordered_set<int> m_GameID_list;// ÀÎ¿ø(BYTE)
 	BYTE m_readycount;
+	BYTE m_loadcount;
 };
 // Server
 extern HANDLE g_Hiocp;

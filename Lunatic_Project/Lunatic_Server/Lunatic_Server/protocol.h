@@ -4,7 +4,9 @@
 #define MY_SERVER_PORT  4000
 #define MAX_USER 10
 #define MAX_ROOM 6
+#define MAX_GAMER 8
 
+// String Size
 #define MAX_STR_SIZE			50
 #define MAX_ROOMTITLE_SIZE		20
 #define MAX_ROOMPASSWORD_SIZE	10
@@ -58,6 +60,7 @@
 #define SC_JOIN_FAIL_EMPTY	 20
 #define SC_QUICK_JOIN_FAIL	 21
 #define SC_QUICK_JOIN		 22
+#define SC_ENTER_NEWPLAYER	 23
 
 // Client Define
 // 키보드 입력
@@ -133,6 +136,13 @@ struct cs_packet_quickjoin {
 	BYTE type;
 };
 
+struct cs_packet_lobbychat {
+	BYTE size;
+	BYTE type;
+	WCHAR message[MAX_STR_SIZE];
+	char id[MAX_ID_LEN];
+};
+
 // 방
 struct cs_packet_ready {
 	BYTE size;
@@ -147,11 +157,12 @@ struct cs_packet_LoadingComplete {
 	BYTE roomnumber;
 };
 
-struct cs_packet_chat {
+struct cs_packet_roomchat {
 	BYTE size;
 	BYTE type;
 	WCHAR message[MAX_STR_SIZE];
 	char id[MAX_ID_LEN];
+	BYTE roomnumber;
 };
 
 // 인게임
@@ -223,6 +234,12 @@ struct sc_packet_join_room {
 	BYTE type;
 	BYTE roomnumber;
 	BYTE game_id;	// Game_id
+	// RoomInfo
+	WCHAR roomtitle[MAX_ROOMTITLE_SIZE];
+	BYTE mode;
+	BYTE roomstatus;
+	BYTE playercount;
+	bool m_private;
 };
 
 struct sc_packet_quick_join {
@@ -230,6 +247,12 @@ struct sc_packet_quick_join {
 	BYTE type;
 	BYTE roomnumber;
 	BYTE game_id;	// Game_id
+	// RoomInfo
+	WCHAR roomtitle[MAX_ROOMTITLE_SIZE];
+	BYTE mode;
+	BYTE roomstatus;
+	BYTE playercount;
+	bool m_private;
 };
 
 struct sc_packet_join_fail {
@@ -250,6 +273,11 @@ struct sc_packet_allready
 	BYTE size;
 	BYTE type;
 	WORD id;
+};
+
+struct sc_packet_enter_newplayer {
+	BYTE size;
+	BYTE type;
 };
 
 // 인게임

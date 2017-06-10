@@ -6,7 +6,7 @@ void SendIDPlayer(int client, int object);
 void SendLoginFailed(int client, int object);
 void SendRemovePlayerPacket(int client, int object);
 // 로비
-void SendChatPacket(int client, int object, WCHAR str[MAX_STR_SIZE]);
+void SendChatLobby(int client, int object, WCHAR str[MAX_STR_SIZE]);
 void SendRoomInfo(int client, int object, int room_number);
 void SendJoinFail(int client, int object, int roomstatus);
 void SendJoinRoom(int client, int object, int game_id, int roomnumber);
@@ -14,10 +14,13 @@ void SendQuickJoin(int client, int object, int game_id, int roomnumber);
 void SendQuickJoinFail(int client, int object);
 
 // 방
+void SendChatRoom(int client, int object, WCHAR str[MAX_STR_SIZE]);
 void SendReadyPacket(int client, int object);
 void SendAllReadyPacket(int client, int object);
+void SendEnterNewPlayer(int client, int object);
 
 // 인게임
+void SendChatGame(int client, int object, WCHAR str[MAX_STR_SIZE]);
 void ProcessPacket(int id, unsigned char packet[]);
 // (Move)
 void SendPutPlayerPacket(int client, int object);
