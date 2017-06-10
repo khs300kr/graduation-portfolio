@@ -22,6 +22,7 @@
 #define ID_EDIT 100
 #define MAX_CHAT_LINE 30
 
+
 #include "ServerGlobal.h"
 
 // Windows 헤더 파일:

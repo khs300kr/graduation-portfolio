@@ -394,6 +394,7 @@ void CLobby::L_ButtonDown(HWND hWnd, HWND hChat, int mx, int my)
 		{
 			if (IsPassword)
 			{
+
 				RoomCreateChat = RPASSWORD;
 				SetFocus(hWnd);
 			}
@@ -402,6 +403,7 @@ void CLobby::L_ButtonDown(HWND hWnd, HWND hChat, int mx, int my)
 
 		else if (MouseInbox(730, 343, 770, 383, mx, my)) // 비밀번호 체크박스 활성화
 		{
+			memset(RoomPassword, 0, sizeof(RoomPassword));
 			IsPassword = !IsPassword; // 비밀번호 체크박스 활성화
 
 			if (IsPassword)

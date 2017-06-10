@@ -3,21 +3,17 @@
 
 #include "stdafx.h"
 #include "LunaticProject.h"
-#include "GameFramework.h"
 
-
+CGameFramework gGameFramework;
+CLobby gLobby;
+CMainMenu gMainMenu;
+CRoom gRoom;
 
 // 전역 변수:
 HINSTANCE hInst;								// 현재 인스턴스입니다.
 
 TCHAR szTitle[MAX_LOADSTRING];					// 제목 표시줄 텍스트입니다.
 TCHAR szWindowClass[MAX_LOADSTRING];			// 기본 창 클래스 이름입니다.
-
-CGameFramework gGameFramework;
-
-CLobby gLobby;
-CMainMenu gMainMenu;
-CRoom gRoom;
 
 WNDPROC wpOldEditProc;
 
@@ -68,7 +64,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	ServerAddr.sin_port = htons(MY_SERVER_PORT);
 
 #ifdef _DEBUG
-	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	ServerAddr.sin_addr.s_addr = inet_addr("192.168.180.34");
 #else
 	char ipAddr[20];
 	cout << "접속할 서버의 IP주소를 입력하세요 : ";
@@ -428,58 +424,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				SetFocus(hChat);
 				InvalidateRect(g_hWnd, NULL, false);
-				//gGameFramework.ChangeScene = ROOM;
-			}
-			else if (gGameFramework.ChangeScene == ROOM)
-			{
-
-				{
-					// server send (Ready)
-					cs_packet_ready *my_packet = reinterpret_cast<cs_packet_ready *>(send_buffer);
-					my_packet->size = sizeof(cs_packet_ready);
-					send_wsabuf.len = sizeof(cs_packet_ready);
-					DWORD iobyte;
-					my_packet->type = CS_READY;
-					my_packet->hero_pick = gRoom.HeroSelect;
-					my_packet->roomnumber = gGameFramework.m_pScene->MyRoomNumber;
-
-					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
-					//
-				}
-				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->m_HeroSelect = gRoom.HeroSelect;
-				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->m_Team = A_TEAM;
-				cout << "캐릭터선택완료" << endl;
-
 			}
 			break;
-
-		case VK_LEFT:
-			if (gGameFramework.ChangeScene == ROOM)
-			{
-				if (gRoom.HeroSelect == 1)
-					gRoom.HeroSelect = 3;
-				else
-					gRoom.HeroSelect--;
-				InvalidateRect(g_hWnd, NULL, false);
-			}
-			break;
-
-		case VK_RIGHT:
-			if (gGameFramework.ChangeScene == ROOM)
-			{
-				if (gRoom.HeroSelect == 3)
-					gRoom.HeroSelect = 1;
-				else
-					gRoom.HeroSelect++;
-				InvalidateRect(g_hWnd, NULL, false);
-				break;
-			}
-
 		}
 
 	case WM_LBUTTONUP:
 	case WM_RBUTTONDOWN:
 	case WM_RBUTTONUP:
+		break;
 	case WM_MOUSEMOVE:
 		break;
 	case WM_KEYUP:
@@ -578,12 +530,7 @@ void ProcessPacket(char * ptr)
 	case SC_ID:
 	{
 		sc_packet_id *my_packet = reinterpret_cast<sc_packet_id *>(ptr);
-		int id = my_packet->id;
-		if (first_time) {
-			first_time = false;
-			g_myid = id;
-		}
-		cout << "내아디 : " << g_myid << endl;
+
 		gMainMenu.IsLogin = true;
 		gGameFramework.ChangeScene = LOBBY;
 		InvalidateRect(g_hWnd, NULL, false);
@@ -604,8 +551,6 @@ void ProcessPacket(char * ptr)
 	case SC_LOBBY_CHAT:
 	{
 		sc_packet_chat *my_packet = reinterpret_cast<sc_packet_chat *>(ptr);
-		int id = my_packet->id;
-		
 		
 		/*chat_id = L"client[" + to_wstring(id);
 		chat_id += L"]: ";*/
@@ -656,9 +601,10 @@ void ProcessPacket(char * ptr)
 	case SC_JOIN_ROOM:
 	{
 		sc_packet_join_room *my_packet = reinterpret_cast<sc_packet_join_room *>(ptr);
-
+		
 		gGameFramework.m_pScene->MyRoomNumber = my_packet->roomnumber;
 		gGameFramework.m_pScene->myGame_id = my_packet->game_id;
+
 
 		EnterRoom(); // 방에 입장한다.
 
@@ -703,6 +649,7 @@ void ProcessPacket(char * ptr)
 
 		gGameFramework.m_pScene->MyRoomNumber = my_packet->roomnumber;
 		gGameFramework.m_pScene->myGame_id = my_packet->game_id;
+		
 
 		EnterRoom(); // 방에 입장한다.
 
@@ -719,33 +666,40 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_ready *my_packet = reinterpret_cast<sc_packet_ready *>(ptr);
 		int id = my_packet->id;
-		if (id == gGameFramework.m_pScene->myGame_id) {
+		if (id == gGameFramework.m_pScene->myGame_id) 
+		{
 			cout << "SC_READY\n";
-			cout << "내 캐릭터 선택 : " << (int)my_packet->hero_pick << endl;
-			
-			//gGameFramework.m_pScene->pHeroObject[g_myid]->m_HeroSelect =  SC_BABARIAN - 10;
+			cout << "내 캐릭터 선택 : " << gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect << endl;
+		}
+		else 
+		{
+			gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect = gRoom.RoomUI[id].HeroSelect = my_packet->hero_pick; // 캐릭터 선택
 
+			if(id & 1)
+				gGameFramework.m_pScene->pHeroObject[id]->m_Team = B_TEAM; // 팀 선택
+			else
+				gGameFramework.m_pScene->pHeroObject[id]->m_Team = A_TEAM;
+
+			gRoom.RoomUI[id].Team = gGameFramework.m_pScene->pHeroObject[id]->m_Team; // 룸에 팀 전달
+
+			gRoom.RoomUI[id].IsReady = true; // 내꺼
+			
 		}
-		else {
-			gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect = my_packet->hero_pick;
-			gGameFramework.m_pScene->pHeroObject[id]->m_Team = A_TEAM;
-		}
+		InvalidateRect(g_hWnd, NULL, false);
 		break;
 	}
+
 	case SC_ALLREADY:
 	{
+		InvalidateRect(g_hWnd, NULL, false);
+
+
 		Sleep(3000);
+
+
 		gGameFramework.LoadingScene = true;
 		InvalidateRect(g_hWnd, NULL, false);
-		// server send (loading complete)
-		cs_packet_LoadingComplete *my_packet = reinterpret_cast<cs_packet_LoadingComplete *>(send_buffer);
-		my_packet->size = sizeof(cs_packet_LoadingComplete);
-		send_wsabuf.len = sizeof(cs_packet_LoadingComplete);
-		DWORD iobyte;
-		my_packet->type = CS_LOADCOMPLETE;
-		my_packet->roomnumber = gGameFramework.m_pScene->MyRoomNumber;
-		WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
-		//
+
 		cout << "올레디\n";
 
 		break;
@@ -895,8 +849,50 @@ void ProcessPacket(char * ptr)
 	}
 }
 
+void SendReadyButton()
+{
+
+	//for (int i = 0; i < MAX_ROOM; ++i)
+	//{
+	//	if (i != GetMyGame_id())
+	//	{
+	//		if (gRoom.RoomUI[GetMyGame_id()].HeroSelect == gRoom.RoomUI[i].HeroSelect && gRoom.RoomUI[GetMyGame_id()].Team == gRoom.RoomUI[i].Team)
+	//		{
+	//			return;
+	//		}
+	//	}
+	//	
+	//}
+	
+	
+	{
+		// server send (Ready)
+		cs_packet_ready *my_packet = reinterpret_cast<cs_packet_ready *>(send_buffer);
+		my_packet->size = sizeof(cs_packet_ready);
+		send_wsabuf.len = sizeof(cs_packet_ready);
+		DWORD iobyte;
+		my_packet->type = CS_READY;
+		my_packet->hero_pick = gRoom.RoomUI[GetMyGame_id()].HeroSelect;
+		my_packet->roomnumber = gGameFramework.m_pScene->MyRoomNumber;
+		
+
+		WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+		//
+	}
+
+	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->m_HeroSelect = gRoom.RoomUI[GetMyGame_id()].HeroSelect;
+	cout << "캐릭터선택완료" << endl;
+}
+
+int GetMyGame_id()
+{
+	return gGameFramework.m_pScene->myGame_id;
+}
+
 void EnterRoom()
 {
 	gGameFramework.ChangeScene = ROOM; // 여기서 방정보가 전부 입력이 되지 않으면 못넘어가게 구현해야함
+
 	gLobby.vOutPut.clear();
 }
+

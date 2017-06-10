@@ -28,7 +28,7 @@ CGameFramework::CGameFramework()
 
 	
 
-	for (int i = 0; i < MAX_USER; ++i)
+	for (int i = 0; i < MAX_ROOM; ++i)
 		OtherDirection[i] = 0;
 
 	LoadingScene = false;
@@ -373,7 +373,7 @@ void CGameFramework::ProcessInput()
 
 
 
-				for (int i = 0; i < MAX_USER; ++i)
+				for (int i = 0; i < MAX_ROOM; ++i)
 				{
 					if (i != m_pScene->myGame_id)
 					{
@@ -410,9 +410,9 @@ void CGameFramework::ProcessInput()
 			
 		}
 
-		float RotY[MAX_USER] = {};
+		float RotY[MAX_ROOM] = {};
 
-		for (int i = 0; i < MAX_USER; ++i)
+		for (int i = 0; i < MAX_ROOM; ++i)
 		{
 			if (OtherDirection[i] && ChangeScene == GAME && i != m_pScene->myGame_id)
 			{
@@ -466,23 +466,25 @@ void CGameFramework::AnimateObjects()
 void CGameFramework::FrameAdvance()
 {
 	m_GameTimer.Tick(60);
-	
-	
-	//m_pScene->SetHero();
 
 	if (LoadingScene)
 	{
 
-
-
 		LoadingScene = false;
 		m_pScene->BuildObjects(m_pd3dDevice);
-		
-		
-
-	
 
 		ChangeScene = GAME;
+		
+		// server send (loading complete)
+		cs_packet_LoadingComplete *my_packet = reinterpret_cast<cs_packet_LoadingComplete *>(send_buffer);
+		my_packet->size = sizeof(cs_packet_LoadingComplete);
+		send_wsabuf.len = sizeof(cs_packet_LoadingComplete);
+		DWORD iobyte;
+		my_packet->type = CS_LOADCOMPLETE;
+		my_packet->roomnumber = m_pScene->MyRoomNumber;
+		WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+		//
+
 		InvalidateRect(g_hWnd, NULL, false);
 	}
 

@@ -2,6 +2,15 @@
 
 #include "LunaticProject.h"
 
+typedef struct RoomUI
+{
+	int HeroSelect; // 캐릭터를 고른 것.
+	bool IsReady; // 레디했는지?
+	int xPos;
+	int yPos;
+	int Team;
+}RoomUI;
+
 class CRoom
 {
 public:
@@ -11,7 +20,7 @@ public:
 
 	// HBITMAP
 	HPEN Pen, oldPen;
-	HBITMAP bmp_background;
+	HBITMAP bmp_background, bmp_Ready;
 
 	HBITMAP bmp_Babarian_Image, bmp_Babarian_Select;
 	HBITMAP bmp_Knight_Image, bmp_Knight_Select;
@@ -21,7 +30,7 @@ public:
 	HBITMAP bmp_Healer_Image, bmp_Healer_Select;
 	HBITMAP bmp_Witch_Image, bmp_Witch_Select;
 	
-	int HeroSelect = EMPTY;
+	RoomUI RoomUI[MAX_ROOM];
 	
 
 	void Create(HINSTANCE hInst);
