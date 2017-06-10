@@ -61,27 +61,41 @@ void SendChatPacket(int client, int object, WCHAR str[MAX_STR_SIZE])
 	Send_Packet(client, &packet);
 }
 
-void SendRoomInfo(int client, int object, int room_id)
+void SendRoomInfo(int client, int object, int room_number)
 {
 	sc_packet_roominfo packet;
 	packet.size = sizeof(packet);
 	packet.type = SC_ROOM_INFO;
-	wcscpy_s(packet.roomtitle, g_Room[room_id].m_title);
-	packet.mode = g_Room[room_id].m_mode;
-	packet.roomstatus = g_Room[room_id].m_RoomStatus;
-	packet.room_id = room_id;
-	packet.playercount = g_Room[room_id].m_RoomID_list.size();
-	packet.m_private = g_Room[room_id].m_private;
+	wcscpy_s(packet.roomtitle, g_Room[room_number].m_title);
+	packet.mode = g_Room[room_number].m_mode;
+	packet.roomstatus = g_Room[room_number].m_RoomStatus;
+	packet.room_number = room_number;
+	packet.playercount = g_Room[room_number].m_GameID_list.size();
+	packet.m_private = g_Room[room_number].m_private;
 	
 	Send_Packet(client, &packet);
 }
 
-void SendJoinRoom(int client, int object)
+void SendJoinRoom(int client, int object, int game_id, int roomnumber)
 {
 	sc_packet_join_room packet;
 	packet.size = sizeof(packet);
 	packet.type = SC_JOIN_ROOM;
 	packet.id = object;
+	packet.roomnumber = roomnumber;
+	packet.game_id = game_id;
+
+	Send_Packet(client, &packet);
+}
+
+void SendQuickJoin(int client, int object, int game_id, int roomnumber)
+{
+	sc_packet_quick_join packet;
+	packet.size = sizeof(packet);
+	packet.type = SC_QUICK_JOIN;
+	packet.id = object;
+	packet.roomnumber = roomnumber;
+	packet.game_id = game_id;
 
 	Send_Packet(client, &packet);
 }
@@ -112,7 +126,7 @@ void SendReadyPacket(int client, int object)
 	sc_packet_ready packet;
 	packet.size = sizeof(packet);
 	packet.type = SC_READY;
-	packet.id = object;
+	packet.id = g_Clients[object].m_GameID;
 	packet.hero_pick = g_Clients[object].m_HeroPick;
 
 	Send_Packet(client, &packet);
@@ -122,7 +136,7 @@ void SendAllReadyPacket(int client, int object)
 	sc_packet_allready packet;
 	packet.size = sizeof(packet);
 	packet.type = SC_ALLREADY;
-	packet.id = object;
+	packet.id = g_Clients[object].m_GameID;
 
 	Send_Packet(client, &packet);
 }
@@ -131,7 +145,7 @@ void SendAllReadyPacket(int client, int object)
 void SendPutPlayerPacket(int client, int object)
 {
 	sc_packet_put_player packet;
-	packet.id = object;
+	packet.id = g_Clients[object].m_GameID;
 	packet.size = sizeof(packet);
 	packet.type = SC_PUT_PLAYER;
 	packet.x = g_Clients[object].m_fX;
@@ -144,7 +158,7 @@ void SendPutPlayerPacket(int client, int object)
 void SendPositionPacket(int client, int object)
 {
 	sc_packet_pos packet;
-	packet.id = object;
+	packet.id = g_Clients[object].m_GameID;
 	packet.size = sizeof(packet);
 	packet.type = SC_POS;
 	packet.direction = g_Clients[object].m_Direction;
@@ -158,14 +172,25 @@ void SendPositionPacket(int client, int object)
 void Do_move(int id, unsigned char packet[])
 {
 	cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
+	int room_number = my_packet->roomnumber;
+
 	g_Clients[id].m_fX = my_packet->x;
 	g_Clients[id].m_fY = my_packet->y;
 	g_Clients[id].m_fZ = my_packet->z;
+	cout << "원래\n";
 	for (int i = 0; i < MAX_USER; ++i)
 	{
 		if (g_Clients[i].m_bConnect == true)
-			SendPositionPacket(i, id);
+			//SendPositionPacket(i, id);
+			cout << i << endl;
 	}
+	cout << "수정\n";
+	for (auto& d : g_Room[room_number].m_GameID_list)
+	{
+		cout << d << endl;
+		SendPositionPacket(d, id);
+	}
+
 }
 
 void SendAttackPacket(int client, int object)
@@ -234,14 +259,12 @@ void ProcessPacket(int id, unsigned char packet[])
 	{
 		cs_packet_login* my_packet = reinterpret_cast<cs_packet_login*>(packet);
 		strcpy_s(g_Clients[id].m_ID, my_packet->id);
-		cout << g_Clients[id].m_ID << endl;
-		cout << my_packet->password << endl;
 		g_Clients[id].vl_lock.lock();
 		Client_Login(my_packet->id, my_packet->password, id);
 		g_Clients[id].vl_lock.unlock();
 		for (int i = 0; i < MAX_ROOM; ++i)
 		{
-			if (g_Room[i].m_RoomID_list.size() == 0) break;
+			if (g_Room[i].m_GameID_list.size() == 0) break;	// 방에 아무도 없으면 탈출
 			for (int j = 0; j < MAX_USER; ++j) {
 				if(g_Clients[j].m_bConnect == true && g_Clients[j].m_bLobby == true)
 					SendRoomInfo(j, id, i);
@@ -265,8 +288,9 @@ void ProcessPacket(int id, unsigned char packet[])
 
 		// 룸 정보 서버 저장.
 		cs_packet_makeroom* my_packet = reinterpret_cast<cs_packet_makeroom*>(packet);
-		g_Clients[id].m_RoomID = 0;			// 최초 방장 아이디는 0
+		g_Clients[id].m_GameID = 0;			// 최초 방장 아이디는 0
 		g_Clients[id].m_bLobby = false;		// 로비 탈출.
+		cout << "Global ID : " << id << "\t Game ID : " << (int)g_Clients[id].m_GameID << endl;
 
 		g_Clients[id].vl_lock.lock();		//////////////////// LOCK
 		wcscpy(g_Room[g_RoomNum].m_title, my_packet->roomtitle);
@@ -285,15 +309,17 @@ void ProcessPacket(int id, unsigned char packet[])
 
 		g_Room[g_RoomNum].m_mode = my_packet->mode;
 		g_Room[g_RoomNum].m_RoomStatus = ROOM_JOINABLE;
-		g_Room[g_RoomNum].m_RoomID_list.insert(id);
+		g_Room[g_RoomNum].m_GameID_list.insert(id);
 		g_Clients[id].vl_lock.unlock();		//////////////////// UNLOCK
-	
+
+		SendJoinRoom(id, id, g_Clients[id].m_GameID, g_RoomNum);
+
 		// 룸 정보 출력.
 		cout << "룸 정보 출력 \n";
 		wcout << my_packet->roomtitle << endl;
 		cout << my_packet->password << endl;
 		cout << (short)my_packet->mode << endl;
-		cout << "인원 수 : " << g_Room[g_RoomNum].m_RoomID_list.size() << endl;
+		cout << "인원 수 : " << g_Room[g_RoomNum].m_GameID_list.size() << endl;
 
 		// 접속 && 로비 - 방정보 send
 		for (int i = 0; i < MAX_USER; ++i) 
@@ -310,25 +336,25 @@ void ProcessPacket(int id, unsigned char packet[])
 	case CS_JOIN_ROOM:
 	{
 		cs_packet_joinroom* my_packet = reinterpret_cast<cs_packet_joinroom*>(packet);
-		int room_id = my_packet->roomid;
-		cout << room_id << endl;
+		int roomnumber = my_packet->roomnumber;
+		cout << roomnumber << endl;
 		// 입장 fail 처리.
-		if (g_Room[room_id].m_RoomStatus == FULL) { SendJoinFail(id, id, FULL); break; }
-		if (g_Room[room_id].m_RoomStatus == INGAME){ SendJoinFail(id, id, INGAME); break; }
-		if (g_Room[room_id].m_RoomStatus == ROOM_EMPTY) { SendJoinFail(id, id, ROOM_EMPTY); break; }
+		if (g_Room[roomnumber].m_RoomStatus == FULL) { SendJoinFail(id, id, FULL); break; }
+		if (g_Room[roomnumber].m_RoomStatus == INGAME){ SendJoinFail(id, id, INGAME); break; }
+		if (g_Room[roomnumber].m_RoomStatus == ROOM_EMPTY) { SendJoinFail(id, id, ROOM_EMPTY); break; }
 
 		g_Clients[id].m_bLobby = false;
 		
 		g_Clients[id].vl_lock.lock();	////////////////////LOCK
-		g_Room[room_id].m_RoomID_list.insert(id);
+		g_Room[roomnumber].m_GameID_list.insert(id);
 		g_Clients[id].vl_lock.unlock();	////////////////////UNLOCK
-		g_Clients[id].m_RoomID = g_Room[room_id].m_RoomID_list.size();
-
-		if (g_Room[room_id].m_RoomID_list.size() == 8)
-			g_Room[room_id].m_RoomStatus = FULL;
+		g_Clients[id].m_GameID = g_Room[roomnumber].m_GameID_list.size() - 1;
+		cout << "Global ID : " << id << "\t Game ID : " << (int)g_Clients[id].m_GameID << endl;
+		if (g_Room[roomnumber].m_GameID_list.size() == 8)
+			g_Room[roomnumber].m_RoomStatus = FULL;
 
 		// RoomID 포함해야함.
-		SendJoinRoom(id, id);
+		SendJoinRoom(id, id, g_Clients[id].m_GameID, roomnumber );
 	
 		break;
 	}
@@ -346,54 +372,57 @@ void ProcessPacket(int id, unsigned char packet[])
 		g_Clients[id].m_bLobby = false;
 
 		g_Clients[id].vl_lock.lock();	////////////////////LOCK
-		g_Room[new_room].m_RoomID_list.insert(id);
+		g_Room[new_room].m_GameID_list.insert(id);
 		g_Clients[id].vl_lock.unlock();	////////////////////UNLOCK
-		g_Clients[id].m_RoomID = g_Room[new_room].m_RoomID_list.size();
+		g_Clients[id].m_GameID = g_Room[new_room].m_GameID_list.size() - 1;
 
-		if (g_Room[new_room].m_RoomID_list.size() == 8)
+		if (g_Room[new_room].m_GameID_list.size() == 8)
 			g_Room[new_room].m_RoomStatus = FULL;
 
 		// RoomID 포함해야함.
-		SendJoinRoom(id, id);
+		SendQuickJoin(id, id, g_Clients[id].m_GameID, new_room);
 
 		break;
 	}
 	// 방
 	case CS_READY:
 	{
-		++g_ReadyNum;
 		cs_packet_ready *my_packet = reinterpret_cast<cs_packet_ready*>(packet);
+		int room_number = my_packet->roomnumber;
+		cout << "RoomNum : " << room_number << endl;
 		g_Clients[id].m_HeroPick = my_packet->hero_pick;
-
-		for (int i = 0; i < MAX_USER; ++i)
+		g_Clients[id].vl_lock.lock();	////////////////////// LOCK
+		++g_Room[room_number].m_readycount;
+		g_Clients[id].vl_lock.unlock();	////////////////////// UNLOCK
+		cout << "Ready Count : " << (int)g_Room[room_number].m_readycount << endl;
+		// Ready 여부 알리기.
+		for (auto& d : g_Room[room_number].m_GameID_list)
 		{
-			if (g_Clients[i].m_bConnect == true)
-				SendReadyPacket(i, id);
+			SendReadyPacket(d, id);
+			cout << d << "에게 ready 보냄" << endl;
 		}
 
-		if (g_ReadyNum == g_CCU)
+
+		// 모든 플레이가 Ready 일시 게임시작 알림.
+		if (g_Room[room_number].m_readycount == g_Room[room_number].m_GameID_list.size())
 		{
-			g_ReadyNum = 0;
-			for (int i = 0; i < MAX_USER; ++i)
-				if (g_Clients[i].m_bConnect == true) SendAllReadyPacket(i, id);
+			g_Room[room_number].m_readycount = 0;
+			for (auto& d : g_Room[room_number].m_GameID_list) {
+				SendAllReadyPacket(d, id);
+			}
 		}
 		break;
 	}
 	case CS_LOADCOMPLETE:
-		//SendPutPlayerPacket(id, id);
+	{
+		cs_packet_LoadingComplete *my_packet = reinterpret_cast<cs_packet_LoadingComplete*>(packet);
+		int room_number = my_packet->roomnumber;
 
-			for (int i = 0; i < MAX_USER; ++i)
-			{
-				if (g_Clients[i].m_bConnect == true)
-				{
-				/*	if (i != id)
-					{*/
-						//SendPutPlayerPacket(id, i);
-						SendPutPlayerPacket(i, id);
-					//}
-				}
-			}// for loop
+		for (auto& d : g_Room[room_number].m_GameID_list) {
+			SendPutPlayerPacket(d, id);
+		}
 		break;
+	}
 	// 인 게임
 	// (Move)
 	case CS_KEYDOWN_UP:		g_Clients[id].m_Direction |= DIR_BACK;	Do_move(id, packet);	break;
@@ -405,36 +434,63 @@ void ProcessPacket(int id, unsigned char packet[])
 	case CS_KEYUP_LEFT:		g_Clients[id].m_Direction ^= DIR_LEFT;	Do_move(id, packet);	break;
 	case CS_KEYUP_RIGHT:	g_Clients[id].m_Direction ^= DIR_RIGHT;	Do_move(id, packet);	break;
 	// (Att)
-	case CS_ATTACK:			
-		std::cout << "Attack\n";
-		for (int i = 0; i < MAX_USER; ++i){
-			if (g_Clients[i].m_bConnect == true)
-				SendAttackPacket(i, id);
-		}break;
+	case CS_ATTACK:
+	{
+		int room_number = packet[2];	// roomnumber
+		for (auto& d : g_Room[room_number].m_GameID_list)
+			SendAttackPacket(d, id);
+
+		//for (int i = 0; i < MAX_USER; ++i){
+		//	if (g_Clients[i].m_bConnect == true)
+		//		SendAttackPacket(i, id);
+		//}
+		break;
+	}
 	case CS_SKILL_Q:
-		std::cout << "Q\n";
-		for (int i = 0; i < MAX_USER; ++i) {
-			if (g_Clients[i].m_bConnect == true)
-				SendSkillQPacket(i, id);
-		}break;
+	{
+		int room_number = packet[2];	// roomnumber
+		for (auto& d : g_Room[room_number].m_GameID_list)
+			SendSkillQPacket(d, id);
+
+		//for (int i = 0; i < MAX_USER; ++i) {
+		//	if (g_Clients[i].m_bConnect == true)
+		//		SendSkillQPacket(i, id);
+		//}
+		break;
+	}
 	case CS_SKILL_W:
-		std::cout << "W\n";
-		for (int i = 0; i < MAX_USER; ++i) {
-			if (g_Clients[i].m_bConnect == true)
-				SendSkillWPacket(i, id);
-		}break;
+	{
+		int room_number = packet[2];	// roomnumber
+		for (auto& d : g_Room[room_number].m_GameID_list)
+			SendSkillWPacket(d, id);
+		//for (int i = 0; i < MAX_USER; ++i) {
+		//	if (g_Clients[i].m_bConnect == true)
+		//		SendSkillWPacket(i, id);
+		//}
+		break;
+	}
 	case CS_SKILL_E:
-		std::cout << "E\n";
-		for (int i = 0; i < MAX_USER; ++i) {
-			if (g_Clients[i].m_bConnect == true)
-				SendSkillEPacket(i, id);
-		}break;
+	{
+		int room_number = packet[2];	// roomnumber
+		for (auto& d : g_Room[room_number].m_GameID_list)
+			SendSkillEPacket(d, id);
+		//for (int i = 0; i < MAX_USER; ++i) {
+		//	if (g_Clients[i].m_bConnect == true)
+		//		SendSkillEPacket(i, id);
+		//}
+		break;
+	}
 	case CS_SKILL_R:
-		std::cout << "R\n";
-		for (int i = 0; i < MAX_USER; ++i) {
-			if (g_Clients[i].m_bConnect == true)
-				SendSkillRPacket(i, id);
-		}break;
+	{
+		int room_number = packet[2];	// roomnumber
+		for (auto& d : g_Room[room_number].m_GameID_list)
+			SendSkillRPacket(d, id);
+		//for (int i = 0; i < MAX_USER; ++i) {
+		//	if (g_Clients[i].m_bConnect == true)
+		//		SendSkillRPacket(i, id);
+		//}
+		break;
+	}
 	default: std::cout << "Unknown Packet Type from Client : " << id << std::endl;
 		while (true);
 	}

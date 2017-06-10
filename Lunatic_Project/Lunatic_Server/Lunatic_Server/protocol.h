@@ -57,6 +57,7 @@
 #define SC_JOIN_FAIL_INGAME	 19
 #define SC_JOIN_FAIL_EMPTY	 20
 #define SC_QUICK_JOIN_FAIL	 21
+#define SC_QUICK_JOIN		 22
 
 // Client Define
 // 키보드 입력
@@ -83,10 +84,14 @@
 #define A_TEAM 1
 #define B_TEAM 2
 // 캐릭터
-#define Empty 0
-#define Babarian 1
-#define SordMan 3
-#define Healer 2
+#define EMPTY		0
+#define BABARIAN	1
+#define KNIGHT		2
+#define SWORDMAN	3
+#define MAGICIAN	4
+#define ARCHER		5
+#define HEALER		6
+#define WITCH		7
 
 // 방 상태
 #define ROOM_EMPTY    0  // 비어있음
@@ -120,7 +125,7 @@ struct cs_packet_makeroom {
 struct cs_packet_joinroom {
 	BYTE size;
 	BYTE type;
-	BYTE roomid;
+	BYTE roomnumber;
 };
 
 struct cs_packet_quickjoin {
@@ -133,11 +138,13 @@ struct cs_packet_ready {
 	BYTE size;
 	BYTE type;
 	BYTE hero_pick;
+	BYTE roomnumber;
 };
 
 struct cs_packet_LoadingComplete {
 	BYTE size;
 	BYTE type;
+	BYTE roomnumber;
 };
 
 struct cs_packet_chat {
@@ -151,6 +158,7 @@ struct cs_packet_chat {
 struct cs_packet_pos {
 	BYTE size;
 	BYTE type;
+	BYTE roomnumber;
 	float x;
 	float y;
 	float z;
@@ -159,26 +167,31 @@ struct cs_packet_pos {
 struct cs_packet_attack {
 	BYTE size;
 	BYTE type;
+	BYTE roomnumber;
 };
 
 struct cs_packet_skillQ {
 	BYTE size;
 	BYTE type;
+	BYTE roomnumber;
 };
 
 struct cs_packet_skillW {
 	BYTE size;
 	BYTE type;
+	BYTE roomnumber;
 };
 
 struct cs_packet_skillE {
 	BYTE size;
 	BYTE type;
+	BYTE roomnumber;
 };
 
 struct cs_packet_skillR {
 	BYTE size;
 	BYTE type;
+	BYTE roomnumber;
 };
 
 
@@ -199,7 +212,7 @@ struct sc_packet_loginfailed {
 struct sc_packet_roominfo {
 	BYTE size;
 	BYTE type;
-	BYTE room_id;
+	BYTE room_number;	
 	WCHAR roomtitle[MAX_ROOMTITLE_SIZE];
 	BYTE mode;
 	BYTE roomstatus;
@@ -211,6 +224,16 @@ struct sc_packet_join_room {
 	BYTE size;
 	BYTE type;
 	WORD id;
+	BYTE roomnumber;
+	BYTE game_id;	// Game_id
+};
+
+struct sc_packet_quick_join {
+	BYTE size;
+	BYTE type;
+	WORD id;
+	BYTE roomnumber;
+	BYTE game_id;	// Game_id
 };
 
 struct sc_packet_join_fail {

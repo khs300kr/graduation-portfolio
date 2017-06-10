@@ -24,7 +24,7 @@ struct CLIENT
 	char			m_ID[MAX_ID_LEN];
 	// Room
 	bool			m_bLobby;
-	BYTE			m_RoomID;
+	BYTE			m_GameID;
 	// Pos
 	BYTE			m_Direction;
 	float			m_fX;
@@ -50,14 +50,14 @@ struct ROOM
 	bool m_private;						   // 비공개(bool)
 	BYTE  m_mode;// 게임모드(BYTE)
 	BYTE  m_RoomStatus;
-	unordered_set<int> m_RoomID_list;// 인원(BYTE)
+	unordered_set<int> m_GameID_list;// 인원(BYTE)
+	BYTE m_readycount;
 };
 // Server
 extern HANDLE g_Hiocp;
 extern SOCKET g_ServerSocket;
 extern CLIENT g_Clients[MAX_USER];
 extern ROOM	  g_Room[MAX_ROOM];
-extern BYTE   g_ReadyNum;
 extern WORD   g_CCU; // CCU(Concurrent Users)
 extern BYTE	  g_RoomNum;
 

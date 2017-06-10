@@ -137,7 +137,6 @@ void Worker_Thread()
 			reinterpret_cast<LPWSAOVERLAPPED *>(&over), INFINITE);
 
 		// Error Ã³¸®
-		cout << "GQCS :";
 		if (ret == FALSE)
 		{
 			int err_no = WSAGetLastError();

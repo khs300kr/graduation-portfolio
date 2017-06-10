@@ -7,9 +7,10 @@ void SendLoginFailed(int client, int object);
 void SendRemovePlayerPacket(int client, int object);
 // ·Îºñ
 void SendChatPacket(int client, int object, WCHAR str[MAX_STR_SIZE]);
-void SendRoomInfo(int client, int object, int room_id);
+void SendRoomInfo(int client, int object, int room_number);
 void SendJoinFail(int client, int object, int roomstatus);
-void SendJoinRoom(int client, int object);
+void SendJoinRoom(int client, int object, int game_id, int roomnumber);
+void SendQuickJoin(int client, int object, int game_id, int roomnumber);
 void SendQuickJoinFail(int client, int object);
 
 // ¹æ
