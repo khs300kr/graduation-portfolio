@@ -2,6 +2,15 @@
 
 #include "LunaticProject.h"
 
+typedef struct RoomInfo
+{
+	WCHAR roomtitle[MAX_ROOMTITLE_SIZE];
+	int room_number;
+	int mode; // 데스매치? 점령전?
+	int playercount; // 유저가 방에 몇명 들어왔는지?
+	bool _private; // 암호가 있는지?
+}RoomInfo;
+
 typedef struct RoomUI
 {
 	int HeroSelect; // 캐릭터를 고른 것.
@@ -17,7 +26,21 @@ public:
 	CRoom();
 	~CRoom();
 
+	RoomInfo RoomInfo{};
 
+	WCHAR output[MAX_CHAT_LINE][CHAT_LENGTH];
+	WCHAR input[MAX_STR_SIZE];
+	wstring chat_id;
+	vector<wstring> vOutPut;
+	SIZE size{};
+
+	int iLine = 0;
+	int iFrontRange = 0;
+	int iLastRange = 0;
+	bool bScrool = false;
+
+	//HFONT
+	HFONT hFont, hOldFont;
 	// HBITMAP
 	HPEN Pen, oldPen;
 	HBITMAP bmp_background, bmp_Ready;
@@ -30,7 +53,7 @@ public:
 	HBITMAP bmp_Healer_Image, bmp_Healer_Select;
 	HBITMAP bmp_Witch_Image, bmp_Witch_Select;
 	
-	RoomUI RoomUI[MAX_ROOM];
+	RoomUI RoomUI[MAX_GAMER];
 	
 
 	void Create(HINSTANCE hInst);

@@ -148,15 +148,17 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\Data\Menu\chatting.bmp" />
-    <Image Include="..\Data\Menu\create.bmp" />
-    <Image Include="..\Data\Menu\createwindow.bmp" />
-    <Image Include="..\Data\Menu\loading.bmp" />
-    <Image Include="..\Data\Menu\loginwindow.bmp" />
-    <Image Include="..\Data\Menu\mainmenu.bmp" />
-    <Image Include="..\Data\Menu\quickjoin.bmp" />
-    <Image Include="..\Data\Menu\room.bmp" />
-    <Image Include="..\Data\Menu\roombackground.bmp" />
+    <Image Include="..\Data\Menu\Game\loading.bmp" />
+    <Image Include="..\Data\Menu\Lobby\create.bmp" />
+    <Image Include="..\Data\Menu\Lobby\createwindow.bmp" />
+    <Image Include="..\Data\Menu\Lobby\lobbyhome.bmp" />
+    <Image Include="..\Data\Menu\Lobby\quickjoin.bmp" />
+    <Image Include="..\Data\Menu\Lobby\room.bmp" />
+    <Image Include="..\Data\Menu\Lobby\whojoin.bmp" />
+    <Image Include="..\Data\Menu\MainMenu\exit.bmp" />
+    <Image Include="..\Data\Menu\MainMenu\login.bmp" />
+    <Image Include="..\Data\Menu\MainMenu\loginwindow.bmp" />
+    <Image Include="..\Data\Menu\MainMenu\mainmenu.bmp" />
     <Image Include="..\Data\Menu\Room\background.bmp" />
     <Image Include="..\Data\Menu\Room\Image\Archer_Image.bmp" />
     <Image Include="..\Data\Menu\Room\Image\Babarian_Image.bmp" />
@@ -165,7 +167,6 @@
     <Image Include="..\Data\Menu\Room\Image\Magician_Image.bmp" />
     <Image Include="..\Data\Menu\Room\Image\Swordman_Image.bmp" />
     <Image Include="..\Data\Menu\Room\Image\Witch_Image.bmp" />
-    <Image Include="..\Data\Menu\Room\Ready.bmp" />
     <Image Include="..\Data\Menu\Room\Select\Archer_Selcet.bmp" />
     <Image Include="..\Data\Menu\Room\Select\Babarian_Select.bmp" />
     <Image Include="..\Data\Menu\Room\Select\Healer_Select.bmp" />
@@ -173,7 +174,9 @@
     <Image Include="..\Data\Menu\Room\Select\Magician_Select.bmp" />
     <Image Include="..\Data\Menu\Room\Select\Swordman_Select.bmp" />
     <Image Include="..\Data\Menu\Room\Select\Witch_Select.bmp" />
-    <Image Include="..\Data\Menu\whojoin.bmp" />
+    <Image Include="..\Data\Menu\Room\UI\background.bmp" />
+    <Image Include="..\Data\Menu\Room\UI\Ready.bmp" />
+    <Image Include="D:\Github data\graduation-portfolio\Lunatic_Project\Lunatic Project\Data\Menu\Lobby\lobbyhome.bmp" />
     <Image Include="LunaticProject.ico" />
     <Image Include="small.ico" />
   </ItemGroup>

@@ -10,7 +10,7 @@ typedef struct Room
 	int roomstatus; // 방 상태 ( 비었는지 꽉찼는지 게임중인지)
 	int mode; // 데스매치? 점령전?
 	int playercount; // 유저가 방에 몇명 들어왔는지?
-	int _private; // 암호가 있는지?
+	bool _private; // 암호가 있는지?
 }Room;
 
 
@@ -37,12 +37,13 @@ public:
 
 	void Create(HINSTANCE hInst);
 
-	int clickcount = 0;
-	int firstclick = -1;
 	int whatclick;
 
 	//HBITMAP
-	HBITMAP bmp_chatwindow, bmp_create, bmp_quickjoin, bmp_whojoin, bmp_roombackground, bmp_createwindow, bmp_room;
+	HBITMAP bmp_lobbyhome, bmp_create, bmp_quickjoin, bmp_whojoin, bmp_createwindow, bmp_room;
+
+	bool create_over{}, quickjoin_over{};
+	int room_over = -1;
 
 	HFONT hFont, hOldFont;
 	HPEN Pen, oldPen;
@@ -63,6 +64,7 @@ public:
 	void Password_Input(WPARAM wParam);
 
 	void L_ButtonDown(HWND hWnd, HWND hChat, int mx, int my);
+	void MouseMove(int mx, int my);
 	void MouseWheel(WPARAM wParam);
 	
 };

@@ -79,7 +79,7 @@ public:
 
 	DWORD dwDirection = 0;
 	
-	DWORD OtherDirection[MAX_ROOM];
+	DWORD OtherDirection[MAX_GAMER];
 	int ChangeScene;
 	bool LoadingScene;
 	

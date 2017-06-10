@@ -64,7 +64,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	ServerAddr.sin_port = htons(MY_SERVER_PORT);
 
 #ifdef _DEBUG
-	ServerAddr.sin_addr.s_addr = inet_addr("192.168.180.34");
+	ServerAddr.sin_addr.s_addr = inet_addr("192.168.180.34"); // 
 #else
 	char ipAddr[20];
 	cout << "접속할 서버의 IP주소를 입력하세요 : ";
@@ -186,37 +186,55 @@ LRESULT CALLBACK EditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
-	case WM_CHAR:
-	{
-		if (wParam == VK_RETURN && gGameFramework.ChangeScene == LOBBY)
+		case WM_CHAR:
 		{
-			if (!gLobby.RoomCreateWindow)
+			if (wParam == VK_RETURN && gGameFramework.ChangeScene == LOBBY)
 			{
-
-				if (wcslen(gLobby.input))
+				if (!gLobby.RoomCreateWindow)
 				{
-					cs_packet_chat *my_packet = reinterpret_cast<cs_packet_chat *>(send_buffer);
-					my_packet->size = sizeof(cs_packet_chat);
-					send_wsabuf.len = sizeof(cs_packet_chat);
+					if (wcslen(gLobby.input))
+					{
+						cs_packet_lobbychat *my_packet = reinterpret_cast<cs_packet_lobbychat *>(send_buffer);
+						my_packet->size = sizeof(cs_packet_lobbychat);
+						send_wsabuf.len = sizeof(cs_packet_lobbychat);
+						DWORD iobyte;
+						my_packet->type = CS_LOBBY_CHAT;
+						wcscpy_s(my_packet->message, gLobby.input);
+						strcpy_s(my_packet->id, gMainMenu.user_id);
+						WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+
+						memset(gLobby.input, '\0', sizeof(gLobby.input));
+						SetWindowTextW(hWnd, '\0');
+					}
+
+					SetFocus(g_hWnd);
+				}
+
+				// Indicate that we processed the message.
+				return 0;
+			}
+			else if (wParam == VK_RETURN && gGameFramework.ChangeScene == ROOM)
+			{
+				if (wcslen(gRoom.input))
+				{
+					cs_packet_roomchat *my_packet = reinterpret_cast<cs_packet_roomchat *>(send_buffer);
+					my_packet->size = sizeof(cs_packet_roomchat);
+					send_wsabuf.len = sizeof(cs_packet_roomchat);
 					DWORD iobyte;
-					my_packet->type = CS_LOBBY_CHAT;
-					wcscpy_s(my_packet->message, gLobby.input);
+					my_packet->type = CS_ROOM_CHAT;
+					wcscpy_s(my_packet->message, gRoom.input);
 					strcpy_s(my_packet->id, gMainMenu.user_id);
+					my_packet->roomnumber = gRoom.RoomInfo.room_number;
 					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 
-					memset(gLobby.input, '\0', sizeof(gLobby.input));
+					memset(gRoom.input, '\0', sizeof(gRoom.input));
 					SetWindowTextW(hWnd, '\0');
 				}
 
 				SetFocus(g_hWnd);
 			}
 
-
-			// Indicate that we processed the message.
-			return 0;
 		}
-
-	}
 	}
 
 	// Pass the messages we don't process here on to the
@@ -340,13 +358,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			switch (HIWORD(wParam))
 			{
 			case EN_CHANGE:
-				if (!gLobby.RoomCreateWindow)
-					GetWindowText(hChat, gLobby.input, sizeof(gLobby.input));
-				else
+				if (gGameFramework.ChangeScene == LOBBY)
 				{
-					if (gLobby.RoomCreateChat == gLobby.RNAME)
-						GetWindowText(hChat, gLobby.RoomName, sizeof(gLobby.RoomName));
+					if (!gLobby.RoomCreateWindow)
+						GetWindowText(hChat, gLobby.input, sizeof(gLobby.input));
+					else
+					{
+						if (gLobby.RoomCreateChat == gLobby.RNAME)
+							GetWindowText(hChat, gLobby.RoomName, sizeof(gLobby.RoomName));
+					}
 				}
+				else if (gGameFramework.ChangeScene == ROOM)
+				{
+					GetWindowText(hChat, gRoom.input, sizeof(gRoom.input));
+				}
+				
 
 				break;
 			}
@@ -399,10 +425,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		switch (wParam)
 		{
-		case VK_SPACE:
-			if(gGameFramework.ChangeScene == LOBBY)
-				gGameFramework.ChangeScene = ROOM;
-			break;
 		case VK_RETURN:
 			if (gGameFramework.ChangeScene == MAINMENU)
 			{
@@ -425,6 +447,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				SetFocus(hChat);
 				InvalidateRect(g_hWnd, NULL, false);
 			}
+			else if (gGameFramework.ChangeScene == ROOM)
+			{
+				SetFocus(hChat);
+				InvalidateRect(g_hWnd, NULL, false);
+			}
 			break;
 		}
 
@@ -433,7 +460,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_RBUTTONUP:
 		break;
 	case WM_MOUSEMOVE:
+	{
+		if (gGameFramework.ChangeScene == LOBBY)
+		{
+			int mx = LOWORD(lParam);
+			int my = HIWORD(lParam);
+
+			gLobby.MouseMove(mx, my);
+			InvalidateRect(g_hWnd, NULL, false);
+		}
+			
 		break;
+	}
+
 	case WM_KEYUP:
 		switch (wParam)
 		{
@@ -593,6 +632,8 @@ void ProcessPacket(char * ptr)
 		gLobby.room[my_packet->room_number].playercount = my_packet->playercount;
 		gLobby.room[my_packet->room_number]._private = my_packet->m_private;
 		
+		
+
 		InvalidateRect(g_hWnd, NULL, false);
 
 		break;
@@ -604,7 +645,12 @@ void ProcessPacket(char * ptr)
 		
 		gGameFramework.m_pScene->MyRoomNumber = my_packet->roomnumber;
 		gGameFramework.m_pScene->myGame_id = my_packet->game_id;
-
+		
+		wcscpy_s(gRoom.RoomInfo.roomtitle, my_packet->roomtitle);//wcscpy_s(gRoom.RoomInfo.roomtitle, gLobby.room[gRoom.RoomInfo.room_number].roomtitle);
+		gRoom.RoomInfo.mode = my_packet->mode;
+		gRoom.RoomInfo.playercount = my_packet->playercount;
+		gRoom.RoomInfo._private = my_packet->m_private;
+		gRoom.RoomInfo.room_number = my_packet->roomnumber; // 룸안에서 방번호를 표시하기위해서 받아옴
 
 		EnterRoom(); // 방에 입장한다.
 
@@ -650,6 +696,11 @@ void ProcessPacket(char * ptr)
 		gGameFramework.m_pScene->MyRoomNumber = my_packet->roomnumber;
 		gGameFramework.m_pScene->myGame_id = my_packet->game_id;
 		
+		wcscpy_s(gRoom.RoomInfo.roomtitle, my_packet->roomtitle);//wcscpy_s(gRoom.RoomInfo.roomtitle, gLobby.room[gRoom.RoomInfo.room_number].roomtitle);
+		gRoom.RoomInfo.mode = my_packet->mode;
+		gRoom.RoomInfo.playercount = my_packet->playercount;
+		gRoom.RoomInfo._private = my_packet->m_private;
+		gRoom.RoomInfo.room_number = my_packet->roomnumber; // 룸안에서 방번호를 표시하기위해서 받아옴
 
 		EnterRoom(); // 방에 입장한다.
 
@@ -662,6 +713,41 @@ void ProcessPacket(char * ptr)
 		
 
 	// 방
+	case SC_ROOM_CHAT:
+	{
+		cs_packet_roomchat *my_packet = reinterpret_cast<cs_packet_roomchat *>(ptr);
+
+		/*chat_id = L"client[" + to_wstring(id);
+		chat_id += L"]: ";*/
+		string s = my_packet->id;
+		s.push_back(' ');
+		s.push_back(':');
+		s.push_back(' ');
+
+		gRoom.chat_id.assign(s.begin(), s.end());
+		gRoom.chat_id += my_packet->message;
+
+		gRoom.vOutPut.push_back(gRoom.chat_id);
+		gRoom.chat_id.clear();
+
+		if (gRoom.iLine >= 11)
+		{
+			++gRoom.iFrontRange;
+		}
+		else ++gRoom.iLine;
+
+
+		if (gRoom.bScrool)
+		{
+			gRoom.iLastRange = 0;
+			gRoom.iFrontRange = gRoom.vOutPut.size() - 11;
+			gRoom.bScrool = false;
+		}
+
+		InvalidateRect(g_hWnd, NULL, false);
+		break;
+	}
+
 	case SC_READY:
 	{
 		sc_packet_ready *my_packet = reinterpret_cast<sc_packet_ready *>(ptr);
@@ -670,6 +756,15 @@ void ProcessPacket(char * ptr)
 		{
 			cout << "SC_READY\n";
 			cout << "내 캐릭터 선택 : " << gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect << endl;
+			
+			if (id & 1)
+				gGameFramework.m_pScene->pHeroObject[id]->m_Team = B_TEAM; // 팀 선택
+			else
+				gGameFramework.m_pScene->pHeroObject[id]->m_Team = A_TEAM;
+
+			gRoom.RoomUI[id].Team = gGameFramework.m_pScene->pHeroObject[id]->m_Team; // 룸에 팀 전달
+			 
+			
 		}
 		else 
 		{
@@ -702,6 +797,25 @@ void ProcessPacket(char * ptr)
 
 		cout << "올레디\n";
 
+		for (int i = 0; i < MAX_GAMER; ++i)
+		{
+			cout << i << ends << gGameFramework.m_pScene->pHeroObject[i]->m_Team << endl;
+		}
+
+		break;
+	}
+
+	case SC_ENTER_NEWPLAYER:
+	{
+		sc_packet_enter_newplayer *my_packet = reinterpret_cast<sc_packet_enter_newplayer *>(ptr);
+
+		for (int i = 0; i < MAX_GAMER; ++i)
+		{
+			gRoom.RoomUI[i].IsReady = false;
+			gRoom.RoomUI[i].HeroSelect = EMPTY; // 새로운 사용자가 들어오면 초기화
+		}
+
+		InvalidateRect(g_hWnd, NULL, false);
 		break;
 	}
 
@@ -715,6 +829,9 @@ void ProcessPacket(char * ptr)
 			cout << "Hero Pos\n";
 			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 			gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, my_packet->y, my_packet->z));
+
+			gGameFramework.ChangeScene = GAME;
+			InvalidateRect(g_hWnd, NULL, false);
 		}
 		else {
 			cout << "Other Pos\n";
@@ -852,7 +969,7 @@ void ProcessPacket(char * ptr)
 void SendReadyButton()
 {
 
-	//for (int i = 0; i < MAX_ROOM; ++i)
+	//for (int i = 0; i < MAX_GAMER; ++i)
 	//{
 	//	if (i != GetMyGame_id())
 	//	{
@@ -884,6 +1001,7 @@ void SendReadyButton()
 	cout << "캐릭터선택완료" << endl;
 }
 
+
 int GetMyGame_id()
 {
 	return gGameFramework.m_pScene->myGame_id;
@@ -892,6 +1010,8 @@ int GetMyGame_id()
 void EnterRoom()
 {
 	gGameFramework.ChangeScene = ROOM; // 여기서 방정보가 전부 입력이 되지 않으면 못넘어가게 구현해야함
+
+	//gRoom.RoomInfo.roomstatus = gLobby.room[my_packet->room_number].roomstatus;
 
 	gLobby.vOutPut.clear();
 }

@@ -66,9 +66,9 @@ public:
 
 	//CHeroManager* pMyObject;
 
-	//CHeroManager* pOtherObject[MAX_ROOM];
+	//CHeroManager* pOtherObject[MAX_GAMER];
 
-	CHeroManager* pHeroObject[MAX_ROOM];
+	CHeroManager* pHeroObject[MAX_GAMER];
 
 	CGameObject *pHouse1Object[13];
 
@@ -127,7 +127,7 @@ public:
 
 	
 	// server
-	DWORD Animation_number[MAX_ROOM] = {};
+	DWORD Animation_number[MAX_GAMER] = {};
 	void SendMovePacket(BYTE type);
 
 };

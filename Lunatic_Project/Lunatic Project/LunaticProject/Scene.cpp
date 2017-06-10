@@ -27,7 +27,7 @@ CScene::CScene()
 	KeyDownForServer = 0;
 	DWORD dwDirection = 0;
 
-	for(int i = 0; i < MAX_ROOM; ++i)
+	for(int i = 0; i < MAX_GAMER; ++i)
 		pHeroObject[i] = NULL;
 	for (int i = 0; i < 13; ++i)
 		pHouse1Object[i] = NULL;
@@ -53,7 +53,7 @@ CScene::CScene()
 	//pHeroObject[myroom_id]->m_Team = A_TEAM;
 	//pHeroObject[myroom_id]->SetPosition(0.0f, -3000.f, 0.0f);
 
-	for(int i = 0; i < MAX_ROOM; ++i)
+	for(int i = 0; i < MAX_GAMER; ++i)
 	{
 		pHeroObject[i] = new CHeroManager(1);
 		pHeroObject[i]->SetPosition(0.0f, -3000.0f, 0.0f);
@@ -200,12 +200,11 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	{		
 		
 
-
 		//pHeroObject[myroom_id]->SetOOBB(XMFLOAT3(pHeroObject[myroom_id]->GetPosition().x, pHeroObject[myroom_id]->GetPosition().y, pHeroObject[myroom_id]->GetPosition().z),
 		//	XMFLOAT3(0.1f, 0.1f, 0.1f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 
 
-		for (int i = 0; i < MAX_ROOM; ++i)
+		for (int i = 0; i < MAX_GAMER; ++i)
 		{
 			m_ppShaders[i + 1] = new CCharacterShader(1);
 			m_ppShaders[i + 1]->CreateShader(pd3dDevice);
@@ -230,7 +229,68 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 					pHeroObject[i]->SetMesh(pBabarianMeshA);
 					pHeroObject[i]->SetTexture(pBabarianTexture);
 				}
+				else if (pHeroObject[i]->m_HeroSelect == KNIGHT)
+				{
+					//pHeroObject[i]->SetMesh(pBabarianMeshA);
+					//pHeroObject[i]->SetTexture(pBabarianTexture);
+				}
+				else if (pHeroObject[i]->m_HeroSelect == ARCHER)
+				{
+					//pHeroObject[i]->SetMesh(pBabarianMeshA);
+					//pHeroObject[i]->SetTexture(pBabarianTexture);
+				}
+				else if (pHeroObject[i]->m_HeroSelect == WITCH)
+				{
+					//pHeroObject[i]->SetMesh(pBabarianMeshA);
+					//pHeroObject[i]->SetTexture(pBabarianTexture);
+				}
+				else if (pHeroObject[i]->m_HeroSelect == MAGICIAN)
+				{
+					//pHeroObject[i]->SetMesh(pBabarianMeshA);
+					//pHeroObject[i]->SetTexture(pBabarianTexture);
+				}
 			}
+			else if (pHeroObject[i]->m_Team == B_TEAM)
+			{
+				if (pHeroObject[i]->m_HeroSelect == SWORDMAN)
+				{
+					pHeroObject[i]->SetMesh(pSordManMeshB);
+					pHeroObject[i]->SetTexture(pSordManTexture);
+
+				}
+				else if (pHeroObject[i]->m_HeroSelect == HEALER)
+				{
+					pHeroObject[i]->SetMesh(pHealerMeshB);
+					pHeroObject[i]->SetTexture(pHealerTexture);
+
+				}
+				else if (pHeroObject[i]->m_HeroSelect == BABARIAN)
+				{
+					pHeroObject[i]->SetMesh(pBabarianMeshB);
+					pHeroObject[i]->SetTexture(pBabarianTexture);
+				}
+				else if (pHeroObject[i]->m_HeroSelect == KNIGHT)
+				{
+					//pHeroObject[i]->SetMesh(pBabarianMeshA);
+					//pHeroObject[i]->SetTexture(pBabarianTexture);
+				}
+				else if (pHeroObject[i]->m_HeroSelect == ARCHER)
+				{
+					//pHeroObject[i]->SetMesh(pBabarianMeshA);
+					//pHeroObject[i]->SetTexture(pBabarianTexture);
+				}
+				else if (pHeroObject[i]->m_HeroSelect == WITCH)
+				{
+					//pHeroObject[i]->SetMesh(pBabarianMeshA);
+					//pHeroObject[i]->SetTexture(pBabarianTexture);
+				}
+				else if (pHeroObject[i]->m_HeroSelect == MAGICIAN)
+				{
+					//pHeroObject[i]->SetMesh(pBabarianMeshA);
+					//pHeroObject[i]->SetTexture(pBabarianTexture);
+				}
+			}
+
 			else
 			{
 				pHeroObject[i]->SetMesh(pTestMesh);
@@ -793,7 +853,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 	
 
-	//for (int i = 0; i < MAX_ROOM; ++i)
+	//for (int i = 0; i < MAX_GAMER; ++i)
 	//{
 	//	if (i != myroom_id)
 	//	{
@@ -818,7 +878,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	//}
 
 	
-	for (int i = 1; i < MAX_ROOM+1; ++i)
+	for (int i = 1; i < MAX_GAMER+1; ++i)
 	{
 		m_ppShaders[i]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed);
 

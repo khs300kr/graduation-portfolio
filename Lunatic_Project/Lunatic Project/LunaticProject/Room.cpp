@@ -5,7 +5,7 @@
 
 CRoom::CRoom()
 {
-	for (int i = 0; i < MAX_ROOM; ++i)
+	for (int i = 0; i < MAX_GAMER; ++i)
 	{
 		RoomUI[i].HeroSelect = EMPTY;
 		RoomUI[i].IsReady = false;
@@ -76,13 +76,40 @@ void CRoom::Draw(HDC memdc, HDC memdc2)
 {
 	DrawBitmap(memdc, memdc2, bmp_background, 0, 0, 1024, 768);
 
+	hFont = CreateFont(18, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
+	hOldFont = (HFONT)SelectObject(memdc, hFont);
+	SetTextColor(memdc, RGB(255, 255, 255));
+	SetBkMode(memdc, TRANSPARENT);
+
+
+	wchar_t s[6];
+	wsprintf(s, L"(%d번방)", RoomInfo.room_number, 6);
+
+	TextOut(memdc, 0, 2, s, 5); // (0/8) 인원수 출력
+
+	if(RoomInfo.mode == DEATHMATCH)
+		TextOut(memdc, 70, 2, L"(데스매치) ", 7);
+	else
+		TextOut(memdc, 70, 2, L"(점령전) ", 6);
+
+	TextOut(memdc, 160, 2, RoomInfo.roomtitle, wcslen(RoomInfo.roomtitle));
+
+	if(RoomInfo._private)
+		TextOut(memdc, 910, 2, L"(비공개 게임)", 8);
+	else
+		TextOut(memdc, 910, 2, L"(공개 게임)", 7);
+
+
+	SelectObject(memdc2, hFont);
+	DeleteObject(hFont);
+
 	Pen = CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
 	oldPen = (HPEN)SelectObject(memdc, Pen);
 
 	SelectObject(memdc, GetStockObject(NULL_BRUSH));
 
 	
-	for (int i = 0; i < MAX_ROOM; ++i)
+	for (int i = 0; i < MAX_GAMER; ++i)
 	{
 		if (RoomUI[i].IsReady)
 		{
@@ -165,6 +192,20 @@ void CRoom::Draw(HDC memdc, HDC memdc2)
 
 	SelectObject(memdc, oldPen);
 	DeleteObject(Pen);
+
+	hFont = CreateFont(18, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
+	hOldFont = (HFONT)SelectObject(memdc, hFont);
+
+	SetTextColor(memdc, RGB(255, 255, 255));
+	//채팅창 출력
+	vector<wstring>::iterator iter = vOutPut.begin() + iFrontRange;
+	for (int i = 0; iter != vOutPut.end() + iLastRange; ++i, ++iter)
+	{
+		TextOut(memdc, 279, 550 + (i * 20), iter->c_str(), wcslen(iter->c_str()));
+	}
+
+	GetTextExtentPoint(memdc, input, wcslen(input), &size);
+	TextOut(memdc, 270, 725, input, wcslen(input));
 }
 
 void CRoom::DrawBitmap(HDC memdc, HDC memdc2, HBITMAP bitmap, int x, int y, int sizeX, int sizeY)
@@ -172,6 +213,7 @@ void CRoom::DrawBitmap(HDC memdc, HDC memdc2, HBITMAP bitmap, int x, int y, int 
 	SelectObject(memdc2, bitmap);
 	BitBlt(memdc, x, y, sizeX, sizeY, memdc2, 0, 0, SRCCOPY);
 }
+
 
 void CRoom::L_ButtonDown(int mx, int my)
 {
@@ -214,5 +256,4 @@ void CRoom::L_ButtonDown(int mx, int my)
 		}
 	}
 
-	cout << mx << ends << my << endl;
 }

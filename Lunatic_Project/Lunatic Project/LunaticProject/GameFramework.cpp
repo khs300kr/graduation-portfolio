@@ -28,7 +28,7 @@ CGameFramework::CGameFramework()
 
 	
 
-	for (int i = 0; i < MAX_ROOM; ++i)
+	for (int i = 0; i < MAX_GAMER; ++i)
 		OtherDirection[i] = 0;
 
 	LoadingScene = false;
@@ -373,7 +373,7 @@ void CGameFramework::ProcessInput()
 
 
 
-				for (int i = 0; i < MAX_ROOM; ++i)
+				for (int i = 0; i < MAX_GAMER; ++i)
 				{
 					if (i != m_pScene->myGame_id)
 					{
@@ -410,9 +410,9 @@ void CGameFramework::ProcessInput()
 			
 		}
 
-		float RotY[MAX_ROOM] = {};
+		float RotY[MAX_GAMER] = {};
 
-		for (int i = 0; i < MAX_ROOM; ++i)
+		for (int i = 0; i < MAX_GAMER; ++i)
 		{
 			if (OtherDirection[i] && ChangeScene == GAME && i != m_pScene->myGame_id)
 			{
@@ -472,9 +472,8 @@ void CGameFramework::FrameAdvance()
 
 		LoadingScene = false;
 		m_pScene->BuildObjects(m_pd3dDevice);
-
-		ChangeScene = GAME;
 		
+
 		// server send (loading complete)
 		cs_packet_LoadingComplete *my_packet = reinterpret_cast<cs_packet_LoadingComplete *>(send_buffer);
 		my_packet->size = sizeof(cs_packet_LoadingComplete);
@@ -485,7 +484,6 @@ void CGameFramework::FrameAdvance()
 		WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 		//
 
-		InvalidateRect(g_hWnd, NULL, false);
 	}
 
 	if (ChangeScene == GAME)

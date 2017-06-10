@@ -23,7 +23,7 @@ public:
 	enum { RNOPE, RNAME, RPASSWORD };
 
 	// 메인메뉴
-	bool onLogin = false; // 로그인 윈도우가 출력중인지?
+	//bool onLogin = false; // 로그인 윈도우가 출력중인지?
 	char user_id[MAX_ID_LEN]{}; // 로그인 유저 아이디
 	char user_password[MAX_PASSWORD_LEN]{}; // 로그인 유저 비밀번호
 	int LoginChat = RNOPE; // 0 아무것도아님 1 Name입력 2 Password입력

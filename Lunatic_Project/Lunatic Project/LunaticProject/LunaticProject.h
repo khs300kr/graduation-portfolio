@@ -12,7 +12,6 @@
 
 
 void SendReadyButton();
-
 int GetMyGame_id();
 void EnterRoom();
 bool MouseInbox(int left, int top, int right, int bottom, int x, int y);

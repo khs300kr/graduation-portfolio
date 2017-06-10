@@ -262,36 +262,6 @@
     <Image Include="LunaticProject.ico">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="..\Data\Menu\loading.bmp">
-      <Filter>리소스 파일\Game</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\whojoin.bmp">
-      <Filter>리소스 파일\Lobby</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\roombackground.bmp">
-      <Filter>리소스 파일\Lobby</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\room.bmp">
-      <Filter>리소스 파일\Lobby</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\quickjoin.bmp">
-      <Filter>리소스 파일\Lobby</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\createwindow.bmp">
-      <Filter>리소스 파일\Lobby</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\create.bmp">
-      <Filter>리소스 파일\Lobby</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\chatting.bmp">
-      <Filter>리소스 파일\Lobby</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\loginwindow.bmp">
-      <Filter>리소스 파일\MainMenu</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\mainmenu.bmp">
-      <Filter>리소스 파일\MainMenu</Filter>
-    </Image>
     <Image Include="..\Data\Menu\Room\Image\Archer_Image.bmp">
       <Filter>리소스 파일\Room\Image</Filter>
     </Image>
@@ -337,8 +307,47 @@
     <Image Include="..\Data\Menu\Room\background.bmp">
       <Filter>리소스 파일\Room\UI</Filter>
     </Image>
-    <Image Include="..\Data\Menu\Room\Ready.bmp">
+    <Image Include="..\Data\Menu\Room\UI\background.bmp">
+      <Filter>리소스 파일\Lobby</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Lobby\create.bmp">
+      <Filter>리소스 파일\Lobby</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Lobby\createwindow.bmp">
+      <Filter>리소스 파일\Lobby</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Room\UI\Ready.bmp">
       <Filter>리소스 파일\Room\UI</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\MainMenu\mainmenu.bmp">
+      <Filter>리소스 파일\MainMenu</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\MainMenu\loginwindow.bmp">
+      <Filter>리소스 파일\MainMenu</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Lobby\whojoin.bmp">
+      <Filter>리소스 파일\Lobby</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Lobby\room.bmp">
+      <Filter>리소스 파일\Lobby</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Lobby\quickjoin.bmp">
+      <Filter>리소스 파일\Lobby</Filter>
+    </Image>
+    <Image Include="D:\Github data\graduation-portfolio\Lunatic_Project\Lunatic Project\Data\Menu\Lobby\lobbyhome.bmp">
+      <Filter>리소스 파일\Lobby</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Game\loading.bmp">
+      <Filter>리소스 파일\Game</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Lobby\lobbyhome.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\MainMenu\login.bmp">
+      <Filter>리소스 파일\MainMenu</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\MainMenu\exit.bmp">
+      <Filter>리소스 파일\MainMenu</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
