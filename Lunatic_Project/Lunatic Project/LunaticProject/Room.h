@@ -13,6 +13,13 @@ public:
 	HPEN Pen, oldPen;
 	HBITMAP bmp_background;
 
+	HBITMAP bmp_Babarian_Image, bmp_Babarian_Select;
+	HBITMAP bmp_Knight_Image, bmp_Knight_Select;
+	HBITMAP bmp_Swordman_Image, bmp_Swordman_Select;
+	HBITMAP bmp_Magician_Image, bmp_Magician_Select;
+	HBITMAP bmp_Archer_Image, bmp_Archer_Select;
+	HBITMAP bmp_Healer_Image, bmp_Healer_Select;
+	HBITMAP bmp_Witch_Image, bmp_Witch_Select;
 	
 	int HeroSelect = EMPTY;
 	

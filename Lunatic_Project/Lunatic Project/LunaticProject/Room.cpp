@@ -13,7 +13,29 @@ CRoom::~CRoom()
 
 void CRoom::Create(HINSTANCE hInst)
 {
-	bmp_background = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
+	bmp_background = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_RBACKGROUND));
+
+	bmp_Babarian_Image = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BABARIAN_IMAGE));
+	bmp_Babarian_Select = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BABARIAN_SELECT));
+
+	bmp_Knight_Image = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_KNIGHT_IMAGE));
+	bmp_Knight_Select = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_KNIGHT_SELECT));
+
+	bmp_Swordman_Image = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_SWORDMAN_IMAGE));
+	bmp_Swordman_Select = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_SWORDMAN_SELECT));
+
+	bmp_Magician_Image = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_MAGICIAN_IMAGE));
+	bmp_Magician_Select = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_MAGICIAN_SELECT));
+
+	bmp_Archer_Image = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_ARCHER_IMAGE));
+	bmp_Archer_Select = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_ARCHER_SELECT));
+
+	bmp_Healer_Image = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_HEALER_IMAGE));
+	bmp_Healer_Select = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_HEALER_SELECT));
+
+	bmp_Witch_Image = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_WITCH_IMAGE));
+	bmp_Witch_Select = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_WITCH_SELECT));
+
 }
 
 void CRoom::Draw(HDC memdc, HDC memdc2)
@@ -24,6 +46,18 @@ void CRoom::Draw(HDC memdc, HDC memdc2)
 	oldPen = (HPEN)SelectObject(memdc, Pen);
 
 	SelectObject(memdc, GetStockObject(NULL_BRUSH));
+
+	// ¿ÞÂÊ
+	DrawBitmap(memdc, memdc2, bmp_Babarian_Image, 81, 48, 94, 94);
+	DrawBitmap(memdc, memdc2, bmp_Knight_Image, 81, 48 + 156, 94, 94);
+	DrawBitmap(memdc, memdc2, bmp_Archer_Image, 81, 48 + 156 + 158, 94, 94);
+	DrawBitmap(memdc, memdc2, bmp_Healer_Image, 81, 48 + 156 + 158 + 160, 94, 94);
+
+	// ¿À¸¥ÂÊ
+	DrawBitmap(memdc, memdc2, bmp_Babarian_Image, 843, 48, 94, 94);
+	DrawBitmap(memdc, memdc2, bmp_Babarian_Image, 843, 48 + 156, 94, 94);
+	DrawBitmap(memdc, memdc2, bmp_Babarian_Image, 843, 48 + 156 + 158, 94, 94);
+	DrawBitmap(memdc, memdc2, bmp_Babarian_Image, 843, 48 + 156 + 158 + 160, 94, 94);
 
 	switch (HeroSelect)
 	{
@@ -49,6 +83,8 @@ void CRoom::Draw(HDC memdc, HDC memdc2)
 		Rectangle(memdc, 526, 300, 622, 393);
 		break;
 	}
+
+
 
 	SelectObject(memdc, oldPen);
 	DeleteObject(Pen);

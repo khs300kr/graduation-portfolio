@@ -67,6 +67,24 @@
     <Filter Include="소스 파일\00.Main\03.UI">
       <UniqueIdentifier>{9a5ea463-a5d3-4a4f-bdcc-0185b443c934}</UniqueIdentifier>
     </Filter>
+    <Filter Include="리소스 파일\MainMenu">
+      <UniqueIdentifier>{4a7373e1-12f2-408b-890d-03076647d08e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\Lobby">
+      <UniqueIdentifier>{32e0503a-ff62-4663-9215-52fb99f7bdf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\Room">
+      <UniqueIdentifier>{0c7b6af6-8ca1-4c44-a56f-95ea66c3ed85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\Game">
+      <UniqueIdentifier>{595c63b9-8c5d-4915-a7cf-43ac7ef14288}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\Room\Image">
+      <UniqueIdentifier>{aa53cc93-80c2-42e4-b63a-dab848056bd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="리소스 파일\Room\Select">
+      <UniqueIdentifier>{95ba6806-03c9-42c5-a484-7b8cf0737bc1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -242,39 +260,111 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="..\Data\Menu\background.bmp">
-      <Filter>리소스 파일</Filter>
+      <Filter>리소스 파일\Room</Filter>
     </Image>
     <Image Include="..\Data\Menu\loading.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\mainmenu.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\lobby.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\chatting.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\create.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\createwindow.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\loginwindow.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\quickjoin.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\room.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\roombackground.bmp">
-      <Filter>리소스 파일</Filter>
+      <Filter>리소스 파일\Game</Filter>
     </Image>
     <Image Include="..\Data\Menu\whojoin.bmp">
+      <Filter>리소스 파일\Lobby</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\roombackground.bmp">
+      <Filter>리소스 파일\Lobby</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\room.bmp">
+      <Filter>리소스 파일\Lobby</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\quickjoin.bmp">
+      <Filter>리소스 파일\Lobby</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\createwindow.bmp">
+      <Filter>리소스 파일\Lobby</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\create.bmp">
+      <Filter>리소스 파일\Lobby</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\chatting.bmp">
+      <Filter>리소스 파일\Lobby</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\loginwindow.bmp">
+      <Filter>리소스 파일\MainMenu</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\mainmenu.bmp">
+      <Filter>리소스 파일\MainMenu</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Room\Image\Archer_Image.bmp">
+      <Filter>리소스 파일\Room\Image</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Room\Image\Babarian_Image.bmp">
+      <Filter>리소스 파일\Room\Image</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Room\Image\Healer_Image.bmp">
+      <Filter>리소스 파일\Room\Image</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Room\Image\Knight_Image.bmp">
+      <Filter>리소스 파일\Room\Image</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Room\Image\Magician_Image.bmp">
+      <Filter>리소스 파일\Room\Image</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Room\Image\Swordman_Image.bmp">
+      <Filter>리소스 파일\Room\Image</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Room\Image\Witch_Image.bmp">
+      <Filter>리소스 파일\Room\Image</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Room\Select\Archer_Selcet.bmp">
+      <Filter>리소스 파일\Room\Select</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Room\Select\Babarian_Select.bmp">
+      <Filter>리소스 파일\Room\Select</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Room\Select\Healer_Select.bmp">
+      <Filter>리소스 파일\Room\Select</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Room\Select\Knight_Select.bmp">
+      <Filter>리소스 파일\Room\Select</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Room\Select\Magician_Select.bmp">
+      <Filter>리소스 파일\Room\Select</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Room\Select\Swordman_Select.bmp">
+      <Filter>리소스 파일\Room\Select</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Room\Select\Witch_Select.bmp">
+      <Filter>리소스 파일\Room\Select</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Room\background.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Game\loading.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\MainMenu\mainmenu.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Lobby\chatting.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Lobby\create.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Lobby\createwindow.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Lobby\quickjoin.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Lobby\roombackground.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Lobby\whojoin.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Lobby\room.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\MainMenu\loginwindow.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

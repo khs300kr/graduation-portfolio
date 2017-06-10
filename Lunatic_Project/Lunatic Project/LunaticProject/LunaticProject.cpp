@@ -68,7 +68,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	ServerAddr.sin_port = htons(MY_SERVER_PORT);
 
 #ifdef _DEBUG
-	ServerAddr.sin_addr.s_addr = inet_addr("192.168.80.219");
+	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 #else
 	char ipAddr[20];
 	cout << "접속할 서버의 IP주소를 입력하세요 : ";
@@ -196,7 +196,6 @@ LRESULT CALLBACK EditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		{
 			if (!gLobby.RoomCreateWindow)
 			{
-				SetFocus(g_hWnd);
 
 				if (wcslen(gLobby.input))
 				{
@@ -212,6 +211,8 @@ LRESULT CALLBACK EditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 					memset(gLobby.input, '\0', sizeof(gLobby.input));
 					SetWindowTextW(hWnd, '\0');
 				}
+
+				SetFocus(g_hWnd);
 			}
 
 
