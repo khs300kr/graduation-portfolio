@@ -454,19 +454,20 @@ void ProcessPacket(int id, unsigned char packet[])
 		cs_packet_LoadingComplete *my_packet = reinterpret_cast<cs_packet_LoadingComplete*>(packet);
 		int room_number = my_packet->roomnumber;
 		++g_Room[room_number].m_loadcount;
-
-		SendPutPlayerPacket(id, id);
-
-		// 모든 플레이가 Ready 일시 게임시작 알림.
+		
+		g_Room[room_number].m_AcceptLoading_list.insert(id);
+		// Hero Pos(0,0)
+		//SendPutPlayerPacket(id, id);
+		// 모든 플레이가 로딩완료시 초기위치 전송.
 		if (g_Room[room_number].m_loadcount == g_Room[room_number].m_GameID_list.size())
 		{
 			g_Room[room_number].m_loadcount = 0;
-			for (auto& d : g_Room[room_number].m_GameID_list) 
-			{
-				if (d != id)
+			for (auto& id : g_Room[room_number].m_AcceptLoading_list) {
+				for (auto& d : g_Room[room_number].m_GameID_list) 
 				{
-					SendPutPlayerPacket(d, id);
-					SendPutPlayerPacket(id, d);
+					cout << "d : " << d << " id : " << id << endl;
+					SendPutPlayerPacket(d,id);
+	
 				}
 			}
 		}

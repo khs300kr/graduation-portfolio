@@ -51,6 +51,7 @@ struct ROOM
 	BYTE  m_mode;// 게임모드(BYTE)
 	BYTE  m_RoomStatus;
 	unordered_set<int> m_GameID_list;// 인원(BYTE)
+	unordered_set<int> m_AcceptLoading_list; 
 	BYTE m_readycount;
 	BYTE m_loadcount;
 };
