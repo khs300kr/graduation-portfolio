@@ -834,14 +834,14 @@ void ProcessPacket(char * ptr)
 			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 			gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, my_packet->y, my_packet->z));
 		
-			gGameFramework.LoadingScene = false;
+			gGameFramework.ChangeScene = GAME;
 			InvalidateRect(g_hWnd, NULL, false);
 		}
 		else {
 			cout << "Other Pos: \t " << id << endl;
 			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 			cout << "초기좌표를 설정하는 다른 아이디" << ends << id << endl;
-			gGameFramework.ChangeScene = GAME;
+			
 
 		}
 		break;	
@@ -1020,6 +1020,6 @@ void EnterRoom()
 	//gRoom.RoomInfo.roomstatus = gLobby.room[my_packet->room_number].roomstatus;
 
 	gLobby.vOutPut.clear();
-	memset(gLobby.input, 0, sizeof(gLobby.input));
+	memset(gLobby.input, '\0', sizeof(gLobby.input));
 }
 
