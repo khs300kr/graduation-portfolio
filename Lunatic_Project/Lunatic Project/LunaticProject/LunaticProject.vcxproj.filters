@@ -85,6 +85,9 @@
     <Filter Include="리소스 파일\Room\Select">
       <UniqueIdentifier>{95ba6806-03c9-42c5-a484-7b8cf0737bc1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="리소스 파일\Room\UI">
+      <UniqueIdentifier>{eb3b874b-fba5-48e7-917f-2360cccaa888}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -259,9 +262,6 @@
     <Image Include="LunaticProject.ico">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="..\Data\Menu\background.bmp">
-      <Filter>리소스 파일\Room</Filter>
-    </Image>
     <Image Include="..\Data\Menu\loading.bmp">
       <Filter>리소스 파일\Game</Filter>
     </Image>
@@ -335,37 +335,10 @@
       <Filter>리소스 파일\Room\Select</Filter>
     </Image>
     <Image Include="..\Data\Menu\Room\background.bmp">
-      <Filter>리소스 파일</Filter>
+      <Filter>리소스 파일\Room\UI</Filter>
     </Image>
-    <Image Include="..\Data\Menu\Game\loading.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\MainMenu\mainmenu.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\Lobby\chatting.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\Lobby\create.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\Lobby\createwindow.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\Lobby\quickjoin.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\Lobby\roombackground.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\Lobby\whojoin.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\Lobby\room.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\MainMenu\loginwindow.bmp">
-      <Filter>리소스 파일</Filter>
+    <Image Include="..\Data\Menu\Room\Ready.bmp">
+      <Filter>리소스 파일\Room\UI</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

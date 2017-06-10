@@ -27,7 +27,7 @@ CScene::CScene()
 	KeyDownForServer = 0;
 	DWORD dwDirection = 0;
 
-	for(int i = 0; i < MAX_USER; ++i)
+	for(int i = 0; i < MAX_ROOM; ++i)
 		pHeroObject[i] = NULL;
 	for (int i = 0; i < 13; ++i)
 		pHouse1Object[i] = NULL;
@@ -53,7 +53,7 @@ CScene::CScene()
 	//pHeroObject[myroom_id]->m_Team = A_TEAM;
 	//pHeroObject[myroom_id]->SetPosition(0.0f, -3000.f, 0.0f);
 
-	for(int i = 0; i < MAX_USER; ++i)
+	for(int i = 0; i < MAX_ROOM; ++i)
 	{
 		pHeroObject[i] = new CHeroManager(1);
 		pHeroObject[i]->SetPosition(0.0f, -3000.0f, 0.0f);
@@ -205,7 +205,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 		//	XMFLOAT3(0.1f, 0.1f, 0.1f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 
 
-		for (int i = 0; i < MAX_USER; ++i)
+		for (int i = 0; i < MAX_ROOM; ++i)
 		{
 			m_ppShaders[i + 1] = new CCharacterShader(1);
 			m_ppShaders[i + 1]->CreateShader(pd3dDevice);
@@ -793,7 +793,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 	
 
-	//for (int i = 0; i < MAX_USER; ++i)
+	//for (int i = 0; i < MAX_ROOM; ++i)
 	//{
 	//	if (i != myroom_id)
 	//	{
@@ -818,7 +818,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	//}
 
 	
-	for (int i = 1; i < MAX_USER+1; ++i)
+	for (int i = 1; i < MAX_ROOM+1; ++i)
 	{
 		m_ppShaders[i]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed);
 
