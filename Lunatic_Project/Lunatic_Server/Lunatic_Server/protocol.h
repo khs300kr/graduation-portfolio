@@ -2,7 +2,7 @@
 #define MAX_BUFF_SIZE   4000
 #define MAX_PACKET_SIZE  255
 #define MY_SERVER_PORT  4000
-#define MAX_USER 8
+#define MAX_USER 10
 #define MAX_ROOM 6
 
 #define MAX_STR_SIZE			50
@@ -200,13 +200,11 @@ struct cs_packet_skillR {
 struct sc_packet_id {
 	BYTE size;
 	BYTE type;
-	WORD id;
 };
 
 struct sc_packet_loginfailed {
 	BYTE size;
 	BYTE type;
-	WORD id;
 };
 // ·Îºñ
 struct sc_packet_roominfo {
@@ -223,7 +221,6 @@ struct sc_packet_roominfo {
 struct sc_packet_join_room {
 	BYTE size;
 	BYTE type;
-	WORD id;
 	BYTE roomnumber;
 	BYTE game_id;	// Game_id
 };
@@ -231,7 +228,6 @@ struct sc_packet_join_room {
 struct sc_packet_quick_join {
 	BYTE size;
 	BYTE type;
-	WORD id;
 	BYTE roomnumber;
 	BYTE game_id;	// Game_id
 };
@@ -239,7 +235,6 @@ struct sc_packet_quick_join {
 struct sc_packet_join_fail {
 	BYTE size;
 	BYTE type;
-	WORD id;
 };
 
 // ¹æ
@@ -316,7 +311,6 @@ struct sc_packet_skillR {
 struct sc_packet_chat {
 	BYTE size;
 	BYTE type;
-	WORD id;
 	WCHAR message[MAX_STR_SIZE];
 	char DB_id[MAX_ID_LEN];
 };
