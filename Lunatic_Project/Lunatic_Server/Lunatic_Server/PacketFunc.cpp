@@ -46,7 +46,7 @@ void SendLoginFailed(int client, int object)
 }
 
 // 로비
-void SendChatPacket(int client, int object, WCHAR str[MAX_STR_SIZE])
+void SendChatLobby(int client, int object, WCHAR str[MAX_STR_SIZE])
 {
 	sc_packet_chat packet;
 	packet.size = sizeof(packet);
@@ -79,6 +79,11 @@ void SendJoinRoom(int client, int object, int game_id, int roomnumber)
 	packet.type = SC_JOIN_ROOM;
 	packet.roomnumber = roomnumber;
 	packet.game_id = game_id;
+	wcscpy_s(packet.roomtitle, g_Room[roomnumber].m_title);
+	packet.mode = g_Room[roomnumber].m_mode;
+	packet.roomstatus = g_Room[roomnumber].m_RoomStatus;
+	packet.playercount = g_Room[roomnumber].m_GameID_list.size();
+	packet.m_private = g_Room[roomnumber].m_private;
 
 	Send_Packet(client, &packet);
 }
@@ -90,7 +95,11 @@ void SendQuickJoin(int client, int object, int game_id, int roomnumber)
 	packet.type = SC_QUICK_JOIN;
 	packet.roomnumber = roomnumber;
 	packet.game_id = game_id;
-
+	wcscpy_s(packet.roomtitle, g_Room[roomnumber].m_title);
+	packet.mode = g_Room[roomnumber].m_mode;
+	packet.roomstatus = g_Room[roomnumber].m_RoomStatus;
+	packet.playercount = g_Room[roomnumber].m_GameID_list.size();
+	packet.m_private = g_Room[roomnumber].m_private;
 	Send_Packet(client, &packet);
 }
 
@@ -112,6 +121,17 @@ void SendJoinFail(int client, int object,int roomstatus)
 	Send_Packet(client, &packet);
 }
 
+void SendChatRoom(int client, int object, WCHAR str[MAX_STR_SIZE])
+{
+	sc_packet_chat packet;
+	packet.size = sizeof(packet);
+	packet.type = SC_ROOM_CHAT;
+	wcscpy_s(packet.message, str);
+	strcpy(packet.DB_id, g_Clients[object].m_ID);
+
+	Send_Packet(client, &packet);
+}
+
 // 방
 void SendReadyPacket(int client, int object)
 {
@@ -129,6 +149,15 @@ void SendAllReadyPacket(int client, int object)
 	packet.size = sizeof(packet);
 	packet.type = SC_ALLREADY;
 	packet.id = g_Clients[object].m_GameID;
+
+	Send_Packet(client, &packet);
+}
+
+void SendEnterNewPlayer(int client, int object)
+{
+	sc_packet_enter_newplayer packet;
+	packet.size = sizeof(packet);
+	packet.type = SC_ENTER_NEWPLAYER;
 
 	Send_Packet(client, &packet);
 }
@@ -169,17 +198,9 @@ void Do_move(int id, unsigned char packet[])
 	g_Clients[id].m_fX = my_packet->x;
 	g_Clients[id].m_fY = my_packet->y;
 	g_Clients[id].m_fZ = my_packet->z;
-	cout << "원래\n";
-	for (int i = 0; i < MAX_USER; ++i)
-	{
-		if (g_Clients[i].m_bConnect == true)
-			//SendPositionPacket(i, id);
-			cout << i << endl;
-	}
-	cout << "수정\n";
+
 	for (auto& d : g_Room[room_number].m_GameID_list)
 	{
-		cout << d << endl;
 		SendPositionPacket(d, id);
 	}
 
@@ -242,6 +263,10 @@ void SendRemovePlayerPacket(int client, int object)
 	Send_Packet(client, &packet);
 }
 
+void SendChatGame(int client, int object, WCHAR str[MAX_STR_SIZE])
+{
+}
+
 void ProcessPacket(int id, unsigned char packet[])
 {
 	switch (packet[1])
@@ -267,22 +292,20 @@ void ProcessPacket(int id, unsigned char packet[])
 	// 로비
 	case CS_LOBBY_CHAT:
 	{
-		cs_packet_chat *my_packet = reinterpret_cast<cs_packet_chat*>(packet);
-		cout << my_packet->id << endl;
+		cs_packet_lobbychat *my_packet = reinterpret_cast<cs_packet_lobbychat*>(packet);
 			for (int i = 0; i < MAX_USER; ++i) {
 			if (g_Clients[i].m_bConnect == true && g_Clients[i].m_bLobby == true)
-				SendChatPacket(i, id, my_packet->message);
+				SendChatLobby(i, id, my_packet->message);
 		}break;
 	}
 	case CS_MAKE_ROOM:
 	{
 		if (g_RoomNum > MAX_ROOM) { cout << "방 갯수 초과\n"; break; }
-
+		
 		// 룸 정보 서버 저장.
 		cs_packet_makeroom* my_packet = reinterpret_cast<cs_packet_makeroom*>(packet);
 		g_Clients[id].m_GameID = 0;			// 최초 방장 아이디는 0
 		g_Clients[id].m_bLobby = false;		// 로비 탈출.
-		cout << "Global ID : " << id << "\t Game ID : " << (int)g_Clients[id].m_GameID << endl;
 
 		g_Clients[id].vl_lock.lock();		//////////////////// LOCK
 		wcscpy(g_Room[g_RoomNum].m_title, my_packet->roomtitle);
@@ -291,12 +314,10 @@ void ProcessPacket(int id, unsigned char packet[])
 		if (g_Room[g_RoomNum].m_password[0] == '\0')
 		{
 			g_Room[g_RoomNum].m_private = false;
-			cout << "private\n";
 		}
 		else
 		{
 			g_Room[g_RoomNum].m_private = true;
-			cout << "public\n";
 		}
 
 		g_Room[g_RoomNum].m_mode = my_packet->mode;
@@ -306,12 +327,6 @@ void ProcessPacket(int id, unsigned char packet[])
 
 		SendJoinRoom(id, id, g_Clients[id].m_GameID, g_RoomNum);
 
-		// 룸 정보 출력.
-		cout << "룸 정보 출력 \n";
-		wcout << my_packet->roomtitle << endl;
-		cout << my_packet->password << endl;
-		cout << (short)my_packet->mode << endl;
-		cout << "인원 수 : " << g_Room[g_RoomNum].m_GameID_list.size() << endl;
 
 		// 접속 && 로비 - 방정보 send
 		for (int i = 0; i < MAX_USER; ++i) 
@@ -329,11 +344,12 @@ void ProcessPacket(int id, unsigned char packet[])
 	{
 		cs_packet_joinroom* my_packet = reinterpret_cast<cs_packet_joinroom*>(packet);
 		int roomnumber = my_packet->roomnumber;
-		cout << roomnumber << endl;
 		// 입장 fail 처리.
 		if (g_Room[roomnumber].m_RoomStatus == FULL) { SendJoinFail(id, id, FULL); break; }
 		if (g_Room[roomnumber].m_RoomStatus == INGAME){ SendJoinFail(id, id, INGAME); break; }
 		if (g_Room[roomnumber].m_RoomStatus == ROOM_EMPTY) { SendJoinFail(id, id, ROOM_EMPTY); break; }
+		// 해당 방 레디 카운트 초기화.
+		g_Room[roomnumber].m_readycount = 0;
 
 		g_Clients[id].m_bLobby = false;
 		
@@ -341,12 +357,14 @@ void ProcessPacket(int id, unsigned char packet[])
 		g_Room[roomnumber].m_GameID_list.insert(id);
 		g_Clients[id].vl_lock.unlock();	////////////////////UNLOCK
 		g_Clients[id].m_GameID = g_Room[roomnumber].m_GameID_list.size() - 1;
-		cout << "Global ID : " << id << "\t Game ID : " << (int)g_Clients[id].m_GameID << endl;
+
 		if (g_Room[roomnumber].m_GameID_list.size() == 8)
 			g_Room[roomnumber].m_RoomStatus = FULL;
 
 		// RoomID 포함해야함.
 		SendJoinRoom(id, id, g_Clients[id].m_GameID, roomnumber );
+		for (auto&d : g_Room[roomnumber].m_GameID_list)
+			SendEnterNewPlayer(d, id);
 
 		// 접속 && 로비 - 방정보 send
 		for (int i = 0; i < MAX_USER; ++i)
@@ -369,8 +387,10 @@ void ProcessPacket(int id, unsigned char packet[])
 		}
 		if (new_room == -1) { SendQuickJoinFail(id, id); break; }
 
-		g_Clients[id].m_bLobby = false;
+		// 해당 방 레디 카운트 초기화.
+		g_Room[new_room].m_readycount = 0;
 
+		g_Clients[id].m_bLobby = false;
 		g_Clients[id].vl_lock.lock();	////////////////////LOCK
 		g_Room[new_room].m_GameID_list.insert(id);
 		g_Clients[id].vl_lock.unlock();	////////////////////UNLOCK
@@ -381,20 +401,36 @@ void ProcessPacket(int id, unsigned char packet[])
 
 		// RoomID 포함해야함.
 		SendQuickJoin(id, id, g_Clients[id].m_GameID, new_room);
+		for (auto&d : g_Room[new_room].m_GameID_list)
+			SendEnterNewPlayer(d, id);
 
+		// 접속 && 로비 - 방정보 send
+		for (int i = 0; i < MAX_USER; ++i)
+		{
+			if ((g_Clients[i].m_bConnect == true) && (g_Clients[i].m_bLobby == true))
+			{
+				SendRoomInfo(i, id, new_room);
+			}
+		}
 		break;
 	}
 	// 방
+	case CS_ROOM_CHAT:
+	{
+		cs_packet_roomchat *my_packet = reinterpret_cast<cs_packet_roomchat*>(packet);
+		int room_number = my_packet->roomnumber;
+		for (auto& d : g_Room[room_number].m_GameID_list)
+			SendChatRoom(d, id, my_packet->message);
+		break;
+	}
 	case CS_READY:
 	{
 		cs_packet_ready *my_packet = reinterpret_cast<cs_packet_ready*>(packet);
 		int room_number = my_packet->roomnumber;
-		cout << "RoomNum : " << room_number << endl;
-		g_Clients[id].m_HeroPick = my_packet->hero_pick;
 		g_Clients[id].vl_lock.lock();	////////////////////// LOCK
+		g_Clients[id].m_HeroPick = my_packet->hero_pick;
 		++g_Room[room_number].m_readycount;
 		g_Clients[id].vl_lock.unlock();	////////////////////// UNLOCK
-		cout << "Ready Count : " << (int)g_Room[room_number].m_readycount << endl;
 		// Ready 여부 알리기.
 		for (auto& d : g_Room[room_number].m_GameID_list)
 		{
@@ -417,9 +453,22 @@ void ProcessPacket(int id, unsigned char packet[])
 	{
 		cs_packet_LoadingComplete *my_packet = reinterpret_cast<cs_packet_LoadingComplete*>(packet);
 		int room_number = my_packet->roomnumber;
+		++g_Room[room_number].m_loadcount;
 
-		for (auto& d : g_Room[room_number].m_GameID_list) {
-			SendPutPlayerPacket(d, id);
+		SendPutPlayerPacket(id, id);
+
+		// 모든 플레이가 Ready 일시 게임시작 알림.
+		if (g_Room[room_number].m_loadcount == g_Room[room_number].m_GameID_list.size())
+		{
+			g_Room[room_number].m_loadcount = 0;
+			for (auto& d : g_Room[room_number].m_GameID_list) 
+			{
+				if (d != id)
+				{
+					SendPutPlayerPacket(d, id);
+					SendPutPlayerPacket(id, d);
+				}
+			}
 		}
 		break;
 	}
@@ -441,10 +490,6 @@ void ProcessPacket(int id, unsigned char packet[])
 		for (auto& d : g_Room[room_number].m_GameID_list)
 			SendAttackPacket(d, id);
 
-		//for (int i = 0; i < MAX_USER; ++i){
-		//	if (g_Clients[i].m_bConnect == true)
-		//		SendAttackPacket(i, id);
-		//}
 		break;
 	}
 	case CS_SKILL_Q:
@@ -453,10 +498,6 @@ void ProcessPacket(int id, unsigned char packet[])
 		for (auto& d : g_Room[room_number].m_GameID_list)
 			SendSkillQPacket(d, id);
 
-		//for (int i = 0; i < MAX_USER; ++i) {
-		//	if (g_Clients[i].m_bConnect == true)
-		//		SendSkillQPacket(i, id);
-		//}
 		break;
 	}
 	case CS_SKILL_W:
@@ -464,10 +505,7 @@ void ProcessPacket(int id, unsigned char packet[])
 		int room_number = packet[2];	// roomnumber
 		for (auto& d : g_Room[room_number].m_GameID_list)
 			SendSkillWPacket(d, id);
-		//for (int i = 0; i < MAX_USER; ++i) {
-		//	if (g_Clients[i].m_bConnect == true)
-		//		SendSkillWPacket(i, id);
-		//}
+
 		break;
 	}
 	case CS_SKILL_E:
@@ -475,10 +513,7 @@ void ProcessPacket(int id, unsigned char packet[])
 		int room_number = packet[2];	// roomnumber
 		for (auto& d : g_Room[room_number].m_GameID_list)
 			SendSkillEPacket(d, id);
-		//for (int i = 0; i < MAX_USER; ++i) {
-		//	if (g_Clients[i].m_bConnect == true)
-		//		SendSkillEPacket(i, id);
-		//}
+
 		break;
 	}
 	case CS_SKILL_R:
@@ -486,10 +521,7 @@ void ProcessPacket(int id, unsigned char packet[])
 		int room_number = packet[2];	// roomnumber
 		for (auto& d : g_Room[room_number].m_GameID_list)
 			SendSkillRPacket(d, id);
-		//for (int i = 0; i < MAX_USER; ++i) {
-		//	if (g_Clients[i].m_bConnect == true)
-		//		SendSkillRPacket(i, id);
-		//}
+
 		break;
 	}
 	default: std::cout << "Unknown Packet Type from Client : " << id << std::endl;
