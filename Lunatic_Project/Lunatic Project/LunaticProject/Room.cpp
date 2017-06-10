@@ -257,3 +257,25 @@ void CRoom::L_ButtonDown(int mx, int my)
 	}
 
 }
+
+void CRoom::MouseWheel(WPARAM wParam)
+{
+	if ((short)HIWORD(wParam) < 0)
+	{
+		if (vOutPut.size() - 11 > iFrontRange && iLine >= 11)
+		{
+			++iFrontRange;
+			++iLastRange;
+			bScrool = true;
+		}
+	}
+	else
+	{
+		if (iFrontRange > 0)
+		{
+			--iFrontRange;
+			--iLastRange;
+			bScrool = true;
+		}
+	}
+}

@@ -264,7 +264,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 
-		
 		bmp_loading = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_LOADINGWINDOW));
 
 
@@ -346,6 +345,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (gGameFramework.ChangeScene == LOBBY)
 		{
 			gLobby.MouseWheel(wParam);
+			InvalidateRect(hWnd, NULL, false);
+		}
+		else if (gGameFramework.ChangeScene == ROOM)
+		{
+			gRoom.MouseWheel(wParam);
 			InvalidateRect(hWnd, NULL, false);
 		}
 
@@ -830,6 +834,7 @@ void ProcessPacket(char * ptr)
 			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 			gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, my_packet->y, my_packet->z));
 		
+			gGameFramework.LoadingScene = false;
 			InvalidateRect(g_hWnd, NULL, false);
 		}
 		else {
@@ -1015,5 +1020,6 @@ void EnterRoom()
 	//gRoom.RoomInfo.roomstatus = gLobby.room[my_packet->room_number].roomstatus;
 
 	gLobby.vOutPut.clear();
+	memset(gLobby.input, 0, sizeof(gLobby.input));
 }
 

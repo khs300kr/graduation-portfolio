@@ -470,7 +470,7 @@ void CGameFramework::FrameAdvance()
 	if (LoadingScene)
 	{
 
-		LoadingScene = false;
+		
 		m_pScene->BuildObjects(m_pd3dDevice);
 		
 

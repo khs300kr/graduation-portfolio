@@ -62,5 +62,6 @@ public:
 	void DrawBitmap(HDC memdc, HDC memdc2, HBITMAP bitmap, int x, int y, int sizeX, int sizeY);
 
 	void L_ButtonDown(int mx, int my);
+	void CRoom::MouseWheel(WPARAM wParam);
 };
 
