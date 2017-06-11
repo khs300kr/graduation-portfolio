@@ -32,11 +32,14 @@
 #define CS_SKILL_W					16
 #define CS_SKILL_E					17
 #define CS_SKILL_R					18
-#define CS_REGISTER					19
-#define CS_LOGIN					20
-#define CS_MAKE_ROOM				21
-#define CS_JOIN_ROOM				22
-#define CS_QUICK_JOIN				23
+#define CS_SKILL_DONE				19
+#define CS_REGISTER					20
+#define CS_LOGIN					21
+#define CS_MAKE_ROOM				22
+#define CS_JOIN_ROOM				23
+#define CS_QUICK_JOIN				24
+#define CS_CHAR_COLLISION			25
+#define CS_CHAR_COL_DONE			26
 
 #define SC_POS				 1
 #define SC_PUT_PLAYER		 2
@@ -52,15 +55,18 @@
 #define SC_SKILL_W			 12
 #define SC_SKILL_E			 13
 #define SC_SKILL_R			 14
-#define SC_LOGIN_FAILED		 15	
-#define SC_ROOM_INFO		 16
-#define SC_JOIN_ROOM		 17
-#define SC_JOIN_FAIL_FULL	 18	
-#define SC_JOIN_FAIL_INGAME	 19
-#define SC_JOIN_FAIL_EMPTY	 20
-#define SC_QUICK_JOIN_FAIL	 21
-#define SC_QUICK_JOIN		 22
-#define SC_ENTER_NEWPLAYER	 23
+#define SC_SKILL_DONE	     15
+#define SC_LOGIN_FAILED		 16	
+#define SC_ROOM_INFO		 17
+#define SC_JOIN_ROOM		 18
+#define SC_JOIN_FAIL_FULL	 19	
+#define SC_JOIN_FAIL_INGAME	 20
+#define SC_JOIN_FAIL_EMPTY	 21
+#define SC_QUICK_JOIN_FAIL	 22
+#define SC_QUICK_JOIN		 23
+#define SC_ENTER_NEWPLAYER	 24
+#define SC_CHAR_COLLISION	 25
+#define SC_CHAR_COL_DONE	 26
 
 // Client Define
 // 키보드 입력
@@ -205,6 +211,24 @@ struct cs_packet_skillR {
 	BYTE roomnumber;
 };
 
+struct cs_packet_skill_done {
+	BYTE size;
+	BYTE type;
+	BYTE roomnumber;
+};
+
+struct cs_packet_char_collision {
+	BYTE size;
+	BYTE type;
+	BYTE roomnumber;
+};
+
+struct cs_packet_char_colldone {
+	BYTE size;
+	BYTE type;
+	BYTE roomnumber;
+};
+
 
 // Server -> Client
 // 접속
@@ -333,6 +357,18 @@ struct sc_packet_skillE {
 };
 
 struct sc_packet_skillR {
+	BYTE size;
+	BYTE type;
+	WORD id;
+};
+
+struct sc_packet_char_collision {
+	BYTE size;
+	BYTE type;
+	WORD id;
+};
+
+struct sc_packet_char_colldone {
 	BYTE size;
 	BYTE type;
 	WORD id;

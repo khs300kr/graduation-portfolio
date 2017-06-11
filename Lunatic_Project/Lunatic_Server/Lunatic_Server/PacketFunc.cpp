@@ -255,6 +255,36 @@ void SendSkillRPacket(int client, int object)
 	Send_Packet(client, &packet);
 }
 
+void SendSkillDone(int client, int object)
+{
+	sc_packet_remove_player packet;
+	packet.id = g_Clients[object].m_GameID;
+	packet.size = sizeof(packet);
+	packet.type = SC_SKILL_DONE;
+
+	Send_Packet(client, &packet);
+}
+
+void SendCharCollision(int client, int object)
+{
+	sc_packet_char_collision packet;
+	packet.id = g_Clients[object].m_GameID;
+	packet.size = sizeof(packet);
+	packet.type = SC_CHAR_COLLISION;
+
+	Send_Packet(client, &packet);
+}
+
+void SendCharCollDone(int client, int object)
+{
+	sc_packet_char_colldone packet;
+	packet.id = g_Clients[object].m_GameID;
+	packet.size = sizeof(packet);
+	packet.type = SC_CHAR_COL_DONE;
+
+	Send_Packet(client, &packet);
+}
+
 void SendRemovePlayerPacket(int client, int object)
 {
 	sc_packet_remove_player packet;
@@ -455,6 +485,7 @@ void ProcessPacket(int id, unsigned char packet[])
 		{
 			g_Room[room_number].m_readycount = 0;
 			g_Room[room_number].m_RoomStatus = INGAME;
+			Sleep(1000);
 			for (auto& d : g_Room[room_number].m_GameID_list) {
 				SendAllReadyPacket(d, id);
 			}
@@ -536,6 +567,29 @@ void ProcessPacket(int id, unsigned char packet[])
 			SendSkillRPacket(d, id);
 
 		break;
+	}
+	case CS_SKILL_DONE:
+	{
+		int room_number = packet[2];	// roomnumber
+		for (auto& d : g_Room[room_number].m_GameID_list)
+			SendSkillDone(d, id);
+
+		break;
+	}
+	case CS_CHAR_COLLISION:
+	{
+		int room_number = packet[2];
+		for (auto& d : g_Room[room_number].m_GameID_list)
+			SendCharCollision(d, id);
+		break;
+	}
+	case CS_CHAR_COL_DONE:
+	{
+		int room_number = packet[2];
+		for (auto& d : g_Room[room_number].m_GameID_list)
+			SendCharCollDone(d, id);
+		break;
+
 	}
 	default: std::cout << "Unknown Packet Type from Client : " << id << std::endl;
 		while (true);

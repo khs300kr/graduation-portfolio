@@ -33,5 +33,8 @@ void SendSkillQPacket(int client, int object);
 void SendSkillWPacket(int client, int object);
 void SendSkillEPacket(int client, int object);
 void SendSkillRPacket(int client, int object);
-
+void SendSkillDone(int client, int object);
+// (Collision)
+void SendCharCollision(int client, int object);
+void SendCharCollDone(int client, int object);
 
