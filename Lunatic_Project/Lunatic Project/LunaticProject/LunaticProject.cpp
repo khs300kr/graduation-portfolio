@@ -299,13 +299,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			gRoom.Draw(memdc, memdc2);
 		}
-
-
-		if (gGameFramework.LoadingScene)
+		else if (gGameFramework.ChangeScene == LOADING)
 		{
 			SelectObject(memdc2, bmp_loading);
 			BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
 		}
+
 
 
 		DeleteDC(memdc2);
@@ -796,7 +795,10 @@ void ProcessPacket(char * ptr)
 		Sleep(3000);
 
 
+		gGameFramework.ChangeScene = LOADING;
+		InvalidateRect(g_hWnd, NULL, false);
 		gGameFramework.LoadingScene = true;
+
 		InvalidateRect(g_hWnd, NULL, false);
 
 		cout << "¿Ã·¹µð\n";
@@ -833,7 +835,6 @@ void ProcessPacket(char * ptr)
 			cout << "Hero Pos : \t " << id << endl;
 			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 			gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, my_packet->y, my_packet->z));
-		
 			gGameFramework.ChangeScene = GAME;
 			InvalidateRect(g_hWnd, NULL, false);
 		}

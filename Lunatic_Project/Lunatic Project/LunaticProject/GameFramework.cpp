@@ -467,7 +467,7 @@ void CGameFramework::FrameAdvance()
 {
 	m_GameTimer.Tick(60);
 
-	if (LoadingScene)
+	if (LoadingScene == true)
 	{
 
 		LoadingScene = false;

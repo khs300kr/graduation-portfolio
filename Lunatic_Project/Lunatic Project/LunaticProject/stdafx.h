@@ -99,3 +99,4 @@ using namespace DirectX::PackedVector;
 #define LOBBY 1
 #define ROOM 2
 #define GAME 3
+#define LOADING 4
