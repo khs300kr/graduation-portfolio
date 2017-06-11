@@ -250,9 +250,12 @@ void CRoom::L_ButtonDown(int mx, int my)
 
 		else if (MouseInbox(398, 443, 624, 527, mx, my)) // Ready ¹öÆ°
 		{
-			SendReadyButton();
 			RoomUI[GetMyGame_id()].IsReady = true; // ³»²¨
 			InvalidateRect(g_hWnd, NULL, false);
+
+			SendReadyButton();
+			
+			
 		}
 	}
 

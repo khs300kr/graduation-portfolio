@@ -64,7 +64,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	ServerAddr.sin_port = htons(MY_SERVER_PORT);
 
 #ifdef _DEBUG
-	ServerAddr.sin_addr.s_addr = inet_addr("192.168.180.34"); // 
+	ServerAddr.sin_addr.s_addr = inet_addr("192.168.142.14"); // 
 #else
 	char ipAddr[20];
 	cout << "접속할 서버의 IP주소를 입력하세요 : ";
@@ -573,6 +573,8 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_id *my_packet = reinterpret_cast<sc_packet_id *>(ptr);
 
+		memset(gMainMenu.user_password, 0, sizeof(gMainMenu.user_password));
+	
 		gMainMenu.IsLogin = true;
 		gGameFramework.ChangeScene = LOBBY;
 		InvalidateRect(g_hWnd, NULL, false);
@@ -815,10 +817,22 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_enter_newplayer *my_packet = reinterpret_cast<sc_packet_enter_newplayer *>(ptr);
 
+		
 		for (int i = 0; i < MAX_GAMER; ++i)
 		{
 			gRoom.RoomUI[i].IsReady = false;
 			gRoom.RoomUI[i].HeroSelect = EMPTY; // 새로운 사용자가 들어오면 초기화
+			
+		}
+		
+		
+
+		strcpy_s(gRoom.RoomUI[my_packet->id].ID, my_packet->DB_id);
+
+
+		for (int i = 0; i < MAX_GAMER; ++i)
+		{
+			cout << i << ends << gRoom.RoomUI[i].ID << endl;
 		}
 
 		InvalidateRect(g_hWnd, NULL, false);
@@ -999,12 +1013,13 @@ void SendReadyButton()
 		my_packet->hero_pick = gRoom.RoomUI[GetMyGame_id()].HeroSelect;
 		my_packet->roomnumber = gGameFramework.m_pScene->MyRoomNumber;
 		
+		gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->m_HeroSelect = gRoom.RoomUI[GetMyGame_id()].HeroSelect;
 
 		WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 		//
 	}
 
-	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->m_HeroSelect = gRoom.RoomUI[GetMyGame_id()].HeroSelect;
+	
 	cout << "캐릭터선택완료" << endl;
 }
 
@@ -1020,7 +1035,8 @@ void EnterRoom()
 
 	//gRoom.RoomInfo.roomstatus = gLobby.room[my_packet->room_number].roomstatus;
 
+	SetFocus(g_hWnd);
 	gLobby.vOutPut.clear();
-	memset(gLobby.input, '\0', sizeof(gLobby.input));
+	memset(gLobby.input, 0, sizeof(gLobby.input));
 }
 

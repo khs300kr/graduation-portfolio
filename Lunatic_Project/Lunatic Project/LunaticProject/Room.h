@@ -13,6 +13,7 @@ typedef struct RoomInfo
 
 typedef struct RoomUI
 {
+	char ID[MAX_ID_LEN];
 	int HeroSelect; // 캐릭터를 고른 것.
 	bool IsReady; // 레디했는지?
 	int xPos;

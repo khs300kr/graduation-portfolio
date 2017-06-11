@@ -340,14 +340,14 @@
     <Image Include="..\Data\Menu\Game\loading.bmp">
       <Filter>리소스 파일\Game</Filter>
     </Image>
-    <Image Include="..\Data\Menu\Lobby\lobbyhome.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
     <Image Include="..\Data\Menu\MainMenu\login.bmp">
       <Filter>리소스 파일\MainMenu</Filter>
     </Image>
     <Image Include="..\Data\Menu\MainMenu\exit.bmp">
       <Filter>리소스 파일\MainMenu</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Lobby\lobbyhome.bmp">
+      <Filter>리소스 파일\Lobby</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
