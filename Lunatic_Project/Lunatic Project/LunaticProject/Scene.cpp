@@ -668,8 +668,6 @@ void CScene::ProcessInput()
 		{
 			if (!pHeroObject[myGame_id]->bHeroAttack)
 			{
-				m_ppShaders[myGame_id +1]->GetFBXMesh->SetAnimation(ANI_ATTACK);
-	
 				pHeroObject[myGame_id]->bHeroAttack = true;
 				pHeroObject[myGame_id]->bHeroRun = false;
 
@@ -690,8 +688,6 @@ void CScene::ProcessInput()
 		{
 			if (!pHeroObject[myGame_id]->bHeroQ)
 			{
-				m_ppShaders[myGame_id +1]->GetFBXMesh->SetAnimation(ANI_Q);
-
 				pHeroObject[myGame_id]->bHeroQ = true;
 				pHeroObject[myGame_id]->bHeroRun = false;
 
@@ -709,8 +705,6 @@ void CScene::ProcessInput()
 		{
 			if (!pHeroObject[myGame_id]->bHeroW)
 			{
-				m_ppShaders[myGame_id +1]->GetFBXMesh->SetAnimation(ANI_W);
-				
 				pHeroObject[myGame_id]->bHeroW = true;
 				pHeroObject[myGame_id]->bHeroRun = false;
 
@@ -728,7 +722,6 @@ void CScene::ProcessInput()
 		{
 			if (!pHeroObject[myGame_id]->bHeroE)
 			{
-				m_ppShaders[myGame_id +1]->GetFBXMesh->SetAnimation(ANI_E);
 
 				pHeroObject[myGame_id]->bHeroE = true;
 				pHeroObject[myGame_id]->bHeroRun = false;
@@ -747,8 +740,7 @@ void CScene::ProcessInput()
 		{
 			if (!pHeroObject[myGame_id]->bHeroR)
 			{
-				m_ppShaders[myGame_id +1]->GetFBXMesh->SetAnimation(ANI_R);
-
+				
 				pHeroObject[myGame_id]->bHeroR = true;
 				pHeroObject[myGame_id]->bHeroRun = false;
 

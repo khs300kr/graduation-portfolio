@@ -929,6 +929,7 @@ void ProcessPacket(char * ptr)
 		int id = my_packet->id;
 		if (id == gGameFramework.m_pScene->myGame_id) {
 			cout << "[My]SC_ATTACK_PACKET\n";
+			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_ATTACK);
 		}
 		else {
 			cout << "[Other]SC_ATTACK_PACKET\n";
@@ -944,6 +945,7 @@ void ProcessPacket(char * ptr)
 		int id = my_packet->id;
 		if (id == gGameFramework.m_pScene->myGame_id) {
 			cout << "[My]SC_Q_PACKET\n";
+			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_Q);
 
 		}
 		else {
@@ -960,6 +962,7 @@ void ProcessPacket(char * ptr)
 		int id = my_packet->id;
 		if (id == gGameFramework.m_pScene->myGame_id) {
 			cout << "[My]SC_W_PACKET\n";
+			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_W);
 		}
 		else {
 			cout << "[Other]SC_W_PACKET\n";
@@ -975,6 +978,7 @@ void ProcessPacket(char * ptr)
 		int id = my_packet->id;
 		if (id == gGameFramework.m_pScene->myGame_id) {
 			cout << "[My]SC_E_PACKET\n";
+			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_E);
 		}
 		else {
 			cout << "[Other]SC_E_PACKET\n";
@@ -990,6 +994,7 @@ void ProcessPacket(char * ptr)
 		int id = my_packet->id;
 		if (id == gGameFramework.m_pScene->myGame_id) {
 			cout << "[My]SC_R_PACKET\n";
+			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_R);
 		}
 		else {
 			cout << "[Other]SC_R_PACKET\n";
