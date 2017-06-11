@@ -278,6 +278,8 @@ struct sc_packet_allready
 struct sc_packet_enter_newplayer {
 	BYTE size;
 	BYTE type;
+	char DB_id[MAX_ID_LEN];
+	WORD id;
 };
 
 // ¿Œ∞‘¿”

@@ -156,8 +156,10 @@ void SendAllReadyPacket(int client, int object)
 void SendEnterNewPlayer(int client, int object)
 {
 	sc_packet_enter_newplayer packet;
+	packet.id = g_Clients[object].m_GameID;
 	packet.size = sizeof(packet);
 	packet.type = SC_ENTER_NEWPLAYER;
+	strcpy_s(packet.DB_id, g_Clients[object].m_ID);
 
 	Send_Packet(client, &packet);
 }
@@ -361,10 +363,16 @@ void ProcessPacket(int id, unsigned char packet[])
 		if (g_Room[roomnumber].m_GameID_list.size() == 8)
 			g_Room[roomnumber].m_RoomStatus = FULL;
 
-		// RoomID 포함해야함.
 		SendJoinRoom(id, id, g_Clients[id].m_GameID, roomnumber );
 		for (auto&d : g_Room[roomnumber].m_GameID_list)
-			SendEnterNewPlayer(d, id);
+		{
+			if (d != id) {
+				SendEnterNewPlayer(d, id); 
+				SendEnterNewPlayer(id, d); 
+			}
+		}
+
+
 
 		// 접속 && 로비 - 방정보 send
 		for (int i = 0; i < MAX_USER; ++i)
@@ -399,10 +407,14 @@ void ProcessPacket(int id, unsigned char packet[])
 		if (g_Room[new_room].m_GameID_list.size() == 8)
 			g_Room[new_room].m_RoomStatus = FULL;
 
-		// RoomID 포함해야함.
 		SendQuickJoin(id, id, g_Clients[id].m_GameID, new_room);
 		for (auto&d : g_Room[new_room].m_GameID_list)
-			SendEnterNewPlayer(d, id);
+		{
+			if (d != id) {
+				SendEnterNewPlayer(d, id);
+				SendEnterNewPlayer(id, d);
+			}
+		}
 
 		// 접속 && 로비 - 방정보 send
 		for (int i = 0; i < MAX_USER; ++i)
@@ -455,9 +467,9 @@ void ProcessPacket(int id, unsigned char packet[])
 		int room_number = my_packet->roomnumber;
 		++g_Room[room_number].m_loadcount;
 		
+		g_Clients[id].vl_lock.lock();	/////////////////////////////// LOCK
 		g_Room[room_number].m_AcceptLoading_list.insert(id);
-		// Hero Pos(0,0)
-		//SendPutPlayerPacket(id, id);
+		g_Clients[id].vl_lock.unlock();	/////////////////////////////// UNLOCK
 		// 모든 플레이가 로딩완료시 초기위치 전송.
 		if (g_Room[room_number].m_loadcount == g_Room[room_number].m_GameID_list.size())
 		{
