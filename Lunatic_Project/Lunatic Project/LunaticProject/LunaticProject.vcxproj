@@ -157,7 +157,6 @@
     <Image Include="..\Data\Menu\Lobby\whojoin.bmp" />
     <Image Include="..\Data\Menu\MainMenu\exit.bmp" />
     <Image Include="..\Data\Menu\MainMenu\login.bmp" />
-    <Image Include="..\Data\Menu\MainMenu\loginwindow.bmp" />
     <Image Include="..\Data\Menu\MainMenu\mainmenu.bmp" />
     <Image Include="..\Data\Menu\Room\background.bmp" />
     <Image Include="..\Data\Menu\Room\Image\Archer_Image.bmp" />
@@ -176,6 +175,7 @@
     <Image Include="..\Data\Menu\Room\Select\Witch_Select.bmp" />
     <Image Include="..\Data\Menu\Room\UI\background.bmp" />
     <Image Include="..\Data\Menu\Room\UI\Ready.bmp" />
+    <Image Include="..\Data\Menu\Room\UI\readybutton.bmp" />
     <Image Include="D:\Github data\graduation-portfolio\Lunatic_Project\Lunatic Project\Data\Menu\Lobby\lobbyhome.bmp" />
     <Image Include="LunaticProject.ico" />
     <Image Include="small.ico" />

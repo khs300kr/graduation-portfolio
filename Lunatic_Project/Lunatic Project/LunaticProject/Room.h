@@ -44,7 +44,7 @@ public:
 	HFONT hFont, hOldFont;
 	// HBITMAP
 	HPEN Pen, oldPen;
-	HBITMAP bmp_background, bmp_Ready;
+	HBITMAP bmp_background, bmp_Ready, bmp_readybutton;
 
 	HBITMAP bmp_Babarian_Image, bmp_Babarian_Select;
 	HBITMAP bmp_Knight_Image, bmp_Knight_Select;
@@ -63,6 +63,9 @@ public:
 	void DrawBitmap(HDC memdc, HDC memdc2, HBITMAP bitmap, int x, int y, int sizeX, int sizeY);
 
 	void L_ButtonDown(int mx, int my);
-	void CRoom::MouseWheel(WPARAM wParam);
+	void MouseMove(int mx, int my);
+	void MouseWheel(WPARAM wParam);
+
+	bool ready_over = false;
 };
 

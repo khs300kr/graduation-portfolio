@@ -8,6 +8,7 @@ CGameFramework gGameFramework;
 CLobby gLobby;
 CMainMenu gMainMenu;
 CRoom gRoom;
+HWND hChat{};
 
 // 전역 변수:
 HINSTANCE hInst;								// 현재 인스턴스입니다.
@@ -203,7 +204,6 @@ LRESULT CALLBACK EditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 						strcpy_s(my_packet->id, gMainMenu.user_id);
 						WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 
-						memset(gLobby.input, '\0', sizeof(gLobby.input));
 						SetWindowTextW(hWnd, '\0');
 					}
 
@@ -227,7 +227,7 @@ LRESULT CALLBACK EditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 					my_packet->roomnumber = gRoom.RoomInfo.room_number;
 					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 
-					memset(gRoom.input, '\0', sizeof(gRoom.input));
+					memset(gRoom.input, 0, sizeof(gRoom.input));
 					SetWindowTextW(hWnd, '\0');
 				}
 
@@ -256,8 +256,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HPEN Pen, oldPen;
 	PAINTSTRUCT ps;
 	static HBITMAP bmp_loading;//, bmp_lobby;
-	
-	static HWND hChat{};
 
 
 	switch (message)
@@ -472,6 +470,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			gLobby.MouseMove(mx, my);
 			InvalidateRect(g_hWnd, NULL, false);
 		}
+		else if (gGameFramework.ChangeScene == ROOM)
+		{
+			int mx = LOWORD(lParam);
+			int my = HIWORD(lParam);
+
+			gLobby.MouseMove(mx, my);
+			InvalidateRect(g_hWnd, NULL, false);
+		}
 			
 		break;
 	}
@@ -663,6 +669,7 @@ void ProcessPacket(char * ptr)
 
 
 		EnterRoom(); // 방에 입장한다.
+		SetWindowTextW(hChat, '\0');
 
 		InvalidateRect(g_hWnd, NULL, false);
 		break;
@@ -802,6 +809,7 @@ void ProcessPacket(char * ptr)
 	{
 		InvalidateRect(g_hWnd, NULL, false);
 
+		gGameFramework.playercount = gRoom.RoomInfo.playercount;
 
 		Sleep(3000);
 
@@ -853,6 +861,8 @@ void ProcessPacket(char * ptr)
 			cout << "Hero Pos : \t " << id << endl;
 			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 			gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, my_packet->y, my_packet->z));
+			
+			//SetWindowTextW(hChat, '\0');
 			gGameFramework.ChangeScene = GAME;
 			InvalidateRect(g_hWnd, NULL, false);
 		}
@@ -899,6 +909,20 @@ void ProcessPacket(char * ptr)
 		break;
 	}
 
+	case SC_SKILL_DONE:
+	{
+		sc_packet_attack *my_packet = reinterpret_cast<sc_packet_attack *>(ptr);
+		int id = my_packet->id;
+		if (id == gGameFramework.m_pScene->myGame_id) {
+			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+		}
+		else {
+			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+		}
+
+		break;
+		break;
+	}
 	case SC_ATTACK:
 	{
 		sc_packet_attack *my_packet = reinterpret_cast<sc_packet_attack *>(ptr);
@@ -1040,7 +1064,11 @@ void EnterRoom()
 	//gRoom.RoomInfo.roomstatus = gLobby.room[my_packet->room_number].roomstatus;
 
 	SetFocus(g_hWnd);
-	gLobby.vOutPut.clear();
+
+	memset(gLobby.RoomName, 0, sizeof(gLobby.RoomName));
 	memset(gLobby.input, 0, sizeof(gLobby.input));
+	
+
+	gLobby.vOutPut.clear();
 }
 

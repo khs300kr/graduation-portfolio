@@ -82,5 +82,9 @@ public:
 	DWORD OtherDirection[MAX_GAMER];
 	bool LoadingScene;
 	int ChangeScene;
+
+	int playercount;
+
+	//void char_collision_send();
 	
 };

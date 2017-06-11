@@ -264,7 +264,7 @@ void CLobby::L_ButtonDown(HWND hWnd, HWND hChat, int mx, int my)
 			RoomCreateChat = RNOPE;
 
 			SetFocus(hWnd);
-			memset(input, '\0', sizeof(input));
+			memset(input, 0, sizeof(input));
 			SetWindowTextW(hChat, '\0');
 
 		}
@@ -316,7 +316,7 @@ void CLobby::L_ButtonDown(HWND hWnd, HWND hChat, int mx, int my)
 			RoomCreateWindow = false; // 방만들기 윈도우 헤제
 
 			SetFocus(hWnd);
-			memset(RoomName, '\0', sizeof(RoomName));
+			memset(RoomName, 0, sizeof(RoomName));
 			SetWindowTextW(hChat, '\0');
 		}
 
@@ -339,7 +339,7 @@ void CLobby::L_ButtonDown(HWND hWnd, HWND hChat, int mx, int my)
 			if (IsPassword)
 				strcpy_s(my_packet->password, RoomPassword);
 			else
-				memset(my_packet->password, '\0', sizeof(my_packet->password));
+				memset(my_packet->password, 0, sizeof(my_packet->password));
 
 			my_packet->mode = GameMode;
 			

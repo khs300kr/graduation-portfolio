@@ -69,6 +69,7 @@ void CRoom::Create(HINSTANCE hInst)
 	bmp_Witch_Select = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_WITCH_SELECT));
 
 	bmp_Ready = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_READY));
+	bmp_readybutton = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_READYBUTTON));
 
 }
 
@@ -184,6 +185,11 @@ void CRoom::Draw(HDC memdc, HDC memdc2)
 	SelectObject(memdc, oldPen);
 	DeleteObject(Pen);
 
+
+	if(ready_over)
+		DrawBitmap(memdc, memdc2, bmp_readybutton, 399, 443, 227, 85);
+
+
 	Pen = CreatePen(PS_SOLID, 3, RGB(0, 0, 255));
 	oldPen = (HPEN)SelectObject(memdc, Pen);
 
@@ -224,6 +230,7 @@ void CRoom::DrawBitmap(HDC memdc, HDC memdc2, HBITMAP bitmap, int x, int y, int 
 
 void CRoom::L_ButtonDown(int mx, int my)
 {
+	cout << mx << ends << my;
 	if (!RoomUI[GetMyGame_id()].IsReady)
 	{
 		if (MouseInbox(406, 48, 499, 143, mx, my)) // Babarian
@@ -266,6 +273,14 @@ void CRoom::L_ButtonDown(int mx, int my)
 		}
 	}
 
+}
+
+void CRoom::MouseMove(int mx, int my)
+{
+	if (!MouseInbox(398, 443, 626, 529, mx, my))
+		ready_over = false;
+	else
+		ready_over = true;
 }
 
 void CRoom::MouseWheel(WPARAM wParam)

@@ -322,9 +322,6 @@
     <Image Include="..\Data\Menu\MainMenu\mainmenu.bmp">
       <Filter>리소스 파일\MainMenu</Filter>
     </Image>
-    <Image Include="..\Data\Menu\MainMenu\loginwindow.bmp">
-      <Filter>리소스 파일\MainMenu</Filter>
-    </Image>
     <Image Include="..\Data\Menu\Lobby\whojoin.bmp">
       <Filter>리소스 파일\Lobby</Filter>
     </Image>
@@ -348,6 +345,9 @@
     </Image>
     <Image Include="..\Data\Menu\Lobby\lobbyhome.bmp">
       <Filter>리소스 파일\Lobby</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Room\UI\readybutton.bmp">
+      <Filter>리소스 파일\Room\UI</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
