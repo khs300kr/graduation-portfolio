@@ -33,25 +33,38 @@ CScene::CScene()
 		pHouse1Object[i] = NULL;
 
 	pNormalMaterial = NULL;
+	
 	pHealerTexture = NULL;
-	pSordManTexture = NULL;
+	pSwordmanTexture = NULL;
 	pBabarianTexture = NULL;
+	pArcherTexture = NULL;
+	pMagicianTexture = NULL;
+	pKnightTexture = NULL;
+	pWitchTexture = NULL;
+
+
 	pTestTexture = NULL;
 	
-	pSordManMeshA = NULL;
-	pSordManMeshB = NULL;
+	pSwordmanMeshA = NULL;
+	pSwordmanMeshB = NULL;
 	pHealerMeshA = NULL;
 	pHealerMeshB = NULL;
 	pBabarianMeshA = NULL;
 	pBabarianMeshB = NULL;
+
+	pArcherMeshA = NULL;
+	pArcherMeshB = NULL;
+	pMagicianMeshA = NULL;
+	pMagicianMeshB = NULL;
+	pKnightMeshA = NULL;
+	pKnightMeshB = NULL;
+	pWitchMeshA = NULL;
+	pWitchMeshB = NULL;
+
+
 	pTestMesh = NULL;
 
 
-
-
-	//pHeroObject[myroom_id] = new CHeroManager(1);
-	//pHeroObject[myroom_id]->m_Team = A_TEAM;
-	//pHeroObject[myroom_id]->SetPosition(0.0f, -3000.f, 0.0f);
 
 	for(int i = 0; i < MAX_GAMER; ++i)
 	{
@@ -87,28 +100,66 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	ID3D11ShaderResourceView *pd3dsrvTexture = NULL;
 
 	pHealerTexture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/Healer.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Healer.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pHealerTexture->SetTexture(0, pd3dsrvTexture);
 	pHealerTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
-	pd3dsrvTexture = NULL;
 
-	pSordManTexture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/SordMan.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-	pSordManTexture->SetTexture(0, pd3dsrvTexture);
-	pSordManTexture->SetSampler(0, pd3dSamplerState);
+
+
+	pd3dsrvTexture = NULL;
+	pSwordmanTexture = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Swordman.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pSwordmanTexture->SetTexture(0, pd3dsrvTexture);
+	pSwordmanTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 
+	pd3dsrvTexture = NULL;
 	pBabarianTexture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/Babarian.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Babarian.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pBabarianTexture->SetTexture(0, pd3dsrvTexture);
 	pBabarianTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 
+	pd3dsrvTexture = NULL;
+	pKnightTexture = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Knight.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pKnightTexture->SetTexture(0, pd3dsrvTexture);
+	pKnightTexture->SetSampler(0, pd3dSamplerState);
+	pd3dsrvTexture->Release();
+
+	pd3dsrvTexture = NULL;
+	pArcherTexture = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Archer.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pArcherTexture->SetTexture(0, pd3dsrvTexture);
+	pArcherTexture->SetSampler(0, pd3dSamplerState);
+	pd3dsrvTexture->Release();
+
+	pd3dsrvTexture = NULL;
+	pMagicianTexture = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Magician.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pMagicianTexture->SetTexture(0, pd3dsrvTexture);
+	pMagicianTexture->SetSampler(0, pd3dSamplerState);
+	pd3dsrvTexture->Release();
+
+	pd3dsrvTexture = NULL;
+	pWitchTexture = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Witch.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pWitchTexture->SetTexture(0, pd3dsrvTexture);
+	pWitchTexture->SetSampler(0, pd3dSamplerState);
+	pd3dsrvTexture->Release();
+
+
+
+
+
+
+
+
 	//바닥
 	pd3dsrvTexture = NULL;
 	CTexture *pPlaneTexture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/plane.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/plane.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pPlaneTexture->SetTexture(0, pd3dsrvTexture);
 	pPlaneTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
@@ -167,12 +218,26 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 	pNormalMaterial->m_Material.m_d3dxcEmissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// ④ 쉐이더에 적용할 메쉬(들) 생성	
-	pHealerMeshA = new CFBXMesh(pd3dDevice, "../Data/Healer.data", 0.1f);
-	pHealerMeshB = new CFBXMesh(pd3dDevice, "../Data/Healer.data", 0.1f);
-	pSordManMeshA = new CFBXMesh(pd3dDevice, "../Data/SordMan.data", 0.1f);
-	pSordManMeshB = new CFBXMesh(pd3dDevice, "../Data/SordMan.data", 0.1f);
-	pBabarianMeshA = new CFBXMesh(pd3dDevice, "../Data/Babarian.data", 0.1f);
-	pBabarianMeshB = new CFBXMesh(pd3dDevice, "../Data/Babarian.data", 0.1f);
+	pHealerMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Healer.data", 0.1f);
+	pHealerMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Healer.data", 0.1f);
+	pSwordmanMeshA = new CFBXMesh(pd3dDevice, "../Data/data/SwordMan.data", 0.1f);
+	pSwordmanMeshB = new CFBXMesh(pd3dDevice, "../Data/data/SwordMan.data", 0.1f);
+	pBabarianMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Babarian.data", 0.1f);
+	pBabarianMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Babarian.data", 0.1f);
+
+	pArcherMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Archer.data", 0.1f);
+	pArcherMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Archer.data", 0.1f);
+	pMagicianMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Magician.data", 0.1f);
+	pMagicianMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Magician.data", 0.1f);
+	pKnightMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Knight.data", 0.1f);
+	pKnightMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Knight.data", 0.1f);
+
+	pWitchMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Witch.data", 0.1f);
+	pWitchMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Witch.data", 0.1f);
+
+
+
+
 	pTestMesh = new CFBXMesh(pd3dDevice, "../Data/testbox.data", 0.1f);
 
 	// map objects
@@ -214,8 +279,8 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 			{
 				if (pHeroObject[i]->m_HeroSelect == SWORDMAN)
 				{
-					pHeroObject[i]->SetMesh(pSordManMeshA);
-					pHeroObject[i]->SetTexture(pSordManTexture);
+					pHeroObject[i]->SetMesh(pSwordmanMeshA);
+					pHeroObject[i]->SetTexture(pSwordmanTexture);
 
 				}
 				else if (pHeroObject[i]->m_HeroSelect == HEALER)
@@ -231,31 +296,32 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 				}
 				else if (pHeroObject[i]->m_HeroSelect == KNIGHT)
 				{
-					//pHeroObject[i]->SetMesh(pBabarianMeshA);
-					//pHeroObject[i]->SetTexture(pBabarianTexture);
+					pHeroObject[i]->SetMesh(pKnightMeshA);
+					pHeroObject[i]->SetTexture(pKnightTexture);
 				}
 				else if (pHeroObject[i]->m_HeroSelect == ARCHER)
 				{
-					//pHeroObject[i]->SetMesh(pBabarianMeshA);
-					//pHeroObject[i]->SetTexture(pBabarianTexture);
+					pHeroObject[i]->SetMesh(pArcherMeshA);
+					pHeroObject[i]->SetTexture(pArcherTexture);
 				}
 				else if (pHeroObject[i]->m_HeroSelect == WITCH)
 				{
-					//pHeroObject[i]->SetMesh(pBabarianMeshA);
-					//pHeroObject[i]->SetTexture(pBabarianTexture);
+					pHeroObject[i]->SetMesh(pWitchMeshA);
+					pHeroObject[i]->SetTexture(pWitchTexture);
 				}
 				else if (pHeroObject[i]->m_HeroSelect == MAGICIAN)
 				{
-					//pHeroObject[i]->SetMesh(pBabarianMeshA);
-					//pHeroObject[i]->SetTexture(pBabarianTexture);
+					pHeroObject[i]->SetMesh(pMagicianMeshA);
+					pHeroObject[i]->SetTexture(pMagicianTexture);
 				}
 			}
+
 			else if (pHeroObject[i]->m_Team == B_TEAM)
 			{
 				if (pHeroObject[i]->m_HeroSelect == SWORDMAN)
 				{
-					pHeroObject[i]->SetMesh(pSordManMeshB);
-					pHeroObject[i]->SetTexture(pSordManTexture);
+					pHeroObject[i]->SetMesh(pSwordmanMeshB);
+					pHeroObject[i]->SetTexture(pSwordmanTexture);
 
 				}
 				else if (pHeroObject[i]->m_HeroSelect == HEALER)
@@ -271,23 +337,23 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice)
 				}
 				else if (pHeroObject[i]->m_HeroSelect == KNIGHT)
 				{
-					//pHeroObject[i]->SetMesh(pBabarianMeshA);
-					//pHeroObject[i]->SetTexture(pBabarianTexture);
+					pHeroObject[i]->SetMesh(pKnightMeshB);
+					pHeroObject[i]->SetTexture(pKnightTexture);
 				}
 				else if (pHeroObject[i]->m_HeroSelect == ARCHER)
 				{
-					//pHeroObject[i]->SetMesh(pBabarianMeshA);
-					//pHeroObject[i]->SetTexture(pBabarianTexture);
+					pHeroObject[i]->SetMesh(pArcherMeshB);
+					pHeroObject[i]->SetTexture(pArcherTexture);
 				}
 				else if (pHeroObject[i]->m_HeroSelect == WITCH)
 				{
-					//pHeroObject[i]->SetMesh(pBabarianMeshA);
-					//pHeroObject[i]->SetTexture(pBabarianTexture);
+					pHeroObject[i]->SetMesh(pWitchMeshB);
+					pHeroObject[i]->SetTexture(pWitchTexture);
 				}
 				else if (pHeroObject[i]->m_HeroSelect == MAGICIAN)
 				{
-					//pHeroObject[i]->SetMesh(pBabarianMeshA);
-					//pHeroObject[i]->SetTexture(pBabarianTexture);
+					pHeroObject[i]->SetMesh(pMagicianMeshB);
+					pHeroObject[i]->SetTexture(pMagicianTexture);
 				}
 			}
 

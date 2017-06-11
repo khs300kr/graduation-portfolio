@@ -206,6 +206,13 @@ void CRoom::Draw(HDC memdc, HDC memdc2)
 
 	GetTextExtentPoint(memdc, input, wcslen(input), &size);
 	TextOut(memdc, 270, 725, input, wcslen(input));
+
+
+	for (int i = 0; i < MAX_GAMER; ++i)
+	{
+		TextOutA(memdc, RoomUI[i].xPos + 22, RoomUI[i].yPos + 111, RoomUI[i].ID, strlen(RoomUI[i].ID));
+	}
+	
 }
 
 void CRoom::DrawBitmap(HDC memdc, HDC memdc2, HBITMAP bitmap, int x, int y, int sizeX, int sizeY)

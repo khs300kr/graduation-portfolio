@@ -81,16 +81,33 @@ public:
 	CMaterial *pNormalMaterial;
 
 	CTexture *pHealerTexture;
-	CTexture *pSordManTexture;
+	CTexture *pSwordmanTexture;
 	CTexture *pBabarianTexture;
+	
+
+	CTexture *pArcherTexture;
+	CTexture *pMagicianTexture;
+	CTexture *pWitchTexture;
+	CTexture *pKnightTexture;
+
 	CTexture *pTestTexture;
 
-	CMesh *pSordManMeshA;
-	CMesh *pSordManMeshB;
+	CMesh *pSwordmanMeshA;
+	CMesh *pSwordmanMeshB;
 	CMesh *pHealerMeshA;
 	CMesh *pHealerMeshB;
 	CMesh *pBabarianMeshA;
 	CMesh *pBabarianMeshB;
+
+	CMesh *pKnightMeshA;
+	CMesh *pKnightMeshB;
+	CMesh *pMagicianMeshA;
+	CMesh *pMagicianMeshB;
+	CMesh *pArcherMeshA;
+	CMesh *pArcherMeshB;
+
+	CMesh *pWitchMeshA;
+	CMesh *pWitchMeshB;
 
 	CMesh *pTestMesh;
 

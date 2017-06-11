@@ -27,9 +27,9 @@ public:
 	bool bHeroStun = false;
 	bool bHeroDie = false;
 
-	CSwordMan* m_pSwordMan;
-	CHealer* m_pHealer;
-	CBabarian* m_pBabarian;
+	//CSwordMan* m_pSwordMan;
+	//CHealer* m_pHealer;
+	//CBabarian* m_pBabarian;
 
 	CHeroManager(int nMeshes = 1);
 	~CHeroManager();

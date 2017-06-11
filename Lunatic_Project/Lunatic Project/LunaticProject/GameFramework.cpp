@@ -489,7 +489,6 @@ void CGameFramework::FrameAdvance()
 	if (ChangeScene == GAME)
 	{
 
-
 		ProcessInput();
 		AnimateObjects();
 

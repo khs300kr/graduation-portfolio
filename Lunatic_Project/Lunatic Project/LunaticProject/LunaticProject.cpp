@@ -657,6 +657,11 @@ void ProcessPacket(char * ptr)
 		gRoom.RoomInfo._private = my_packet->m_private;
 		gRoom.RoomInfo.room_number = my_packet->roomnumber; // 룸안에서 방번호를 표시하기위해서 받아옴
 
+
+		strcpy_s(gRoom.RoomUI[gGameFramework.m_pScene->myGame_id].ID, gMainMenu.user_id); // 방에 입장하면 나의 아이디를 적용
+
+
+
 		EnterRoom(); // 방에 입장한다.
 
 		InvalidateRect(g_hWnd, NULL, false);
@@ -706,6 +711,10 @@ void ProcessPacket(char * ptr)
 		gRoom.RoomInfo.playercount = my_packet->playercount;
 		gRoom.RoomInfo._private = my_packet->m_private;
 		gRoom.RoomInfo.room_number = my_packet->roomnumber; // 룸안에서 방번호를 표시하기위해서 받아옴
+
+
+		strcpy_s(gRoom.RoomUI[gGameFramework.m_pScene->myGame_id].ID, gMainMenu.user_id); // 방에 입장하면 나의 아이디를 적용
+
 
 		EnterRoom(); // 방에 입장한다.
 
@@ -824,16 +833,11 @@ void ProcessPacket(char * ptr)
 			gRoom.RoomUI[i].HeroSelect = EMPTY; // 새로운 사용자가 들어오면 초기화
 			
 		}
-		
-		
+	
 
 		strcpy_s(gRoom.RoomUI[my_packet->id].ID, my_packet->DB_id);
 
 
-		for (int i = 0; i < MAX_GAMER; ++i)
-		{
-			cout << i << ends << gRoom.RoomUI[i].ID << endl;
-		}
 
 		InvalidateRect(g_hWnd, NULL, false);
 		break;
