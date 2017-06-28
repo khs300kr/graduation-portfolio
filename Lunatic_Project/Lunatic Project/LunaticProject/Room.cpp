@@ -262,13 +262,12 @@ void CRoom::L_ButtonDown(int mx, int my)
 			RoomUI[GetMyGame_id()].HeroSelect = WITCH;
 		}
 
-		else if (MouseInbox(398, 443, 624, 527, mx, my)) // Ready 버튼
-		{
+		else if (MouseInbox(398, 443, 624, 527, mx, my) && RoomUI[GetMyGame_id()].HeroSelect != EMPTY) // Ready 버튼
+		{		
 			RoomUI[GetMyGame_id()].IsReady = true; // 내꺼
 			InvalidateRect(g_hWnd, NULL, false);
-
-			SendReadyButton();
 			
+			SendReadyButton();		
 			
 		}
 	}

@@ -297,6 +297,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			gRoom.Draw(memdc, memdc2);
 		}
+
 		else if (gGameFramework.ChangeScene == LOADING)
 		{
 			SelectObject(memdc2, bmp_loading);
@@ -470,6 +471,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			gLobby.MouseMove(mx, my);
 			InvalidateRect(g_hWnd, NULL, false);
 		}
+
 		else if (gGameFramework.ChangeScene == ROOM)
 		{
 			int mx = LOWORD(lParam);

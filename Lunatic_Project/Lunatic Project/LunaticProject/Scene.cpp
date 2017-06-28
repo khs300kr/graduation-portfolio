@@ -29,6 +29,7 @@ CScene::CScene()
 
 	for(int i = 0; i < MAX_GAMER; ++i)
 		pHeroObject[i] = NULL;
+
 	for (int i = 0; i < 13; ++i)
 		pHouse1Object[i] = NULL;
 
@@ -179,7 +180,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	// 일반 쉐이더 선언부
 	/////////////////////////////////////////////////////////////////////////
 
-	m_nShaders = 25;   // Skybox포함 + 16
+	m_nShaders = 25;   // Skybox 포함 + 16 // playercount + 17
 	m_ppShaders = new CShader*[m_nShaders];
 
 	// ⑤ SkyBox용 Shader를 생성
@@ -200,194 +201,169 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			m_ppShaders[i + 1]->CreateShader(pd3dDevice);
 			m_ppShaders[i + 1]->BuildObjects(pd3dDevice);
 
-			if (pHeroObject[i]->m_Team == A_TEAM)
+			if (pHeroObject[i]->m_HeroSelect == SWORDMAN)
 			{
-				if (pHeroObject[i]->m_HeroSelect == SWORDMAN)
-				{
-					pd3dsrvTexture = NULL;
-					pSwordmanTexture = new CTexture(1, 1, 0, 0);
-					D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Swordman.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-					pSwordmanTexture->SetTexture(0, pd3dsrvTexture);
-					pSwordmanTexture->SetSampler(0, pd3dSamplerState);
-					pd3dsrvTexture->Release();
+				pd3dsrvTexture = NULL;
+				pSwordmanTexture = new CTexture(1, 1, 0, 0);
+				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Swordman.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+				pSwordmanTexture->SetTexture(0, pd3dsrvTexture);
+				pSwordmanTexture->SetSampler(0, pd3dSamplerState);
+				pd3dsrvTexture->Release();
 
+				if (pHeroObject[i]->m_Team == A_TEAM)
+				{
 					pSwordmanMeshA = new CFBXMesh(pd3dDevice, "../Data/data/SwordMan.data", 0.1f);
 					pHeroObject[i]->SetMesh(pSwordmanMeshA);
 					pHeroObject[i]->SetTexture(pSwordmanTexture);
-
 				}
-				else if (pHeroObject[i]->m_HeroSelect == HEALER)
-				{
-					pd3dsrvTexture = NULL;
-					pHealerTexture = new CTexture(1, 1, 0, 0);
-					D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Healer.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-					pHealerTexture->SetTexture(0, pd3dsrvTexture);
-					pHealerTexture->SetSampler(0, pd3dSamplerState);
-					pd3dsrvTexture->Release();
 
+				else if (pHeroObject[i]->m_Team == B_TEAM)
+				{
+					pSwordmanMeshB = new CFBXMesh(pd3dDevice, "../Data/data/SwordMan.data", 0.1f);
+					pHeroObject[i]->SetMesh(pSwordmanMeshB);
+					pHeroObject[i]->SetTexture(pSwordmanTexture);
+				}
+
+			}
+
+			else if (pHeroObject[i]->m_HeroSelect == HEALER)
+			{
+				pd3dsrvTexture = NULL;
+				pHealerTexture = new CTexture(1, 1, 0, 0);
+				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Healer.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+				pHealerTexture->SetTexture(0, pd3dsrvTexture);
+				pHealerTexture->SetSampler(0, pd3dSamplerState);
+				pd3dsrvTexture->Release();
+
+				if (pHeroObject[i]->m_Team == A_TEAM)
+				{
 					pHealerMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Healer.data", 0.1f);
 					pHeroObject[i]->SetMesh(pHealerMeshA);
 					pHeroObject[i]->SetTexture(pHealerTexture);
-
 				}
-				else if (pHeroObject[i]->m_HeroSelect == BABARIAN)
-				{
-					pd3dsrvTexture = NULL;
-					pBabarianTexture = new CTexture(1, 1, 0, 0);
-					D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Babarian.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-					pBabarianTexture->SetTexture(0, pd3dsrvTexture);
-					pBabarianTexture->SetSampler(0, pd3dSamplerState);
-					pd3dsrvTexture->Release();
 
+				else if (pHeroObject[i]->m_Team == B_TEAM)
+				{
+					pHealerMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Healer.data", 0.1f);
+					pHeroObject[i]->SetMesh(pHealerMeshB);
+					pHeroObject[i]->SetTexture(pHealerTexture);
+				}
+			}
+
+			else if (pHeroObject[i]->m_HeroSelect == BABARIAN)
+			{
+				pd3dsrvTexture = NULL;
+				pBabarianTexture = new CTexture(1, 1, 0, 0);
+				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Babarian.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+				pBabarianTexture->SetTexture(0, pd3dsrvTexture);
+				pBabarianTexture->SetSampler(0, pd3dSamplerState);
+				pd3dsrvTexture->Release();
+
+				if (pHeroObject[i]->m_Team == A_TEAM)
+				{
 					pBabarianMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Babarian.data", 0.1f);
 					pHeroObject[i]->SetMesh(pBabarianMeshA);
 					pHeroObject[i]->SetTexture(pBabarianTexture);
 				}
-				else if (pHeroObject[i]->m_HeroSelect == KNIGHT)
+
+				else if (pHeroObject[i]->m_Team == B_TEAM)
 				{
-					pd3dsrvTexture = NULL;
-					pKnightTexture = new CTexture(1, 1, 0, 0);
-					D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Knight.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-					pKnightTexture->SetTexture(0, pd3dsrvTexture);
-					pKnightTexture->SetSampler(0, pd3dSamplerState);
-					pd3dsrvTexture->Release();
-
-					pKnightMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Knight.data", 0.1f);
-					pHeroObject[i]->SetMesh(pKnightMeshA);
-					pHeroObject[i]->SetTexture(pKnightTexture);
-				}
-				else if (pHeroObject[i]->m_HeroSelect == ARCHER)
-				{
-					pd3dsrvTexture = NULL;
-					pArcherTexture = new CTexture(1, 1, 0, 0);
-					D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Archer.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-					pArcherTexture->SetTexture(0, pd3dsrvTexture);
-					pArcherTexture->SetSampler(0, pd3dSamplerState);
-					pd3dsrvTexture->Release();
-
-					pArcherMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Archer.data", 0.1f);
-					pHeroObject[i]->SetMesh(pArcherMeshA);
-					pHeroObject[i]->SetTexture(pArcherTexture);
-				}
-				else if (pHeroObject[i]->m_HeroSelect == WITCH)
-				{
-					pd3dsrvTexture = NULL;
-					pWitchTexture = new CTexture(1, 1, 0, 0);
-					D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Witch.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-					pWitchTexture->SetTexture(0, pd3dsrvTexture);
-					pWitchTexture->SetSampler(0, pd3dSamplerState);
-					pd3dsrvTexture->Release();
-
-					pWitchMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Witch.data", 0.1f);
-					pHeroObject[i]->SetMesh(pWitchMeshA);
-					pHeroObject[i]->SetTexture(pWitchTexture);
-				}
-				else if (pHeroObject[i]->m_HeroSelect == MAGICIAN)
-				{
-					pd3dsrvTexture = NULL;
-					pMagicianTexture = new CTexture(1, 1, 0, 0);
-					D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Magician.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-					pMagicianTexture->SetTexture(0, pd3dsrvTexture);
-					pMagicianTexture->SetSampler(0, pd3dSamplerState);
-					pd3dsrvTexture->Release();
-
-					pMagicianMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Magician.data", 0.1f);
-					pHeroObject[i]->SetMesh(pMagicianMeshA);
-					pHeroObject[i]->SetTexture(pMagicianTexture);
-				}
-			}
-
-			else if (pHeroObject[i]->m_Team == B_TEAM)
-			{
-				if (pHeroObject[i]->m_HeroSelect == SWORDMAN)
-				{
-					pd3dsrvTexture = NULL;
-					pSwordmanTexture = new CTexture(1, 1, 0, 0);
-					D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Swordman.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-					pSwordmanTexture->SetTexture(0, pd3dsrvTexture);
-					pSwordmanTexture->SetSampler(0, pd3dSamplerState);
-					pd3dsrvTexture->Release();
-
-					pSwordmanMeshB = new CFBXMesh(pd3dDevice, "../Data/data/SwordMan.data", 0.1f);
-					pHeroObject[i]->SetMesh(pSwordmanMeshB);
-					pHeroObject[i]->SetTexture(pSwordmanTexture);
-
-				}
-				else if (pHeroObject[i]->m_HeroSelect == HEALER)
-				{
-					pd3dsrvTexture = NULL;
-					pHealerTexture = new CTexture(1, 1, 0, 0);
-					D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Healer.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-					pHealerTexture->SetTexture(0, pd3dsrvTexture);
-					pHealerTexture->SetSampler(0, pd3dSamplerState);
-					pd3dsrvTexture->Release();
-
-					pHealerMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Healer.data", 0.1f);
-					pHeroObject[i]->SetMesh(pHealerMeshB);
-					pHeroObject[i]->SetTexture(pHealerTexture);
-
-				}
-				else if (pHeroObject[i]->m_HeroSelect == BABARIAN)
-				{
-					pd3dsrvTexture = NULL;
-					pBabarianTexture = new CTexture(1, 1, 0, 0);
-					D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Babarian.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-					pBabarianTexture->SetTexture(0, pd3dsrvTexture);
-					pBabarianTexture->SetSampler(0, pd3dSamplerState);
-					pd3dsrvTexture->Release();
-
 					pBabarianMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Babarian.data", 0.1f);
 					pHeroObject[i]->SetMesh(pBabarianMeshB);
 					pHeroObject[i]->SetTexture(pBabarianTexture);
 				}
-				else if (pHeroObject[i]->m_HeroSelect == KNIGHT)
-				{
-					pd3dsrvTexture = NULL;
-					pKnightTexture = new CTexture(1, 1, 0, 0);
-					D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Knight.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-					pKnightTexture->SetTexture(0, pd3dsrvTexture);
-					pKnightTexture->SetSampler(0, pd3dSamplerState);
-					pd3dsrvTexture->Release();
+			}
 
+			else if (pHeroObject[i]->m_HeroSelect == KNIGHT)
+			{
+				pd3dsrvTexture = NULL;
+				pKnightTexture = new CTexture(1, 1, 0, 0);
+				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Knight.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+				pKnightTexture->SetTexture(0, pd3dsrvTexture);
+				pKnightTexture->SetSampler(0, pd3dSamplerState);
+				pd3dsrvTexture->Release();
+
+				if (pHeroObject[i]->m_Team == A_TEAM)
+				{
+					pKnightMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Knight.data", 0.1f);
+					pHeroObject[i]->SetMesh(pKnightMeshA);
+					pHeroObject[i]->SetTexture(pKnightTexture);
+				}
+
+				else if (pHeroObject[i]->m_Team == B_TEAM)
+				{
 					pKnightMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Knight.data", 0.1f);
 					pHeroObject[i]->SetMesh(pKnightMeshB);
 					pHeroObject[i]->SetTexture(pKnightTexture);
 				}
-				else if (pHeroObject[i]->m_HeroSelect == ARCHER)
-				{
-					pd3dsrvTexture = NULL;
-					pArcherTexture = new CTexture(1, 1, 0, 0);
-					D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Archer.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-					pArcherTexture->SetTexture(0, pd3dsrvTexture);
-					pArcherTexture->SetSampler(0, pd3dSamplerState);
-					pd3dsrvTexture->Release();
+			}
 
+			else if (pHeroObject[i]->m_HeroSelect == ARCHER)
+			{
+				pd3dsrvTexture = NULL;
+				pArcherTexture = new CTexture(1, 1, 0, 0);
+				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Archer.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+				pArcherTexture->SetTexture(0, pd3dsrvTexture);
+				pArcherTexture->SetSampler(0, pd3dSamplerState);
+				pd3dsrvTexture->Release();
+
+				if (pHeroObject[i]->m_Team == A_TEAM)
+				{
+					pArcherMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Archer.data", 0.1f);
+					pHeroObject[i]->SetMesh(pArcherMeshA);
+					pHeroObject[i]->SetTexture(pArcherTexture);
+				}
+
+				else if (pHeroObject[i]->m_Team == B_TEAM)
+				{
 					pArcherMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Archer.data", 0.1f);
 					pHeroObject[i]->SetMesh(pArcherMeshB);
 					pHeroObject[i]->SetTexture(pArcherTexture);
 				}
-				else if (pHeroObject[i]->m_HeroSelect == WITCH)
-				{
-					pd3dsrvTexture = NULL;
-					pWitchTexture = new CTexture(1, 1, 0, 0);
-					D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Witch.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-					pWitchTexture->SetTexture(0, pd3dsrvTexture);
-					pWitchTexture->SetSampler(0, pd3dSamplerState);
-					pd3dsrvTexture->Release();
+			}
 
+			else if (pHeroObject[i]->m_HeroSelect == WITCH)
+			{
+				pd3dsrvTexture = NULL;
+				pWitchTexture = new CTexture(1, 1, 0, 0);
+				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Witch.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+				pWitchTexture->SetTexture(0, pd3dsrvTexture);
+				pWitchTexture->SetSampler(0, pd3dSamplerState);
+				pd3dsrvTexture->Release();
+
+				if (pHeroObject[i]->m_Team == A_TEAM)
+				{
+					pWitchMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Witch.data", 0.1f);
+					pHeroObject[i]->SetMesh(pWitchMeshA);
+					pHeroObject[i]->SetTexture(pWitchTexture);
+				}
+
+				else if (pHeroObject[i]->m_Team == B_TEAM)
+				{
 					pWitchMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Witch.data", 0.1f);
 					pHeroObject[i]->SetMesh(pWitchMeshB);
 					pHeroObject[i]->SetTexture(pWitchTexture);
 				}
-				else if (pHeroObject[i]->m_HeroSelect == MAGICIAN)
-				{
-					pd3dsrvTexture = NULL;
-					pMagicianTexture = new CTexture(1, 1, 0, 0);
-					D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Magician.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-					pMagicianTexture->SetTexture(0, pd3dsrvTexture);
-					pMagicianTexture->SetSampler(0, pd3dSamplerState);
-					pd3dsrvTexture->Release();
+			}
 
+			else if (pHeroObject[i]->m_HeroSelect == MAGICIAN)
+			{
+				pd3dsrvTexture = NULL;
+				pMagicianTexture = new CTexture(1, 1, 0, 0);
+				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Magician.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+				pMagicianTexture->SetTexture(0, pd3dsrvTexture);
+				pMagicianTexture->SetSampler(0, pd3dSamplerState);
+				pd3dsrvTexture->Release();
+
+				if (pHeroObject[i]->m_Team == A_TEAM)
+				{
+					pMagicianMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Magician.data", 0.1f);
+					pHeroObject[i]->SetMesh(pMagicianMeshA);
+					pHeroObject[i]->SetTexture(pMagicianTexture);
+				}
+
+				else if (pHeroObject[i]->m_Team == B_TEAM)
+				{
 					pMagicianMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Magician.data", 0.1f);
 					pHeroObject[i]->SetMesh(pMagicianMeshB);
 					pHeroObject[i]->SetTexture(pMagicianTexture);
@@ -402,6 +378,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			pHeroObject[i]->SetMaterial(pNormalMaterial);
 
 			m_ppShaders[i + 1]->AddObject(pHeroObject[i]);
+
 		}
 
 
@@ -466,7 +443,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		}
 		// 건물 위치 설정
 		pHouse1Object[0]->SetPosition(50.0f, 0.0f, -300.0f);
-		pHouse1Object[0]->SetOOBB(XMFLOAT3(-50.0f, 0.0f, -300.0f), XMFLOAT3(90.f, 100.f, 50.f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+		//pHouse1Object[0]->SetOOBB(XMFLOAT3(-50.0f, 0.0f, -300.0f), XMFLOAT3(90.f, 100.f, 50.f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 
 
 		pHouse1Object[1]->SetPosition(250.0f, 0.0f, -300.0f);
