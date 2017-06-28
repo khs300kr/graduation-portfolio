@@ -1054,7 +1054,6 @@ void SendReadyButton()
 		//
 	}
 
-	
 	cout << "캐릭터선택완료" << endl;
 }
 
