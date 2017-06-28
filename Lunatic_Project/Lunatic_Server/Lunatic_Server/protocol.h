@@ -38,8 +38,6 @@
 #define CS_MAKE_ROOM				22
 #define CS_JOIN_ROOM				23
 #define CS_QUICK_JOIN				24
-#define CS_CHAR_COLLISION			25
-#define CS_CHAR_COL_DONE			26
 
 #define SC_POS				 1
 #define SC_PUT_PLAYER		 2
@@ -65,8 +63,6 @@
 #define SC_QUICK_JOIN_FAIL	 22
 #define SC_QUICK_JOIN		 23
 #define SC_ENTER_NEWPLAYER	 24
-#define SC_CHAR_COLLISION	 25
-#define SC_CHAR_COL_DONE	 26
 
 // Client Define
 // 키보드 입력
@@ -219,18 +215,6 @@ struct cs_packet_skill_done {
 	BYTE roomnumber;
 };
 
-struct cs_packet_char_collision {
-	BYTE size;
-	BYTE type;
-	BYTE roomnumber;
-};
-
-struct cs_packet_char_colldone {
-	BYTE size;
-	BYTE type;
-	BYTE roomnumber;
-};
-
 
 // Server -> Client
 // 접속
@@ -359,18 +343,6 @@ struct sc_packet_skillE {
 };
 
 struct sc_packet_skillR {
-	BYTE size;
-	BYTE type;
-	WORD id;
-};
-
-struct sc_packet_char_collision {
-	BYTE size;
-	BYTE type;
-	WORD id;
-};
-
-struct sc_packet_char_colldone {
 	BYTE size;
 	BYTE type;
 	WORD id;

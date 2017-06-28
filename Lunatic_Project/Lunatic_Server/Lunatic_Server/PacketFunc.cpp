@@ -267,24 +267,17 @@ void SendSkillDone(int client, int object)
 	Send_Packet(client, &packet);
 }
 
-void SendCharCollision(int client, int object)
+bool Circile_Coll(int from, int to)
 {
-	sc_packet_char_collision packet;
-	packet.id = g_Clients[object].m_GameID;
-	packet.size = sizeof(packet);
-	packet.type = SC_CHAR_COLLISION;
+	// Sphere Coll
+	float Temp_radius = 30.f;
+	float deltaX = g_Clients[from].m_fX - g_Clients[to].m_fX;
+	float deltaY = g_Clients[from].m_fY - g_Clients[to].m_fY;
+	float len = sqrtf((deltaX * deltaX) + (deltaY * deltaY));
+	return (len < (Temp_radius * 2.f));
 
-	Send_Packet(client, &packet);
-}
-
-void SendCharCollDone(int client, int object)
-{
-	sc_packet_char_colldone packet;
-	packet.id = g_Clients[object].m_GameID;
-	packet.size = sizeof(packet);
-	packet.type = SC_CHAR_COL_DONE;
-
-	Send_Packet(client, &packet);
+	//return ((abs(g_Clients[from].m_iX - g_Clients[to].m_iX) < 9) &&
+	//	(abs(g_Clients[from].m_iY - g_Clients[to].m_iY) < 9));
 }
 
 void SendRemovePlayerPacket(int client, int object)
@@ -577,21 +570,6 @@ void ProcessPacket(int id, unsigned char packet[])
 			SendSkillDone(d, id);
 
 		break;
-	}
-	case CS_CHAR_COLLISION:
-	{
-		int room_number = packet[2];
-		for (auto& d : g_Room[room_number].m_GameID_list)
-			SendCharCollision(d, id);
-		break;
-	}
-	case CS_CHAR_COL_DONE:
-	{
-		int room_number = packet[2];
-		for (auto& d : g_Room[room_number].m_GameID_list)
-			SendCharCollDone(d, id);
-		break;
-
 	}
 	default: std::cout << "Unknown Packet Type from Client : " << id << std::endl;
 		while (true);
