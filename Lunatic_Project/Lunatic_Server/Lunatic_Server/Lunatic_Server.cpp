@@ -39,6 +39,27 @@ void Init_Server()
 
 }
 
+void DisconnectClient(int id)
+{
+	closesocket(g_Clients[id].m_client_socket);
+	g_Clients[id].m_bConnect = false;
+	g_Clients[id].m_bLobby = false;
+
+	for (int i = 0; i < MAX_USER; ++i)
+	{
+		if (g_Clients[i].m_bConnect == true)
+			SendRemovePlayerPacket(i, id);
+	}
+
+}
+
+void Close_Server()
+{
+	closesocket(g_ServerSocket);
+	CloseHandle(g_Hiocp);
+	WSACleanup();
+}
+
 void Accept_Thread()
 {
 	/*
@@ -87,8 +108,9 @@ void Accept_Thread()
 		// 동접 출력
 		for (int i = 0; i < MAX_USER; ++i)
 			if (g_Clients[i].m_bConnect == true) ++g_CCU;
+#if _DEBUG
 		cout << "동접 : " << g_CCU << endl;
-
+#endif
 		// 초기
 		//g_Clients[new_id].m_Animation = 0;
 
@@ -108,18 +130,6 @@ void Accept_Thread()
 	}
 }
 
-void DisconnectClient(int id)
-{
-	closesocket(g_Clients[id].m_client_socket);
-	g_Clients[id].m_bConnect = false;
-
-	for (int i = 0; i < MAX_USER; ++i)
-	{
-		if (g_Clients[i].m_bConnect == true)
-			SendRemovePlayerPacket(i, id);
-	}
-
-}
 
 void Worker_Thread()
 {
@@ -153,8 +163,10 @@ void Worker_Thread()
 		// Send, Recv 처리
 		if (over->m_Event_type == OP_RECV)
 		{
+#if _DEBUG
 			cout << "RECV from Client :" << id;
 			cout << "  IO_SIZE : " << io_size << endl;
+#endif
 			unsigned char *buf = g_Clients[id].m_recv_over.m_IOCP_buf;
 			unsigned cu_size = g_Clients[id].curr_packet_size;
 			unsigned pr_size = g_Clients[id].prev_packet_data;
@@ -212,36 +224,57 @@ void Worker_Thread()
 	}//Worker_Loop
 }
 
-void Close_Server()
-{
-	closesocket(g_ServerSocket);
-	CloseHandle(g_Hiocp);
-	WSACleanup();
-}
+//void Timer_Thread() 
+//{
+//	for (;;) {
+//		Sleep(10);			// CPU 낭비 줄이기 위해서.
+//		for (;;) {
+//			// Timer 큐는 제일 실행시간이 빨리 앞에 와야한다.
+//			timerqueue_lock.lock();
+//			if (timer_queue.size() == 0) {
+//				timerqueue_lock.unlock(); break;
+//			}
+//			Timer_Event t = timer_queue.top();
+//			if (t.exec_time > high_resolution_clock::now()) {
+//				timerqueue_lock.unlock(); break;
+//			}
+//			timer_queue.pop();
+//			timerqueue_lock.unlock();
+//
+//			OverlappedEx* over = new OverlappedEx;
+//			//if (t.event == E_MOVE) over->m_Event_type = OP_DOAI;
+//
+//			PostQueuedCompletionStatus(g_Hiocp, 1, t.object_id, &over->m_Over);
+//		}
+//	}
+//}
 
 int main()
 {
-	Init_Server();
-	Init_DB();
 	// 서버가 크래쉬 되었을때 처리할 수 있게 하는 MiniDump
 	if (!CMiniDump::Begin())
 		return 0;
 
-	// 작업자 스레드 생성.
+	Init_Server();
+	Init_DB();
+	// Thread 생성
 	vector<thread *> vWorker_threads;
 	for (int i = 0; i < 6; ++i)			// 코어4 * 1.5 = 6
 		vWorker_threads.push_back(new thread{ Worker_Thread });
-
 	thread accept_thread{ Accept_Thread };
-	accept_thread.join();
+	//thread timer_thread{ Timer_Thread };
 
+
+	// Thread join
+	accept_thread.join();
+	//timer_thread.join();
 	for (auto d : vWorker_threads)
 	{
 		d->join();
 		delete d;
 	}
 
-	CMiniDump::End();	// MiniDump를 끝냅니다.
 	Close_DB();
 	Close_Server();
+	CMiniDump::End();	// MiniDump를 끝냅니다.
 }

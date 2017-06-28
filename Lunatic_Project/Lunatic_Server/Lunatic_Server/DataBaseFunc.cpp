@@ -3,8 +3,7 @@
 #include "DataBaseFunc.h"
 #include "PacketFunc.h"
 
-char sql_buf[255];
-wchar_t sql_data[255];
+string sql_query;
 
 SQLLEN cbID{}, cbPasswrod{};
 SQLWCHAR szID[ID_LEN]{};
@@ -40,13 +39,12 @@ void Client_Login(char id[], char password[], int ci)
 	if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
 	{
 		retcode = SQLAllocHandle(SQL_HANDLE_STMT, hdbc, &hstmt);
+		string user_id{ id };
+		string user_password{ password };
 
-		sprintf(sql_buf, "EXEC dbo.client_login %s, %s", id, password);
-		MultiByteToWideChar(CP_UTF8, 0, sql_buf, strlen(sql_buf), sql_data, sizeof sql_data / sizeof *sql_data);
-		sql_data[strlen(sql_buf)] = '\0';
+		sql_query = "EXEC dbo.client_login " + user_id + user_password;
 
-
-		retcode = SQLExecDirect(hstmt, sql_data, SQL_NTS);
+		retcode = SQLExecDirect(hstmt, (wchar_t*)sql_query.c_str(), SQL_NTS);
 
 		if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
 		{

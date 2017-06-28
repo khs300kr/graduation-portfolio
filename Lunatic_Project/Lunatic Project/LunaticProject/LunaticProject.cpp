@@ -65,7 +65,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	ServerAddr.sin_port = htons(MY_SERVER_PORT);
 
 #ifdef _DEBUG
-	ServerAddr.sin_addr.s_addr = inet_addr("192.168.142.14"); // 
+	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1"); // 
 #else
 	char ipAddr[20];
 	cout << "접속할 서버의 IP주소를 입력하세요 : ";
@@ -94,7 +94,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		else
 		{
 			gGameFramework.FrameAdvance();
-		}
+		}	
 	}
 	gGameFramework.Destroy();
 

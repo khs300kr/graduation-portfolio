@@ -30,3 +30,7 @@ SQLHENV henv{};
 SQLHDBC hdbc{};
 SQLHSTMT hstmt{};
 SQLRETURN retcode{};;
+
+// Timer
+priority_queue<Timer_Event, vector<Timer_Event>, comparison> timer_queue{};
+mutex timerqueue_lock{};

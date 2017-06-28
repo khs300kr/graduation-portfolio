@@ -2,16 +2,16 @@
 #define MAX_BUFF_SIZE   4000
 #define MAX_PACKET_SIZE  255
 #define MY_SERVER_PORT  4000
-#define MAX_USER 10
-#define MAX_ROOM 6
-#define MAX_GAMER 8
+#define MAX_USER 10				// 최대 동접 수
+#define MAX_ROOM 6				// 방의 최대 갯수
+#define MAX_GAMER 8				// 방의 최대 인원
 
 // String Size
-#define MAX_STR_SIZE			50
-#define MAX_ROOMTITLE_SIZE		20
-#define MAX_ROOMPASSWORD_SIZE	10
-#define MAX_ID_LEN				10
-#define MAX_PASSWORD_LEN		10
+#define MAX_STR_SIZE			50		// 채팅 사이즈
+#define MAX_ROOMTITLE_SIZE		20		// 최대 방제 크기
+#define MAX_ROOMPASSWORD_SIZE	10		// 최대 방 비밀번호 크기
+#define MAX_ID_LEN				10		// 최대 아이디 크기
+#define MAX_PASSWORD_LEN		10		// 최대 비밀번호 크기
 
 
 #define CS_KEYDOWN_UP				1
@@ -78,6 +78,7 @@
 #define DIR_RIGHT_BACK	0x09
 #define DIR_LEFT_FRONT	0x06
 #define DIR_RIGHT_FRONT	0xA
+
 // 애니메이션
 #define ANI_IDLE		0
 #define ANI_RUN			1
@@ -92,6 +93,7 @@
 // 팀
 #define A_TEAM 1
 #define B_TEAM 2
+
 // 캐릭터
 #define EMPTY		0
 #define BABARIAN	1

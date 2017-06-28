@@ -68,3 +68,24 @@ extern SQLHENV henv;
 extern SQLHDBC hdbc;
 extern SQLHSTMT hstmt;
 extern SQLRETURN retcode;
+
+// Timer
+enum Event_Type { E_MOVE, P_HEAL, P_HIT };
+
+struct Timer_Event {
+	int object_id;											// 어떤 아이디냐?
+	high_resolution_clock::time_point exec_time;			// 언제 실행할꺼냐?
+	Event_Type event;										// 어떤 이벤트인가??
+};
+
+class comparison {
+	bool reverse;
+public:
+	comparison() {}
+	bool operator()(const Timer_Event first, const Timer_Event second) const {
+		return first.exec_time > second.exec_time;
+	}
+};
+
+extern priority_queue<Timer_Event, vector<Timer_Event>, comparison> timer_queue;
+extern mutex timerqueue_lock;

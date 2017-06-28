@@ -23,7 +23,9 @@ void Send_Packet(int client, void* packet)
 		if (WSA_IO_PENDING != err_no)
 			error_display("Error in SendPacket:", err_no);
 	}
+#if _DEBUG
 	std::cout << "Send Packet [" << packet_type << "] To Client : " << client << std::endl;
+#endif
 }
 
 // Á¢¼Ó
@@ -508,7 +510,7 @@ void ProcessPacket(int id, unsigned char packet[])
 			for (auto& id : g_Room[room_number].m_AcceptLoading_list) {
 				for (auto& d : g_Room[room_number].m_GameID_list) 
 				{
-					cout << "d : " << d << " id : " << id << endl;
+					//cout << "d : " << d << " id : " << id << endl;
 					SendPutPlayerPacket(d,id);
 	
 				}
