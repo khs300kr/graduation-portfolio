@@ -116,7 +116,7 @@ void CRoom::Draw(HDC memdc, HDC memdc2)
 		{
 			DrawBitmap(memdc, memdc2, bmp_Ready, RoomUI[i].xPos - 52, RoomUI[i].yPos - 17, 198, 128);
 			
-			/*if (RoomUI[i].Team == RoomUI[GetMyGame_id()].Team)
+			/*if (i == GetMyGame_id() || RoomUI[i].Team == RoomUI[GetMyGame_id()].Team)
 			{
 				if (RoomUI[i].HeroSelect == BABARIAN)
 					DrawBitmap(memdc, memdc2, bmp_Babarian_Select, 406, 48, 198, 128);
@@ -263,12 +263,21 @@ void CRoom::L_ButtonDown(int mx, int my)
 		}
 
 		else if (MouseInbox(398, 443, 624, 527, mx, my) && RoomUI[GetMyGame_id()].HeroSelect != EMPTY) // Ready ¹öÆ°
-		{		
+		{
+			for (int i = 0; i < MAX_GAMER; ++i)
+			{
+				if (i != GetMyGame_id())
+				{
+					if (RoomUI[i].HeroSelect == RoomUI[GetMyGame_id()].HeroSelect)
+						return;
+				}
+				
+			}
+
 			RoomUI[GetMyGame_id()].IsReady = true; // ³»²¨
 			InvalidateRect(g_hWnd, NULL, false);
-			
-			SendReadyButton();		
-			
+
+			SendReadyButton();
 		}
 	}
 
