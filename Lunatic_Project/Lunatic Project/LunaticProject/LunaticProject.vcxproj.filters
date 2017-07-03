@@ -34,9 +34,6 @@
     <Filter Include="소스 파일\99.ShaderFile">
       <UniqueIdentifier>{cf2f22ca-eb4a-4dba-b647-c86174d3077d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\03.Camera">
-      <UniqueIdentifier>{19d3994e-060e-414d-85c3-640fcf045b8b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\04.Player">
       <UniqueIdentifier>{24028fd6-2187-4f5f-95de-bb766109e138}</UniqueIdentifier>
     </Filter>
@@ -88,6 +85,9 @@
     <Filter Include="리소스 파일\Room\UI">
       <UniqueIdentifier>{eb3b874b-fba5-48e7-917f-2360cccaa888}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\02.Manager\03.Camera">
+      <UniqueIdentifier>{19d3994e-060e-414d-85c3-640fcf045b8b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -115,7 +115,7 @@
       <Filter>소스 파일\02.Manager\02.GameObjectManager\00.Base</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>소스 파일\03.Camera</Filter>
+      <Filter>소스 파일\02.Manager\03.Camera</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>소스 파일\04.Player</Filter>
@@ -195,7 +195,7 @@
       <Filter>소스 파일\02.Manager\02.GameObjectManager\00.Base</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>소스 파일\03.Camera</Filter>
+      <Filter>소스 파일\02.Manager\03.Camera</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>소스 파일\04.Player</Filter>
