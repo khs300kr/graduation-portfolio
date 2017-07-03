@@ -116,8 +116,8 @@
 struct cs_packet_login {
 	BYTE size;
 	BYTE type;
-	char id[MAX_ID_LEN];
-	char password[MAX_PASSWORD_LEN];
+	WCHAR id[MAX_ID_LEN];
+	WCHAR password[MAX_PASSWORD_LEN];
 };
 
 // ·Îºñ
@@ -144,7 +144,7 @@ struct cs_packet_lobbychat {
 	BYTE size;
 	BYTE type;
 	WCHAR message[MAX_STR_SIZE];
-	char id[MAX_ID_LEN];
+	WCHAR id[MAX_ID_LEN];
 };
 
 // ¹æ
@@ -165,7 +165,7 @@ struct cs_packet_roomchat {
 	BYTE size;
 	BYTE type;
 	WCHAR message[MAX_STR_SIZE];
-	char id[MAX_ID_LEN];
+	WCHAR id[MAX_ID_LEN];
 	BYTE roomnumber;
 };
 
@@ -288,7 +288,7 @@ struct sc_packet_allready
 struct sc_packet_enter_newplayer {
 	BYTE size;
 	BYTE type;
-	char DB_id[MAX_ID_LEN];
+	WCHAR DB_id[MAX_ID_LEN];
 	WORD id;
 };
 
@@ -352,6 +352,6 @@ struct sc_packet_chat {
 	BYTE size;
 	BYTE type;
 	WCHAR message[MAX_STR_SIZE];
-	char DB_id[MAX_ID_LEN];
+	WCHAR DB_id[MAX_ID_LEN];
 };
 #pragma pack (pop)

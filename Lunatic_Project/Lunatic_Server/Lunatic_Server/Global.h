@@ -21,7 +21,7 @@ struct OverlappedEx
 struct CLIENT
 {
 	// DB_ID
-	char			m_ID[MAX_ID_LEN];
+	WCHAR			m_ID[MAX_ID_LEN];
 	// Room
 	bool			m_bLobby;
 	BYTE			m_GameID;

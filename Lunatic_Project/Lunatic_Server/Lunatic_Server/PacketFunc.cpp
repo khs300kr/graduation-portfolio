@@ -54,7 +54,7 @@ void SendChatLobby(int client, int object, WCHAR str[MAX_STR_SIZE])
 	packet.size = sizeof(packet);
 	packet.type = SC_LOBBY_CHAT;
 	wcscpy_s(packet.message, str);
-	strcpy(packet.DB_id, g_Clients[object].m_ID);
+	wcscpy_s(packet.DB_id, g_Clients[object].m_ID);
 
 	Send_Packet(client, &packet);
 }
@@ -129,7 +129,7 @@ void SendChatRoom(int client, int object, WCHAR str[MAX_STR_SIZE])
 	packet.size = sizeof(packet);
 	packet.type = SC_ROOM_CHAT;
 	wcscpy_s(packet.message, str);
-	strcpy(packet.DB_id, g_Clients[object].m_ID);
+	wcscpy_s(packet.DB_id, g_Clients[object].m_ID);
 
 	Send_Packet(client, &packet);
 }
@@ -161,7 +161,7 @@ void SendEnterNewPlayer(int client, int object)
 	packet.id = g_Clients[object].m_GameID;
 	packet.size = sizeof(packet);
 	packet.type = SC_ENTER_NEWPLAYER;
-	strcpy_s(packet.DB_id, g_Clients[object].m_ID);
+	wcscpy_s(packet.DB_id, g_Clients[object].m_ID);
 
 	Send_Packet(client, &packet);
 }
@@ -302,7 +302,7 @@ void ProcessPacket(int id, unsigned char packet[])
 	case CS_LOGIN:
 	{
 		cs_packet_login* my_packet = reinterpret_cast<cs_packet_login*>(packet);
-		strcpy_s(g_Clients[id].m_ID, my_packet->id);
+		wcscpy_s(g_Clients[id].m_ID, my_packet->id);
 		g_Clients[id].vl_lock.lock();
 		Client_Login(my_packet->id, my_packet->password, id);
 		g_Clients[id].vl_lock.unlock();

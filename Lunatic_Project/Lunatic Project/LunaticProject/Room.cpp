@@ -216,7 +216,7 @@ void CRoom::Draw(HDC memdc, HDC memdc2)
 
 	for (int i = 0; i < MAX_GAMER; ++i)
 	{
-		TextOutA(memdc, RoomUI[i].xPos + 22, RoomUI[i].yPos + 111, RoomUI[i].ID, strlen(RoomUI[i].ID));
+		TextOut(memdc, RoomUI[i].xPos + 22, RoomUI[i].yPos + 111, (LPCWSTR)RoomUI[i].ID, wcslen(RoomUI[i].ID));
 	}
 	
 }

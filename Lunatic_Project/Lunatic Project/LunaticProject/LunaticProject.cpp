@@ -201,7 +201,7 @@ LRESULT CALLBACK EditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 						DWORD iobyte;
 						my_packet->type = CS_LOBBY_CHAT;
 						wcscpy_s(my_packet->message, gLobby.input);
-						strcpy_s(my_packet->id, gMainMenu.user_id);
+						wcscpy_s(my_packet->id, gMainMenu.user_id);
 						WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 
 						SetWindowTextW(hWnd, '\0');
@@ -223,7 +223,7 @@ LRESULT CALLBACK EditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 					DWORD iobyte;
 					my_packet->type = CS_ROOM_CHAT;
 					wcscpy_s(my_packet->message, gRoom.input);
-					strcpy_s(my_packet->id, gMainMenu.user_id);
+					wcscpy_s(my_packet->id, gMainMenu.user_id);
 					my_packet->roomnumber = gRoom.RoomInfo.room_number;
 					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 
@@ -430,7 +430,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case VK_RETURN:
 			if (gGameFramework.ChangeScene == MAINMENU)
 			{
-				if (strlen(gMainMenu.user_id) != 0 && strlen(gMainMenu.user_password) != 0)
+				if (wcslen(gMainMenu.user_id) != 0 && wcslen(gMainMenu.user_password) != 0)
 					{
 						// server send (Ready)
 						cs_packet_login *my_packet = reinterpret_cast<cs_packet_login *>(send_buffer);
@@ -438,8 +438,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						send_wsabuf.len = sizeof(cs_packet_login);
 						DWORD iobyte;
 						my_packet->type = CS_LOGIN;
-						strcpy_s(my_packet->id, gMainMenu.user_id);
-						strcpy_s(my_packet->password, gMainMenu.user_password);
+						wcscpy_s(my_packet->id, gMainMenu.user_id);
+						wcscpy_s(my_packet->password, gMainMenu.user_password);
 						WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 						//
 					}
@@ -606,7 +606,7 @@ void ProcessPacket(char * ptr)
 		
 		/*chat_id = L"client[" + to_wstring(id);
 		chat_id += L"]: ";*/
-		string s = my_packet->DB_id;
+		wstring s = my_packet->DB_id;
 		s.push_back(' ');
 		s.push_back(':');
 		s.push_back(' ');
@@ -666,7 +666,7 @@ void ProcessPacket(char * ptr)
 		gRoom.RoomInfo.room_number = my_packet->roomnumber; // 룸안에서 방번호를 표시하기위해서 받아옴
 
 
-		strcpy_s(gRoom.RoomUI[gGameFramework.m_pScene->myGame_id].ID, gMainMenu.user_id); // 방에 입장하면 나의 아이디를 적용
+		wcscpy_s(gRoom.RoomUI[gGameFramework.m_pScene->myGame_id].ID, gMainMenu.user_id); // 방에 입장하면 나의 아이디를 적용
 
 
 
@@ -722,7 +722,7 @@ void ProcessPacket(char * ptr)
 		gRoom.RoomInfo.room_number = my_packet->roomnumber; // 룸안에서 방번호를 표시하기위해서 받아옴
 
 
-		strcpy_s(gRoom.RoomUI[gGameFramework.m_pScene->myGame_id].ID, gMainMenu.user_id); // 방에 입장하면 나의 아이디를 적용
+		wcscpy_s(gRoom.RoomUI[gGameFramework.m_pScene->myGame_id].ID, gMainMenu.user_id); // 방에 입장하면 나의 아이디를 적용
 
 
 		EnterRoom(); // 방에 입장한다.
@@ -742,7 +742,7 @@ void ProcessPacket(char * ptr)
 
 		/*chat_id = L"client[" + to_wstring(id);
 		chat_id += L"]: ";*/
-		string s = my_packet->id;
+		wstring s = my_packet->id;
 		s.push_back(' ');
 		s.push_back(':');
 		s.push_back(' ');
@@ -845,7 +845,7 @@ void ProcessPacket(char * ptr)
 		}
 	
 
-		strcpy_s(gRoom.RoomUI[my_packet->id].ID, my_packet->DB_id);
+		wcscpy_s(gRoom.RoomUI[my_packet->id].ID, my_packet->DB_id);
 
 
 

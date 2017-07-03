@@ -45,9 +45,9 @@ void CMainMenu::Draw(HDC memdc, HDC memdc2)
 	hOldFont = (HFONT)SelectObject(memdc, hFont);
 	SetBkMode(memdc, TRANSPARENT);
 
-	TextOutA(memdc, 435, 330, user_id, strlen(user_id));
+	TextOut(memdc, 435, 330, (LPCWSTR)user_id, wcslen(user_id));
 
-	for (int i = 0; i < strlen(user_password); ++i)
+	for (int i = 0; i < wcslen(user_password); ++i)
 	{
 		TextOut(memdc, 435 + (i * 15), 373, L"*", 1);
 	}
@@ -74,7 +74,7 @@ void CMainMenu::ID_PASSWORD_Input(WPARAM wParam)
 {
 	if (LoginChat == RNAME) // 아이디 입력창 활성화
 	{
-		int len = strlen(user_id);
+		int len = wcslen(user_id);
 
 		if (wParam == VK_BACK)
 		{
@@ -104,7 +104,7 @@ void CMainMenu::ID_PASSWORD_Input(WPARAM wParam)
 	}
 	else if (LoginChat == RPASSWORD)
 	{
-		int len = strlen(user_password);
+		int len = wcslen(user_password);
 
 
 		if (wParam == VK_BACK)
@@ -141,7 +141,7 @@ void CMainMenu::L_ButtonDown(HWND hChat, int mx, int my)
 
 	if (MouseInbox(441, 422, 532, 459, mx, my)) // 로그인 확인 버튼
 	{
-		if (strlen(user_id) != 0 && strlen(user_password) != 0)
+		if (wcslen(user_id) != 0 && wcslen(user_password) != 0)
 		{
 			// server send (Ready)
 			cs_packet_login *my_packet = reinterpret_cast<cs_packet_login *>(send_buffer);
@@ -149,8 +149,8 @@ void CMainMenu::L_ButtonDown(HWND hChat, int mx, int my)
 			send_wsabuf.len = sizeof(cs_packet_login);
 			DWORD iobyte;
 			my_packet->type = CS_LOGIN;
-			strcpy_s(my_packet->id, user_id);
-			strcpy_s(my_packet->password, user_password);
+			wcscpy_s(my_packet->id, user_id);
+			wcscpy_s(my_packet->password, user_password);
 			WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 			//
 		}

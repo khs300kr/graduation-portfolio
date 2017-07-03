@@ -3,7 +3,7 @@
 #include "DataBaseFunc.h"
 #include "PacketFunc.h"
 
-string sql_query;
+wstring sql_query;
 
 SQLLEN cbID{}, cbPasswrod{};
 SQLWCHAR szID[ID_LEN]{};
@@ -30,7 +30,7 @@ void Init_DB(void)
 	}
 }
 
-void Client_Login(char id[], char password[], int ci)
+void Client_Login(WCHAR id[], WCHAR password[], int ci)
 {
 	// Connect to data source  
 	retcode = SQLConnect(hdbc, (SQLWCHAR*)L"Lunatic_Project", SQL_NTS, (SQLWCHAR*)NULL, 0, NULL, 0);
@@ -39,10 +39,11 @@ void Client_Login(char id[], char password[], int ci)
 	if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
 	{
 		retcode = SQLAllocHandle(SQL_HANDLE_STMT, hdbc, &hstmt);
-		string user_id{ id };
-		string user_password{ password };
 
-		sql_query = "EXEC dbo.client_login " + user_id + user_password;
+		wstring user_id{ id };
+		wstring user_password{ password };
+
+		sql_query = L"EXEC dbo.client_login " + user_id + L"," + user_password;
 
 		retcode = SQLExecDirect(hstmt, (wchar_t*)sql_query.c_str(), SQL_NTS);
 
