@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Lunatic_Server\Lunatic_Server\protocol.h" />
+    <ClInclude Include="Archer.h" />
     <ClInclude Include="Babarian.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="HeroManager.h" />
@@ -100,8 +101,10 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Healer.h" />
+    <ClInclude Include="Knight.h" />
     <ClInclude Include="Lobby.h" />
     <ClInclude Include="LunaticProject.h" />
+    <ClInclude Include="Magician.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Player.h" />
@@ -116,8 +119,10 @@
     <ClInclude Include="SwordMan.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Witch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Archer.cpp" />
     <ClCompile Include="Babarian.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="HeroManager.cpp" />
@@ -129,8 +134,10 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="Healer.cpp" />
+    <ClCompile Include="Knight.cpp" />
     <ClCompile Include="Lobby.cpp" />
     <ClCompile Include="LunaticProject.cpp" />
+    <ClCompile Include="Magician.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -146,6 +153,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Witch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Data\Menu\Game\loading.bmp" />

@@ -177,6 +177,18 @@
     <ClInclude Include="SwordMan.h">
       <Filter>소스 파일\01.HeroManager</Filter>
     </ClInclude>
+    <ClInclude Include="Knight.h">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Witch.h">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Magician.h">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Archer.h">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -252,6 +264,18 @@
       <Filter>소스 파일\00.Main\03.UI</Filter>
     </ClCompile>
     <ClCompile Include="SwordMan.cpp">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Knight.cpp">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Magician.cpp">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Archer.cpp">
+      <Filter>소스 파일\01.HeroManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Witch.cpp">
       <Filter>소스 파일\01.HeroManager</Filter>
     </ClCompile>
   </ItemGroup>
