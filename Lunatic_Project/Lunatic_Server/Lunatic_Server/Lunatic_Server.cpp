@@ -126,7 +126,7 @@ void Accept_Thread()
 		WSARecv(client_sock, &g_Clients[new_id].m_recv_over.m_Wsabuf, 1,
 			NULL, &recv_flag, &g_Clients[new_id].m_recv_over.m_Over, NULL);
 
-		//SendIDPlayer(new_id, new_id);
+		SendIDPlayer(new_id, new_id);
 	}
 }
 
@@ -256,7 +256,7 @@ int main()
 		return 0;
 
 	Init_Server();
-	Init_DB();
+	//Init_DB();
 	// Thread 생성
 	vector<thread *> vWorker_threads;
 	for (int i = 0; i < 6; ++i)			// 코어4 * 1.5 = 6
@@ -274,7 +274,7 @@ int main()
 		delete d;
 	}
 
-	Close_DB();
+	//Close_DB();
 	Close_Server();
 	CMiniDump::End();	// MiniDump를 끝냅니다.
 }
