@@ -565,11 +565,11 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		break;
 	}
 	return false;
-}
-
+}	
 
 void CScene::ProcessInput()
 {
+
 	if (activate)
 	{
 		if (!pHeroObject[myGame_id]->bHeroAttack && !pHeroObject[myGame_id]->bHeroQ && !pHeroObject[myGame_id]->bHeroW && !pHeroObject[myGame_id]->bHeroE && !pHeroObject[myGame_id]->bHeroR)
@@ -577,7 +577,6 @@ void CScene::ProcessInput()
 			if (KEY_DOWN(VK_UP) && !UpKeyDown) {
 				UpKeyDown = true;
 				dwDirection |= DIR_BACK;
-
 				if (dwDirection) SendMovePacket(CS_KEYDOWN_UP);
 			}
 			if (KEY_DOWN(VK_DOWN) && !DownKeyDown) {
@@ -851,7 +850,7 @@ void CScene::SendMovePacket(BYTE type)
 	my_packet->z = pHeroObject[myGame_id]->GetPosition().z;
 	my_packet->roomnumber = MyRoomNumber;
 
-	
+	currentDateTime();
 	WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 }
 

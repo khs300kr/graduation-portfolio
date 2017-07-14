@@ -17,6 +17,15 @@ void error_display(char *msg, int err_no)
 	while (true);
 }
 
+void currentDateTime() 
+{
+	SYSTEMTIME st;
+	char currentTime[84] = "";
+	GetLocalTime(&st);
+	sprintf_s(currentTime, "%d/%d/%d %d:%d:%d %d", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+	cout << "Current Time : " << currentTime << endl;
+}
+
 // Server
 HANDLE g_Hiocp{};
 SOCKET g_ServerSocket{};

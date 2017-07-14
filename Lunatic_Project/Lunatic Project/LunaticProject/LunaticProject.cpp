@@ -880,6 +880,7 @@ void ProcessPacket(char * ptr)
 
 	case SC_POS:
 	{
+		currentDateTime();
 		sc_packet_pos *my_packet = reinterpret_cast<sc_packet_pos *>(ptr);
 		int id = my_packet->id;
 		if (id == gGameFramework.m_pScene->myGame_id) {

@@ -52,6 +52,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <chrono>
 
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
@@ -59,6 +60,7 @@
 #include <DirectXCollision.h>
 
 using namespace std;
+using namespace chrono;
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
@@ -100,3 +102,5 @@ using namespace DirectX::PackedVector;
 #define ROOM 2
 #define GAME 3
 #define LOADING 4
+
+void currentDateTime();

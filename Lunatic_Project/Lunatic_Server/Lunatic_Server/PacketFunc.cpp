@@ -514,14 +514,14 @@ void ProcessPacket(int id, unsigned char packet[])
 
 	// ¿Œ ∞‘¿”
 	// (Move)
-	case CS_KEYDOWN_UP:		g_Clients[id].m_Direction |= DIR_BACK;	Do_move(id, packet);	break;
-	case CS_KEYDOWN_DOWN:	g_Clients[id].m_Direction |= DIR_FRONT;	Do_move(id, packet);	break;
-	case CS_KEYDOWN_LEFT:	g_Clients[id].m_Direction |= DIR_LEFT;	Do_move(id, packet);	break;
-	case CS_KEYDOWN_RIGHT:	g_Clients[id].m_Direction |= DIR_RIGHT;	Do_move(id, packet);	break;
-	case CS_KEYUP_UP:		g_Clients[id].m_Direction ^= DIR_BACK;	Do_move(id, packet);	break;
-	case CS_KEYUP_DOWN:		g_Clients[id].m_Direction ^= DIR_FRONT;	Do_move(id, packet);	break;
-	case CS_KEYUP_LEFT:		g_Clients[id].m_Direction ^= DIR_LEFT;	Do_move(id, packet);	break;
-	case CS_KEYUP_RIGHT:	g_Clients[id].m_Direction ^= DIR_RIGHT;	Do_move(id, packet);	break;
+	case CS_KEYDOWN_UP:		currentDateTime(); g_Clients[id].m_Direction |= DIR_BACK;	Do_move(id, packet);	break;
+	case CS_KEYDOWN_DOWN:	currentDateTime(); g_Clients[id].m_Direction |= DIR_FRONT;	Do_move(id, packet);	break;
+	case CS_KEYDOWN_LEFT:	currentDateTime(); g_Clients[id].m_Direction |= DIR_LEFT;	Do_move(id, packet);	break;
+	case CS_KEYDOWN_RIGHT:	currentDateTime(); g_Clients[id].m_Direction |= DIR_RIGHT;	Do_move(id, packet);	break;
+	case CS_KEYUP_UP:		currentDateTime(); g_Clients[id].m_Direction ^= DIR_BACK;	Do_move(id, packet);	break;
+	case CS_KEYUP_DOWN:		currentDateTime(); g_Clients[id].m_Direction ^= DIR_FRONT;	Do_move(id, packet);	break;
+	case CS_KEYUP_LEFT:		currentDateTime(); g_Clients[id].m_Direction ^= DIR_LEFT;	Do_move(id, packet);	break;
+	case CS_KEYUP_RIGHT:	currentDateTime(); g_Clients[id].m_Direction ^= DIR_RIGHT;	Do_move(id, packet);	break;
 	// (Att)
 	case CS_ATTACK:
 	{

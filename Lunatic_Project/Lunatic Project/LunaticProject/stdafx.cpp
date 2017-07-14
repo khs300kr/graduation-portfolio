@@ -6,3 +6,10 @@
 
 // TODO: 필요한 추가 헤더는
 // 이 파일이 아닌 STDAFX.H에서 참조합니다.
+void currentDateTime() {
+	SYSTEMTIME st;
+	char currentTime[84] = "";
+	GetLocalTime(&st);
+	sprintf_s(currentTime, "%d/%d/%d %d:%d:%d %d", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+	cout << "Current Time : " << currentTime << endl;
+}

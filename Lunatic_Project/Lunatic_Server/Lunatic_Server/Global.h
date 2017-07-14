@@ -1,6 +1,7 @@
 #pragma once
 
 void error_display(char *msg, int err_no);
+void currentDateTime();
 enum OPTYPE { OP_SEND, OP_RECV };
 
 struct OverlappedEx
