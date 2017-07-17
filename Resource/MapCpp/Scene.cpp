@@ -33,6 +33,9 @@ CScene::CScene()
 	for (int i = 0; i < 13; ++i)
 		pHouse1Object[i] = NULL;
 
+	for (int i = 0; i < 6; ++i)
+		pWallObject[i] = NULL;
+
 	pNormalMaterial = NULL;
 	
 	pHealerTexture = NULL;
@@ -145,6 +148,15 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	pCityhallTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 
+	// 벽
+	pd3dsrvTexture = NULL;
+	CTexture *pWallTexture = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/building/wall/Wall.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pWallTexture->SetTexture(0, pd3dsrvTexture);
+	pWallTexture->SetSampler(0, pd3dSamplerState);
+	pd3dsrvTexture->Release();
+
+
 	//테스트
 	pd3dsrvTexture = NULL;
 	pTestTexture = new CTexture(1, 1, 0, 0);
@@ -175,12 +187,12 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	CMesh *pHouse1Mesh = new CFBXMesh(pd3dDevice, "../Data/building/house1/house1.data", 1.0f);
 	CMesh *pHouse2Mesh = new CFBXMesh(pd3dDevice, "../Data/building/house2/house2.data", 0.7f);
 	CMesh *pCityhallMesh = new CFBXMesh(pd3dDevice, "../Data/building/cityhall/cityhall.data", 1.f);
-
+	CMesh *pWallMesh = new CFBXMesh(pd3dDevice, "../Data/building/wall/Wall.data", 5.f);
 	
 	// 일반 쉐이더 선언부
 	/////////////////////////////////////////////////////////////////////////
 
-	m_nShaders = 25 - 1;   // Skybox 포함 + 16 // playercount + 17
+	m_nShaders = 24 + 24 + 40; //24 + 24   // Skybox 포함 + 16 // playercount + 17  = 24 // + 벽 12 + 12 + 40
 	m_ppShaders = new CShader*[m_nShaders];
 
 	// ⑤ SkyBox용 Shader를 생성
@@ -422,7 +434,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 
 		// 건물 쉐이더 생성
-		for (int i = 12; i < m_nShaders; ++i)
+		for (int i = 12; i < m_nShaders ; ++i)
 		{
 			m_ppShaders[i] = new CTexturedIlluminatedShader(1);
 			m_ppShaders[i]->CreateShader(pd3dDevice);
@@ -466,11 +478,104 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		//pHouse1Object[7]->SetPosition(-150.0f, 0.0f, 0.0f);
 
 		// 쉐이더에 저장
-		for (int i = 12; i < m_nShaders; ++i) // 24
+		for (int i = 12; i < m_nShaders - 64; ++i) // 24
 		{
 			m_ppShaders[i]->AddObject(pHouse1Object[i - 12]);
 		}
-	
+
+		//// 벽 쉐이더 생성
+		//for (int i = 24; i < m_nShaders; ++i)
+		//{
+		//	m_ppShaders[i] = new CTexturedIlluminatedShader(1);
+		//	m_ppShaders[i]->CreateShader(pd3dDevice);
+		//	m_ppShaders[i]->BuildObjects(pd3dDevice);
+
+		//}
+
+		// 벽 오브젝트 생성
+		
+		for (int i = 0; i < 64; ++i)
+		{
+			pWallObject[i] = new CGameObject(1);
+			pWallObject[i]->SetMesh(pWallMesh);
+			pWallObject[i]->SetMaterial(pNormalMaterial);
+			pWallObject[i]->SetTexture(pWallTexture);
+			pWallObject[i]->Rotate(-90.0f, 0.0f, 0.0f);
+			
+		}
+		// 벽 위치 설정
+		// 아군 리스폰 오른쪽 벽
+		pWallObject[0]->SetPosition(135.0f, 0.0f, -500.0f);
+		pWallObject[1]->SetPosition(185.0f, 0.0f, -500.0f);
+		pWallObject[2]->SetPosition(235.0f, 0.0f, -500.0f);
+		pWallObject[3]->SetPosition(285.0f, 0.0f, -500.0f);
+		pWallObject[4]->SetPosition(335.0f, 0.0f, -500.0f);
+		pWallObject[5]->SetPosition(385.0f, 0.0f, -500.0f);
+
+		// 아군 리스폰 왼쪽 벽
+		pWallObject[6]->SetPosition(-135.0f, 0.0f, -500.0f);
+		pWallObject[7]->SetPosition(-185.0f, 0.0f, -500.0f);
+		pWallObject[8]->SetPosition(-235.0f, 0.0f, -500.0f);
+		pWallObject[9]->SetPosition(-285.0f, 0.0f, -500.0f);
+		pWallObject[10]->SetPosition(-335.0f, 0.0f, -500.0f);
+		pWallObject[11]->SetPosition(-385.0f, 0.0f, -500.0f);
+
+		// 적군 리스폰 오른쪽 벽
+		pWallObject[12]->SetPosition(135.0f, 0.0f, 500.0f);
+		pWallObject[13]->SetPosition(185.0f, 0.0f, 500.0f);
+		pWallObject[14]->SetPosition(235.0f, 0.0f, 500.0f);
+		pWallObject[15]->SetPosition(285.0f, 0.0f, 500.0f);
+		pWallObject[16]->SetPosition(335.0f, 0.0f, 500.0f);
+		pWallObject[17]->SetPosition(385.0f, 0.0f, 500.0f);
+
+		// 적군 리스폰 왼쪽 벽
+		pWallObject[18]->SetPosition(-135.0f, 0.0f, 500.0f);
+		pWallObject[19]->SetPosition(-185.0f, 0.0f, 500.0f);
+		pWallObject[20]->SetPosition(-235.0f, 0.0f, 500.0f);
+		pWallObject[21]->SetPosition(-285.0f, 0.0f, 500.0f);
+		pWallObject[22]->SetPosition(-335.0f, 0.0f, 500.0f);
+		pWallObject[23]->SetPosition(-385.0f, 0.0f, 500.0f);
+
+		// 오른쪽 벽
+		/*pWallObject[24]->SetPosition(435.0f, 0.0f, -450.0f);
+		pWallObject[24]->Rotate(0.0f, 90.0f, 0.0f);
+		pWallObject[25]->SetPosition(435.0f, 0.0f, -450.0f);
+		pWallObject[25]->Rotate(0.0f, 90.0f, 0.0f);
+		pWallObject[26]->SetPosition(435.0f, 0.0f, -450.0f);
+		pWallObject[26]->Rotate(0.0f, 90.0f, 0.0f);
+		pWallObject[27]->SetPosition(435.0f, 0.0f, -450.0f);
+		pWallObject[27]->Rotate(0.0f, 90.0f, 0.0f);
+		pWallObject[28]->SetPosition(435.0f, 0.0f, -450.0f);
+		pWallObject[28]->Rotate(0.0f, 90.0f, 0.0f);
+		pWallObject[29]->SetPosition(435.0f, 0.0f, -450.0f);
+		pWallObject[29]->Rotate(0.0f, 90.0f, 0.0f);
+		pWallObject[30]->SetPosition(435.0f, 0.0f, -450.0f);
+		pWallObject[30]->Rotate(0.0f, 90.0f, 0.0f);
+		pWallObject[31]->SetPosition(435.0f, 0.0f, -450.0f);
+		pWallObject[31]->Rotate(0.0f, 90.0f, 0.0f);*/
+
+
+		int j = 0;
+		for (int i = 24; i < 24 + 20; ++ i)
+		{
+			pWallObject[i]->SetPosition(415.0f, 0.0f, -475.0f + j );
+			pWallObject[i]->Rotate(-90.0f, 90.0f, 0.0f);
+			j += 50;
+		}
+		// 왼쪽 벽
+		int k = 0;
+		for (int i = 44; i < 44 + 20; ++i)
+		{
+			pWallObject[i]->SetPosition(-415.0f, 0.0f, -475.0f + k);
+			pWallObject[i]->Rotate(-90.0f, 90.0f, 0.0f);
+			k += 50;
+		}
+
+		// 쉐이더에 저장
+		for (int i = 24; i < m_nShaders; ++i) // 88
+		{
+			m_ppShaders[i]->AddObject(pWallObject[i - 24]);
+		}
    }
    //m_pTerrain = new CHeightMapTerrain(pd3dDevice, _T("Data\\HeightMap.raw"), 257, 257, 17, 17, d3dxvScale, d3dxColor);
    //m_pTerrain->SetMaterial(pNormalMaterial);
