@@ -13,3 +13,5 @@ extern WSABUF	send_wsabuf;
 extern char 	send_buffer[BUF_SIZE];
 extern bool activate;
 extern bool HeroDataReceive;
+extern int g_ping_send;
+extern int g_ping_recv;

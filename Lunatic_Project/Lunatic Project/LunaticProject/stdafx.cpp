@@ -11,5 +11,6 @@ void currentDateTime() {
 	char currentTime[84] = "";
 	GetLocalTime(&st);
 	sprintf_s(currentTime, "%d/%d/%d %d:%d:%d %d", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+	g_ping_send = (st.wSecond * 1000) + st.wMilliseconds;
 	cout << "Current Time : " << currentTime << endl;
 }

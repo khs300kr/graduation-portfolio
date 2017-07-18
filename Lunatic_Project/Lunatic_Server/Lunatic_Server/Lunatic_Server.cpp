@@ -20,7 +20,7 @@ void Init_Server()
 
 	// Nagle Algorithm
 	BOOL NoDelay = TRUE;
-	setsockopt(g_ServerSocket, IPPROTO_TCP, TCP_NODELAY, (const char FAR *)&NoDelay, sizeof(NoDelay));
+	if (setsockopt(g_ServerSocket, IPPROTO_TCP, TCP_NODELAY, (const char*)&NoDelay, sizeof(NoDelay)) == SOCKET_ERROR) error_display("setsockopt", WSAGetLastError());
 
 	// bind()
 	SOCKADDR_IN ServerAddr;
@@ -29,7 +29,6 @@ void Init_Server()
 	ServerAddr.sin_port = htons(MY_SERVER_PORT);
 	ServerAddr.sin_addr.s_addr = INADDR_ANY;
 	::bind(g_ServerSocket, reinterpret_cast<sockaddr *>(&ServerAddr), sizeof(ServerAddr));
-
 	listen(g_ServerSocket, 5);
 	for (int i = 0; i < MAX_USER; ++i)
 	{

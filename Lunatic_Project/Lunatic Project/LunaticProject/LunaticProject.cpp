@@ -880,7 +880,14 @@ void ProcessPacket(char * ptr)
 
 	case SC_POS:
 	{
-		currentDateTime();
+		//currentDateTime();
+		SYSTEMTIME st;
+		char currentTime[84] = "";
+		GetLocalTime(&st);
+		sprintf_s(currentTime, "%d/%d/%d %d:%d:%d %d", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+		g_ping_recv = (st.wSecond * 1000) + st.wMilliseconds;
+		cout << "PING : " << g_ping_recv - g_ping_send << endl;
+
 		sc_packet_pos *my_packet = reinterpret_cast<sc_packet_pos *>(ptr);
 		int id = my_packet->id;
 		if (id == gGameFramework.m_pScene->myGame_id) {

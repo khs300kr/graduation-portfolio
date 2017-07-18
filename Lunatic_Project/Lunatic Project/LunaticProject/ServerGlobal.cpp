@@ -13,3 +13,5 @@ WSABUF	send_wsabuf{};
 char 	send_buffer[BUF_SIZE]{};
 bool activate{};
 bool HeroDataReceive = false;
+int g_ping_send{};
+int g_ping_recv{};
