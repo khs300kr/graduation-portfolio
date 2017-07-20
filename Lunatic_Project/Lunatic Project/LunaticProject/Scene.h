@@ -132,13 +132,13 @@ public:
 
 	//bool GetCol() { return ColBox; }
 
-	bool Leftcollision(CHeroManager* Object1, CHeroManager* Object2);
+	bool Leftcollision(CHeroManager* Object1, CHeroManager* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2);
 
-	bool Rightcollision(CHeroManager* Object1, CHeroManager* Object2);
+	bool Rightcollision(CHeroManager* Object1, CHeroManager* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2);
 
-	bool Upcollision(CHeroManager* Object1, CHeroManager* Object2);
+	bool Upcollision(CHeroManager* Object1, CHeroManager* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2);
 
-	bool Downcollision(CHeroManager* Object1, CHeroManager* Object2);
+	bool Downcollision(CHeroManager* Object1, CHeroManager* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2);
 
 public:
 

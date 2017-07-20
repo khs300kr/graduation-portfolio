@@ -389,11 +389,12 @@ void CGameFramework::ProcessInput()
 
 
 
+				// 클라이언트 캐릭터 충돌부분!! size 3.0 <- 요거 나중에 Define해야함
 				for (int i = 0; i < MAX_GAMER; ++i)
 				{
 					if (i != m_pScene->myGame_id)
 					{
-						if (m_pScene->Rightcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i]))
+						if (m_pScene->Rightcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i], 3.0f, 3.0f, 3.0f, 3.0f))
 						{
 							m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x - m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed(), m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
 							m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
@@ -401,21 +402,21 @@ void CGameFramework::ProcessInput()
 							
 							break;
 						}
-						else if (m_pScene->Leftcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i]))
+						else if (m_pScene->Leftcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i], 3.0f, 3.0f, 3.0f, 3.0f))
 						{
 							m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x + m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed(), m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
 							m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
 							//char_collision_send();
 							break;
 						}
-						else if (m_pScene->Upcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i]))
+						else if (m_pScene->Upcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i], 3.0f, 3.0f, 3.0f, 3.0f))
 						{
 							m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z + m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
 							m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
 							//char_collision_send();
 							break;
 						}
-						else if (m_pScene->Downcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i]))
+						else if (m_pScene->Downcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i], 3.0f, 3.0f, 3.0f, 3.0f))
 						{
 							m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z - m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
 							m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());

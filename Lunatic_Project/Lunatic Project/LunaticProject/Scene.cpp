@@ -981,17 +981,17 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->Render(pd3dDeviceContext, pCamera);
 }
 
-bool CScene::Rightcollision(CHeroManager* Object1, CHeroManager* Object2)
+bool CScene::Rightcollision(CHeroManager* Object1, CHeroManager* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2)
 {
-	float Left = (Object1->GetPosition().x - 3.0f);
-	float Top = (Object1->GetPosition().z - 3.0f);
-	float Right = (Object1->GetPosition().x + 3.0f);
-	float Bottom = (Object1->GetPosition().z + 3.0f);
+	float Left = (Object1->GetPosition().x - sizeX1);
+	float Top = (Object1->GetPosition().z - sizeZ1);
+	float Right = (Object1->GetPosition().x + sizeX1);
+	float Bottom = (Object1->GetPosition().z + sizeZ1);
 
-	float Left2 = (Object2->GetPosition().x - 3.0f);
-	float Top2 = (Object2->GetPosition().z - 3.0f);
-	float Right2 = (Object2->GetPosition().x - 3.0f);
-	float Bottom2 = (Object2->GetPosition().z + 3.0f);
+	float Left2 = (Object2->GetPosition().x - sizeX2);
+	float Top2 = (Object2->GetPosition().z - sizeZ2);
+	float Right2 = (Object2->GetPosition().x - sizeX2);
+	float Bottom2 = (Object2->GetPosition().z + sizeZ2);
 
 	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
 		return true;
@@ -1000,18 +1000,18 @@ bool CScene::Rightcollision(CHeroManager* Object1, CHeroManager* Object2)
 }
 
 
-bool CScene::Leftcollision(CHeroManager* Object1, CHeroManager* Object2)
+bool CScene::Leftcollision(CHeroManager* Object1, CHeroManager* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2)
 {
 
-	float Left = (Object1->GetPosition().x - 3.0f);
-	float Top = (Object1->GetPosition().z - 3.0f);
-	float Right = (Object1->GetPosition().x + 3.0f);
-	float Bottom = (Object1->GetPosition().z + 3.0f);
+	float Left = (Object1->GetPosition().x - sizeX1);
+	float Top = (Object1->GetPosition().z - sizeZ1);
+	float Right = (Object1->GetPosition().x + sizeX1);
+	float Bottom = (Object1->GetPosition().z + sizeZ1);
 
-	float Left2 = (Object2->GetPosition().x + 3.0f);
-	float Top2 = (Object2->GetPosition().z - 3.0f);
-	float Right2 = (Object2->GetPosition().x + 3.0f);
-	float Bottom2 = (Object2->GetPosition().z + 3.0f);
+	float Left2 = (Object2->GetPosition().x + sizeX2);
+	float Top2 = (Object2->GetPosition().z - sizeZ2);
+	float Right2 = (Object2->GetPosition().x + sizeX2);
+	float Bottom2 = (Object2->GetPosition().z + sizeZ2);
 
 	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
 		return true;
@@ -1019,17 +1019,17 @@ bool CScene::Leftcollision(CHeroManager* Object1, CHeroManager* Object2)
 		return false;
 }
 
-bool CScene::Downcollision(CHeroManager* Object1, CHeroManager* Object2)
+bool CScene::Downcollision(CHeroManager* Object1, CHeroManager* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2)
 {
-	float Left = (Object1->GetPosition().x - 3.0f);
-	float Top = (Object1->GetPosition().z - 3.0f);
-	float Right = (Object1->GetPosition().x + 3.0f);
-	float Bottom = (Object1->GetPosition().z + 3.0f);
+	float Left = (Object1->GetPosition().x - sizeX1);
+	float Top = (Object1->GetPosition().z - sizeZ1);
+	float Right = (Object1->GetPosition().x + sizeX1);
+	float Bottom = (Object1->GetPosition().z + sizeZ1);
 
-	float Left2 = (Object2->GetPosition().x - 3.0f);
-	float Top2 = (Object2->GetPosition().z - 3.0f);
-	float Right2 = (Object2->GetPosition().x + 3.0f);
-	float Bottom2 = (Object2->GetPosition().z - 3.0f);
+	float Left2 = (Object2->GetPosition().x - sizeX2);
+	float Top2 = (Object2->GetPosition().z - sizeZ2);
+	float Right2 = (Object2->GetPosition().x + sizeX2);
+	float Bottom2 = (Object2->GetPosition().z - sizeZ2);
 
 	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
 		return true;
@@ -1037,17 +1037,17 @@ bool CScene::Downcollision(CHeroManager* Object1, CHeroManager* Object2)
 		return false;
 }
 
-bool CScene::Upcollision(CHeroManager* Object1, CHeroManager* Object2)
+bool CScene::Upcollision(CHeroManager* Object1, CHeroManager* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2)
 {
-	float Left = (Object1->GetPosition().x - 3.0f);
-	float Top = (Object1->GetPosition().z - 3.0f);
-	float Right = (Object1->GetPosition().x + 3.0f);
-	float Bottom = (Object1->GetPosition().z + 3.0f);
+	float Left = (Object1->GetPosition().x - sizeX1);
+	float Top = (Object1->GetPosition().z - sizeZ1);
+	float Right = (Object1->GetPosition().x + sizeX1);
+	float Bottom = (Object1->GetPosition().z + sizeZ1);
 
-	float Left2 = (Object2->GetPosition().x - 3.0f);
-	float Top2 = (Object2->GetPosition().z + 3.0f);
-	float Right2 = (Object2->GetPosition().x + 3.0f);
-	float Bottom2 = (Object2->GetPosition().z + 3.0f);
+	float Left2 = (Object2->GetPosition().x - sizeX2);
+	float Top2 = (Object2->GetPosition().z + sizeZ2);
+	float Right2 = (Object2->GetPosition().x + sizeX2);
+	float Bottom2 = (Object2->GetPosition().z + sizeZ2);
 
 	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
 		return true;
