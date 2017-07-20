@@ -42,7 +42,7 @@ private:
 	int m_nShaders;
 	int m_nInstancingShaders;
 
-	
+
 	CInstancingShader **m_ppInstancingShaders;
 
 	CCamera *m_pCamera;
@@ -71,19 +71,19 @@ public:
 	CHeroManager* pHeroObject[MAX_GAMER];
 
 	CGameObject *pHouse1Object[13];
-
+	CGameObject *pWallObject[64];
 
 	int myGame_id = -1;
 	int MyRoomNumber = -1;
-	
 
-	
+
+
 	CMaterial *pNormalMaterial;
 
 	CTexture *pHealerTexture;
 	CTexture *pSwordmanTexture;
 	CTexture *pBabarianTexture;
-	
+
 
 	CTexture *pArcherTexture;
 	CTexture *pMagicianTexture;
