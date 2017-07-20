@@ -390,44 +390,44 @@ void CGameFramework::ProcessInput()
 
 
 				// 클라이언트 캐릭터 충돌부분!! size 3.0 <- 요거 나중에 Define해야함
-				for (int i = 0; i < MAX_GAMER; ++i)
-				{
-					if (i != m_pScene->myGame_id)
-					{
-						if (m_pScene->Rightcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i], 3.0f, 3.0f, 3.0f, 3.0f))
-						{
-							m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x - m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed(), m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
-							m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
-							//char_collision_send();
-							
-							break;
-						}
-						else if (m_pScene->Leftcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i], 3.0f, 3.0f, 3.0f, 3.0f))
-						{
-							m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x + m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed(), m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
-							m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
-							//char_collision_send();
-							break;
-						}
-						else if (m_pScene->Upcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i], 3.0f, 3.0f, 3.0f, 3.0f))
-						{
-							m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z + m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
-							m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
-							//char_collision_send();
-							break;
-						}
-						else if (m_pScene->Downcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i], 3.0f, 3.0f, 3.0f, 3.0f))
-						{
-							m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z - m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
-							m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
-							//char_collision_send();
-							break;
-						}
-						
-							
-					}
+				//for (int i = 0; i < MAX_GAMER; ++i)
+				//{
+				//	if (i != m_pScene->myGame_id)
+				//	{
+				//		if (m_pScene->Rightcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i], 3.0f, 3.0f, 3.0f, 3.0f))
+				//		{
+				//			m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x - m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed(), m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
+				//			m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
+				//			//char_collision_send();
+				//			
+				//			break;
+				//		}
+				//		else if (m_pScene->Leftcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i], 3.0f, 3.0f, 3.0f, 3.0f))
+				//		{
+				//			m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x + m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed(), m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
+				//			m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
+				//			//char_collision_send();
+				//			break;
+				//		}
+				//		else if (m_pScene->Upcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i], 3.0f, 3.0f, 3.0f, 3.0f))
+				//		{
+				//			m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z + m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
+				//			m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
+				//			//char_collision_send();
+				//			break;
+				//		}
+				//		else if (m_pScene->Downcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i], 3.0f, 3.0f, 3.0f, 3.0f))
+				//		{
+				//			m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z - m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
+				//			m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
+				//			//char_collision_send();
+				//			break;
+				//		}
+				//		
+				//			
+				//	}
 
-				}
+				//}
 				
 			}
 
@@ -529,12 +529,10 @@ void CGameFramework::FrameAdvance()
 		my_packet->roomnumber = m_pScene->MyRoomNumber;
 		WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 		//
-
 	}
 
 	if (ChangeScene == GAME)
 	{
-
 		ProcessInput();
 		AnimateObjects();
 
@@ -542,8 +540,9 @@ void CGameFramework::FrameAdvance()
 		if (m_pd3dRenderTargetView) m_pd3dDeviceContext->ClearRenderTargetView(m_pd3dRenderTargetView, fClearColor);
 		if (m_pd3dDepthStencilView) m_pd3dDeviceContext->ClearDepthStencilView(m_pd3dDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-		if (m_pPlayer) m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
-
+		if (m_pPlayer) {
+			m_pPlayer->UpdateShaderVariables(m_pd3dDeviceContext);
+		}
 		if (m_pScene) m_pScene->Render(m_pd3dDeviceContext, m_pCamera);
 		//if (m_pPlayerShader) m_pPlayerShader->Render(m_pd3dDeviceContext, m_pCamera);
 

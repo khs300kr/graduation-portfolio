@@ -199,6 +199,8 @@ void Do_move(int id, unsigned char packet[])
 	cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
 	int room_number = my_packet->roomnumber;
 
+	cout << g_Clients[id].m_fX << "," << g_Clients[id].m_fY << "," << g_Clients[id].m_fZ << endl;
+
 	g_Clients[id].m_fX = my_packet->x;
 	g_Clients[id].m_fY = my_packet->y;
 	g_Clients[id].m_fZ = my_packet->z;
@@ -522,6 +524,7 @@ void ProcessPacket(int id, unsigned char packet[])
 	case CS_KEYUP_DOWN:		currentDateTime(); g_Clients[id].m_Direction ^= DIR_FRONT;	Do_move(id, packet);	break;
 	case CS_KEYUP_LEFT:		currentDateTime(); g_Clients[id].m_Direction ^= DIR_LEFT;	Do_move(id, packet);	break;
 	case CS_KEYUP_RIGHT:	currentDateTime(); g_Clients[id].m_Direction ^= DIR_RIGHT;	Do_move(id, packet);	break;
+	case CS_POS_UPDATE: Do_move(id, packet); break;
 	// (Att)
 	case CS_ATTACK:
 	{
