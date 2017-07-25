@@ -451,12 +451,14 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			//pHouse1Object[i]->SetOOBB(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(100.f, 100.f, 100.f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 		}
 		// 건물 위치 설정
+
+
 		//pHouse1Object[0]->SetPosition(50.0f, 0.0f, -300.0f);
 		//pHouse1Object[0]->SetOOBB(XMFLOAT3(-50.0f, 0.0f, -300.0f), XMFLOAT3(90.f, 100.f, 50.f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 
 
-		pHouse1Object[1]->SetPosition(250.0f, 10.0f, -300.0f);
-		pHouse1Object[2]->SetPosition(-150.0f, 10.0f, -300.0f);
+		pHouse1Object[1]->SetPosition(250.0f, 0.0f, -300.0f); // 바로 앞에 있는 건물 두개 왼쪽
+		pHouse1Object[2]->SetPosition(-150.0f, 0.0f, -300.0f); // 바로 앞에 있는 건물 두개 오른쪽
 
 		pHouse1Object[3]->SetPosition(150.0f, 0.0f, -150.0f);
 		pHouse1Object[4]->SetPosition(-50.0f, 0.0f, -150.0f);
@@ -1141,6 +1143,82 @@ bool CScene::Downcollision(CHeroManager* Object1, CHeroManager* Object2, float s
 }
 
 bool CScene::Upcollision(CHeroManager* Object1, CHeroManager* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2)
+{
+	float Left = (Object1->GetPosition().x - sizeX1);
+	float Top = (Object1->GetPosition().z - sizeZ1);
+	float Right = (Object1->GetPosition().x + sizeX1);
+	float Bottom = (Object1->GetPosition().z + sizeZ1);
+
+	float Left2 = (Object2->GetPosition().x - sizeX2);
+	float Top2 = (Object2->GetPosition().z + sizeZ2);
+	float Right2 = (Object2->GetPosition().x + sizeX2);
+	float Bottom2 = (Object2->GetPosition().z + sizeZ2);
+
+	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
+		return true;
+	else
+		return false;
+}
+
+
+
+bool CScene::Rightcollision(CHeroManager* Object1, CGameObject* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2)
+{
+	float Left = (Object1->GetPosition().x - sizeX1);
+	float Top = (Object1->GetPosition().z - sizeZ1);
+	float Right = (Object1->GetPosition().x + sizeX1);
+	float Bottom = (Object1->GetPosition().z + sizeZ1);
+
+	float Left2 = (Object2->GetPosition().x - sizeX2);
+	float Top2 = (Object2->GetPosition().z - sizeZ2);
+	float Right2 = (Object2->GetPosition().x - sizeX2);
+	float Bottom2 = (Object2->GetPosition().z + sizeZ2);
+
+	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
+		return true;
+	else
+		return false;
+}
+
+
+bool CScene::Leftcollision(CHeroManager* Object1, CGameObject* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2)
+{
+
+	float Left = (Object1->GetPosition().x - sizeX1);
+	float Top = (Object1->GetPosition().z - sizeZ1);
+	float Right = (Object1->GetPosition().x + sizeX1);
+	float Bottom = (Object1->GetPosition().z + sizeZ1);
+
+	float Left2 = (Object2->GetPosition().x + sizeX2);
+	float Top2 = (Object2->GetPosition().z - sizeZ2);
+	float Right2 = (Object2->GetPosition().x + sizeX2);
+	float Bottom2 = (Object2->GetPosition().z + sizeZ2);
+
+	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
+		return true;
+	else
+		return false;
+}
+
+bool CScene::Downcollision(CHeroManager* Object1, CGameObject* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2)
+{
+	float Left = (Object1->GetPosition().x - sizeX1);
+	float Top = (Object1->GetPosition().z - sizeZ1);
+	float Right = (Object1->GetPosition().x + sizeX1);
+	float Bottom = (Object1->GetPosition().z + sizeZ1);
+
+	float Left2 = (Object2->GetPosition().x - sizeX2);
+	float Top2 = (Object2->GetPosition().z - sizeZ2);
+	float Right2 = (Object2->GetPosition().x + sizeX2);
+	float Bottom2 = (Object2->GetPosition().z - sizeZ2);
+
+	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
+		return true;
+	else
+		return false;
+}
+
+bool CScene::Upcollision(CHeroManager* Object1, CGameObject* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2)
 {
 	float Left = (Object1->GetPosition().x - sizeX1);
 	float Top = (Object1->GetPosition().z - sizeZ1);
