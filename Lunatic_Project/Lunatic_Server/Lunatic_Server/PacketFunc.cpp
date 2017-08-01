@@ -524,7 +524,8 @@ void ProcessPacket(int id, unsigned char packet[])
 	case CS_KEYUP_DOWN:		currentDateTime(); g_Clients[id].m_Direction ^= DIR_FRONT;	Do_move(id, packet);	break;
 	case CS_KEYUP_LEFT:		currentDateTime(); g_Clients[id].m_Direction ^= DIR_LEFT;	Do_move(id, packet);	break;
 	case CS_KEYUP_RIGHT:	currentDateTime(); g_Clients[id].m_Direction ^= DIR_RIGHT;	Do_move(id, packet);	break;
-	case CS_POS_UPDATE: Do_move(id, packet); break;
+	case CS_CHAR_COLL: cout << " RIGHT_COLL" << endl;  break;
+		//case CS_POS_UPDATE: Do_move(id, packet); break;
 	// (Att)
 	case CS_ATTACK:
 	{

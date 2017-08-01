@@ -276,8 +276,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_PAINT:
-
-
 		hdc = BeginPaint(hWnd, &ps);
 
 		memdc = CreateCompatibleDC(hdc);
@@ -892,6 +890,7 @@ void ProcessPacket(char * ptr)
 		int id = my_packet->id;
 		if (id == gGameFramework.m_pScene->myGame_id) {
 			//cout << "Hero Move\n";
+			cout << gGameFramework.dwDirection << endl;
 			gGameFramework.dwDirection = my_packet->direction;
 			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 
