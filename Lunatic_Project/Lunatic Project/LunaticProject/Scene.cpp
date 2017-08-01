@@ -1207,9 +1207,9 @@ bool CScene::Downcollision(CHeroManager* Object1, CGameObject* Object2, float si
 	float Right = (Object1->GetPosition().x + sizeX1);
 	float Bottom = (Object1->GetPosition().z + sizeZ1);
 
-	float Left2 = (Object2->GetPosition().x - sizeX2);
+	float Left2 = (Object2->GetPosition().x - sizeX2 - sizeX2);
 	float Top2 = (Object2->GetPosition().z - sizeZ2);
-	float Right2 = (Object2->GetPosition().x + sizeX2);
+	float Right2 = (Object2->GetPosition().x - 15.0f);
 	float Bottom2 = (Object2->GetPosition().z - sizeZ2);
 
 	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
@@ -1225,9 +1225,9 @@ bool CScene::Upcollision(CHeroManager* Object1, CGameObject* Object2, float size
 	float Right = (Object1->GetPosition().x + sizeX1);
 	float Bottom = (Object1->GetPosition().z + sizeZ1);
 
-	float Left2 = (Object2->GetPosition().x - sizeX2);
+	float Left2 = (Object2->GetPosition().x - sizeX2 - sizeX2);
 	float Top2 = (Object2->GetPosition().z + sizeZ2);
-	float Right2 = (Object2->GetPosition().x + sizeX2);
+	float Right2 = (Object2->GetPosition().x - 15.0f);
 	float Bottom2 = (Object2->GetPosition().z + sizeZ2);
 
 	if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)

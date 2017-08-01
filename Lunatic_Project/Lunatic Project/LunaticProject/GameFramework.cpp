@@ -445,22 +445,20 @@ void CGameFramework::ProcessInput()
 						break;
 					}
 
-					//else if (m_pScene->Upcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHouse1Object[i], 3.0f, 3.0f, 50.0f, 45.0f))
-					//{
-					//	m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z + m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
-					//	m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
-					//	//char_collision_send();
-					//	break;
-					//}
-					//else if (m_pScene->Downcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHouse1Object[i], 3.0f, 3.0f, 50.0f, 45.0f))
-					//{
-					//	m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z - m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
-					//	m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
-					//	//char_collision_send();
-					//	break;
-					//}
-					
-
+					else if (m_pScene->Upcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHouse1Object[i], 3.0f, 3.0f, 85.0f, 45.0f))
+					{
+						m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z + m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
+						m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
+						//char_collision_send();
+						break;
+					}
+					else if (m_pScene->Downcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHouse1Object[i], 3.0f, 3.0f, 85.0f, 45.0f))
+					{
+						m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z - m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
+						m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
+						//char_collision_send();
+						break;
+					}
 				}
 				
 			}
