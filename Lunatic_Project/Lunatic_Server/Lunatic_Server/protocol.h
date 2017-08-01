@@ -38,7 +38,7 @@
 #define CS_MAKE_ROOM				22
 #define CS_JOIN_ROOM				23
 #define CS_QUICK_JOIN				24
-#define CS_POS_UPDATE				25
+#define CS_CHAR_COLL				25
 
 #define SC_POS				 1
 #define SC_PUT_PLAYER		 2
@@ -211,6 +211,12 @@ struct cs_packet_skillR {
 };
 
 struct cs_packet_skill_done {
+	BYTE size;
+	BYTE type;
+	BYTE roomnumber;
+};
+
+struct cs_packet_char_coll {
 	BYTE size;
 	BYTE type;
 	BYTE roomnumber;
