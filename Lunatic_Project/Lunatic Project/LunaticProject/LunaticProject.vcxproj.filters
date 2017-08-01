@@ -373,6 +373,15 @@
     <Image Include="..\Data\Menu\Room\UI\readybutton.bmp">
       <Filter>리소스 파일\Room\UI</Filter>
     </Image>
+    <Image Include="..\Data\Menu\Lobby\lobby.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Lobby\Quickcheck.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Lobby\Roomcheck.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BaseEffect.fx">

@@ -31,9 +31,9 @@ CLobby::~CLobby()
 
 void CLobby::Create(HINSTANCE hInst)
 {
-	bmp_lobbyhome = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_LOBBYHOME));
-	bmp_create = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_CREATE));
-	bmp_quickjoin = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_QUICKJOIN));
+	bmp_lobbyhome = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_LOBBY));
+	bmp_create = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_ROOMCHECK));
+	bmp_quickjoin = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_QUICKCHECK));
 	bmp_whojoin = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_WHOJOIN));
 	bmp_room = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_ROOM));
 	bmp_createwindow = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_CREATEWINDOW));

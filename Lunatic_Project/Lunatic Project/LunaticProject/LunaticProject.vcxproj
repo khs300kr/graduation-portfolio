@@ -159,9 +159,12 @@
     <Image Include="..\Data\Menu\Game\loading.bmp" />
     <Image Include="..\Data\Menu\Lobby\create.bmp" />
     <Image Include="..\Data\Menu\Lobby\createwindow.bmp" />
+    <Image Include="..\Data\Menu\Lobby\lobby.bmp" />
     <Image Include="..\Data\Menu\Lobby\lobbyhome.bmp" />
+    <Image Include="..\Data\Menu\Lobby\Quickcheck.bmp" />
     <Image Include="..\Data\Menu\Lobby\quickjoin.bmp" />
     <Image Include="..\Data\Menu\Lobby\room.bmp" />
+    <Image Include="..\Data\Menu\Lobby\Roomcheck.bmp" />
     <Image Include="..\Data\Menu\Lobby\whojoin.bmp" />
     <Image Include="..\Data\Menu\MainMenu\exit.bmp" />
     <Image Include="..\Data\Menu\MainMenu\login.bmp" />
