@@ -64,6 +64,7 @@
 #define SC_QUICK_JOIN_FAIL	 22
 #define SC_QUICK_JOIN		 23
 #define SC_ENTER_NEWPLAYER	 24
+#define SC_CHAR_COLL		 25
 
 // Client Define
 // 키보드 입력
@@ -350,6 +351,12 @@ struct sc_packet_skillE {
 };
 
 struct sc_packet_skillR {
+	BYTE size;
+	BYTE type;
+	WORD id;
+};
+
+struct sc_packet_coll_char {
 	BYTE size;
 	BYTE type;
 	WORD id;

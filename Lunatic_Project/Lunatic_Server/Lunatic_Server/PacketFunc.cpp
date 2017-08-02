@@ -194,6 +194,16 @@ void SendPositionPacket(int client, int object)
 	Send_Packet(client, &packet);
 }
 
+void SendColl_CharPacket(int client, int object)
+{
+	sc_packet_coll_char packet;
+	packet.id = g_Clients[object].m_GameID;
+	packet.size = sizeof(packet);
+	packet.type = SC_CHAR_COLL;
+
+	Send_Packet(client, &packet);
+}
+
 void Do_move(int id, unsigned char packet[])
 {
 	cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
@@ -524,8 +534,16 @@ void ProcessPacket(int id, unsigned char packet[])
 	case CS_KEYUP_DOWN:		currentDateTime(); g_Clients[id].m_Direction ^= DIR_FRONT;	Do_move(id, packet);	break;
 	case CS_KEYUP_LEFT:		currentDateTime(); g_Clients[id].m_Direction ^= DIR_LEFT;	Do_move(id, packet);	break;
 	case CS_KEYUP_RIGHT:	currentDateTime(); g_Clients[id].m_Direction ^= DIR_RIGHT;	Do_move(id, packet);	break;
-	case CS_CHAR_COLL: cout << " RIGHT_COLL" << endl;  break;
-		//case CS_POS_UPDATE: Do_move(id, packet); break;
+	case CS_CHAR_COLL: 
+	{
+		cout << " RIGHT_COLL" << endl;  break;
+		int room_number = packet[2];	// roomnumber
+		for (auto& d : g_Room[room_number].m_GameID_list)
+			SendColl_CharPacket(d, id);
+		break;
+		// Send That he is coll
+	}
+	//case CS_POS_UPDATE: Do_move(id, packet); break;
 	// (Att)
 	case CS_ATTACK:
 	{
