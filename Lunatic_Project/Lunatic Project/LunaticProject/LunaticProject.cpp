@@ -879,12 +879,12 @@ void ProcessPacket(char * ptr)
 	case SC_POS:
 	{
 		//currentDateTime();
-		SYSTEMTIME st;
-		char currentTime[84] = "";
-		GetLocalTime(&st);
-		sprintf_s(currentTime, "%d/%d/%d %d:%d:%d %d", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
-		g_ping_recv = (st.wSecond * 1000) + st.wMilliseconds;
-		cout << "PING : " << g_ping_recv - g_ping_send << endl;
+		//SYSTEMTIME st;
+		//char currentTime[84] = "";
+		//GetLocalTime(&st);
+		//sprintf_s(currentTime, "%d/%d/%d %d:%d:%d %d", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+		//g_ping_recv = (st.wSecond * 1000) + st.wMilliseconds;
+		//cout << "PING : " << g_ping_recv - g_ping_send << endl;
 
 		sc_packet_pos *my_packet = reinterpret_cast<sc_packet_pos *>(ptr);
 		int id = my_packet->id;
@@ -1008,6 +1008,31 @@ void ProcessPacket(char * ptr)
 		else {
 			cout << "[Other]SC_R_PACKET\n";
 			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_R);
+		}
+
+		break;
+	}
+
+	case SC_CHAR_COLL:
+	{
+		cout << "Ãæµ¹\n";
+		sc_packet_coll_char *my_packet = reinterpret_cast<sc_packet_coll_char *>(ptr);
+		int id = my_packet->id;
+
+		if (id == gGameFramework.m_pScene->myGame_id) {
+			gGameFramework.m_pPlayer->SetPosition(D3DXVECTOR3(gGameFramework.m_pPlayer->GetPosition().x - gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetSpeed(),
+				gGameFramework.m_pPlayer->GetPosition().y,
+				gGameFramework.m_pPlayer->GetPosition().z
+			));
+			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(gGameFramework.m_pPlayer->GetPosition());
+		}
+		else {
+			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(D3DXVECTOR3(gGameFramework.m_pScene->pHeroObject[id]->GetPosition().x - gGameFramework.m_pScene->pHeroObject[id]->GetSpeed(),
+				gGameFramework.m_pScene->pHeroObject[id]->GetPosition().y,
+				gGameFramework.m_pScene->pHeroObject[id]->GetPosition().z
+			));
+			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(gGameFramework.m_pScene->pHeroObject[id]->GetPosition());
+			
 		}
 
 		break;

@@ -954,7 +954,7 @@ void CScene::SendMovePacket(BYTE type)
 	my_packet->z = pHeroObject[myGame_id]->GetPosition().z;
 	my_packet->roomnumber = MyRoomNumber;
 
-	currentDateTime();
+	//currentDateTime();
 	WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 }
 
