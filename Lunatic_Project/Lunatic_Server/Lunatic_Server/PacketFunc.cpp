@@ -194,12 +194,13 @@ void SendPositionPacket(int client, int object)
 	Send_Packet(client, &packet);
 }
 
-void SendColl_CharPacket(int client, int object)
+void SendColl_CharPacket(int client, int object, int direction)
 {
 	sc_packet_coll_char packet;
 	packet.id = g_Clients[object].m_GameID;
 	packet.size = sizeof(packet);
 	packet.type = SC_CHAR_COLL;
+	packet.direction = direction;
 	
 	Send_Packet(client, &packet);
 }
@@ -536,10 +537,11 @@ void ProcessPacket(int id, unsigned char packet[])
 	case CS_KEYUP_RIGHT:	 g_Clients[id].m_Direction ^= DIR_RIGHT;	Do_move(id, packet);	break;
 	case CS_CHAR_COLL: 
 	{
-		//cout << " RIGHT_COLL" << endl; 
+		cs_packet_char_coll *my_packet = reinterpret_cast<cs_packet_char_coll*>(packet);
+	
 		int room_number = packet[2];	// roomnumber
 		for (auto& d : g_Room[room_number].m_GameID_list)
-			SendColl_CharPacket(d, id);
+			SendColl_CharPacket(d, id, my_packet->direction);
 		break;
 		// Send That he is coll
 	}

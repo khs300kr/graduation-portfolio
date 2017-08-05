@@ -25,7 +25,7 @@ void ProcessPacket(int id, unsigned char packet[]);
 // (Move)
 void SendPutPlayerPacket(int client, int object);
 void SendPositionPacket(int client, int object);
-void SendColl_CharPacket(int client, int object);
+void SendColl_CharPacket(int client, int object,int direction);
 void Do_move(int id, unsigned char packet[]);
 // (Att)
 void SendAttackPacket(int client, int object);

@@ -221,6 +221,7 @@ struct cs_packet_char_coll {
 	BYTE size;
 	BYTE type;
 	BYTE roomnumber;
+	BYTE direction;
 };
 
 
@@ -360,6 +361,7 @@ struct sc_packet_coll_char {
 	BYTE size;
 	BYTE type;
 	WORD id;
+	BYTE direction;
 };
 
 struct sc_packet_chat {

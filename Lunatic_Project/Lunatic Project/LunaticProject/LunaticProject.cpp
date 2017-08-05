@@ -890,7 +890,6 @@ void ProcessPacket(char * ptr)
 		int id = my_packet->id;
 		if (id == gGameFramework.m_pScene->myGame_id) {
 			//cout << "Hero Move\n";
-			cout << gGameFramework.dwDirection << endl;
 			gGameFramework.dwDirection = my_packet->direction;
 			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 
@@ -904,7 +903,7 @@ void ProcessPacket(char * ptr)
 			gGameFramework.OtherDirection[id] = my_packet->direction;
 			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 
-			cout << "움직이는 중 " << endl;
+			//cout << "움직이는 중 " << endl;
 			if (my_packet->direction != 0)
 				gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_RUN);
 			else
@@ -912,7 +911,7 @@ void ProcessPacket(char * ptr)
 		
 			
 		
-			cout << "Other id : " << id << endl;
+			//cout << "Other id : " << id << endl;
 
 		}
 		break;
@@ -1015,26 +1014,80 @@ void ProcessPacket(char * ptr)
 
 	case SC_CHAR_COLL:
 	{
-		cout << "충돌\n";
 		sc_packet_coll_char *my_packet = reinterpret_cast<sc_packet_coll_char *>(ptr);
 		int id = my_packet->id;
+		
+		switch (my_packet->direction)
+		{
+		case CS_KEYDOWN_RIGHT:
+			if (id == gGameFramework.m_pScene->myGame_id) {
+				gGameFramework.m_pPlayer->SetPosition(D3DXVECTOR3(gGameFramework.m_pPlayer->GetPosition().x - gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetSpeed(),
+					gGameFramework.m_pPlayer->GetPosition().y,
+					gGameFramework.m_pPlayer->GetPosition().z
+				));
+				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(gGameFramework.m_pPlayer->GetPosition());
+			}
+			else {
+				gGameFramework.m_pScene->pHeroObject[id]->SetPosition(D3DXVECTOR3(gGameFramework.m_pScene->pHeroObject[id]->GetPosition().x - gGameFramework.m_pScene->pHeroObject[id]->GetSpeed(),
+					gGameFramework.m_pScene->pHeroObject[id]->GetPosition().y,
+					gGameFramework.m_pScene->pHeroObject[id]->GetPosition().z
+				));
+				gGameFramework.m_pScene->pHeroObject[id]->SetPosition(gGameFramework.m_pScene->pHeroObject[id]->GetPosition());
 
-		if (id == gGameFramework.m_pScene->myGame_id) {
-			gGameFramework.m_pPlayer->SetPosition(D3DXVECTOR3(gGameFramework.m_pPlayer->GetPosition().x - gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetSpeed(),
-				gGameFramework.m_pPlayer->GetPosition().y,
-				gGameFramework.m_pPlayer->GetPosition().z
-			));
-			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(gGameFramework.m_pPlayer->GetPosition());
-		}
-		else {
-			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(D3DXVECTOR3(gGameFramework.m_pScene->pHeroObject[id]->GetPosition().x - gGameFramework.m_pScene->pHeroObject[id]->GetSpeed(),
-				gGameFramework.m_pScene->pHeroObject[id]->GetPosition().y,
-				gGameFramework.m_pScene->pHeroObject[id]->GetPosition().z
-			));
-			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(gGameFramework.m_pScene->pHeroObject[id]->GetPosition());
-			
-		}
+			}
+			break;
+		case CS_KEYDOWN_LEFT:
+			if (id == gGameFramework.m_pScene->myGame_id) {
+				gGameFramework.m_pPlayer->SetPosition(D3DXVECTOR3(gGameFramework.m_pPlayer->GetPosition().x + gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetSpeed(),
+					gGameFramework.m_pPlayer->GetPosition().y,
+					gGameFramework.m_pPlayer->GetPosition().z
+				));
+				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(gGameFramework.m_pPlayer->GetPosition());
+			}
+			else {
+				gGameFramework.m_pScene->pHeroObject[id]->SetPosition(D3DXVECTOR3(gGameFramework.m_pScene->pHeroObject[id]->GetPosition().x + gGameFramework.m_pScene->pHeroObject[id]->GetSpeed(),
+					gGameFramework.m_pScene->pHeroObject[id]->GetPosition().y,
+					gGameFramework.m_pScene->pHeroObject[id]->GetPosition().z
+				));
+				gGameFramework.m_pScene->pHeroObject[id]->SetPosition(gGameFramework.m_pScene->pHeroObject[id]->GetPosition());
 
+			}
+			break;
+		case CS_KEYDOWN_UP:
+			if (id == gGameFramework.m_pScene->myGame_id) {
+				gGameFramework.m_pPlayer->SetPosition(D3DXVECTOR3(gGameFramework.m_pPlayer->GetPosition().x,
+					gGameFramework.m_pPlayer->GetPosition().y,
+					gGameFramework.m_pPlayer->GetPosition().z + gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetSpeed()
+				));
+				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(gGameFramework.m_pPlayer->GetPosition());
+			}
+			else {
+				gGameFramework.m_pScene->pHeroObject[id]->SetPosition(D3DXVECTOR3(gGameFramework.m_pScene->pHeroObject[id]->GetPosition().x,
+					gGameFramework.m_pScene->pHeroObject[id]->GetPosition().y,
+					gGameFramework.m_pScene->pHeroObject[id]->GetPosition().z + gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetSpeed()
+				));
+				gGameFramework.m_pScene->pHeroObject[id]->SetPosition(gGameFramework.m_pScene->pHeroObject[id]->GetPosition());
+
+			}
+			break;
+		case CS_KEYDOWN_DOWN:
+			if (id == gGameFramework.m_pScene->myGame_id) {
+				gGameFramework.m_pPlayer->SetPosition(D3DXVECTOR3(gGameFramework.m_pPlayer->GetPosition().x,
+					gGameFramework.m_pPlayer->GetPosition().y,
+					gGameFramework.m_pPlayer->GetPosition().z - gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetSpeed()
+				));
+				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(gGameFramework.m_pPlayer->GetPosition());
+			}
+			else {
+				gGameFramework.m_pScene->pHeroObject[id]->SetPosition(D3DXVECTOR3(gGameFramework.m_pScene->pHeroObject[id]->GetPosition().x,
+					gGameFramework.m_pScene->pHeroObject[id]->GetPosition().y,
+					gGameFramework.m_pScene->pHeroObject[id]->GetPosition().z - gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetSpeed()
+				));
+				gGameFramework.m_pScene->pHeroObject[id]->SetPosition(gGameFramework.m_pScene->pHeroObject[id]->GetPosition());
+
+			}
+			break;
+		}
 		break;
 	}
 
