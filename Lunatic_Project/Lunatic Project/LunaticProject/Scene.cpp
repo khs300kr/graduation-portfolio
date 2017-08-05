@@ -580,6 +580,25 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	//m_pTerrain->SetMaterial(pNormalMaterial);
 
 	CreateShaderVariables(pd3dDevice);
+
+	///////////////////////////////////////////////////////////////////////////
+	// UI
+
+	//hp ui
+	pd3dsrvTexture = NULL;
+	CTexture *pHpbar = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/hpbar.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pHpbar->SetTexture(0, pd3dsrvTexture);
+	pHpbar->SetSampler(0, pd3dSamplerState);
+	pd3dsrvTexture->Release();
+
+	m_pUIManager = new CUIManager();
+	m_pUIManager->Initialize(pd3dDevice);
+
+	pUIObject = new CUIObject(pd3dDevice);
+	pUIObject->SetMaterial(pHpbar);
+	pUIObject->Initialize(pd3dDevice, POINT{ 600, 0 }, POINT{ 1000, 90 }, 0.5f);
+	m_pUIManager->AddUIObject(pUIObject);
 }
 
 
@@ -1083,6 +1102,8 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 		m_ppShaders[i]->Render(pd3dDeviceContext, pCamera);
 	}
 	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->Render(pd3dDeviceContext, pCamera);
+
+	m_pUIManager->RenderAll(pd3dDeviceContext);
 }
 
 bool CScene::Rightcollision(CHeroManager* Object1, CHeroManager* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2)

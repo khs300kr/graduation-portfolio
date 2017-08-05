@@ -51,6 +51,7 @@ protected:
 
 	ID3D11RasterizerState *m_pd3dRasterizerState;
 
+	D3DXVECTOR3 *m_pPositions;
 
 public:
 	CMesh(ID3D11Device *pd3dDevice);

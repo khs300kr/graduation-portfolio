@@ -88,6 +88,9 @@
     <Filter Include="소스 파일\02.Manager\03.Camera">
       <UniqueIdentifier>{19d3994e-060e-414d-85c3-640fcf045b8b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\00.Main\03.UI\Manager">
+      <UniqueIdentifier>{21320c13-dc26-4703-957e-29563174f2fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -189,6 +192,21 @@
     <ClInclude Include="Archer.h">
       <Filter>소스 파일\01.HeroManager</Filter>
     </ClInclude>
+    <ClInclude Include="TexturedRectMesh.h">
+      <Filter>소스 파일\00.Main\03.UI\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureToScreenRectMesh.h">
+      <Filter>소스 파일\00.Main\03.UI\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="UIMesh.h">
+      <Filter>소스 파일\00.Main\03.UI\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="UIObject.h">
+      <Filter>소스 파일\00.Main\03.UI\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="UIShader.h">
+      <Filter>소스 파일\00.Main\03.UI\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -277,6 +295,21 @@
     </ClCompile>
     <ClCompile Include="Witch.cpp">
       <Filter>소스 파일\01.HeroManager</Filter>
+    </ClCompile>
+    <ClCompile Include="TexturedRectMesh.cpp">
+      <Filter>소스 파일\00.Main\03.UI\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureToScreenRectMesh.cpp">
+      <Filter>소스 파일\00.Main\03.UI\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="UIMesh.cpp">
+      <Filter>소스 파일\00.Main\03.UI\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="UIObject.cpp">
+      <Filter>소스 파일\00.Main\03.UI\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="UIShader.cpp">
+      <Filter>소스 파일\00.Main\03.UI\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -391,6 +424,9 @@
       <Filter>소스 파일\99.ShaderFile</Filter>
     </FxCompile>
     <FxCompile Include="CharacterSkinned.fx">
+      <Filter>소스 파일\99.ShaderFile</Filter>
+    </FxCompile>
+    <FxCompile Include="UI.fx">
       <Filter>소스 파일\99.ShaderFile</Filter>
     </FxCompile>
   </ItemGroup>

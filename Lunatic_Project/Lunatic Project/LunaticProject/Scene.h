@@ -4,6 +4,7 @@
 #include "SkyBoxShader.h"
 
 #include "HeroManager.h"
+#include "UIObject.h"
 
 #define MAX_LIGHTS		4 
 #define POINT_LIGHT		1.0f
@@ -151,4 +152,8 @@ public:
 	DWORD Animation_number[MAX_GAMER] = {};
 	void SendMovePacket(BYTE type);
 
+
+	// UI
+	CUIManager *m_pUIManager;
+	CUIObject *pUIObject;
 };

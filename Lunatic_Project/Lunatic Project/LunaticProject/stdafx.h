@@ -104,3 +104,7 @@ using namespace DirectX::PackedVector;
 #define LOADING 4
 
 void currentDateTime();
+
+enum TextureTag {
+
+};
