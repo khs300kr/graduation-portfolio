@@ -584,7 +584,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	///////////////////////////////////////////////////////////////////////////
 	// UI
 
-	//hp ui
+	//hpbar ui
 	pd3dsrvTexture = NULL;
 	CTexture *pHpbar = new CTexture(1, 1, 0, 0);
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/hpbar.png"), NULL, NULL, &pd3dsrvTexture, NULL);
@@ -592,13 +592,87 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	pHpbar->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 
-	m_pUIManager = new CUIManager();
-	m_pUIManager->Initialize(pd3dDevice);
+	m_pUIManager[0] = new CUIManager();
+	m_pUIManager[0]->Initialize(pd3dDevice);
 
-	pUIObject = new CUIObject(pd3dDevice);
-	pUIObject->SetMaterial(pHpbar);
-	pUIObject->Initialize(pd3dDevice, POINT{ 600, 0 }, POINT{ 1000, 90 }, 0.5f);
-	m_pUIManager->AddUIObject(pUIObject);
+	CUIObject *pHpbarObject = new CUIObject(pd3dDevice);
+	pHpbarObject->SetMaterial(pHpbar);
+	pHpbarObject->Initialize(pd3dDevice, POINT{ 0, 668 }, POINT{ 400, 768 }, 0.5f);
+	m_pUIManager[0]->AddUIObject(pHpbarObject);
+
+	//hp gauge
+	CTexture *pHpgauge = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/gauge.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pHpgauge->SetTexture(0, pd3dsrvTexture);
+	pHpgauge->SetSampler(0, pd3dSamplerState);
+	pd3dsrvTexture->Release();
+
+	m_pUIManager[1] = new CUIManager();
+	m_pUIManager[1]->Initialize(pd3dDevice);
+
+	CUIObject *pHpgaugeObject = new CUIObject(pd3dDevice);
+	pHpgaugeObject->SetMaterial(pHpgauge);
+	pHpgaugeObject->Initialize(pd3dDevice, POINT{ 50, 720 }, POINT{ 385, 745 }, 0.0f);
+	m_pUIManager[1]->AddUIObject(pHpgaugeObject);
+
+
+	///////////skill box/////////////////////
+	//skill box Q
+	CTexture *pSkillboxQ = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/SkillBox.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pSkillboxQ->SetTexture(0, pd3dsrvTexture);
+	pSkillboxQ->SetSampler(0, pd3dSamplerState);
+	pd3dsrvTexture->Release();
+
+	m_pUIManager[2] = new CUIManager();
+	m_pUIManager[2]->Initialize(pd3dDevice);
+
+	CUIObject *pSkillboxQObject = new CUIObject(pd3dDevice);
+	pSkillboxQObject->SetMaterial(pSkillboxQ);
+	pSkillboxQObject->Initialize(pd3dDevice, POINT{ 600, 668 }, POINT{ 700, 768 }, 0.5f);
+	m_pUIManager[2]->AddUIObject(pSkillboxQObject);
+	//skill box W
+	CTexture *pSkillboxW = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/SkillBox.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pSkillboxW->SetTexture(0, pd3dsrvTexture);
+	pSkillboxW->SetSampler(0, pd3dSamplerState);
+	pd3dsrvTexture->Release();
+
+	m_pUIManager[3] = new CUIManager();
+	m_pUIManager[3]->Initialize(pd3dDevice);
+
+	CUIObject *pSkillboxWObject = new CUIObject(pd3dDevice);
+	pSkillboxWObject->SetMaterial(pSkillboxW);
+	pSkillboxWObject->Initialize(pd3dDevice, POINT{ 700, 668 }, POINT{ 800, 768 }, 0.5f);
+	m_pUIManager[3]->AddUIObject(pSkillboxWObject);
+	//skill box E
+	CTexture *pSkillboxE = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/SkillBox.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pSkillboxE->SetTexture(0, pd3dsrvTexture);
+	pSkillboxE->SetSampler(0, pd3dSamplerState);
+	pd3dsrvTexture->Release();
+
+	m_pUIManager[4] = new CUIManager();
+	m_pUIManager[4]->Initialize(pd3dDevice);
+
+	CUIObject *pSkillboxEObject = new CUIObject(pd3dDevice);
+	pSkillboxEObject->SetMaterial(pSkillboxE);
+	pSkillboxEObject->Initialize(pd3dDevice, POINT{ 800, 668 }, POINT{ 900, 768 }, 0.5f);
+	m_pUIManager[4]->AddUIObject(pSkillboxEObject);
+	//skill box R
+	CTexture *pSkillboxR = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/SkillBox.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pSkillboxR->SetTexture(0, pd3dsrvTexture);
+	pSkillboxR->SetSampler(0, pd3dSamplerState);
+	pd3dsrvTexture->Release();
+
+	m_pUIManager[5] = new CUIManager();
+	m_pUIManager[5]->Initialize(pd3dDevice);
+
+	CUIObject *pSkillboxRObject = new CUIObject(pd3dDevice);
+	pSkillboxRObject->SetMaterial(pSkillboxR);
+	pSkillboxRObject->Initialize(pd3dDevice, POINT{ 900, 668 }, POINT{ 1000, 768 }, 0.5f);
+	m_pUIManager[5]->AddUIObject(pSkillboxRObject);
 }
 
 
@@ -1103,7 +1177,8 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 	}
 	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->Render(pd3dDeviceContext, pCamera);
 
-	m_pUIManager->RenderAll(pd3dDeviceContext);
+	for(int i = 0; i < 6; ++i)
+		m_pUIManager[i]->RenderAll(pd3dDeviceContext);
 }
 
 bool CScene::Rightcollision(CHeroManager* Object1, CHeroManager* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2)

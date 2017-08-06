@@ -154,6 +154,7 @@ public:
 
 
 	// UI
-	CUIManager *m_pUIManager;
-	CUIObject *pUIObject;
+	CUIManager *m_pUIManager[6]; //hpbar 1 + bpgauge 1 + skillbox 4 = 6
+
+	//CUIObject *pUIObject;
 };
