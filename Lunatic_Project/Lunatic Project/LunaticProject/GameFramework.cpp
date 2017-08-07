@@ -338,7 +338,6 @@ void CGameFramework::ProcessInput()
 			SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
 		}
 		float RotY_Hero = 0;
-
 		// 플레이어를 이동하거나(dwDirection) 회전한다(cxDelta 또는 cyDelta).
 		if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
 		{
@@ -373,8 +372,6 @@ void CGameFramework::ProcessInput()
 						else if (dwDirection == DIR_BACK) RotY_Hero = 180.0f;
 
 						m_pScene->pHeroObject[m_pScene->myGame_id]->SetSpeed(m_pScene->pHeroObject[m_pScene->myGame_id]->GetNormalSpeed());
-					
-
 				}
 
 
@@ -394,7 +391,11 @@ void CGameFramework::ProcessInput()
 				{
 					if (i != m_pScene->myGame_id)
 					{
-						if (m_pScene->Rightcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i], 3.0f, 3.0f, 3.0f, 3.0f))
+						if (m_pScene->Sectorcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i], 3.0f, 3.0f, 3.0f, 3.0f))
+						{
+							cout << "COLL" << endl;
+						}
+							if (m_pScene->Rightcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i], 3.0f, 3.0f, 3.0f, 3.0f))
 						{
 							cs_packet_char_coll *my_packet = reinterpret_cast<cs_packet_char_coll *>(send_buffer);
 							my_packet->size = sizeof(cs_packet_char_coll);

@@ -282,7 +282,7 @@ void SendSkillDone(int client, int object)
 
 bool Circile_Coll(int from, int to)
 {
-	// Sphere Coll
+	// Circle Coll
 	float Temp_radius = 30.f;
 	float deltaX = g_Clients[from].m_fX - g_Clients[to].m_fX;
 	float deltaY = g_Clients[from].m_fY - g_Clients[to].m_fY;
