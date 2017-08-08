@@ -857,9 +857,11 @@ void CScene::ProcessInput()
 			{
 				if (i != myGame_id)
 				{
-					if (Sectorcollision(pHeroObject[myGame_id], pHeroObject[i], dwDirforCollision))
+					if (Sectorcollision(pHeroObject[myGame_id], pHeroObject[i], dwDirforCollision,3.f))
 					{
 						cout << "COLL : " << dwDirforCollision << endl;
+						m_ppShaders[i + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
+
 					}
 				}
 			}
@@ -1319,22 +1321,33 @@ bool CScene::Downcollision(CHeroManager* Object1, CGameObject* Object2, float si
 		return false;
 }
 
-bool CScene::Sectorcollision(CHeroManager * Object1, CHeroManager * Object2, DWORD dir)
+bool CScene::Sectorcollision(CHeroManager * Object1, CHeroManager * Object2, DWORD dir, float sizeXZ)
 {
-	// Circle Coll
-	float Temp_radius = 15.f;
-	float deltaX = Object1->GetPosition().x - Object2->GetPosition().x;
-	float deltaZ = Object1->GetPosition().z - Object2->GetPosition().z;
+	float deltaX{};
+	float deltaZ{};
+	switch (dir)
+	{
+	case DIR_RIGHT:
+		deltaX = (Object1->GetPosition().x + sizeXZ) - Object2->GetPosition().x;
+		deltaZ = Object1->GetPosition().z - Object2->GetPosition().z;
+		break;
+	case DIR_LEFT:
+		deltaX = (Object1->GetPosition().x - sizeXZ) - Object2->GetPosition().x;
+		deltaZ = Object1->GetPosition().z - Object2->GetPosition().z;
+		break;
+	case DIR_FRONT:
+		deltaX = Object1->GetPosition().x - Object2->GetPosition().x;
+		deltaZ = (Object1->GetPosition().z - sizeXZ) - Object2->GetPosition().z;
+		break;
+	case DIR_BACK:
+		deltaX = Object1->GetPosition().x - Object2->GetPosition().x;
+		deltaZ = (Object1->GetPosition().z + sizeXZ) - Object2->GetPosition().z;
+		break;
+
+	}
+	float Temp_radius = 7.f;
 	float len = sqrtf((deltaX * deltaX) + (deltaZ * deltaZ));
-	
 	return (len <= (Temp_radius));
-
-
-
-	//if (Left < Right2 && Right > Left2 && Top < Bottom2 && Bottom > Top2)
-	//	return true;
-	//else
-	//	return false;
 }
 
 bool CScene::Upcollision(CHeroManager* Object1, CGameObject* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2)
