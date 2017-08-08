@@ -309,7 +309,7 @@ void CGameFramework::ProcessInput()
 	if (!bProcessedByScene)
 	{
 		static UCHAR pKeyBuffer[256];
-		
+
 		// 키보드의 상태 정보를 반환한다. 
 		// 방향키와 PageUp/Down 에 대한 정보
 		//if (GetAsyncKeyState(VK_UP) & 0x8000) dwDirection |= DIR_BACK;
@@ -355,7 +355,6 @@ void CGameFramework::ProcessInput()
 			{
 				if (dwDirection == DIR_LEFT_BACK || dwDirection == DIR_LEFT_FRONT || dwDirection ==  DIR_RIGHT_BACK || dwDirection == DIR_RIGHT_FRONT) // 대각선 이동 이동속도 구현
 				{
-				
 						if (dwDirection == DIR_LEFT_BACK) RotY_Hero = 135.0f;
 						else if (dwDirection == DIR_LEFT_FRONT) RotY_Hero = 45.0f;
 						else if (dwDirection == DIR_RIGHT_BACK) RotY_Hero = -135.0f;
@@ -365,7 +364,6 @@ void CGameFramework::ProcessInput()
 				}
 				else
 				{
-
 						if (dwDirection == DIR_LEFT) RotY_Hero = 90.0f;
 						else if (dwDirection == DIR_RIGHT) RotY_Hero = -90.0f;
 						else if (dwDirection == DIR_FRONT) RotY_Hero = 0.0f;
@@ -391,11 +389,7 @@ void CGameFramework::ProcessInput()
 				{
 					if (i != m_pScene->myGame_id)
 					{
-						if (m_pScene->Sectorcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i], 3.0f, 3.0f, 3.0f, 3.0f))
-						{
-							cout << "COLL" << endl;
-						}
-							if (m_pScene->Rightcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i], 3.0f, 3.0f, 3.0f, 3.0f))
+						if (m_pScene->Rightcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHeroObject[i], 3.0f, 3.0f, 3.0f, 3.0f))
 						{
 							cs_packet_char_coll *my_packet = reinterpret_cast<cs_packet_char_coll *>(send_buffer);
 							my_packet->size = sizeof(cs_packet_char_coll);
@@ -491,13 +485,10 @@ void CGameFramework::ProcessInput()
 		}
 
 		float RotY[MAX_GAMER] = {};
-
 		for (int i = 0; i < MAX_GAMER; ++i)
 		{
 			if (OtherDirection[i] && ChangeScene == GAME && i != m_pScene->myGame_id)
 			{
-				
-
 					if (OtherDirection[i] == DIR_LEFT_BACK || OtherDirection[i] == DIR_LEFT_FRONT || OtherDirection[i] == DIR_RIGHT_BACK || OtherDirection[i] == DIR_RIGHT_FRONT) // 대각선 이동 이동속도 구현
 					{
 						if (OtherDirection[i] == DIR_LEFT_BACK) RotY[i] = 135.0f;

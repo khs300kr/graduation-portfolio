@@ -891,6 +891,9 @@ void ProcessPacket(char * ptr)
 		if (id == gGameFramework.m_pScene->myGame_id) {
 			//cout << "Hero Move\n";
 			gGameFramework.dwDirection = my_packet->direction;
+			// 각도 저장.
+			if (my_packet->direction) gGameFramework.m_pScene->dwDirforCollision = my_packet->direction;
+			
 			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 
 			if (my_packet->direction != 0)
