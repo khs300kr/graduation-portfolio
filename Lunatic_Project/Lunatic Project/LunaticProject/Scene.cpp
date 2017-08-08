@@ -837,8 +837,9 @@ void CScene::ProcessInput()
 		}
 
 
-		if (KEY_DOWN('D'))
+		if (KEY_DOWN('D') && !DKeyDown)
 		{
+			DKeyDown = true;
 			if (!pHeroObject[myGame_id]->bHeroAttack)
 			{
 				pHeroObject[myGame_id]->bHeroAttack = true;
@@ -857,7 +858,7 @@ void CScene::ProcessInput()
 			{
 				if (i != myGame_id)
 				{
-					if (Sectorcollision(pHeroObject[myGame_id], pHeroObject[i], dwDirforCollision,3.f))
+					if (Sectorcollision(pHeroObject[myGame_id], pHeroObject[i], dwDirforCollision,3.f, 7.f))
 					{
 						cout << "COLL : " << dwDirforCollision << endl;
 						m_ppShaders[i + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
@@ -865,6 +866,11 @@ void CScene::ProcessInput()
 					}
 				}
 			}
+		}
+
+		if (KEY_UP('D') && DKeyDown)
+		{
+			DKeyDown = false;
 		}
 
 		else if (KEY_DOWN('Q'))
@@ -1106,12 +1112,11 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	//cout << m_ppShaders[2]->GetFBXMesh->GetFBXAnimationNum() << " " << m_ppShaders[2]->GetFBXMesh->GetFBXMaxFrameNum() << endl;
 
 	
-	if (pHeroObject[myGame_id]->bHeroAttack || pHeroObject[myGame_id]->bHeroQ || pHeroObject[myGame_id]->bHeroW || pHeroObject[myGame_id]->bHeroE || pHeroObject[myGame_id]->bHeroR)
+	if (pHeroObject[myGame_id]->bHeroAttack || pHeroObject[myGame_id]->bHeroQ || pHeroObject[myGame_id]->bHeroW || pHeroObject[myGame_id]->bHeroE || pHeroObject[myGame_id]->bHeroR
+		|| pHeroObject[myGame_id]->bHeroHit)
 	{
 		if (m_ppShaders[myGame_id + 1]->GetFBXMesh->GetFBXNowFrameNum() == m_ppShaders[myGame_id + 1]->GetFBXMesh->GetFBXMaxFrameNum() - 1)
 		{
-
-			// server send (Ready)
 			cs_packet_skill_done *my_packet = reinterpret_cast<cs_packet_skill_done *>(send_buffer); //스킬이 종료되면 받는다.
 			my_packet->size = sizeof(cs_packet_skill_done);
 			send_wsabuf.len = sizeof(cs_packet_skill_done);
@@ -1126,7 +1131,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 			if (pHeroObject[myGame_id]->bHeroW) pHeroObject[myGame_id]->bHeroW = false;
 			if (pHeroObject[myGame_id]->bHeroE) pHeroObject[myGame_id]->bHeroE = false;
 			if (pHeroObject[myGame_id]->bHeroR) pHeroObject[myGame_id]->bHeroR = false;
-
+			if (pHeroObject[myGame_id]->bHeroHit) pHeroObject[myGame_id]->bHeroHit = false;
 		}
 
 	}
@@ -1321,7 +1326,7 @@ bool CScene::Downcollision(CHeroManager* Object1, CGameObject* Object2, float si
 		return false;
 }
 
-bool CScene::Sectorcollision(CHeroManager * Object1, CHeroManager * Object2, DWORD dir, float sizeXZ)
+bool CScene::Sectorcollision(CHeroManager * Object1, CHeroManager * Object2, DWORD dir, float sizeXZ, float range)
 {
 	float deltaX{};
 	float deltaZ{};

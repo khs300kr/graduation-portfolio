@@ -56,6 +56,12 @@ private:
 	bool UpKeyDown;
 	bool DownKeyDown;
 
+	bool DKeyDown;
+	bool QKeyDown;
+	bool WKeyDown;
+	bool EKeyDown;
+	bool RKeyDown;
+
 	int KeyDownForServer;
 	DWORD dwDirection;
 
