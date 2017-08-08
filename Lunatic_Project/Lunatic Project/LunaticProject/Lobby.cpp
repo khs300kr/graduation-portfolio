@@ -43,10 +43,10 @@ void CLobby::Draw(HDC memdc, HDC memdc2)
 {
 	DrawBitmap(memdc, memdc2, bmp_lobbyhome, 0, 0, 1024, 768); // 로비 Home
 
-	if(create_over) DrawBitmap(memdc, memdc2, bmp_create, 0, 0, 400, 140); // 방만들기
-	if(quickjoin_over) DrawBitmap(memdc, memdc2, bmp_quickjoin, 400, 0, 400, 140); // 빠른 참여
+	if (create_over) DrawBitmap(memdc, memdc2, bmp_create, 0, 0, 400, 140); // 방만들기
+	if (quickjoin_over) DrawBitmap(memdc, memdc2, bmp_quickjoin, 400, 0, 400, 140); // 빠른 참여
 
-	DrawBitmap(memdc, memdc2, bmp_whojoin, 800, 0, 400, 768); // 접속자
+																					//DrawBitmap(memdc, memdc2, bmp_whojoin, 800, 0, 400, 768); // 접속자
 
 	Rectangle(memdc, 0, 738, 800, 768); // 맨 밑 채팅창
 
@@ -56,23 +56,58 @@ void CLobby::Draw(HDC memdc, HDC memdc2)
 
 	for (int i = 0; i < 6; ++i)
 	{
-		if(i == room_over)
+		if (i == room_over)
 			DrawBitmap(memdc, memdc2, bmp_room, room[i].xPos, room[i].yPos, 335, 102); // 방 박스 출력
 
-		TextOut(memdc, room[i].xPos + 5, room[i].yPos + 5, room[i].roomtitle, wcslen(room[i].roomtitle)); // 방 제목 출력
+		if (i == 0 || i == 1)
+			TextOut(memdc, room[i].xPos + 15, room[i].yPos + 5, room[i].roomtitle, wcslen(room[i].roomtitle)); // 방 제목 출력
+		if (i == 2 || i == 3)
+			TextOut(memdc, room[i].xPos + 15, room[i].yPos + 12, room[i].roomtitle, wcslen(room[i].roomtitle)); // 방 제목 출력
+		if (i == 4 || i == 5)
+			TextOut(memdc, room[i].xPos + 15, room[i].yPos + 19, room[i].roomtitle, wcslen(room[i].roomtitle)); // 방 제목 출력
+
 
 		if (room[i].roomstatus) // 방이 비어있으면 출력하지 않음
 		{
 			if (room[i].mode == DEATHMATCH)
-				TextOut(memdc, room[i].xPos + 5, room[i].yPos + 75, L"데스매치", 4);
+			{
+				if (i == 0 || i == 1)
+					TextOut(memdc, room[i].xPos + 15, room[i].yPos + 40, L"데스매치", 4);
+				if (i == 2 || i == 3)
+					TextOut(memdc, room[i].xPos + 15, room[i].yPos + 47, L"데스매치", 4);
+				if (i == 4 || i == 5)
+					TextOut(memdc, room[i].xPos + 15, room[i].yPos + 54, L"데스매치", 4);
+			}
 			else
-				TextOut(memdc, room[i].xPos + 5, room[i].yPos + 75, L"점령전 ", 4);
-
+			{
+				if (i == 0 || i == 1)
+					TextOut(memdc, room[i].xPos + 15, room[i].yPos + 40, L"점령전 ", 4);
+				if (i == 2 || i == 3)
+					TextOut(memdc, room[i].xPos + 15, room[i].yPos + 47, L"점령전 ", 4);
+				if (i == 4 || i == 5)
+					TextOut(memdc, room[i].xPos + 15, room[i].yPos + 52, L"점령전 ", 4);
+			}
 
 			if (!room[i]._private)
-				TextOut(memdc, room[i].xPos + 260, room[i].yPos + 5, L" 공개", 3);
+			{
+				if (i == 0 || i == 1)
+					TextOut(memdc, room[i].xPos + 260, room[i].yPos + 5, L" 공개", 3);
+				if (i == 2 || i == 3)
+					TextOut(memdc, room[i].xPos + 260, room[i].yPos + 12, L" 공개", 3);
+				if (i == 4 || i == 5)
+					TextOut(memdc, room[i].xPos + 260, room[i].yPos + 19, L" 공개", 3);
+			}
 			else
-				TextOut(memdc, room[i].xPos + 260, room[i].yPos + 5, L"비공개", 3);
+			{
+				//TextOut(memdc, room[i].xPos + 260, room[i].yPos + 5, L"비공개", 3);
+				if (i == 0 || i == 1)
+					TextOut(memdc, room[i].xPos + 260, room[i].yPos + 5, L" 비공개", 3);
+				if (i == 2 || i == 3)
+					TextOut(memdc, room[i].xPos + 260, room[i].yPos + 12, L" 비공개", 3);
+				if (i == 4 || i == 5)
+					TextOut(memdc, room[i].xPos + 260, room[i].yPos + 19, L" 비공개", 3);
+			}
+
 		}
 
 
@@ -80,37 +115,68 @@ void CLobby::Draw(HDC memdc, HDC memdc2)
 		{
 
 		case ROOM_EMPTY:
-			TextOut(memdc, room[i].xPos + 120, room[i].yPos + 35, L"생성가능", 4);
+			if (i == 0 || i == 1)
+				TextOut(memdc, room[i].xPos + 160, room[i].yPos + 40, L"생성가능", 4);
+			if (i == 2 || i == 3)
+				TextOut(memdc, room[i].xPos + 160, room[i].yPos + 47, L"생성가능", 4);
+			if (i == 4 || i == 5)
+				TextOut(memdc, room[i].xPos + 160, room[i].yPos + 54, L"생성가능", 4);
 			break;
 		case ROOM_JOINABLE:
-			TextOut(memdc, room[i].xPos + 120, room[i].yPos + 35, L"입장가능", 4);
+			//TextOut(memdc, room[i].xPos + 120, room[i].yPos + 40, L"입장가능", 4);
+
+			if (i == 0 || i == 1)
+				TextOut(memdc, room[i].xPos + 160, room[i].yPos + 40, L"입장가능", 4);
+			if (i == 2 || i == 3)
+				TextOut(memdc, room[i].xPos + 160, room[i].yPos + 47, L"입장가능", 4);
+			if (i == 4 || i == 5)
+				TextOut(memdc, room[i].xPos + 160, room[i].yPos + 54, L"입장가능", 4);
 			break;
 		case FULL:
-			TextOut(memdc, room[i].xPos + 120, room[i].yPos + 35, L"입장불가", 4);
+			//TextOut(memdc, room[i].xPos + 120, room[i].yPos + 40, L"입장불가", 4);
+
+			if (i == 0 || i == 1)
+				TextOut(memdc, room[i].xPos + 160, room[i].yPos + 40, L"입장불가", 4);
+			if (i == 2 || i == 3)
+				TextOut(memdc, room[i].xPos + 160, room[i].yPos + 47, L"입장불가", 4);
+			if (i == 4 || i == 5)
+				TextOut(memdc, room[i].xPos + 160, room[i].yPos + 54, L"입장불가", 4);
 			break;
 		case INGAME:
-			TextOut(memdc, room[i].xPos + 120, room[i].yPos + 35, L" 게임중", 4);
+			//TextOut(memdc, room[i].xPos + 120, room[i].yPos + 40, L" 게임중", 4);
+
+			if (i == 0 || i == 1)
+				TextOut(memdc, room[i].xPos + 160, room[i].yPos + 40, L"게임중", 4);
+			if (i == 2 || i == 3)
+				TextOut(memdc, room[i].xPos + 160, room[i].yPos + 47, L"게임중", 4);
+			if (i == 4 || i == 5)
+				TextOut(memdc, room[i].xPos + 160, room[i].yPos + 54, L"게임중", 4);
 			break;
 		}
 
 		wchar_t s[6];
 		wsprintf(s, L"(%d/8)", room[i].playercount);
-		TextOut(memdc, room[i].xPos + 270, room[i].yPos + 68, s, 5); // (0/8) 인원수 출력
+		if (i == 0 || i == 1)
+			TextOut(memdc, room[i].xPos + 270, room[i].yPos + 41, s, 5); // (0/8) 인원수 출력
+		if (i == 2 || i == 3)
+			TextOut(memdc, room[i].xPos + 270, room[i].yPos + 48, s, 5); // (0/8) 인원수 출력
+		if (i == 4 || i == 5)
+			TextOut(memdc, room[i].xPos + 270, room[i].yPos + 55, s, 5); // (0/8) 인원수 출력
 
-		//if (clickcount == 1)
-		//{
-		//	Pen = CreatePen(PS_SOLID, 4, RGB(0, 0, 0));
-		//	oldPen = (HPEN)SelectObject(memdc, Pen);
-		//	SelectObject(memdc, GetStockObject(NULL_BRUSH));
+																		 //if (clickcount == 1)
+																		 //{
+																		 //	Pen = CreatePen(PS_SOLID, 4, RGB(0, 0, 0));
+																		 //	oldPen = (HPEN)SelectObject(memdc, Pen);
+																		 //	SelectObject(memdc, GetStockObject(NULL_BRUSH));
 
-		//	Rectangle(memdc, room[whatclick].xPos, room[whatclick].yPos, room[whatclick].xPos + 335, room[whatclick].yPos + 102); // 방제목 입력
+																		 //	Rectangle(memdc, room[whatclick].xPos, room[whatclick].yPos, room[whatclick].xPos + 335, room[whatclick].yPos + 102); // 방제목 입력
 
-		//	
-		//	SelectObject(memdc, oldPen);
-		//	DeleteObject(Pen);
-		//	SelectObject(memdc, GetStockObject(WHITE_BRUSH));
-		//}
-		
+																		 //	
+																		 //	SelectObject(memdc, oldPen);
+																		 //	DeleteObject(Pen);
+																		 //	SelectObject(memdc, GetStockObject(WHITE_BRUSH));
+																		 //}
+
 	}
 
 	if (RoomCreateWindow) // 방만들기 눌렀을 때
@@ -286,7 +352,7 @@ void CLobby::L_ButtonDown(HWND hWnd, HWND hChat, int mx, int my)
 		{
 			if (MouseInbox(room[i].xPos, room[i].yPos, room[i].xPos + 335, room[i].yPos + 102, mx, my))
 			{
-				
+
 				whatclick = i;
 
 				cs_packet_joinroom *my_packet = reinterpret_cast<cs_packet_joinroom *>(send_buffer);
@@ -334,7 +400,7 @@ void CLobby::L_ButtonDown(HWND hWnd, HWND hChat, int mx, int my)
 			my_packet->type = CS_MAKE_ROOM;
 
 			wcscpy_s(my_packet->roomtitle, RoomName);
-		
+
 
 			if (IsPassword)
 				strcpy_s(my_packet->password, RoomPassword);
@@ -342,14 +408,14 @@ void CLobby::L_ButtonDown(HWND hWnd, HWND hChat, int mx, int my)
 				memset(my_packet->password, 0, sizeof(my_packet->password));
 
 			my_packet->mode = GameMode;
-			
+
 
 			WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 
 			if (IsPassword)
 				IsPassword = false;
 
-			
+
 			EnterRoom();
 
 		}
@@ -425,9 +491,9 @@ void CLobby::MouseMove(int mx, int my)
 			break;
 		}
 		else if (i == 5) room_over = -1;
-		
+
 	}
-	
+
 }
 
 void CLobby::MouseWheel(WPARAM wParam)
