@@ -27,8 +27,11 @@ CScene::CScene()
 	KeyDownForServer = 0;
 	DWORD dwDirection = 0;
 
-	for(int i = 0; i < MAX_GAMER; ++i)
+	for (int i = 0; i < MAX_GAMER; ++i)
+	{
 		pHeroObject[i] = NULL;
+		pHpObject[i] = NULL;
+	}
 
 	for (int i = 0; i < 13; ++i)
 		pHouse1Object[i] = NULL;
@@ -45,6 +48,7 @@ CScene::CScene()
 
 
 	pTestTexture = NULL;
+	pHpTexture = NULL;
 	
 	pSwordmanMeshA = NULL;
 	pSwordmanMeshB = NULL;
@@ -65,10 +69,13 @@ CScene::CScene()
 
 	pTestMesh = NULL;
 
-	for(int i = 0; i < MAX_GAMER; ++i)
+	for (int i = 0; i < MAX_GAMER; ++i)
 	{
 		pHeroObject[i] = new CHeroManager(1);
 		pHeroObject[i]->SetPosition(0.0f, -3000.0f, 0.0f);
+
+		pHpObject[i] = new CGameObject(1);
+		pHpObject[i]->SetPosition(0.0f, -3000.0f, 0.0f);
 	}
 
 
@@ -162,6 +169,15 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	pCityhallTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 
+	//Hp
+
+	pd3dsrvTexture = NULL;
+	pHpTexture = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/otherhp.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pHpTexture->SetTexture(0, pd3dsrvTexture);
+	pHpTexture->SetSampler(0, pd3dSamplerState);
+	pd3dsrvTexture->Release();
+
 
 	// ③ Object용 Material과 Shader를 생성 (Skybox는 쉐이더 내부에서 자체적으로 생성)
 	pNormalMaterial = new CMaterial();
@@ -186,10 +202,12 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	CMesh *pCityhallMesh = new CFBXMesh(pd3dDevice, "../Data/building/cityhall/cityhall.data", 1.f);
 	CMesh *pWallMesh = new CFBXMesh(pd3dDevice, "../Data/building/wall/Wall.data", 5.f);
 
+
+
 	// 일반 쉐이더 선언부
 	/////////////////////////////////////////////////////////////////////////
 
-	m_nShaders = 24 + 24 + 40; //24 + 24   // Skybox 포함 + 16 // playercount + 17  = 24 // + 벽 12 + 12 + 40
+	m_nShaders = 24 + 24 + 40 + 8; //24 + 24   // Skybox 포함 + 16 // playercount + 17  = 24 // + 벽 12 + 12 + 40 + hp 8
 	m_ppShaders = new CShader*[m_nShaders];
 
 	// ⑤ SkyBox용 Shader를 생성
@@ -431,7 +449,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 
 		// 건물 쉐이더 생성
-		for (int i = 12; i < m_nShaders; ++i)
+		for (int i = 12; i < 88; ++i)
 		{
 			m_ppShaders[i] = new CTexturedIlluminatedShader(1);
 			m_ppShaders[i]->CreateShader(pd3dDevice);
@@ -477,7 +495,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		//pHouse1Object[7]->SetPosition(-150.0f, 0.0f, 0.0f);
 
 		// 쉐이더에 저장
-		for (int i = 12; i < m_nShaders - 64; ++i) // 24
+		for (int i = 12; i < 88 - 64; ++i) // 24
 		{
 			m_ppShaders[i]->AddObject(pHouse1Object[i - 12]);
 		}
@@ -571,10 +589,38 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		}
 
 		// 쉐이더에 저장
-		for (int i = 24; i < m_nShaders; ++i) // 88
+		for (int i = 24; i < 88; ++i) // 88
 		{
 			m_ppShaders[i]->AddObject(pWallObject[i - 24]);
 		}
+
+
+		for (int i = 88; i < 96; ++i)
+		{
+			m_ppShaders[i] = new CTexturedIlluminatedShader(1);
+			m_ppShaders[i]->CreateShader(pd3dDevice);
+			m_ppShaders[i]->BuildObjects(pd3dDevice);
+		}
+
+
+		CMesh *pHpMesh = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.5f);
+
+		for (int i = 0; i < MAX_GAMER; ++i)
+		{
+			pHpObject[i] = new CGameObject(1);
+			pHpObject[i]->SetMesh(pHpMesh);
+			pHpObject[i]->SetMaterial(pNormalMaterial);
+			pHpObject[i]->SetTexture(pHpTexture);
+
+			pHpObject[i]->Rotate(-90, 0, 0);
+
+			m_ppShaders[88 + i]->AddObject(pHpObject[i]);
+		}
+
+
+
+
+
 	}
 	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, _T("Data\\HeightMap.raw"), 257, 257, 17, 17, d3dxvScale, d3dxColor);
 	//m_pTerrain->SetMaterial(pNormalMaterial);
@@ -673,7 +719,11 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	pSkillboxRObject->SetMaterial(pSkillboxR);
 	pSkillboxRObject->Initialize(pd3dDevice, POINT{ 900, 668 }, POINT{ 1000, 768 }, 0.5f);
 	m_pUIManager[5]->AddUIObject(pSkillboxRObject);
+
+
+
 }
+
 
 
 
@@ -1159,21 +1209,13 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 
 	
-	//pHeroObject[myroom_id]->SetOOBB(XMFLOAT3(pHeroObject[myroom_id]->GetPosition().x, pHeroObject[myroom_id]->GetPosition().y, pHeroObject[myroom_id]->GetPosition().z),
-	//	XMFLOAT3(0.1f, 0.1f, 0.1f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
-
-	//if (pHouse1Object[0]->m_xmOOBB.Intersects(pHeroObject[myroom_id]->m_xmOOBB))
-	//{
-	//	pHouse1Object[0]->m_pCollider = pHeroObject[myroom_id];
-	//	pHeroObject[myroom_id]->m_pCollider = pHouse1Object[0];
-
-	//	//pHouse1Object[0]->SetColCheck(true);
-	//	ColBox = true;
-	//}
-	//else
-	//{
-	//	ColBox = false;
-	//}
+	for (int i = 0; i < MAX_GAMER; ++i)
+	{
+		if (i != myGame_id)
+		{
+			pHpObject[i]->SetPosition(pHeroObject[i]->GetPosition().x, pHeroObject[i]->GetPosition().y + 20, pHeroObject[i]->GetPosition().z);
+		}
+	}
 
 }
 

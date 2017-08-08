@@ -76,6 +76,7 @@ public:
 	//CHeroManager* pOtherObject[MAX_GAMER];
 
 	CHeroManager* pHeroObject[MAX_GAMER];
+	CGameObject *pHpObject[MAX_GAMER];
 
 	CGameObject *pHouse1Object[13];
 	CGameObject *pWallObject[64];
@@ -98,6 +99,8 @@ public:
 	CTexture *pKnightTexture;
 
 	CTexture *pTestTexture;
+
+	CTexture *pHpTexture;
 
 	CMesh *pSwordmanMeshA;
 	CMesh *pSwordmanMeshB;
@@ -149,7 +152,7 @@ public:
 	bool Upcollision(CHeroManager* Object1, CGameObject* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2);
 	bool Downcollision(CHeroManager* Object1, CGameObject* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2);
 
-	bool Sectorcollision(CHeroManager * Object1, CHeroManager * Object2, DWORD dir, float sizeXZ);
+	bool Sectorcollision(CHeroManager * Object1, CHeroManager * Object2, DWORD dir, float sizeXZ, float range);
 
 public:
 
