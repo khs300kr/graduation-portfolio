@@ -12,6 +12,7 @@ private:
 	float speed;
 	float normalspeed;
 	float rootspeed;
+	float range; // 공격범위
 
 public:
 	int m_HeroSelect;
@@ -39,9 +40,11 @@ public:
 	float GetSpeed() { return speed; }
 	float GetNormalSpeed() { return normalspeed; }
 	float GetRootSpeed() { return rootspeed; }
+	float GetRange() { return range; }
 
 	void SetHp(int _hp) { hp = _hp; }
 	void SetAttack(float _attack) { attack = _attack; }
 	void SetSpeed(float _speed) { speed = _speed; }
+	void SetRange(float _range) { range = _range; }
 };
 

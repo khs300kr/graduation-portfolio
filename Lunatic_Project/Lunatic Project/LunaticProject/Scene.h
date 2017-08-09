@@ -154,6 +154,9 @@ public:
 
 	bool Sectorcollision(CHeroManager * Object1, CHeroManager * Object2, DWORD dir, float sizeXZ, float range);
 
+	// hp gauge
+	CUIObject *pHpgaugeObject;
+
 public:
 
 	

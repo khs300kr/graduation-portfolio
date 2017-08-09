@@ -51,6 +51,11 @@ void CUIObject::Initialize(ID3D11Device* pDevice, POINT startPos, POINT endPos, 
 	m_pMesh = new CUIMesh(pDevice, m_ptStartPos, m_ptEndPos, zPos);
 }
 
+void CUIObject::Update()
+{
+	Initialize(pUIDevice, m_ptStartPos, m_ptEndPos, 0.0f);
+}	
+
 void CUIObject::Render(ID3D11DeviceContext* pDeviceContext)
 {
 	if (m_pTexture) m_pTexture->UpdateShaderVariable(pDeviceContext);
