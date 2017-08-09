@@ -33,6 +33,9 @@ struct CLIENT
 	float			m_fZ;
 	// Hero Type
 	BYTE			m_HeroPick;
+	// Hero Stat
+	WORD			m_att;
+	WORD			m_hp;
 
 	//
 	bool			m_bConnect;

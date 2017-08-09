@@ -797,7 +797,8 @@ void ProcessPacket(char * ptr)
 				gGameFramework.m_pScene->pHeroObject[id]->m_Team = A_TEAM;
 
 			gRoom.RoomUI[id].Team = gGameFramework.m_pScene->pHeroObject[id]->m_Team; // ·ë¿¡ ÆÀ Àü´Þ
-
+			gGameFramework.m_pScene->pHeroObject[id]->m_serverID = my_packet->serverID;
+			cout << "Other's Server ID : " << my_packet->serverID << endl;
 			gRoom.RoomUI[id].IsReady = true; // ³»²¨
 			
 		}
@@ -931,7 +932,6 @@ void ProcessPacket(char * ptr)
 			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
 		}
 
-		break;
 		break;
 	}
 	case SC_ATTACK:

@@ -284,6 +284,7 @@ struct sc_packet_ready {
 	BYTE size;
 	BYTE type;
 	WORD id;
+	WORD serverID;
 	BYTE hero_pick;		// 캐릭터 정보.
 };
 

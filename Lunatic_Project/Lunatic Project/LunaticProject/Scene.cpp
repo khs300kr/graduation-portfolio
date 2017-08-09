@@ -801,61 +801,61 @@ bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
 
 bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	switch (nMessageID)
-	{
-	case WM_KEYDOWN:
-
-		switch (wParam)
-		{
-		case 'A':
-
-			break;
-
-		case 'Z':
-			if (!pHeroObject[myGame_id]->bHeroAttack)
-			{
-				
-				/*m_ppShaders[2]->GetFBXMesh->SetAnimation(1);
-				bHeroRun = true;
-				bHeroPunch = false;*/
-			}
-			break;
-		case 'X':
-			//if (!bHeroAttack)
-			//{
-			//	m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_ATTACK);
-			//	
-			//	bHeroRun = false;
-			//	bHeroAttack = true;
-			//}
-		default:
-			break;
-		}
-		break;	// Client KeyDown
-
-
-///////////////////////////////////////////////////////////////////////		
-
-
-	case WM_KEYUP:
-
-		switch (wParam)
-		{
-		case 'Z':
-			break;
-		case 'X':
-			//if (bHeroAttack)
-			//{
-			//	m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
-			//	bHeroAttack = false;
-			//}
-		default:
-			break;
-		}
-		break;
-	default:
-		break;
-	}
+//	switch (nMessageID)
+//	{
+//	case WM_KEYDOWN:
+//
+//		switch (wParam)
+//		{
+//		case 'A':
+//
+//			break;
+//
+//		case 'Z':
+//			if (!pHeroObject[myGame_id]->bHeroAttack)
+//			{
+//				
+//				/*m_ppShaders[2]->GetFBXMesh->SetAnimation(1);
+//				bHeroRun = true;
+//				bHeroPunch = false;*/
+//			}
+//			break;
+//		case 'X':
+//			//if (!bHeroAttack)
+//			//{
+//			//	m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_ATTACK);
+//			//	
+//			//	bHeroRun = false;
+//			//	bHeroAttack = true;
+//			//}
+//		default:
+//			break;
+//		}
+//		break;	// Client KeyDown
+//
+//
+/////////////////////////////////////////////////////////////////////////		
+//
+//
+//	case WM_KEYUP:
+//
+//		switch (wParam)
+//		{
+//		case 'Z':
+//			break;
+//		case 'X':
+//			//if (bHeroAttack)
+//			//{
+//			//	m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+//			//	bHeroAttack = false;
+//			//}
+//		default:
+//			break;
+//		}
+//		break;
+//	default:
+//		break;
+//	}
 	return false;
 }	
 
@@ -956,7 +956,7 @@ void CScene::ProcessInput()
 					{
 						cout << "COLL : " << dwDirforCollision << endl;
 						m_ppShaders[i + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
-
+					
 
 						// 충돌시 hp 깍이는 곳인데 현재 내가 공격했을때 내 체력 깍이게 되어있음.
 						// 충돌 되는 시간동안 체력이 계속해서 깍여 내려가는 문제가 있음 단 한번만으로 바꿔야함
@@ -1233,7 +1233,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 			WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 			//
 
-			if(pHeroObject[myGame_id]->bHeroAttack) pHeroObject[myGame_id]->bHeroAttack = false;
+			if (pHeroObject[myGame_id]->bHeroAttack) pHeroObject[myGame_id]->bHeroAttack = false;
 			if (pHeroObject[myGame_id]->bHeroQ) pHeroObject[myGame_id]->bHeroQ = false;
 			if (pHeroObject[myGame_id]->bHeroW) pHeroObject[myGame_id]->bHeroW = false;
 			if (pHeroObject[myGame_id]->bHeroE) pHeroObject[myGame_id]->bHeroE = false;

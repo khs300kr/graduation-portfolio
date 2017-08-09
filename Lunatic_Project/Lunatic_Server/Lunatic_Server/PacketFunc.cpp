@@ -141,6 +141,7 @@ void SendReadyPacket(int client, int object)
 	packet.size = sizeof(packet);
 	packet.type = SC_READY;
 	packet.id = g_Clients[object].m_GameID;
+	packet.serverID = object;
 	packet.hero_pick = g_Clients[object].m_HeroPick;
 
 	Send_Packet(client, &packet);
@@ -516,7 +517,7 @@ void ProcessPacket(int id, unsigned char packet[])
 			for (auto& id : g_Room[room_number].m_AcceptLoading_list) {
 				for (auto& d : g_Room[room_number].m_GameID_list) 
 				{
-					//cout << "d : " << d << " id : " << id << endl;
+					cout << "d : " << d << " id : " << id << endl;
 					SendPutPlayerPacket(d,id);
 	
 				}
@@ -529,7 +530,7 @@ void ProcessPacket(int id, unsigned char packet[])
 	// (Move)
 	case CS_KEYDOWN_UP:		 g_Clients[id].m_Direction |= DIR_BACK;		Do_move(id, packet);	break;
 	case CS_KEYDOWN_DOWN:	 g_Clients[id].m_Direction |= DIR_FRONT;	Do_move(id, packet);	break;
-	case CS_KEYDOWN_LEFT:	 g_Clients[id].m_Direction |= DIR_LEFT;		Do_move(id, packet);	break;
+	case CS_KEYDOWN_LEFT:	cout << "ID : " << id << endl;	 g_Clients[id].m_Direction |= DIR_LEFT;		Do_move(id, packet);	break;
 	case CS_KEYDOWN_RIGHT:	 g_Clients[id].m_Direction |= DIR_RIGHT;	Do_move(id, packet);	break;
 	case CS_KEYUP_UP:		 g_Clients[id].m_Direction ^= DIR_BACK;		Do_move(id, packet);	break;
 	case CS_KEYUP_DOWN:		 g_Clients[id].m_Direction ^= DIR_FRONT;	Do_move(id, packet);	break;

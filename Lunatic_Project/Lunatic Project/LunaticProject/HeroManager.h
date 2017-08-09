@@ -17,6 +17,7 @@ private:
 public:
 	int m_HeroSelect;
 	int m_Team;
+	int m_serverID;
 
 	bool bHeroAttack = false;
 	bool bHeroRun = false;
