@@ -177,6 +177,8 @@ void SendPutPlayerPacket(int client, int object)
 	packet.x = g_Clients[object].m_fX;
 	packet.y = g_Clients[object].m_fY;
 	packet.z = g_Clients[object].m_fZ;
+	packet.hp = g_Clients[object].m_hp;
+	packet.att = g_Clients[object].m_att;
 
 	Send_Packet(client, &packet);
 }
@@ -480,6 +482,16 @@ void ProcessPacket(int id, unsigned char packet[])
 		int room_number = my_packet->roomnumber;
 		g_Clients[id].vl_lock.lock();	////////////////////// LOCK
 		g_Clients[id].m_HeroPick = my_packet->hero_pick;
+		switch (my_packet->hero_pick)
+		{
+		case BABARIAN:	g_Clients[id].m_hp = 600; g_Clients[id].m_att = 15;	break;
+		case KNIGHT:	g_Clients[id].m_hp = 600; g_Clients[id].m_att = 18;	break;
+		case SWORDMAN:	g_Clients[id].m_hp = 300; g_Clients[id].m_att = 20;	break;
+		case MAGICIAN:	g_Clients[id].m_hp = 300; g_Clients[id].m_att = 18;	break;
+		case ARCHER:	g_Clients[id].m_hp = 300; g_Clients[id].m_att = 17;	break;
+		case HEALER:	g_Clients[id].m_hp = 200; g_Clients[id].m_att = 20;	break;
+		case WITCH:		g_Clients[id].m_hp = 200; g_Clients[id].m_att = 20;	break;
+		}
 		++g_Room[room_number].m_readycount;
 		g_Clients[id].vl_lock.unlock();	////////////////////// UNLOCK
 		// Ready 여부 알리기.

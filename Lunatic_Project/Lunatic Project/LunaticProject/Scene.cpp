@@ -220,7 +220,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 		//pHeroObject[myroom_id]->SetOOBB(XMFLOAT3(pHeroObject[myroom_id]->GetPosition().x, pHeroObject[myroom_id]->GetPosition().y, pHeroObject[myroom_id]->GetPosition().z),
 		//	XMFLOAT3(0.1f, 0.1f, 0.1f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
-
+		
 
 		for (int i = 0; i < MAX_GAMER; ++i)
 		{
@@ -243,8 +243,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 					pHeroObject[i]->SetMesh(pSwordmanMeshA);
 					pHeroObject[i]->SetTexture(pSwordmanTexture);
 
-					pHeroObject[i]->SetHp(300);
-					pHeroObject[i]->SetAttack(20);
 				}
 
 				else if (pHeroObject[i]->m_Team == B_TEAM)
@@ -253,8 +251,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 					pHeroObject[i]->SetMesh(pSwordmanMeshB);
 					pHeroObject[i]->SetTexture(pSwordmanTexture);
 
-					pHeroObject[i]->SetHp(300);
-					pHeroObject[i]->SetAttack(20);
 				}
 
 			}
@@ -274,8 +270,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 					pHeroObject[i]->SetMesh(pHealerMeshA);
 					pHeroObject[i]->SetTexture(pHealerTexture);
 
-					pHeroObject[i]->SetHp(200);
-					pHeroObject[i]->SetAttack(20);
 				}
 
 				else if (pHeroObject[i]->m_Team == B_TEAM)
@@ -284,8 +278,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 					pHeroObject[i]->SetMesh(pHealerMeshB);
 					pHeroObject[i]->SetTexture(pHealerTexture);
 
-					pHeroObject[i]->SetHp(200);
-					pHeroObject[i]->SetAttack(20);
 				}
 			}
 
@@ -304,8 +296,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 					pHeroObject[i]->SetMesh(pBabarianMeshA);
 					pHeroObject[i]->SetTexture(pBabarianTexture);
 
-					pHeroObject[i]->SetHp(600);
-					pHeroObject[i]->SetAttack(15);
 				}
 
 				else if (pHeroObject[i]->m_Team == B_TEAM)
@@ -314,8 +304,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 					pHeroObject[i]->SetMesh(pBabarianMeshB);
 					pHeroObject[i]->SetTexture(pBabarianTexture);
 
-					pHeroObject[i]->SetHp(600);
-					pHeroObject[i]->SetAttack(15);
 				}
 			}
 
@@ -334,8 +322,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 					pHeroObject[i]->SetMesh(pKnightMeshA);
 					pHeroObject[i]->SetTexture(pKnightTexture);
 
-					pHeroObject[i]->SetHp(600);
-					pHeroObject[i]->SetAttack(18);
 				}
 
 				else if (pHeroObject[i]->m_Team == B_TEAM)
@@ -344,8 +330,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 					pHeroObject[i]->SetMesh(pKnightMeshB);
 					pHeroObject[i]->SetTexture(pKnightTexture);
 
-					pHeroObject[i]->SetHp(600);
-					pHeroObject[i]->SetAttack(18);
 				}
 			}
 
@@ -364,8 +348,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 					pHeroObject[i]->SetMesh(pArcherMeshA);
 					pHeroObject[i]->SetTexture(pArcherTexture);
 
-					pHeroObject[i]->SetHp(300);
-					pHeroObject[i]->SetAttack(17);
 				}
 
 				else if (pHeroObject[i]->m_Team == B_TEAM)
@@ -374,8 +356,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 					pHeroObject[i]->SetMesh(pArcherMeshB);
 					pHeroObject[i]->SetTexture(pArcherTexture);
 
-					pHeroObject[i]->SetHp(300);
-					pHeroObject[i]->SetAttack(17);
 				}
 			}
 
@@ -394,8 +374,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 					pHeroObject[i]->SetMesh(pWitchMeshA);
 					pHeroObject[i]->SetTexture(pWitchTexture);
 
-					pHeroObject[i]->SetHp(200);
-					pHeroObject[i]->SetAttack(20);
 				}
 
 				else if (pHeroObject[i]->m_Team == B_TEAM)
@@ -404,8 +382,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 					pHeroObject[i]->SetMesh(pWitchMeshB);
 					pHeroObject[i]->SetTexture(pWitchTexture);
 
-					pHeroObject[i]->SetHp(200);
-					pHeroObject[i]->SetAttack(20);
 				}
 			}
 
@@ -424,8 +400,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 					pHeroObject[i]->SetMesh(pMagicianMeshA);
 					pHeroObject[i]->SetTexture(pMagicianTexture);
 
-					pHeroObject[i]->SetHp(300);
-					pHeroObject[i]->SetAttack(18);
 				}
 
 				else if (pHeroObject[i]->m_Team == B_TEAM)
@@ -434,8 +408,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 					pHeroObject[i]->SetMesh(pMagicianMeshB);
 					pHeroObject[i]->SetTexture(pMagicianTexture);
 
-					pHeroObject[i]->SetHp(300);
-					pHeroObject[i]->SetAttack(18);
 				}
 			}
 
@@ -954,30 +926,33 @@ void CScene::ProcessInput()
 				{
 					if (Sectorcollision(pHeroObject[myGame_id], pHeroObject[i], dwDirforCollision,3.f, 7.f))
 					{
-						cout << "COLL : " << dwDirforCollision << endl;
-						m_ppShaders[i + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
-						
-						cout << "Server ID : " << pHeroObject[i]->m_serverID << endl;
-
-						cs_packet_attack_hit *my_packet = reinterpret_cast<cs_packet_attack_hit *>(send_buffer);
-						my_packet->size = sizeof(cs_packet_attack_hit);
-						send_wsabuf.len = sizeof(cs_packet_attack_hit);
-						DWORD iobyte;
-						my_packet->type = CS_ATTACK_HIT;
-						my_packet->roomnumber = MyRoomNumber;
-						my_packet->hitID = pHeroObject[i]->m_serverID;
-
-						WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+							cout << "COLL : " << dwDirforCollision << endl;
+							m_ppShaders[i + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
+							
+							cout << "Server ID : " << pHeroObject[i]->m_serverID << endl;
+							cout << "My HP : " << pHeroObject[myGame_id]->GetHp() << "\t My att : " << pHeroObject[myGame_id]->GetAttack() << endl;
+							cout << "Other HP : " << pHeroObject[i]->GetHp() << "\t Other att : " << pHeroObject[i]->GetAttack() << endl;
 
 
-						// 충돌시 hp 깍이는 곳인데 현재 내가 공격했을때 내 체력 깍이게 되어있음.
-						// 충돌 되는 시간동안 체력이 계속해서 깍여 내려가는 문제가 있음 단 한번만으로 바꿔야함
-						pHpgaugeObject->SetEndPos(pHpgaugeObject->GetEndPos() - (0.55 * 18));
-
-						// 공격 받고 난후 hp 셋팅
-						pHeroObject[myGame_id]->SetHp(pHeroObject[myGame_id]->GetHp() - 18);
-						cout << pHeroObject[myGame_id]->GetHp() << endl;
-
+							cs_packet_attack_hit *my_packet = reinterpret_cast<cs_packet_attack_hit *>(send_buffer);
+							my_packet->size = sizeof(cs_packet_attack_hit);
+							send_wsabuf.len = sizeof(cs_packet_attack_hit);
+							DWORD iobyte;
+							my_packet->type = CS_ATTACK_HIT;
+							my_packet->roomnumber = MyRoomNumber;
+							my_packet->hitID = pHeroObject[i]->m_serverID;
+	
+							WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+	
+	
+							//// 충돌시 hp 깍이는 곳인데 현재 내가 공격했을때 내 체력 깍이게 되어있음.
+							//// 충돌 되는 시간동안 체력이 계속해서 깍여 내려가는 문제가 있음 단 한번만으로 바꿔야함
+							//pHpgaugeObject->SetEndPos(pHpgaugeObject->GetEndPos() - (0.55 * 18));
+	
+							//// 공격 받고 난후 hp 셋팅
+							//pHeroObject[myGame_id]->SetHp(pHeroObject[myGame_id]->GetHp() - 18);
+							//cout << pHeroObject[myGame_id]->GetHp() << endl;
+	
 					}
 				}
 			}

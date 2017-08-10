@@ -854,6 +854,9 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_put_player *my_packet = reinterpret_cast<sc_packet_put_player *>(ptr);
 		int id = my_packet->id;
+		gGameFramework.m_pScene->pHeroObject[id]->SetHp(my_packet->hp);
+		gGameFramework.m_pScene->pHeroObject[id]->SetAttack(my_packet->att);
+
 		if (id == gGameFramework.m_pScene->myGame_id) {
 			cout << "Hero Pos : \t " << id << endl;
 			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);

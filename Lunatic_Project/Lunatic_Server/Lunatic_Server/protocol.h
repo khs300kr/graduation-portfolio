@@ -318,6 +318,9 @@ struct sc_packet_put_player {
 	float x;
 	float y;
 	float z;
+	WORD hp;
+	WORD att;
+
 };
 
 struct sc_packet_pos {
