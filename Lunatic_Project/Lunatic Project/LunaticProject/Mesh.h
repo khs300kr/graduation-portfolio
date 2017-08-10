@@ -76,6 +76,7 @@ public:
 	// 160424 FBXMesh에서 사용할 함수
 	virtual void UpdateBoneTransform(ID3D11DeviceContext *pd3dDeviceContext, int nAnimationNum, int nNowFrame);
 	virtual float GetFBXModelSize() { return 0; }
+	virtual void SetFBXModelSize(float fsize) {}
 	virtual float GetFBXAnimationTime() { return 0; }
 	virtual int GetFBXAnimationNum() { return 0; }
 	virtual int GetFBXNowFrameNum() { return 0; }

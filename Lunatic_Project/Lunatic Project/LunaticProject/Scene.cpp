@@ -617,22 +617,37 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		}
 
 
-		CMesh *pHpMesh = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.5f);
+		CMesh *pHpMesh1 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 1.0f);
+		CMesh *pHpMesh2 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 1.0f);
+		CMesh *pHpMesh3 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 1.0f);
+		CMesh *pHpMesh4 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 1.0f);
+		CMesh *pHpMesh5 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 1.0f);
+		CMesh *pHpMesh6 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 1.0f);
+		CMesh *pHpMesh7 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 1.0f);
+		CMesh *pHpMesh8 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 1.0f); // 메쉬를 하나로 하면 크기를 줄이면 다같이 줄어들어서 메쉬를 Gamer의 수만큼 만듬
 
 		for (int i = 0; i < MAX_GAMER; ++i)
 		{
 			pHpObject[i] = new CGameObject(1);
-			pHpObject[i]->SetMesh(pHpMesh);
-			pHpObject[i]->SetMaterial(pNormalMaterial);
-			pHpObject[i]->SetTexture(pHpTexture);
 
 			pHpObject[i]->Rotate(-90, 0, 0);
-
-			m_ppShaders[88 + i]->AddObject(pHpObject[i]);
+			pHpObject[i]->SetMaterial(pNormalMaterial);
+			pHpObject[i]->SetTexture(pHpTexture);
 		}
 
+		pHpObject[0]->SetMesh(pHpMesh1);
+		pHpObject[1]->SetMesh(pHpMesh2);
+		pHpObject[2]->SetMesh(pHpMesh3);
+		pHpObject[3]->SetMesh(pHpMesh4);
+		pHpObject[4]->SetMesh(pHpMesh5);
+		pHpObject[5]->SetMesh(pHpMesh6);
+		pHpObject[6]->SetMesh(pHpMesh7);
+		pHpObject[7]->SetMesh(pHpMesh8);
 
-
+		
+		
+		for(int i = 0; i < MAX_GAMER; ++i)
+			m_ppShaders[88 + i]->AddObject(pHpObject[i]);
 
 
 	}
@@ -841,6 +856,12 @@ void CScene::ProcessInput()
 				UpKeyDown = true;
 				dwDirection |= DIR_BACK;
 				if (dwDirection) SendMovePacket(CS_KEYDOWN_UP);
+
+				/*if (m_ppShaders[88]->GetFBXMesh->GetFBXModelSize() > 0)
+				{
+					m_ppShaders[88]->GetFBXMesh->SetFBXModelSize(m_ppShaders[88]->GetFBXMesh->GetFBXModelSize() - 0.1f);
+				}*/
+				
 			}
 			if (KEY_DOWN(VK_DOWN) && !DownKeyDown) {
 				DownKeyDown = true;

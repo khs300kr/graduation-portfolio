@@ -63,6 +63,7 @@ public:
 	void CreateConstantBuffer(ID3D11Device *pd3dDevice);
 
 	float GetFBXModelSize() { return m_fFBXModelSize; }
+	void SetFBXModelSize(float fsize) { m_fFBXModelSize = fsize; }
 	float GetFBXAnimationTime() { return m_fFBXAnimationTime; }
 	int GetFBXAnimationNum() { return m_nFBXAnimationNum; }
 	int GetFBXNowFrameNum() { return m_nFBXNowFrameNum; }
