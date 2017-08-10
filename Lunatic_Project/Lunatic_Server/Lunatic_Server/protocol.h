@@ -39,6 +39,7 @@
 #define CS_JOIN_ROOM				23
 #define CS_QUICK_JOIN				24
 #define CS_CHAR_COLL				25
+#define CS_ATTACK_HIT				26
 
 #define SC_POS				 1
 #define SC_PUT_PLAYER		 2
@@ -185,6 +186,13 @@ struct cs_packet_attack {
 	BYTE size;
 	BYTE type;
 	BYTE roomnumber;
+};
+
+struct cs_packet_attack_hit {
+	BYTE size;
+	BYTE type;
+	BYTE roomnumber;
+	WORD hitID;
 };
 
 struct cs_packet_skillQ {

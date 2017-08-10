@@ -800,7 +800,6 @@ void ProcessPacket(char * ptr)
 			gGameFramework.m_pScene->pHeroObject[id]->m_serverID = my_packet->serverID;
 			cout << "Other's Server ID : " << my_packet->serverID << endl;
 			gRoom.RoomUI[id].IsReady = true; // 내꺼
-			
 		}
 		InvalidateRect(g_hWnd, NULL, false);
 		break;
@@ -840,13 +839,10 @@ void ProcessPacket(char * ptr)
 		{
 			gRoom.RoomUI[i].IsReady = false;
 			gRoom.RoomUI[i].HeroSelect = EMPTY; // 새로운 사용자가 들어오면 초기화
-			
 		}
 	
 
 		wcscpy_s(gRoom.RoomUI[my_packet->id].ID, my_packet->DB_id);
-
-
 
 		InvalidateRect(g_hWnd, NULL, false);
 		break;

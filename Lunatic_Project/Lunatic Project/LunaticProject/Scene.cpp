@@ -956,7 +956,19 @@ void CScene::ProcessInput()
 					{
 						cout << "COLL : " << dwDirforCollision << endl;
 						m_ppShaders[i + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
-					
+						
+						cout << "Server ID : " << pHeroObject[i]->m_serverID << endl;
+
+						cs_packet_attack_hit *my_packet = reinterpret_cast<cs_packet_attack_hit *>(send_buffer);
+						my_packet->size = sizeof(cs_packet_attack_hit);
+						send_wsabuf.len = sizeof(cs_packet_attack_hit);
+						DWORD iobyte;
+						my_packet->type = CS_ATTACK_HIT;
+						my_packet->roomnumber = MyRoomNumber;
+						my_packet->hitID = pHeroObject[i]->m_serverID;
+
+						WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+
 
 						// 충돌시 hp 깍이는 곳인데 현재 내가 공격했을때 내 체력 깍이게 되어있음.
 						// 충돌 되는 시간동안 체력이 계속해서 깍여 내려가는 문제가 있음 단 한번만으로 바꿔야함

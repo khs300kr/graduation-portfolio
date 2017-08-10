@@ -596,6 +596,16 @@ void ProcessPacket(int id, unsigned char packet[])
 
 		break;
 	}
+	// (Hit)
+	case CS_ATTACK_HIT:
+	{
+		cs_packet_attack_hit *my_packet = reinterpret_cast<cs_packet_attack_hit*>(packet);
+		
+		int room_number = packet[2];	// roomnumber
+		cout << "hitID : " << my_packet->hitID << endl;
+
+		break;
+	}
 	default: std::cout << "Unknown Packet Type from Client : " << id << std::endl;
 		while (true);
 	}
