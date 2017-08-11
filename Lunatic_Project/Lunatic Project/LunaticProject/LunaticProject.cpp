@@ -1092,7 +1092,35 @@ void ProcessPacket(char * ptr)
 		}
 		break;
 	}
+	// (HIT)
+	case SC_ATTACK_HIT:
+	{
+		sc_packet_attack_hit *my_packet = reinterpret_cast<sc_packet_attack_hit *>(ptr);
+		int clientid = my_packet->clientid;
+		cout << "[SC_ATTACK_HIT]" << "id : " << my_packet->id << "\t clientID : " << my_packet->clientid << endl;
 
+		if (clientid == gGameFramework.m_pScene->myGame_id)
+		{
+			gGameFramework.m_pScene->pHpgaugeObject->SetEndPos(gGameFramework.m_pScene->pHpgaugeObject->GetEndPos() - (0.55 * 18));
+
+			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroHit = true;
+			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
+			gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
+
+			gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(my_packet->hp);
+		}
+		else
+		{
+			gGameFramework.m_pScene->pHpgaugeObject->SetEndPos(gGameFramework.m_pScene->pHpgaugeObject->GetEndPos() - (0.55 * 18));
+
+			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroHit = true;
+			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
+			gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
+
+			gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(my_packet->hp);
+		}
+		break;
+	}
 
 
 	case SC_REMOVE_PLAYER:

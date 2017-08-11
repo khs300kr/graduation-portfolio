@@ -948,7 +948,7 @@ void CScene::ProcessInput()
 					if (Sectorcollision(pHeroObject[myGame_id], pHeroObject[i], dwDirforCollision,3.f, 7.f))
 					{
 							cout << "COLL : " << dwDirforCollision << endl;
-							m_ppShaders[i + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
+							/*m_ppShaders[i + 1]->GetFBXMesh->SetAnimation(ANI_HIT);*/
 							
 							cout << "Server ID : " << pHeroObject[i]->m_serverID << endl;
 							cout << "My HP : " << pHeroObject[myGame_id]->GetHp() << "\t My att : " << pHeroObject[myGame_id]->GetAttack() << endl;
@@ -962,6 +962,7 @@ void CScene::ProcessInput()
 							my_packet->type = CS_ATTACK_HIT;
 							my_packet->roomnumber = MyRoomNumber;
 							my_packet->hitID = pHeroObject[i]->m_serverID;
+							my_packet->clientID = i;
 	
 							WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 	
@@ -1022,7 +1023,6 @@ void CScene::ProcessInput()
 		{
 			if (!pHeroObject[myGame_id]->bHeroE)
 			{
-
 				pHeroObject[myGame_id]->bHeroE = true;
 				pHeroObject[myGame_id]->bHeroRun = false;
 
@@ -1223,8 +1223,6 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 	// hp °»½Å
 	pHpgaugeObject->Update();
-
-	//cout << m_ppShaders[2]->GetFBXMesh->GetFBXAnimationNum() << " " << m_ppShaders[2]->GetFBXMesh->GetFBXMaxFrameNum() << endl;
 
 	
 	if (pHeroObject[myGame_id]->bHeroAttack || pHeroObject[myGame_id]->bHeroQ || pHeroObject[myGame_id]->bHeroW || pHeroObject[myGame_id]->bHeroE || pHeroObject[myGame_id]->bHeroR

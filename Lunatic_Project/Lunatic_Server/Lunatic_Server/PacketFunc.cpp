@@ -283,17 +283,16 @@ void SendSkillDone(int client, int object)
 	Send_Packet(client, &packet);
 }
 
-bool Circile_Coll(int from, int to)
+void SendAttackHitPacket(int client, int object, int hitid, int clientID)
 {
-	// Circle Coll
-	float Temp_radius = 30.f;
-	float deltaX = g_Clients[from].m_fX - g_Clients[to].m_fX;
-	float deltaY = g_Clients[from].m_fY - g_Clients[to].m_fY;
-	float len = sqrtf((deltaX * deltaX) + (deltaY * deltaY));
-	return (len < (Temp_radius * 2.f));
+	sc_packet_attack_hit packet;
+	packet.id = g_Clients[object].m_GameID;
+	packet.size = sizeof(packet);
+	packet.type = SC_ATTACK_HIT;
+	packet.hp = g_Clients[hitid].m_hp;
+	packet.clientid = clientID;
 
-	//return ((abs(g_Clients[from].m_iX - g_Clients[to].m_iX) < 9) &&
-	//	(abs(g_Clients[from].m_iY - g_Clients[to].m_iY) < 9));
+	Send_Packet(client, &packet);
 }
 
 void SendRemovePlayerPacket(int client, int object)
@@ -612,10 +611,13 @@ void ProcessPacket(int id, unsigned char packet[])
 	case CS_ATTACK_HIT:
 	{
 		cs_packet_attack_hit *my_packet = reinterpret_cast<cs_packet_attack_hit*>(packet);
-		
 		int room_number = packet[2];	// roomnumber
 		cout << "hitID : " << my_packet->hitID << endl;
+		
+		g_Clients[my_packet->hitID].m_hp -= g_Clients[id].m_att; // Hp °¨¼Ò.
 
+		for (auto& d : g_Room[room_number].m_GameID_list)
+			SendAttackHitPacket(d, id, my_packet->hitID, my_packet->clientID);
 		break;
 	}
 	default: std::cout << "Unknown Packet Type from Client : " << id << std::endl;

@@ -66,6 +66,7 @@
 #define SC_QUICK_JOIN		 23
 #define SC_ENTER_NEWPLAYER	 24
 #define SC_CHAR_COLL		 25
+#define SC_ATTACK_HIT		 26
 
 // Client Define
 // 키보드 입력
@@ -193,6 +194,7 @@ struct cs_packet_attack_hit {
 	BYTE type;
 	BYTE roomnumber;
 	WORD hitID;
+	BYTE clientID;
 };
 
 struct cs_packet_skillQ {
@@ -331,6 +333,14 @@ struct sc_packet_pos {
 	float x;
 	float y;
 	float z;
+};
+
+struct sc_packet_attack_hit {
+	BYTE size;
+	BYTE type;
+	WORD id;
+	WORD hp;
+	WORD clientid;
 };
 
 struct sc_packet_remove_player {

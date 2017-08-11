@@ -36,5 +36,5 @@ void SendSkillEPacket(int client, int object);
 void SendSkillRPacket(int client, int object);
 void SendSkillDone(int client, int object);
 
-// (Col)
-bool Circile_Coll(int from, int to);
+// (Hit)
+void SendAttackHitPacket(int client, int object, int hitid, int clientID);
