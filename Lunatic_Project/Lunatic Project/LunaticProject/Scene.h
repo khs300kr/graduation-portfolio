@@ -77,6 +77,7 @@ public:
 
 	CHeroManager* pHeroObject[MAX_GAMER];
 	CGameObject *pHpObject[MAX_GAMER];
+	CGameObject *pOtherHpbarObject[MAX_GAMER];
 
 	CGameObject *pHouse1Object[13];
 	CGameObject *pWallObject[64];
@@ -101,6 +102,7 @@ public:
 	CTexture *pTestTexture;
 
 	CTexture *pHpTexture;
+	CTexture *pHpbarTexture;
 
 	CMesh *pSwordmanMeshA;
 	CMesh *pSwordmanMeshB;

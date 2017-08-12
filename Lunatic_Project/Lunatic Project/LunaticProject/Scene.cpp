@@ -31,6 +31,7 @@ CScene::CScene()
 	{
 		pHeroObject[i] = NULL;
 		pHpObject[i] = NULL;
+		pOtherHpbarObject[i] = NULL;
 	}
 
 	for (int i = 0; i < 13; ++i)
@@ -76,6 +77,9 @@ CScene::CScene()
 
 		pHpObject[i] = new CGameObject(1);
 		pHpObject[i]->SetPosition(0.0f, -3000.0f, 0.0f);
+
+		pOtherHpbarObject[i] = new CGameObject(1);
+		pOtherHpbarObject[i]->SetPosition(0.0f, -3000.0f, 0.0f);
 	}
 
 
@@ -173,9 +177,16 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 	pd3dsrvTexture = NULL;
 	pHpTexture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/otherhp.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/testhp.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pHpTexture->SetTexture(0, pd3dsrvTexture);
 	pHpTexture->SetSampler(0, pd3dSamplerState);
+	pd3dsrvTexture->Release();
+
+	pd3dsrvTexture = NULL;
+	pHpbarTexture = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/testhpbar.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pHpbarTexture->SetTexture(0, pd3dsrvTexture);
+	pHpbarTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 
 
@@ -207,7 +218,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	// 일반 쉐이더 선언부
 	/////////////////////////////////////////////////////////////////////////
 
-	m_nShaders = 24 + 24 + 40 + 8; //24 + 24   // Skybox 포함 + 16 // playercount + 17  = 24 // + 벽 12 + 12 + 40 + hp 8
+	m_nShaders = 24 + 24 + 40 + 8 + 8; //24 + 24   // Skybox 포함 + 16 // playercount + 17  = 24 // + 벽 12 + 12 + 40 + hp 8 + hpbar 8
 	m_ppShaders = new CShader*[m_nShaders];
 
 	// ⑤ SkyBox용 Shader를 생성
@@ -609,7 +620,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		}
 
 
-		for (int i = 88; i < 96; ++i)
+		for (int i = 88; i < 104; ++i)
 		{
 			m_ppShaders[i] = new CTexturedIlluminatedShader(1);
 			m_ppShaders[i]->CreateShader(pd3dDevice);
@@ -617,14 +628,14 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		}
 
 
-		CMesh *pHpMesh1 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 1.0f);
-		CMesh *pHpMesh2 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 1.0f);
-		CMesh *pHpMesh3 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 1.0f);
-		CMesh *pHpMesh4 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 1.0f);
-		CMesh *pHpMesh5 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 1.0f);
-		CMesh *pHpMesh6 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 1.0f);
-		CMesh *pHpMesh7 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 1.0f);
-		CMesh *pHpMesh8 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 1.0f); // 메쉬를 하나로 하면 크기를 줄이면 다같이 줄어들어서 메쉬를 Gamer의 수만큼 만듬
+		CMesh *pHpMesh1 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.4f);
+		CMesh *pHpMesh2 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.4f);
+		CMesh *pHpMesh3 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.4f);
+		CMesh *pHpMesh4 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.4f);
+		CMesh *pHpMesh5 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.4f);
+		CMesh *pHpMesh6 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.4f);
+		CMesh *pHpMesh7 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.4f);
+		CMesh *pHpMesh8 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.4f); // 메쉬를 하나로 하면 크기를 줄이면 다같이 줄어들어서 메쉬를 Gamer의 수만큼 만듬
 
 		for (int i = 0; i < MAX_GAMER; ++i)
 		{
@@ -649,6 +660,20 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		for(int i = 0; i < MAX_GAMER; ++i)
 			m_ppShaders[88 + i]->AddObject(pHpObject[i]);
 
+
+		CMesh *pOtherHpbarMesh = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.5f);
+
+		for (int i = 0; i < 8; ++i)
+		{
+			pOtherHpbarObject[i] = new CGameObject(1);
+			pOtherHpbarObject[i]->SetMesh(pOtherHpbarMesh);
+			pOtherHpbarObject[i]->SetMaterial(pNormalMaterial);
+			pOtherHpbarObject[i]->SetTexture(pHpbarTexture);
+
+			pOtherHpbarObject[i]->Rotate(-90, 0, 0);
+
+			m_ppShaders[96 + i]->AddObject(pOtherHpbarObject[i]);
+		}
 
 	}
 	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, _T("Data\\HeightMap.raw"), 257, 257, 17, 17, d3dxvScale, d3dxColor);
@@ -1280,6 +1305,14 @@ void CScene::AnimateObjects(float fTimeElapsed)
 		}
 	}
 
+
+	for (int i = 0; i < MAX_GAMER; ++i)
+	{
+		if (i != myGame_id)
+		{
+			pOtherHpbarObject[i]->SetPosition(pHeroObject[i]->GetPosition().x, pHeroObject[i]->GetPosition().y + 20, pHeroObject[i]->GetPosition().z + 0.1);
+		}
+	}
 }
 
 void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
