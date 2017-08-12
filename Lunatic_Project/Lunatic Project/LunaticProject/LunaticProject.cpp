@@ -1103,9 +1103,9 @@ void ProcessPacket(char * ptr)
 		{
 			gGameFramework.m_pScene->pHpgaugeObject->SetEndPos(gGameFramework.m_pScene->pHpgaugeObject->GetEndPos() - (0.55 * 18));
 
+			gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
 			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroHit = true;
 			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
-			gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
 
 			gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(my_packet->hp);
 		}
@@ -1113,9 +1113,9 @@ void ProcessPacket(char * ptr)
 		{
 			gGameFramework.m_pScene->pHpgaugeObject->SetEndPos(gGameFramework.m_pScene->pHpgaugeObject->GetEndPos() - (0.55 * 18));
 
+			gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
 			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroHit = true;
 			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
-			gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
 
 			gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(my_packet->hp);
 		}

@@ -1453,7 +1453,22 @@ bool CScene::Sectorcollision(CHeroManager * Object1, CHeroManager * Object2, DWO
 		deltaX = Object1->GetPosition().x - Object2->GetPosition().x;
 		deltaZ = (Object1->GetPosition().z + sizeXZ) - Object2->GetPosition().z;
 		break;
-
+	case DIR_LEFT_BACK:
+		deltaX = (Object1->GetPosition().x - sizeXZ) - Object2->GetPosition().x;
+		deltaZ = (Object1->GetPosition().z + sizeXZ) - Object2->GetPosition().z;
+		break;
+	case DIR_LEFT_FRONT:
+		deltaX = (Object1->GetPosition().x - sizeXZ) - Object2->GetPosition().x;
+		deltaZ = (Object1->GetPosition().z - sizeXZ) - Object2->GetPosition().z;
+		break;
+	case DIR_RIGHT_BACK:
+		deltaX = (Object1->GetPosition().x + sizeXZ) - Object2->GetPosition().x;
+		deltaZ = (Object1->GetPosition().z + sizeXZ) - Object2->GetPosition().z;
+		break;
+	case DIR_RIGHT_FRONT:
+		deltaX = (Object1->GetPosition().x + sizeXZ) - Object2->GetPosition().x;
+		deltaZ = (Object1->GetPosition().z - sizeXZ) - Object2->GetPosition().z;
+		break;
 	}
 	float Temp_radius = 7.f;
 	float len = sqrtf((deltaX * deltaX) + (deltaZ * deltaZ));
