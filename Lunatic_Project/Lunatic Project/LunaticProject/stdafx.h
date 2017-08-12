@@ -23,6 +23,10 @@
 #define MAX_CHAT_LINE 30
 
 
+// Sound Lib
+#include "inc/fmod.hpp"
+#pragma comment (lib, "lib/fmodex_vc.lib")
+
 #include "ServerGlobal.h"
 
 // Windows 헤더 파일:
