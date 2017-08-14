@@ -862,6 +862,14 @@ void ProcessPacket(char * ptr)
 			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 			gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, my_packet->y, my_packet->z));
 
+			if (gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect == BABARIAN) gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(600);
+			if (gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect == KNIGHT)gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(600);
+			if (gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect == SWORDMAN)gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(300);
+			if (gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect == MAGICIAN)gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(300);
+			if (gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect == ARCHER)gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(300);
+			if (gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect == HEALER)gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(200);
+			if (gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect == WITCH)gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(200);
+		
 			//SetWindowTextW(hChat, '\0');
 			gGameFramework.ChangeScene = GAME;
 			InvalidateRect(g_hWnd, NULL, false);
@@ -1101,37 +1109,20 @@ void ProcessPacket(char * ptr)
 
 		cout << "[SC_ATTACK_HIT]" << "id : " << my_packet->id << "\t clientID : " << my_packet->clientid << endl;
 
+		gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
+		gGameFramework.m_pScene->pHeroObject[clientid]->bHeroHit = true;
+		gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
+
+		gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(my_packet->hp);
+
 		if (clientid == gGameFramework.m_pScene->myGame_id)
 		{
-			if (gGameFramework.m_pScene->pHeroObject[clientid]->m_HeroSelect == BABARIAN) fixedHp = 600.f;
-			if (gGameFramework.m_pScene->pHeroObject[clientid]->m_HeroSelect == KNIGHT) fixedHp = 600.f;
-			if (gGameFramework.m_pScene->pHeroObject[clientid]->m_HeroSelect == SWORDMAN) fixedHp = 300.f;
-			if (gGameFramework.m_pScene->pHeroObject[clientid]->m_HeroSelect == MAGICIAN) fixedHp = 300.f;
-			if (gGameFramework.m_pScene->pHeroObject[clientid]->m_HeroSelect == ARCHER) fixedHp = 300.f;
-			if (gGameFramework.m_pScene->pHeroObject[clientid]->m_HeroSelect == HEALER) fixedHp = 200.f;
-			if (gGameFramework.m_pScene->pHeroObject[clientid]->m_HeroSelect == WITCH) fixedHp = 200.f;
+			gGameFramework.m_pScene->pHpgaugeObject->SetEndPos((385.f / gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp()) * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp());
 
-			gGameFramework.m_pScene->pHpgaugeObject->SetEndPos((335.f / fixedHp) * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp());
-
-			gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
-			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroHit = true;
-			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
-
-			gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(my_packet->hp);
-
-			//cout << "고정 체력 : " << fixedHp << endl;
-			//cout << "남은 체력 UI 길이 : " << (335.f / 600.f) * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp() << endl;
+			cout << "고정 체력 : " << gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp() << endl;
 		}
-		else
-		{
-			//gGameFramework.m_pScene->pHpgaugeObject->SetEndPos(gGameFramework.m_pScene->pHpgaugeObject->GetEndPos() - (0.55 * 18));
 
-			gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
-			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroHit = true;
-			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
-
-			gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(my_packet->hp);
-		}
+		cout << "내 HP : " << gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp() << endl;
 		break;
 	}
 

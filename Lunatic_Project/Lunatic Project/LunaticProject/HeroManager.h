@@ -8,6 +8,7 @@ class CHeroManager : public CGameObject
 {
 private:
 	int hp;
+	int maxhp;
 	float attack;
 	float speed;
 	float normalspeed;
@@ -37,6 +38,7 @@ public:
 	~CHeroManager();
 
 	int GetHp() { return hp; }
+	int Getmaxhp() { return maxhp; }
 	int GetAttack() { return attack; }
 	float GetSpeed() { return speed; }
 	float GetNormalSpeed() { return normalspeed; }
@@ -44,6 +46,7 @@ public:
 	float GetRange() { return range; }
 
 	void SetHp(int _hp) { hp = _hp; }
+	void Setmaxhp(int _maxhp)  { maxhp = _maxhp; }
 	void SetAttack(float _attack) { attack = _attack; }
 	void SetSpeed(float _speed) { speed = _speed; }
 	void SetRange(float _range) { range = _range; }
