@@ -11,7 +11,7 @@ CHeroManager::CHeroManager(int nMeshes) : CGameObject(nMeshes)
 	//m_pSwordMan = NULL;
 	hp = 0;
 	attack = 0;
-	speed = 0.5f;
+	speed = 1.f;
 	normalspeed = speed;
 	rootspeed = normalspeed / sqrt(2);
 

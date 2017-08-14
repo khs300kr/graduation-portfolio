@@ -208,7 +208,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 	CMesh *pBuilding1Mesh = new CFBXMesh(pd3dDevice, "../Data/building/building1/building1.data", 0.6f);
 	CMesh *pBuilding2Mesh = new CFBXMesh(pd3dDevice, "../Data/building/building2/building2.data", 1.f);
-	CMesh *pHouse1Mesh = new CFBXMesh(pd3dDevice, "../Data/building/house1/house1.data", 1.0f);
+	CMesh *pHouse1Mesh = new CFBXMesh(pd3dDevice, "../Data/building/house1/house1.data", 0.6f);
 	CMesh *pHouse2Mesh = new CFBXMesh(pd3dDevice, "../Data/building/house2/house2.data", 0.7f);
 	CMesh *pCityhallMesh = new CFBXMesh(pd3dDevice, "../Data/building/cityhall/cityhall.data", 1.f);
 	CMesh *pWallMesh = new CFBXMesh(pd3dDevice, "../Data/building/wall/Wall.data", 5.f);
@@ -456,7 +456,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		pBuilding2Object->SetMaterial(pNormalMaterial);
 		pBuilding2Object->SetTexture(pBuilding2Texture);
 		pBuilding2Object->Rotate(0.0f, 0.0f, 0.0f);
-		pBuilding2Object->SetPosition(0.0f, 0.0f, 500.0f);
+		pBuilding2Object->SetPosition(0.0f, -10.0f, 500.0f);
 		m_ppShaders[10]->AddObject(pBuilding2Object);
 
 		//building2 (리스폰) (아군)
