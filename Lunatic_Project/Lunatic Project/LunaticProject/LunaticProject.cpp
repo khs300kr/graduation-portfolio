@@ -862,14 +862,24 @@ void ProcessPacket(char * ptr)
 			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 			gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, my_packet->y, my_packet->z));
 
-			if (gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect == BABARIAN) gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(600);
-			if (gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect == KNIGHT)gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(600);
-			if (gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect == SWORDMAN)gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(300);
-			if (gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect == MAGICIAN)gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(300);
-			if (gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect == ARCHER)gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(300);
-			if (gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect == HEALER)gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(200);
-			if (gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect == WITCH)gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(200);
-		
+			switch (gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect)
+			{
+			case BABARIAN:	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(600); 
+				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetRange(BABARIAN_RANGE); break;
+			case KNIGHT:	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(600);
+				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetRange(KNIGHT_RANGE); break;
+			case SWORDMAN:	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(300);
+				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetRange(SWORDMAN_RANGE); break;
+			case MAGICIAN:	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(300);
+				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetRange(MAGICIAN_RANGE); break;
+			case ARCHER:	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(300); 
+				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetRange(ARCHER_RANGE); break;
+			case HEALER:	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(200); 
+				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetRange(HEALER_RANGE); break;
+			case WITCH:		gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(200); 
+				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetRange(WITCH_RANGE); break;
+			}
+
 			//SetWindowTextW(hChat, '\0');
 			gGameFramework.ChangeScene = GAME;
 			InvalidateRect(g_hWnd, NULL, false);

@@ -970,7 +970,7 @@ void CScene::ProcessInput()
 			{
 				if (i != myGame_id)
 				{
-					if (Sectorcollision(pHeroObject[myGame_id], pHeroObject[i], dwDirforCollision, 3.f, 7.f))
+					if (Sectorcollision(pHeroObject[myGame_id], pHeroObject[i], dwDirforCollision, 3.f, pHeroObject[myGame_id]->GetRange()))
 					{
 						cout << "COLL : " << dwDirforCollision << endl;
 						/*m_ppShaders[i + 1]->GetFBXMesh->SetAnimation(ANI_HIT);*/
@@ -1502,7 +1502,7 @@ bool CScene::Sectorcollision(CHeroManager * Object1, CHeroManager * Object2, DWO
 		deltaZ = (Object1->GetPosition().z - sizeXZ) - Object2->GetPosition().z;
 		break;
 	}
-	float Temp_radius = 7.f;
+	float Temp_radius = range;
 	float len = sqrtf((deltaX * deltaX) + (deltaZ * deltaZ));
 	return (len <= (Temp_radius));
 }

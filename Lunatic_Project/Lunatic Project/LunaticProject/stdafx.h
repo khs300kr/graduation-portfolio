@@ -107,6 +107,14 @@ using namespace DirectX::PackedVector;
 #define GAME 3
 #define LOADING 4
 
+#define BABARIAN_RANGE	7.f
+#define KNIGHT_RANGE	15.f
+#define SWORDMAN_RANGE	20.f
+#define MAGICIAN_RANGE	12.f
+#define ARCHER_RANGE	7.f
+#define HEALER_RANGE	12.f
+#define WITCH_RANGE		13.f
+
 void currentDateTime();
 
 enum TextureTag {
