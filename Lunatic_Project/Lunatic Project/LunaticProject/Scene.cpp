@@ -38,7 +38,7 @@ CScene::CScene()
 		pHouse1Object[i] = NULL;
 
 	pNormalMaterial = NULL;
-	
+
 	pHealerTexture = NULL;
 	pSwordmanTexture = NULL;
 	pBabarianTexture = NULL;
@@ -50,7 +50,7 @@ CScene::CScene()
 
 	pTestTexture = NULL;
 	pHpTexture = NULL;
-	
+
 	pSwordmanMeshA = NULL;
 	pSwordmanMeshB = NULL;
 	pHealerMeshA = NULL;
@@ -231,7 +231,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 		//pHeroObject[myroom_id]->SetOOBB(XMFLOAT3(pHeroObject[myroom_id]->GetPosition().x, pHeroObject[myroom_id]->GetPosition().y, pHeroObject[myroom_id]->GetPosition().z),
 		//	XMFLOAT3(0.1f, 0.1f, 0.1f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
-		
+
 
 		for (int i = 0; i < MAX_GAMER; ++i)
 		{
@@ -655,9 +655,9 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		pHpObject[6]->SetMesh(pHpMesh7);
 		pHpObject[7]->SetMesh(pHpMesh8);
 
-		
-		
-		for(int i = 0; i < MAX_GAMER; ++i)
+
+
+		for (int i = 0; i < MAX_GAMER; ++i)
 			m_ppShaders[88 + i]->AddObject(pHpObject[i]);
 
 
@@ -813,63 +813,63 @@ bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
 
 bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-//	switch (nMessageID)
-//	{
-//	case WM_KEYDOWN:
-//
-//		switch (wParam)
-//		{
-//		case 'A':
-//
-//			break;
-//
-//		case 'Z':
-//			if (!pHeroObject[myGame_id]->bHeroAttack)
-//			{
-//				
-//				/*m_ppShaders[2]->GetFBXMesh->SetAnimation(1);
-//				bHeroRun = true;
-//				bHeroPunch = false;*/
-//			}
-//			break;
-//		case 'X':
-//			//if (!bHeroAttack)
-//			//{
-//			//	m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_ATTACK);
-//			//	
-//			//	bHeroRun = false;
-//			//	bHeroAttack = true;
-//			//}
-//		default:
-//			break;
-//		}
-//		break;	// Client KeyDown
-//
-//
-/////////////////////////////////////////////////////////////////////////		
-//
-//
-//	case WM_KEYUP:
-//
-//		switch (wParam)
-//		{
-//		case 'Z':
-//			break;
-//		case 'X':
-//			//if (bHeroAttack)
-//			//{
-//			//	m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
-//			//	bHeroAttack = false;
-//			//}
-//		default:
-//			break;
-//		}
-//		break;
-//	default:
-//		break;
-//	}
+	//	switch (nMessageID)
+	//	{
+	//	case WM_KEYDOWN:
+	//
+	//		switch (wParam)
+	//		{
+	//		case 'A':
+	//
+	//			break;
+	//
+	//		case 'Z':
+	//			if (!pHeroObject[myGame_id]->bHeroAttack)
+	//			{
+	//				
+	//				/*m_ppShaders[2]->GetFBXMesh->SetAnimation(1);
+	//				bHeroRun = true;
+	//				bHeroPunch = false;*/
+	//			}
+	//			break;
+	//		case 'X':
+	//			//if (!bHeroAttack)
+	//			//{
+	//			//	m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_ATTACK);
+	//			//	
+	//			//	bHeroRun = false;
+	//			//	bHeroAttack = true;
+	//			//}
+	//		default:
+	//			break;
+	//		}
+	//		break;	// Client KeyDown
+	//
+	//
+	/////////////////////////////////////////////////////////////////////////		
+	//
+	//
+	//	case WM_KEYUP:
+	//
+	//		switch (wParam)
+	//		{
+	//		case 'Z':
+	//			break;
+	//		case 'X':
+	//			//if (bHeroAttack)
+	//			//{
+	//			//	m_ppShaders[1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+	//			//	bHeroAttack = false;
+	//			//}
+	//		default:
+	//			break;
+	//		}
+	//		break;
+	//	default:
+	//		break;
+	//	}
 	return false;
-}	
+}
 
 void CScene::ProcessInput()
 {
@@ -884,9 +884,9 @@ void CScene::ProcessInput()
 
 				/*if (m_ppShaders[88]->GetFBXMesh->GetFBXModelSize() > 0)
 				{
-					m_ppShaders[88]->GetFBXMesh->SetFBXModelSize(m_ppShaders[88]->GetFBXMesh->GetFBXModelSize() - 0.1f);
+				m_ppShaders[88]->GetFBXMesh->SetFBXModelSize(m_ppShaders[88]->GetFBXMesh->GetFBXModelSize() - 0.1f);
 				}*/
-				
+
 			}
 			if (KEY_DOWN(VK_DOWN) && !DownKeyDown) {
 				DownKeyDown = true;
@@ -932,7 +932,7 @@ void CScene::ProcessInput()
 			LeftKeyDown = false;
 			if (pHeroObject[myGame_id]->bHeroRun)
 			{
-				m_ppShaders[myGame_id +1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				m_ppShaders[myGame_id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
 				pHeroObject[myGame_id]->bHeroRun = false;
 			}
 			SendMovePacket(CS_KEYUP_LEFT);
@@ -942,7 +942,7 @@ void CScene::ProcessInput()
 			RightKeyDown = false;
 			if (pHeroObject[myGame_id]->bHeroRun)
 			{
-				m_ppShaders[myGame_id +1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+				m_ppShaders[myGame_id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
 				pHeroObject[myGame_id]->bHeroRun = false;
 			}
 			SendMovePacket(CS_KEYUP_RIGHT);
@@ -970,36 +970,27 @@ void CScene::ProcessInput()
 			{
 				if (i != myGame_id)
 				{
-					if (Sectorcollision(pHeroObject[myGame_id], pHeroObject[i], dwDirforCollision,3.f, 7.f))
+					if (Sectorcollision(pHeroObject[myGame_id], pHeroObject[i], dwDirforCollision, 3.f, 7.f))
 					{
-							cout << "COLL : " << dwDirforCollision << endl;
-							/*m_ppShaders[i + 1]->GetFBXMesh->SetAnimation(ANI_HIT);*/
-							
-							cout << "Server ID : " << pHeroObject[i]->m_serverID << endl;
-							cout << "My HP : " << pHeroObject[myGame_id]->GetHp() << "\t My att : " << pHeroObject[myGame_id]->GetAttack() << endl;
-							cout << "Other HP : " << pHeroObject[i]->GetHp() << "\t Other att : " << pHeroObject[i]->GetAttack() << endl;
+						cout << "COLL : " << dwDirforCollision << endl;
+						/*m_ppShaders[i + 1]->GetFBXMesh->SetAnimation(ANI_HIT);*/
+
+						cout << "Server ID : " << pHeroObject[i]->m_serverID << endl;
+						cout << "My HP : " << pHeroObject[myGame_id]->GetHp() << "\t My att : " << pHeroObject[myGame_id]->GetAttack() << endl;
+						cout << "Other HP : " << pHeroObject[i]->GetHp() << "\t Other att : " << pHeroObject[i]->GetAttack() << endl;
 
 
-							cs_packet_attack_hit *my_packet = reinterpret_cast<cs_packet_attack_hit *>(send_buffer);
-							my_packet->size = sizeof(cs_packet_attack_hit);
-							send_wsabuf.len = sizeof(cs_packet_attack_hit);
-							DWORD iobyte;
-							my_packet->type = CS_ATTACK_HIT;
-							my_packet->roomnumber = MyRoomNumber;
-							my_packet->hitID = pHeroObject[i]->m_serverID;
-							my_packet->clientID = i;
-	
-							WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
-	
-	
-							//// 충돌시 hp 깍이는 곳인데 현재 내가 공격했을때 내 체력 깍이게 되어있음.
-							//// 충돌 되는 시간동안 체력이 계속해서 깍여 내려가는 문제가 있음 단 한번만으로 바꿔야함
-							//pHpgaugeObject->SetEndPos(pHpgaugeObject->GetEndPos() - (0.55 * 18));
-	
-							//// 공격 받고 난후 hp 셋팅
-							//pHeroObject[myGame_id]->SetHp(pHeroObject[myGame_id]->GetHp() - 18);
-							//cout << pHeroObject[myGame_id]->GetHp() << endl;
-	
+						cs_packet_attack_hit *my_packet = reinterpret_cast<cs_packet_attack_hit *>(send_buffer);
+						my_packet->size = sizeof(cs_packet_attack_hit);
+						send_wsabuf.len = sizeof(cs_packet_attack_hit);
+						DWORD iobyte;
+						my_packet->type = CS_ATTACK_HIT;
+						my_packet->roomnumber = MyRoomNumber;
+						my_packet->hitID = pHeroObject[i]->m_serverID;
+						my_packet->clientID = i;
+
+						WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+
 					}
 				}
 			}
@@ -1065,7 +1056,7 @@ void CScene::ProcessInput()
 		{
 			if (!pHeroObject[myGame_id]->bHeroR)
 			{
-				
+
 				pHeroObject[myGame_id]->bHeroR = true;
 				pHeroObject[myGame_id]->bHeroRun = false;
 
@@ -1084,7 +1075,7 @@ void CScene::ProcessInput()
 		{
 			if (!pHeroObject[myGame_id]->bHeroHit)
 			{
-				m_ppShaders[myGame_id +1]->GetFBXMesh->SetAnimation(ANI_HIT);
+				m_ppShaders[myGame_id + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
 
 				pHeroObject[myGame_id]->bHeroHit = true;
 				pHeroObject[myGame_id]->bHeroRun = false;
@@ -1094,7 +1085,7 @@ void CScene::ProcessInput()
 		{
 			if (!pHeroObject[myGame_id]->bHeroStun)
 			{
-				m_ppShaders[myGame_id +1]->GetFBXMesh->SetAnimation(ANI_STUN);
+				m_ppShaders[myGame_id + 1]->GetFBXMesh->SetAnimation(ANI_STUN);
 
 				pHeroObject[myGame_id]->bHeroStun = true;
 				pHeroObject[myGame_id]->bHeroRun = false;
@@ -1104,16 +1095,16 @@ void CScene::ProcessInput()
 		{
 			if (!pHeroObject[myGame_id]->bHeroDie)
 			{
-				m_ppShaders[myGame_id +1]->GetFBXMesh->SetAnimation(ANI_DIE);
+				m_ppShaders[myGame_id + 1]->GetFBXMesh->SetAnimation(ANI_DIE);
 
 				pHeroObject[myGame_id]->bHeroDie = true;
 				pHeroObject[myGame_id]->bHeroRun = false;
 			}
 		}
 
-		
+
 	}
-	
+
 
 
 }
@@ -1170,7 +1161,7 @@ void CScene::CreateShaderVariables(ID3D11Device *pd3dDevice)
 
 	D3D11_BUFFER_DESC d3dBufferDesc;
 	ZeroMemory(&d3dBufferDesc, sizeof(d3dBufferDesc));
-	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC; 
+	d3dBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	d3dBufferDesc.ByteWidth = sizeof(LIGHTS);
 	d3dBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	d3dBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -1235,10 +1226,10 @@ void CScene::AnimateObjects(float fTimeElapsed)
 		//m_pLights->m_pLights[0].m_fRange = pTerrain->GetPeakHeight();
 
 		/*두 번째 조명은 플레이어가 가지고 있는 손전등(스팟 조명)이다. 그러므로 플레이어의 위치와 방향이 바뀌면 현재 플레이어의 위치와 z-축 방향 벡터를 스팟 조명의 위치와 방향으로 설정한다.*/
-		
+
 		m_pLights->m_pLights[1].m_d3dxvPosition = pPlayer->GetPosition();
 		m_pLights->m_pLights[1].m_d3dxvDirection = pPlayer->GetLookVector();
-		
+
 
 		m_pLights->m_pLights[3].m_d3dxvPosition = pPlayer->GetPosition() + D3DXVECTOR3(0.0f, 40.0f, 0.0f);
 	}
@@ -1247,9 +1238,17 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 
 	// hp 갱신
+	//pHpgaugeObject->SetEndPos( (335 / 600) * pHeroObject[myGame_id]->GetHp());
 	pHpgaugeObject->Update();
 
-	
+	// 충돌시 hp 깍이는 곳인데 현재 내가 공격했을때 내 체력 깍이게 되어있음.
+	// 충돌 되는 시간동안 체력이 계속해서 깍여 내려가는 문제가 있음 단 한번만으로 바꿔야함
+
+	// 공격 받고 난후 hp 셋팅
+	//pHeroObject[myGame_id]->SetHp(pHeroObject[myGame_id]->GetHp() - 18);
+	//cout << pHeroObject[myGame_id]->GetHp() << endl;
+
+
 	if (pHeroObject[myGame_id]->bHeroAttack || pHeroObject[myGame_id]->bHeroQ || pHeroObject[myGame_id]->bHeroW || pHeroObject[myGame_id]->bHeroE || pHeroObject[myGame_id]->bHeroR
 		|| pHeroObject[myGame_id]->bHeroHit)
 	{
@@ -1260,7 +1259,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 			send_wsabuf.len = sizeof(cs_packet_skill_done);
 			DWORD iobyte;
 			my_packet->type = CS_SKILL_DONE;
-			
+
 			WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 			//
 
@@ -1274,7 +1273,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 	}
 
-	
+
 
 	//for (int i = 0; i < MAX_GAMER; ++i)
 	//{
@@ -1288,15 +1287,15 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 	//}
 
-	
-	for (int i = 1; i < MAX_GAMER+1; ++i)
+
+	for (int i = 1; i < MAX_GAMER + 1; ++i)
 	{
 		m_ppShaders[i]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed);
 
 	}
 
 
-	
+
 	for (int i = 0; i < MAX_GAMER; ++i)
 	{
 		if (i != myGame_id)
@@ -1318,7 +1317,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 {
 	if (m_pLights && m_pd3dcbLights) UpdateShaderVariable(pd3dDeviceContext, m_pLights);
-	
+
 	for (int i = 0; i < m_nShaders; ++i)
 	{
 		if (i == 1 || i == 2 || i == 3 || i == 4 || i == 5 || i == 6 || i == 7 || i == 8) // i번째 뼈대의 행렬 변경하자.
@@ -1328,7 +1327,7 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 	}
 	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->Render(pd3dDeviceContext, pCamera);
 
-	for(int i = 0; i < 6; ++i)
+	for (int i = 0; i < 6; ++i)
 		m_pUIManager[i]->RenderAll(pd3dDeviceContext);
 }
 

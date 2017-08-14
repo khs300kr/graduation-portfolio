@@ -26,14 +26,14 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
-                     _In_opt_ HINSTANCE hPrevInstance,
-                     _In_ LPTSTR    lpCmdLine,
-                     _In_ int       nCmdShow)
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_ LPTSTR    lpCmdLine,
+	_In_ int       nCmdShow)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
- 	// TODO: 여기에 코드를 입력합니다.
+	// TODO: 여기에 코드를 입력합니다.
 	MSG msg = { 0 };
 	HACCEL hAccelTable;
 
@@ -43,7 +43,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	MyRegisterClass(hInstance);
 
 	// 응용 프로그램 초기화를 수행합니다.
-	if (!InitInstance (hInstance, nCmdShow))
+	if (!InitInstance(hInstance, nCmdShow))
 	{
 		return FALSE;
 	}
@@ -73,7 +73,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	ServerAddr.sin_addr.s_addr = inet_addr(ipAddr);
 #endif
 
-	
+
 
 	int Result = WSAConnect(g_mysocket, (sockaddr *)&ServerAddr, sizeof(ServerAddr), NULL, NULL, NULL, NULL);
 	WSAAsyncSelect(g_mysocket, g_hWnd, WM_SOCKET, FD_CLOSE | FD_READ);
@@ -94,12 +94,12 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		else
 		{
 			gGameFramework.FrameAdvance();
-		}	
+		}
 	}
 	gGameFramework.Destroy();
 
 
-	return (int) msg.wParam;
+	return (int)msg.wParam;
 }
 
 
@@ -114,19 +114,19 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	WNDCLASSEX wcex;
 
 	wcex.cbSize = sizeof(WNDCLASSEX);
-	
-	wcex.style			= CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc	= WndProc;
-	wcex.cbClsExtra		= 0;
-	wcex.cbWndExtra		= 0;
-	wcex.hInstance		= hInstance;
-	wcex.hIcon			= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_LUNATICPROJECT));
-	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
-	wcex.lpszMenuName	= NULL;	
-	wcex.lpszClassName	= szWindowClass;
-	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-	
+
+	wcex.style = CS_HREDRAW | CS_VREDRAW;
+	wcex.lpfnWndProc = WndProc;
+	wcex.cbClsExtra = 0;
+	wcex.cbWndExtra = 0;
+	wcex.hInstance = hInstance;
+	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_LUNATICPROJECT));
+	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	wcex.lpszMenuName = NULL;
+	wcex.lpszClassName = szWindowClass;
+	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+
 	return RegisterClassEx(&wcex);
 }
 
@@ -187,54 +187,54 @@ LRESULT CALLBACK EditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
-		case WM_CHAR:
+	case WM_CHAR:
+	{
+		if (wParam == VK_RETURN && gGameFramework.ChangeScene == LOBBY)
 		{
-			if (wParam == VK_RETURN && gGameFramework.ChangeScene == LOBBY)
+			if (!gLobby.RoomCreateWindow)
 			{
-				if (!gLobby.RoomCreateWindow)
+				if (wcslen(gLobby.input))
 				{
-					if (wcslen(gLobby.input))
-					{
-						cs_packet_lobbychat *my_packet = reinterpret_cast<cs_packet_lobbychat *>(send_buffer);
-						my_packet->size = sizeof(cs_packet_lobbychat);
-						send_wsabuf.len = sizeof(cs_packet_lobbychat);
-						DWORD iobyte;
-						my_packet->type = CS_LOBBY_CHAT;
-						wcscpy_s(my_packet->message, gLobby.input);
-						wcscpy_s(my_packet->id, gMainMenu.user_id);
-						WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
-
-						SetWindowTextW(hWnd, '\0');
-					}
-
-					SetFocus(g_hWnd);
-				}
-
-				// Indicate that we processed the message.
-				return 0;
-			}
-			else if (wParam == VK_RETURN && gGameFramework.ChangeScene == ROOM)
-			{
-				if (wcslen(gRoom.input))
-				{
-					cs_packet_roomchat *my_packet = reinterpret_cast<cs_packet_roomchat *>(send_buffer);
-					my_packet->size = sizeof(cs_packet_roomchat);
-					send_wsabuf.len = sizeof(cs_packet_roomchat);
+					cs_packet_lobbychat *my_packet = reinterpret_cast<cs_packet_lobbychat *>(send_buffer);
+					my_packet->size = sizeof(cs_packet_lobbychat);
+					send_wsabuf.len = sizeof(cs_packet_lobbychat);
 					DWORD iobyte;
-					my_packet->type = CS_ROOM_CHAT;
-					wcscpy_s(my_packet->message, gRoom.input);
+					my_packet->type = CS_LOBBY_CHAT;
+					wcscpy_s(my_packet->message, gLobby.input);
 					wcscpy_s(my_packet->id, gMainMenu.user_id);
-					my_packet->roomnumber = gRoom.RoomInfo.room_number;
 					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 
-					memset(gRoom.input, 0, sizeof(gRoom.input));
 					SetWindowTextW(hWnd, '\0');
 				}
 
 				SetFocus(g_hWnd);
 			}
 
+			// Indicate that we processed the message.
+			return 0;
 		}
+		else if (wParam == VK_RETURN && gGameFramework.ChangeScene == ROOM)
+		{
+			if (wcslen(gRoom.input))
+			{
+				cs_packet_roomchat *my_packet = reinterpret_cast<cs_packet_roomchat *>(send_buffer);
+				my_packet->size = sizeof(cs_packet_roomchat);
+				send_wsabuf.len = sizeof(cs_packet_roomchat);
+				DWORD iobyte;
+				my_packet->type = CS_ROOM_CHAT;
+				wcscpy_s(my_packet->message, gRoom.input);
+				wcscpy_s(my_packet->id, gMainMenu.user_id);
+				my_packet->roomnumber = gRoom.RoomInfo.room_number;
+				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+
+				memset(gRoom.input, 0, sizeof(gRoom.input));
+				SetWindowTextW(hWnd, '\0');
+			}
+
+			SetFocus(g_hWnd);
+		}
+
+	}
 	}
 
 	// Pass the messages we don't process here on to the
@@ -285,7 +285,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		memdc2 = CreateCompatibleDC(hdc);
 
-		if (gGameFramework.ChangeScene == MAINMENU) 
+		if (gGameFramework.ChangeScene == MAINMENU)
 			gMainMenu.Draw(memdc, memdc2);
 
 		else if (gGameFramework.ChangeScene == LOBBY)
@@ -316,7 +316,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		break;
 
-	// server
+		// server
 	case WM_SOCKET:
 	{
 		if (WSAGETSELECTERROR(lParam)) {
@@ -372,7 +372,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					GetWindowText(hChat, gRoom.input, sizeof(gRoom.input));
 				}
-				
+
 
 				break;
 			}
@@ -420,7 +420,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 
 
-		break;
+	break;
 	case WM_KEYDOWN:
 
 		switch (wParam)
@@ -429,18 +429,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if (gGameFramework.ChangeScene == MAINMENU)
 			{
 				if (wcslen(gMainMenu.user_id) != 0 && wcslen(gMainMenu.user_password) != 0)
-					{
-						// server send (Ready)
-						cs_packet_login *my_packet = reinterpret_cast<cs_packet_login *>(send_buffer);
-						my_packet->size = sizeof(cs_packet_login);
-						send_wsabuf.len = sizeof(cs_packet_login);
-						DWORD iobyte;
-						my_packet->type = CS_LOGIN;
-						wcscpy_s(my_packet->id, gMainMenu.user_id);
-						wcscpy_s(my_packet->password, gMainMenu.user_password);
-						WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
-						//
-					}
+				{
+					// server send (Ready)
+					cs_packet_login *my_packet = reinterpret_cast<cs_packet_login *>(send_buffer);
+					my_packet->size = sizeof(cs_packet_login);
+					send_wsabuf.len = sizeof(cs_packet_login);
+					DWORD iobyte;
+					my_packet->type = CS_LOGIN;
+					wcscpy_s(my_packet->id, gMainMenu.user_id);
+					wcscpy_s(my_packet->password, gMainMenu.user_password);
+					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+					//
+				}
 			}
 			else if (gGameFramework.ChangeScene == LOBBY)
 			{
@@ -478,22 +478,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			gLobby.MouseMove(mx, my);
 			InvalidateRect(g_hWnd, NULL, false);
 		}
-			
+
 		break;
 	}
 
 	case WM_KEYUP:
 		switch (wParam)
 		{
-		//case VK_F1:
-		//case VK_F2:
-		//case VK_F3:
+			//case VK_F1:
+			//case VK_F2:
+			//case VK_F3:
 
-		//	gGameFramework.m_pPlayer->ChangeCamera(gGameFramework.Getpd3dDevice(), (wParam - VK_F1 + 1), gGameFramework.m_GameTimer.GetTimeElapsed());
-		//	gGameFramework.m_pCamera = gGameFramework.m_pPlayer->GetCamera();
-		//	// 씬에 현재 카메라를 설정한다.
-		//	gGameFramework.m_pScene->SetCamera(gGameFramework.m_pCamera);
-		//	break;
+			//	gGameFramework.m_pPlayer->ChangeCamera(gGameFramework.Getpd3dDevice(), (wParam - VK_F1 + 1), gGameFramework.m_GameTimer.GetTimeElapsed());
+			//	gGameFramework.m_pCamera = gGameFramework.m_pPlayer->GetCamera();
+			//	// 씬에 현재 카메라를 설정한다.
+			//	gGameFramework.m_pScene->SetCamera(gGameFramework.m_pCamera);
+			//	break;
 		case VK_ESCAPE:
 			::PostQuitMessage(0);
 			break;
@@ -574,13 +574,13 @@ void ProcessPacket(char * ptr)
 	static bool first_time = true;
 	switch (ptr[1])
 	{
-	// 접속
+		// 접속
 	case SC_ID:
 	{
 		sc_packet_id *my_packet = reinterpret_cast<sc_packet_id *>(ptr);
 
 		memset(gMainMenu.user_password, 0, sizeof(gMainMenu.user_password));
-	
+
 		gMainMenu.IsLogin = true;
 		gGameFramework.ChangeScene = LOBBY;
 		InvalidateRect(g_hWnd, NULL, false);
@@ -590,7 +590,7 @@ void ProcessPacket(char * ptr)
 	case SC_LOGIN_FAILED:
 	{
 		sc_packet_loginfailed *my_packet = reinterpret_cast<sc_packet_loginfailed *>(ptr);
-		
+
 		gMainMenu.IsLogin = false;
 
 		InvalidateRect(g_hWnd, NULL, false);
@@ -601,7 +601,7 @@ void ProcessPacket(char * ptr)
 	case SC_LOBBY_CHAT:
 	{
 		sc_packet_chat *my_packet = reinterpret_cast<sc_packet_chat *>(ptr);
-		
+
 		/*chat_id = L"client[" + to_wstring(id);
 		chat_id += L"]: ";*/
 		wstring s = my_packet->DB_id;
@@ -642,8 +642,8 @@ void ProcessPacket(char * ptr)
 		gLobby.room[my_packet->room_number].mode = my_packet->mode;
 		gLobby.room[my_packet->room_number].playercount = my_packet->playercount;
 		gLobby.room[my_packet->room_number]._private = my_packet->m_private;
-		
-		
+
+
 
 		InvalidateRect(g_hWnd, NULL, false);
 
@@ -653,10 +653,10 @@ void ProcessPacket(char * ptr)
 	case SC_JOIN_ROOM:
 	{
 		sc_packet_join_room *my_packet = reinterpret_cast<sc_packet_join_room *>(ptr);
-		
+
 		gGameFramework.m_pScene->MyRoomNumber = my_packet->roomnumber;
 		gGameFramework.m_pScene->myGame_id = my_packet->game_id;
-		
+
 		wcscpy_s(gRoom.RoomInfo.roomtitle, my_packet->roomtitle);//wcscpy_s(gRoom.RoomInfo.roomtitle, gLobby.room[gRoom.RoomInfo.room_number].roomtitle);
 		gRoom.RoomInfo.mode = my_packet->mode;
 		gRoom.RoomInfo.playercount = my_packet->playercount;
@@ -674,7 +674,7 @@ void ProcessPacket(char * ptr)
 		InvalidateRect(g_hWnd, NULL, false);
 		break;
 	}
-	
+
 	case SC_JOIN_FAIL_EMPTY:
 	{
 		sc_packet_join_fail *my_packet = reinterpret_cast<sc_packet_join_fail *>(ptr);
@@ -701,7 +701,7 @@ void ProcessPacket(char * ptr)
 	case SC_QUICK_JOIN_FAIL:
 	{
 		sc_packet_join_fail *my_packet = reinterpret_cast<sc_packet_join_fail *>(ptr);
-		
+
 		InvalidateRect(g_hWnd, NULL, false);
 		break;
 	}
@@ -712,7 +712,7 @@ void ProcessPacket(char * ptr)
 
 		gGameFramework.m_pScene->MyRoomNumber = my_packet->roomnumber;
 		gGameFramework.m_pScene->myGame_id = my_packet->game_id;
-		
+
 		wcscpy_s(gRoom.RoomInfo.roomtitle, my_packet->roomtitle);//wcscpy_s(gRoom.RoomInfo.roomtitle, gLobby.room[gRoom.RoomInfo.room_number].roomtitle);
 		gRoom.RoomInfo.mode = my_packet->mode;
 		gRoom.RoomInfo.playercount = my_packet->playercount;
@@ -729,9 +729,9 @@ void ProcessPacket(char * ptr)
 		break;
 	}
 
-	
-		
-		
+
+
+
 
 	// 방
 	case SC_ROOM_CHAT:
@@ -773,25 +773,25 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_ready *my_packet = reinterpret_cast<sc_packet_ready *>(ptr);
 		int id = my_packet->id;
-		if (id == gGameFramework.m_pScene->myGame_id) 
+		if (id == gGameFramework.m_pScene->myGame_id)
 		{
 			cout << "SC_READY\n";
 			cout << "내 캐릭터 선택 : " << gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect << endl;
-			
+
 			if (id & 1)
 				gGameFramework.m_pScene->pHeroObject[id]->m_Team = B_TEAM; // 팀 선택
 			else
 				gGameFramework.m_pScene->pHeroObject[id]->m_Team = A_TEAM;
 
 			gRoom.RoomUI[id].Team = gGameFramework.m_pScene->pHeroObject[id]->m_Team; // 룸에 팀 전달
-			 
-			
+
+
 		}
-		else 
+		else
 		{
 			gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect = gRoom.RoomUI[id].HeroSelect = my_packet->hero_pick; // 캐릭터 선택
 
-			if(id & 1)
+			if (id & 1)
 				gGameFramework.m_pScene->pHeroObject[id]->m_Team = B_TEAM; // 팀 선택
 			else
 				gGameFramework.m_pScene->pHeroObject[id]->m_Team = A_TEAM;
@@ -834,13 +834,13 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_enter_newplayer *my_packet = reinterpret_cast<sc_packet_enter_newplayer *>(ptr);
 
-		
+
 		for (int i = 0; i < MAX_GAMER; ++i)
 		{
 			gRoom.RoomUI[i].IsReady = false;
 			gRoom.RoomUI[i].HeroSelect = EMPTY; // 새로운 사용자가 들어오면 초기화
 		}
-	
+
 
 		wcscpy_s(gRoom.RoomUI[my_packet->id].ID, my_packet->DB_id);
 
@@ -861,7 +861,7 @@ void ProcessPacket(char * ptr)
 			cout << "Hero Pos : \t " << id << endl;
 			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 			gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, my_packet->y, my_packet->z));
-			
+
 			//SetWindowTextW(hChat, '\0');
 			gGameFramework.ChangeScene = GAME;
 			InvalidateRect(g_hWnd, NULL, false);
@@ -870,10 +870,10 @@ void ProcessPacket(char * ptr)
 			cout << "Other Pos: \t " << id << endl;
 			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 			cout << "초기좌표를 설정하는 다른 아이디" << ends << id << endl;
-			
+
 
 		}
-		break;	
+		break;
 	}
 
 	case SC_POS:
@@ -893,7 +893,7 @@ void ProcessPacket(char * ptr)
 			gGameFramework.dwDirection = my_packet->direction;
 			// 각도 저장.
 			if (my_packet->direction) gGameFramework.m_pScene->dwDirforCollision = my_packet->direction;
-			
+
 			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 
 			if (my_packet->direction != 0)
@@ -911,9 +911,9 @@ void ProcessPacket(char * ptr)
 				gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_RUN);
 			else
 				gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
-		
-			
-		
+
+
+
 			//cout << "Other id : " << id << endl;
 
 		}
@@ -1018,7 +1018,7 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_coll_char *my_packet = reinterpret_cast<sc_packet_coll_char *>(ptr);
 		int id = my_packet->id;
-		
+
 		switch (my_packet->direction)
 		{
 		case CS_KEYDOWN_RIGHT:
@@ -1097,21 +1097,34 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_attack_hit *my_packet = reinterpret_cast<sc_packet_attack_hit *>(ptr);
 		int clientid = my_packet->clientid;
+		float fixedHp = 0.f;
+
 		cout << "[SC_ATTACK_HIT]" << "id : " << my_packet->id << "\t clientID : " << my_packet->clientid << endl;
 
 		if (clientid == gGameFramework.m_pScene->myGame_id)
 		{
-			gGameFramework.m_pScene->pHpgaugeObject->SetEndPos(gGameFramework.m_pScene->pHpgaugeObject->GetEndPos() - (0.55 * 18));
+			if (gGameFramework.m_pScene->pHeroObject[clientid]->m_HeroSelect == BABARIAN) fixedHp = 600.f;
+			if (gGameFramework.m_pScene->pHeroObject[clientid]->m_HeroSelect == KNIGHT) fixedHp = 600.f;
+			if (gGameFramework.m_pScene->pHeroObject[clientid]->m_HeroSelect == SWORDMAN) fixedHp = 300.f;
+			if (gGameFramework.m_pScene->pHeroObject[clientid]->m_HeroSelect == MAGICIAN) fixedHp = 300.f;
+			if (gGameFramework.m_pScene->pHeroObject[clientid]->m_HeroSelect == ARCHER) fixedHp = 300.f;
+			if (gGameFramework.m_pScene->pHeroObject[clientid]->m_HeroSelect == HEALER) fixedHp = 200.f;
+			if (gGameFramework.m_pScene->pHeroObject[clientid]->m_HeroSelect == WITCH) fixedHp = 200.f;
+
+			gGameFramework.m_pScene->pHpgaugeObject->SetEndPos((335.f / fixedHp) * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp());
 
 			gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
 			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroHit = true;
 			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
 
 			gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(my_packet->hp);
+
+			//cout << "고정 체력 : " << fixedHp << endl;
+			//cout << "남은 체력 UI 길이 : " << (335.f / 600.f) * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp() << endl;
 		}
 		else
 		{
-			gGameFramework.m_pScene->pHpgaugeObject->SetEndPos(gGameFramework.m_pScene->pHpgaugeObject->GetEndPos() - (0.55 * 18));
+			//gGameFramework.m_pScene->pHpgaugeObject->SetEndPos(gGameFramework.m_pScene->pHpgaugeObject->GetEndPos() - (0.55 * 18));
 
 			gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
 			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroHit = true;
@@ -1151,8 +1164,8 @@ void SendReadyButton()
 	//	}
 	//	
 	//}
-	
-	
+
+
 	{
 		// server send (Ready)
 		cs_packet_ready *my_packet = reinterpret_cast<cs_packet_ready *>(send_buffer);
@@ -1162,7 +1175,7 @@ void SendReadyButton()
 		my_packet->type = CS_READY;
 		my_packet->hero_pick = gRoom.RoomUI[GetMyGame_id()].HeroSelect;
 		my_packet->roomnumber = gGameFramework.m_pScene->MyRoomNumber;
-		
+
 		gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->m_HeroSelect = gRoom.RoomUI[GetMyGame_id()].HeroSelect;
 
 		WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
@@ -1182,13 +1195,13 @@ void EnterRoom()
 {
 	gGameFramework.ChangeScene = ROOM; // 여기서 방정보가 전부 입력이 되지 않으면 못넘어가게 구현해야함
 
-	//gRoom.RoomInfo.roomstatus = gLobby.room[my_packet->room_number].roomstatus;
+									   //gRoom.RoomInfo.roomstatus = gLobby.room[my_packet->room_number].roomstatus;
 
 	SetFocus(g_hWnd);
 
 	memset(gLobby.RoomName, 0, sizeof(gLobby.RoomName));
 	memset(gLobby.input, 0, sizeof(gLobby.input));
-	
+
 
 	gLobby.vOutPut.clear();
 }
