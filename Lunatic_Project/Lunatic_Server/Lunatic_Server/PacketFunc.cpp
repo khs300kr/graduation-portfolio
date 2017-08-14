@@ -295,6 +295,18 @@ void SendAttackHitPacket(int client, int object, int hitid, int clientID)
 	Send_Packet(client, &packet);
 }
 
+void SendDiePacket(int client, int object,int clientID)
+{
+	sc_char_die packet;
+	packet.id = g_Clients[object].m_GameID;
+	packet.size = sizeof(packet);
+	packet.type = SC_CHAR_DIE;
+	packet.clientid = clientID;
+	
+	Send_Packet(client, &packet);
+}
+
+
 void SendRemovePlayerPacket(int client, int object)
 {
 	sc_packet_remove_player packet;
@@ -612,9 +624,13 @@ void ProcessPacket(int id, unsigned char packet[])
 	{
 		cs_packet_attack_hit *my_packet = reinterpret_cast<cs_packet_attack_hit*>(packet);
 		int room_number = packet[2];	// roomnumber
-		cout << "hitID : " << my_packet->hitID << endl;
 		
 		g_Clients[my_packet->hitID].m_hp -= g_Clients[id].m_att; // Hp °¨¼Ò.
+		if (g_Clients[my_packet->hitID].m_hp <= 0) {
+			g_Clients[my_packet->hitID].m_hp = 0;
+			for (auto& d : g_Room[room_number].m_GameID_list)
+				SendDiePacket(d, id, my_packet->clientID);
+		}
 
 		for (auto& d : g_Room[room_number].m_GameID_list)
 			SendAttackHitPacket(d, id, my_packet->hitID, my_packet->clientID);

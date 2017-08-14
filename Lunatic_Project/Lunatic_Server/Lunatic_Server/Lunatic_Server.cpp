@@ -118,6 +118,9 @@ void Accept_Thread()
 			g_Clients[i].m_fX = i * 20.f;
 			g_Clients[i].m_fY = 0.f;
 			g_Clients[i].m_fZ = -500.f;
+			// hp, att init
+			g_Clients[i].m_hp = 0;
+			g_Clients[i].m_att = 0;
 		}
 		// 비동기 입출력 시작
 		DWORD recv_flag = 0;

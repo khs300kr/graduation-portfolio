@@ -38,3 +38,6 @@ void SendSkillDone(int client, int object);
 
 // (Hit)
 void SendAttackHitPacket(int client, int object, int hitid, int clientID);
+
+// (Die)
+void SendDiePacket(int client, int object, int clientID);

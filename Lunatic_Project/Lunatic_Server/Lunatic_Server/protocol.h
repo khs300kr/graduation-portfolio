@@ -67,6 +67,7 @@
 #define SC_ENTER_NEWPLAYER	 24
 #define SC_CHAR_COLL		 25
 #define SC_ATTACK_HIT		 26
+#define SC_CHAR_DIE			 27
 
 // Client Define
 // 키보드 입력
@@ -343,6 +344,13 @@ struct sc_packet_attack_hit {
 	WORD clientid;
 };
 
+struct sc_char_die {
+	BYTE size;
+	BYTE type;
+	WORD id;
+	WORD clientid;
+};
+
 struct sc_packet_remove_player {
 	BYTE size;
 	BYTE type;
@@ -392,4 +400,5 @@ struct sc_packet_chat {
 	WCHAR message[MAX_STR_SIZE];
 	WCHAR DB_id[MAX_ID_LEN];
 };
+
 #pragma pack (pop)

@@ -879,7 +879,6 @@ void ProcessPacket(char * ptr)
 			case WITCH:		gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(200); 
 				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetRange(WITCH_RANGE); break;
 			}
-
 			//SetWindowTextW(hChat, '\0');
 			gGameFramework.ChangeScene = GAME;
 			InvalidateRect(g_hWnd, NULL, false);
@@ -1119,11 +1118,14 @@ void ProcessPacket(char * ptr)
 
 		cout << "[SC_ATTACK_HIT]" << "id : " << my_packet->id << "\t clientID : " << my_packet->clientid << endl;
 
-		gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
-		gGameFramework.m_pScene->pHeroObject[clientid]->bHeroHit = true;
-		gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
-
 		gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(my_packet->hp);
+		
+		if (gGameFramework.m_pScene->pHeroObject[clientid]->GetHp() > 0) {
+			gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
+			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroHit = true;
+			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
+		}
+
 
 		if (clientid == gGameFramework.m_pScene->myGame_id)
 		{
@@ -1136,6 +1138,21 @@ void ProcessPacket(char * ptr)
 		break;
 	}
 
+	// (DIE)
+	case SC_CHAR_DIE:
+	{
+		cout << "CHAR DIE\n";
+		sc_char_die *my_packet = reinterpret_cast<sc_char_die *>(ptr);
+		int clientid = my_packet->clientid;
+
+		gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_DIE);
+		gGameFramework.m_pScene->pHeroObject[clientid]->bHeroDie = true;
+		gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
+
+		gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(0);
+
+		break;
+	}
 
 	case SC_REMOVE_PLAYER:
 	{

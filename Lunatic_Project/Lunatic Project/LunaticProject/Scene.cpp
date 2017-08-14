@@ -1250,7 +1250,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 
 	if (pHeroObject[myGame_id]->bHeroAttack || pHeroObject[myGame_id]->bHeroQ || pHeroObject[myGame_id]->bHeroW || pHeroObject[myGame_id]->bHeroE || pHeroObject[myGame_id]->bHeroR
-		|| pHeroObject[myGame_id]->bHeroHit)
+		|| pHeroObject[myGame_id]->bHeroHit || pHeroObject[myGame_id]->bHeroDie || pHeroObject[myGame_id]->bHeroStun)
 	{
 		if (m_ppShaders[myGame_id + 1]->GetFBXMesh->GetFBXNowFrameNum() == m_ppShaders[myGame_id + 1]->GetFBXMesh->GetFBXMaxFrameNum() - 1)
 		{
@@ -1269,6 +1269,8 @@ void CScene::AnimateObjects(float fTimeElapsed)
 			if (pHeroObject[myGame_id]->bHeroE) pHeroObject[myGame_id]->bHeroE = false;
 			if (pHeroObject[myGame_id]->bHeroR) pHeroObject[myGame_id]->bHeroR = false;
 			if (pHeroObject[myGame_id]->bHeroHit) pHeroObject[myGame_id]->bHeroHit = false;
+			if (pHeroObject[myGame_id]->bHeroDie) pHeroObject[myGame_id]->bHeroDie = false;
+			if (pHeroObject[myGame_id]->bHeroStun) pHeroObject[myGame_id]->bHeroStun = false;
 		}
 
 	}

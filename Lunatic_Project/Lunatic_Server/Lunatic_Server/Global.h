@@ -34,8 +34,8 @@ struct CLIENT
 	// Hero Type
 	BYTE			m_HeroPick;
 	// Hero Stat
-	WORD			m_att;
-	WORD			m_hp;
+	short			m_att;
+	short			m_hp;
 
 	//
 	bool			m_bConnect;
