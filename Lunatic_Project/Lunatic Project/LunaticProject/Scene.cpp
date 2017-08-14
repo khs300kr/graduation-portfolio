@@ -628,14 +628,14 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		}
 
 
-		CMesh *pHpMesh1 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.4f);
-		CMesh *pHpMesh2 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.4f);
-		CMesh *pHpMesh3 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.4f);
-		CMesh *pHpMesh4 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.4f);
-		CMesh *pHpMesh5 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.4f);
-		CMesh *pHpMesh6 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.4f);
-		CMesh *pHpMesh7 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.4f);
-		CMesh *pHpMesh8 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.4f); // 메쉬를 하나로 하면 크기를 줄이면 다같이 줄어들어서 메쉬를 Gamer의 수만큼 만듬
+		CMesh *pHpMesh1 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
+		CMesh *pHpMesh2 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
+		CMesh *pHpMesh3 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
+		CMesh *pHpMesh4 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
+		CMesh *pHpMesh5 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
+		CMesh *pHpMesh6 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
+		CMesh *pHpMesh7 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
+		CMesh *pHpMesh8 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f); // 메쉬를 하나로 하면 크기를 줄이면 다같이 줄어들어서 메쉬를 Gamer의 수만큼 만듬
 
 		for (int i = 0; i < MAX_GAMER; ++i)
 		{
