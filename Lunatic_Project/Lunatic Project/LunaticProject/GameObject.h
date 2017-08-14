@@ -108,6 +108,12 @@ public:
 	void SetColCheck(bool _ColCheck) { ColCheck = _ColCheck; }
 	bool GetColCheck() { return ColCheck; }
 
+
+	// 상대 체력 gauge 줄이기 위함
+	D3DXVECTOR3 GetScale() { return m_d3dxmtxWorld; }
+	void SetXScale(float _scale) { m_d3dxmtxWorld._11 = _scale; }
+
+
 	void SetMaterial(CMaterial *pMaterial);
 	void SetTexture(CTexture *pTexture);
 	virtual void SetMesh(CMesh *pMesh, int nIndex = 0);

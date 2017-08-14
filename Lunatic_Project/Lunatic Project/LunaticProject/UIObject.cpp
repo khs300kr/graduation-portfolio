@@ -53,7 +53,7 @@ void CUIObject::Initialize(ID3D11Device* pDevice, POINT startPos, POINT endPos, 
 
 void CUIObject::Update()
 {
-	Initialize(pUIDevice, m_ptStartPos, m_ptEndPos, 0.0f);
+	Initialize(pUIDevice, m_ptStartPos, m_ptEndPos, 0.4f);
 }	
 
 void CUIObject::Render(ID3D11DeviceContext* pDeviceContext)

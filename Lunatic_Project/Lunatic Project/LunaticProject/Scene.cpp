@@ -713,7 +713,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	// hp gauge position x: 50 ~ x: 385 (범위 335)
 	pHpgaugeObject = new CUIObject(pd3dDevice);
 	pHpgaugeObject->SetMaterial(pHpgauge);
-	pHpgaugeObject->Initialize(pd3dDevice, POINT{ 50, 720 }, POINT{ 385, 745 }, 0.0f);
+	pHpgaugeObject->Initialize(pd3dDevice, POINT{ 50, 720 }, POINT{ 385, 745 }, 0.4f);
 	pHpgaugeObject->SetDevice(pd3dDevice);
 	m_pUIManager[1]->AddUIObject(pHpgaugeObject);
 
@@ -1293,18 +1293,26 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	for (int i = 1; i < MAX_GAMER + 1; ++i)
 	{
 		m_ppShaders[i]->GetFBXMesh->FBXFrameAdvance(fTimeElapsed);
-
 	}
-
 
 
 	for (int i = 0; i < MAX_GAMER; ++i)
 	{
+		// [테스트] 체력 게이지만 줄어들게 ( 현재 좌우로 같이 줄어듬 )
 		if (i != myGame_id)
 		{
 			pHpObject[i]->SetPosition(pHeroObject[i]->GetPosition().x, pHeroObject[i]->GetPosition().y + 20, pHeroObject[i]->GetPosition().z);
+			pHpObject[i]->SetXScale(0.2f);
 		}
 	}
+
+	//for (int i = 0; i < MAX_GAMER; ++i)
+	//{
+	//	if (i != myGame_id)
+	//	{
+	//		pHpObject[i]->SetPosition(pHeroObject[i]->GetPosition().x, pHeroObject[i]->GetPosition().y + 20, pHeroObject[i]->GetPosition().z);
+	//	}
+	//}
 
 
 	for (int i = 0; i < MAX_GAMER; ++i)
