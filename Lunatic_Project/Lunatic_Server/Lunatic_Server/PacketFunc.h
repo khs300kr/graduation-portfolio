@@ -40,5 +40,9 @@ void SendSkillDone(int client, int object);
 // (Hit)
 void SendAttackHitPacket(int client, int object, int hitid, int clientID);
 
-// (Die)
+// (Die & Respawn)
 void SendDiePacket(int client, int object, int clientID, BYTE team);
+void SendRespawnPacket(int client, int object);
+
+// (Timer_Thread_Func)
+void Player_Respawn(int id, int room_number);

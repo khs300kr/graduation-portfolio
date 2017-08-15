@@ -1321,12 +1321,6 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	// hp 갱신
 	pHpgaugeObject->Update();
 
-
-	// 점수
-	AteamScore(26);
-	BteamScore(57);
-
-
 	if (pHeroObject[myGame_id]->bHeroAttack || pHeroObject[myGame_id]->bHeroQ || pHeroObject[myGame_id]->bHeroW || pHeroObject[myGame_id]->bHeroE || pHeroObject[myGame_id]->bHeroR
 		|| pHeroObject[myGame_id]->bHeroHit || pHeroObject[myGame_id]->bHeroDie || pHeroObject[myGame_id]->bHeroStun)
 	{

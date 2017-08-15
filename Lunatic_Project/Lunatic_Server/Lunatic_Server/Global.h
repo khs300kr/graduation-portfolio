@@ -2,7 +2,7 @@
 
 void error_display(char *msg, int err_no);
 void currentDateTime();
-enum OPTYPE { OP_SEND, OP_RECV };
+enum OPTYPE { OP_SEND, OP_RECV, OP_RESPAWN };
 
 struct OverlappedEx
 {
@@ -16,7 +16,7 @@ struct OverlappedEx
 	unsigned char	m_IOCP_buf[MAX_BUFF_SIZE];
 	// Send(?) Recv(?)
 	OPTYPE			m_Event_type;
-
+	int				m_room_number;
 };
 
 struct CLIENT
@@ -36,7 +36,7 @@ struct CLIENT
 	// Hero Stat
 	short			m_att;
 	short			m_hp;
-
+	int				m_room_number;
 	//
 	bool			m_bConnect;
 	SOCKET			m_client_socket;
@@ -76,12 +76,13 @@ extern SQLHSTMT hstmt;
 extern SQLRETURN retcode;
 
 // Timer
-enum Event_Type { E_MOVE, P_HEAL, P_HIT };
+enum Event_Type { P_RESPAWN };
 
 struct Timer_Event {
 	int object_id;											// 어떤 아이디냐?
 	high_resolution_clock::time_point exec_time;			// 언제 실행할꺼냐?
 	Event_Type event;										// 어떤 이벤트인가??
+	int room_number;										// 어떤 방이냐?
 };
 
 class comparison {

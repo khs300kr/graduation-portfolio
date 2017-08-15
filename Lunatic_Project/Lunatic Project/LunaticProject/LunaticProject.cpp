@@ -864,19 +864,19 @@ void ProcessPacket(char * ptr)
 
 			switch (gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect)
 			{
-			case BABARIAN:	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(600); 
+			case BABARIAN:	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(BABARIAN_HP);
 				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetRange(BABARIAN_RANGE); break;
-			case KNIGHT:	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(600);
+			case KNIGHT:	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(KNIGHT_HP);
 				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetRange(KNIGHT_RANGE); break;
-			case SWORDMAN:	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(300);
+			case SWORDMAN:	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(SWORDMAN_HP);
 				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetRange(SWORDMAN_RANGE); break;
-			case MAGICIAN:	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(300);
+			case MAGICIAN:	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(MAGICIAN_HP);
 				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetRange(MAGICIAN_RANGE); break;
-			case ARCHER:	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(300); 
+			case ARCHER:	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(ARCHER_HP);
 				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetRange(ARCHER_RANGE); break;
-			case HEALER:	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(200); 
+			case HEALER:	gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(HEALER_HP);
 				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetRange(HEALER_RANGE); break;
-			case WITCH:		gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(200); 
+			case WITCH:		gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Setmaxhp(WITCH_HP);
 				gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetRange(WITCH_RANGE); break;
 			}
 			//SetWindowTextW(hChat, '\0');
@@ -1114,7 +1114,6 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_attack_hit *my_packet = reinterpret_cast<sc_packet_attack_hit *>(ptr);
 		int clientid = my_packet->clientid;
-		float fixedHp = 0.f;
 
 		gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(my_packet->hp);
 		
@@ -1134,7 +1133,7 @@ void ProcessPacket(char * ptr)
 		break;
 	}
 
-	// (DIE)
+	// (DIE & RESPAWN)
 	case SC_CHAR_DIE:
 	{
 		sc_char_die *my_packet = reinterpret_cast<sc_char_die *>(ptr);
@@ -1152,6 +1151,26 @@ void ProcessPacket(char * ptr)
 
 		gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(0);
 
+		break;
+	}
+
+	case SC_RESPAWN:
+	{
+		sc_respawn *my_packet = reinterpret_cast<sc_respawn *>(ptr);
+		int id = my_packet->id;
+
+		if (id == gGameFramework.m_pScene->myGame_id) {
+				gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, 0.f, my_packet->z);
+				gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, 0.f, my_packet->z));
+				gGameFramework.m_pScene->pHeroObject[id]->SetHp(my_packet->hp);
+				gGameFramework.m_pScene->pHpgaugeObject->SetEndPos((335.f / gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp()) * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp() + 50.f);
+		}
+		else {
+			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, 0.f, my_packet->z);
+			gGameFramework.m_pScene->pHeroObject[id]->SetHp(my_packet->hp);
+		}
+		gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+		gGameFramework.m_pScene->pHeroObject[id]->bDeath = false;
 		break;
 	}
 

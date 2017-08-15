@@ -217,6 +217,14 @@ void Worker_Thread()
 			delete over;
 		}//OP_SEND
 
+		else if (over->m_Event_type == OP_RESPAWN)
+		{
+			cout << "RESPAWN\n";
+			over->m_room_number = g_Clients[id].m_room_number;
+			Player_Respawn(id, over->m_room_number);
+			delete over;
+		}
+
 		else
 		{
 			cout << "Unknown GQCS event!\n";
@@ -226,30 +234,30 @@ void Worker_Thread()
 	}//Worker_Loop
 }
 
-//void Timer_Thread() 
-//{
-//	for (;;) {
-//		Sleep(10);			// CPU 낭비 줄이기 위해서.
-//		for (;;) {
-//			// Timer 큐는 제일 실행시간이 빨리 앞에 와야한다.
-//			timerqueue_lock.lock();
-//			if (timer_queue.size() == 0) {
-//				timerqueue_lock.unlock(); break;
-//			}
-//			Timer_Event t = timer_queue.top();
-//			if (t.exec_time > high_resolution_clock::now()) {
-//				timerqueue_lock.unlock(); break;
-//			}
-//			timer_queue.pop();
-//			timerqueue_lock.unlock();
-//
-//			OverlappedEx* over = new OverlappedEx;
-//			//if (t.event == E_MOVE) over->m_Event_type = OP_DOAI;
-//
-//			PostQueuedCompletionStatus(g_Hiocp, 1, t.object_id, &over->m_Over);
-//		}
-//	}
-//}
+void Timer_Thread() 
+{
+	for (;;) {
+		Sleep(10);			// CPU 낭비 줄이기 위해서.
+		for (;;) {
+			// Timer 큐는 제일 실행시간이 빨리 앞에 와야한다.
+			timerqueue_lock.lock();
+			if (timer_queue.size() == 0) {
+				timerqueue_lock.unlock(); break;
+			}
+			Timer_Event t = timer_queue.top();
+			if (t.exec_time > high_resolution_clock::now()) {
+				timerqueue_lock.unlock(); break;
+			}
+			timer_queue.pop();
+			timerqueue_lock.unlock();
+
+			OverlappedEx* over = new OverlappedEx;
+			if (t.event == P_RESPAWN) over->m_Event_type = OP_RESPAWN;
+
+			PostQueuedCompletionStatus(g_Hiocp, 1, t.object_id, &over->m_Over);
+		}
+	}
+}
 
 int main()
 {
@@ -264,12 +272,12 @@ int main()
 	for (int i = 0; i < 6; ++i)			// 코어4 * 1.5 = 6
 		vWorker_threads.push_back(new thread{ Worker_Thread });
 	thread accept_thread{ Accept_Thread };
-	//thread timer_thread{ Timer_Thread };
+	thread timer_thread{ Timer_Thread };
 
 
 	// Thread join
 	accept_thread.join();
-	//timer_thread.join();
+	timer_thread.join();
 	for (auto d : vWorker_threads)
 	{
 		d->join();

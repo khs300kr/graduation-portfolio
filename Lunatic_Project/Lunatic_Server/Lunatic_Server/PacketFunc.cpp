@@ -224,8 +224,6 @@ void Do_move(int id, unsigned char packet[])
 	cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
 	int room_number = my_packet->roomnumber;
 
-	//cout << g_Clients[id].m_fX << "," << g_Clients[id].m_fY << "," << g_Clients[id].m_fZ << endl;
-
 	g_Clients[id].m_fX = my_packet->x;
 	g_Clients[id].m_fY = my_packet->y;
 	g_Clients[id].m_fZ = my_packet->z;
@@ -316,6 +314,38 @@ void SendDiePacket(int client, int object, int clientID, BYTE team)
 	packet.team = team;
 
 	Send_Packet(client, &packet);
+}
+
+void SendRespawnPacket(int client, int object)
+{
+	sc_respawn packet;
+	packet.id = g_Clients[object].m_GameID;
+	packet.size = sizeof(packet);
+	packet.type = SC_RESPAWN;
+	packet.x = g_Clients[object].m_fX;
+	packet.z = g_Clients[object].m_fZ;
+	packet.hp = g_Clients[object].m_hp;
+
+	Send_Packet(client, &packet);
+}
+
+void Player_Respawn(int id, int room_number)
+{
+	switch (g_Clients[id].m_HeroPick)
+	{
+	case BABARIAN: g_Clients[id].m_hp = BABARIAN_HP;	break;
+	case KNIGHT:   g_Clients[id].m_hp = KNIGHT_HP;		break;
+	case SWORDMAN: g_Clients[id].m_hp = SWORDMAN_HP;	break;
+	case MAGICIAN: g_Clients[id].m_hp = MAGICIAN_HP;	break;
+	case ARCHER:   g_Clients[id].m_hp = ARCHER_HP;		break;
+	case HEALER:   g_Clients[id].m_hp = HEALER_HP;		break;
+	case WITCH:	   g_Clients[id].m_hp = WITCH_HP;		break;
+	}
+	g_Clients[id].m_fX = 0.f;
+	g_Clients[id].m_fZ = -500.f;
+
+	for (auto& d : g_Room[room_number].m_GameID_list)
+		SendRespawnPacket(d, id);
 }
 
 
@@ -507,13 +537,13 @@ void ProcessPacket(int id, unsigned char packet[])
 		g_Clients[id].m_HeroPick = my_packet->hero_pick;
 		switch (my_packet->hero_pick)
 		{
-		case BABARIAN:	g_Clients[id].m_hp = 600; g_Clients[id].m_att = 150;	break;
-		case KNIGHT:	g_Clients[id].m_hp = 600; g_Clients[id].m_att = 150;	break;
-		case SWORDMAN:	g_Clients[id].m_hp = 300; g_Clients[id].m_att = 200;	break;
-		case MAGICIAN:	g_Clients[id].m_hp = 300; g_Clients[id].m_att = 180;	break;
-		case ARCHER:	g_Clients[id].m_hp = 300; g_Clients[id].m_att = 170;	break;
-		case HEALER:	g_Clients[id].m_hp = 200; g_Clients[id].m_att = 200;	break;
-		case WITCH:		g_Clients[id].m_hp = 200; g_Clients[id].m_att = 200;	break;
+		case BABARIAN:	g_Clients[id].m_hp = BABARIAN_HP; g_Clients[id].m_att = 150;	break;
+		case KNIGHT:	g_Clients[id].m_hp = KNIGHT_HP; g_Clients[id].m_att = 150;		break;
+		case SWORDMAN:	g_Clients[id].m_hp = SWORDMAN_HP; g_Clients[id].m_att = 200;	break;
+		case MAGICIAN:	g_Clients[id].m_hp = MAGICIAN_HP; g_Clients[id].m_att = 180;	break;
+		case ARCHER:	g_Clients[id].m_hp = ARCHER_HP; g_Clients[id].m_att = 170;		break;
+		case HEALER:	g_Clients[id].m_hp = HEALER_HP; g_Clients[id].m_att = 200;		break;
+		case WITCH:		g_Clients[id].m_hp = WITCH_HP; g_Clients[id].m_att = 200;		break;
 		}
 		++g_Room[room_number].m_readycount;
 		g_Clients[id].vl_lock.unlock();	////////////////////// UNLOCK
@@ -648,9 +678,18 @@ void ProcessPacket(int id, unsigned char packet[])
 		
 		g_Clients[my_packet->hitID].m_hp -= g_Clients[id].m_att; // Hp 감소.
 
-		if (g_Clients[my_packet->hitID].m_hp <= 0) // 사망시.
+
+		 // 캐릭터 사망시.
+		if (g_Clients[my_packet->hitID].m_hp <= 0) 
 		{ 
-			g_Clients[my_packet->hitID].m_hp = 0;
+			g_Clients[my_packet->hitID].m_hp = 0; // 클라이언트용 서버 ID.
+			g_Clients[my_packet->hitID].m_room_number = room_number;
+			// Timer Setting(Respawn)
+			Timer_Event t = { my_packet->hitID ,high_resolution_clock::now() + 5s, P_RESPAWN, room_number };
+			timerqueue_lock.lock();
+			timer_queue.push(t);
+			timerqueue_lock.unlock();
+
 			// KILL수 늘리기.
 			if (my_packet->clientID & 1) // odd
 			{
@@ -667,6 +706,9 @@ void ProcessPacket(int id, unsigned char packet[])
 			}
 			
 		}
+		// 캐릭터 사망시.
+
+
 
 		for (auto& d : g_Room[room_number].m_GameID_list)
 			SendAttackHitPacket(d, id, my_packet->hitID, my_packet->clientID);

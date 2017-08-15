@@ -40,6 +40,7 @@
 #define CS_CHAR_COLL				25
 #define CS_ATTACK_HIT				26
 #define CS_BUILDING_COLL			27
+#define CS_RESPAWN					28
 
 #define SC_POS				 1
 #define SC_PUT_PLAYER		 2
@@ -68,6 +69,7 @@
 #define SC_CHAR_COLL		 25
 #define SC_ATTACK_HIT		 26
 #define SC_CHAR_DIE			 27
+#define SC_RESPAWN			 28
 
 // Client Define
 // 키보드 입력
@@ -104,6 +106,14 @@
 #define ARCHER		5
 #define HEALER		6
 #define WITCH		7
+
+#define BABARIAN_HP		600
+#define KNIGHT_HP		600
+#define SWORDMAN_HP		300
+#define MAGICIAN_HP		300
+#define ARCHER_HP		300
+#define HEALER_HP		200
+#define WITCH_HP		200
 
 // 방 상태
 #define ROOM_EMPTY    0  // 비어있음
@@ -358,6 +368,15 @@ struct sc_char_die {
 	WORD id;
 	WORD clientid;
 	BYTE team;
+};
+
+struct sc_respawn {
+	BYTE size;
+	BYTE type;
+	WORD id;
+	float x;
+	float z;
+	WORD hp;
 };
 
 struct sc_packet_remove_player {
