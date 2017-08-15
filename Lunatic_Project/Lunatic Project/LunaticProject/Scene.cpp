@@ -514,9 +514,9 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		pHouse1Object[9]->SetPosition(-150.0f, 0.0f, 300.0f);
 
 		pHouse1Object[10]->SetPosition(-300.0f, 0.0f, -100.0f);
-		pHouse1Object[10]->Rotate(0.0f, 90.0f, 0.0f);
+		pHouse1Object[10]->Rotate(0.0f, 0.0f, 0.0f);
 		pHouse1Object[11]->SetPosition(250.0f, 0.0f, 100.0f);
-		pHouse1Object[11]->Rotate(0.0f, -90.0f, 0.0f);
+		pHouse1Object[11]->Rotate(0.0f, 0.0f, 0.0f);
 		//pHouse1Object[7]->SetPosition(-150.0f, 0.0f, 0.0f);
 
 		// 쉐이더에 저장

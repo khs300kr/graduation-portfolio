@@ -449,28 +449,28 @@ void CGameFramework::ProcessInput()
 
 				for (int i = 1; i < 13; ++i) // house1 <-> Hero 건물 충돌체크 // 아래, 위 해야함
 				{
-					if (m_pScene->Rightcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHouse1Object[i], 3.0f, 3.0f, 179.0f, 45.0f))
+					if (m_pScene->Rightcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHouse1Object[i], 3.0f, 3.0f, 110.0f, 32.0f))
 					{
 						m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x - m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed(), m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
 						m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
 						break;
 					}
 
-					else if (m_pScene->Leftcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHouse1Object[i], 3.0f, 3.0f, -15.0f, 45.0f))
+					else if (m_pScene->Leftcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHouse1Object[i], 3.0f, 3.0f, -2.0f, 32.0f))
 					{
 						m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x + m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed(), m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
 						m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
 						break;
 					}
 
-					else if (m_pScene->Upcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHouse1Object[i], 3.0f, 3.0f, 85.0f, 45.0f))
+					else if (m_pScene->Upcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHouse1Object[i], 3.0f, 3.0f, 55.0f, 32.0f))
 					{
 						m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z + m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
 						m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
 						//char_collision_send();
 						break;
 					}
-					else if (m_pScene->Downcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHouse1Object[i], 3.0f, 3.0f, 85.0f, 45.0f))
+					else if (m_pScene->Downcollision(m_pScene->pHeroObject[m_pScene->myGame_id], m_pScene->pHouse1Object[i], 3.0f, 3.0f, 55.0f, 32.0f))
 					{
 						m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z - m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
 						m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
