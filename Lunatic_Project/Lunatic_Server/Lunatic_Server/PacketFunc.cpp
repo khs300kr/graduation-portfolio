@@ -306,14 +306,15 @@ void SendAttackHitPacket(int client, int object, int hitid, int clientID)
 	Send_Packet(client, &packet);
 }
 
-void SendDiePacket(int client, int object,int clientID)
+void SendDiePacket(int client, int object, int clientID, BYTE team)
 {
 	sc_char_die packet;
 	packet.id = g_Clients[object].m_GameID;
 	packet.size = sizeof(packet);
 	packet.type = SC_CHAR_DIE;
 	packet.clientid = clientID;
-	
+	packet.team = team;
+
 	Send_Packet(client, &packet);
 }
 
@@ -506,13 +507,13 @@ void ProcessPacket(int id, unsigned char packet[])
 		g_Clients[id].m_HeroPick = my_packet->hero_pick;
 		switch (my_packet->hero_pick)
 		{
-		case BABARIAN:	g_Clients[id].m_hp = 600; g_Clients[id].m_att = 15;	break;
+		case BABARIAN:	g_Clients[id].m_hp = 600; g_Clients[id].m_att = 150;	break;
 		case KNIGHT:	g_Clients[id].m_hp = 600; g_Clients[id].m_att = 150;	break;
-		case SWORDMAN:	g_Clients[id].m_hp = 300; g_Clients[id].m_att = 20;	break;
-		case MAGICIAN:	g_Clients[id].m_hp = 300; g_Clients[id].m_att = 18;	break;
-		case ARCHER:	g_Clients[id].m_hp = 300; g_Clients[id].m_att = 17;	break;
-		case HEALER:	g_Clients[id].m_hp = 200; g_Clients[id].m_att = 20;	break;
-		case WITCH:		g_Clients[id].m_hp = 200; g_Clients[id].m_att = 20;	break;
+		case SWORDMAN:	g_Clients[id].m_hp = 300; g_Clients[id].m_att = 200;	break;
+		case MAGICIAN:	g_Clients[id].m_hp = 300; g_Clients[id].m_att = 180;	break;
+		case ARCHER:	g_Clients[id].m_hp = 300; g_Clients[id].m_att = 170;	break;
+		case HEALER:	g_Clients[id].m_hp = 200; g_Clients[id].m_att = 200;	break;
+		case WITCH:		g_Clients[id].m_hp = 200; g_Clients[id].m_att = 200;	break;
 		}
 		++g_Room[room_number].m_readycount;
 		g_Clients[id].vl_lock.unlock();	////////////////////// UNLOCK
@@ -646,10 +647,25 @@ void ProcessPacket(int id, unsigned char packet[])
 		int room_number = packet[2];	// roomnumber
 		
 		g_Clients[my_packet->hitID].m_hp -= g_Clients[id].m_att; // Hp °¨¼Ò.
-		if (g_Clients[my_packet->hitID].m_hp <= 0) {
+
+		if (g_Clients[my_packet->hitID].m_hp <= 0) // »ç¸Á½Ã.
+		{ 
 			g_Clients[my_packet->hitID].m_hp = 0;
-			for (auto& d : g_Room[room_number].m_GameID_list)
-				SendDiePacket(d, id, my_packet->clientID);
+			// KILL¼ö ´Ã¸®±â.
+			if (my_packet->clientID & 1) // odd
+			{
+				++g_Room[room_number].B_killcount;
+				for (auto& d : g_Room[room_number].m_GameID_list)
+					SendDiePacket(d, id, my_packet->clientID,B_TEAM);
+
+			}
+			else
+			{
+				++g_Room[room_number].A_killcount;
+				for (auto& d : g_Room[room_number].m_GameID_list)
+					SendDiePacket(d, id, my_packet->clientID,A_TEAM);
+			}
+			
 		}
 
 		for (auto& d : g_Room[room_number].m_GameID_list)

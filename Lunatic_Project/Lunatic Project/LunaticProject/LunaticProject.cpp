@@ -943,7 +943,6 @@ void ProcessPacket(char * ptr)
 		if (id == gGameFramework.m_pScene->myGame_id) {
 			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
 			g_bDoing_Ani = false;	// 애니메이션 도중 키 입력 방지.
-			cout << "Turn to False\n";
 		}
 		else {
 			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
@@ -1120,7 +1119,6 @@ void ProcessPacket(char * ptr)
 		gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(my_packet->hp);
 		
 		if (clientid == gGameFramework.m_pScene->myGame_id) {
-			cout << "turn to true \n";
 			g_bDoing_Ani = true;	// 애니메이션 도중 키 입력 방지.
 		}
 		if (gGameFramework.m_pScene->pHeroObject[clientid]->GetHp() > 0) {
@@ -1141,6 +1139,11 @@ void ProcessPacket(char * ptr)
 	{
 		sc_char_die *my_packet = reinterpret_cast<sc_char_die *>(ptr);
 		int clientid = my_packet->clientid;
+
+		if (my_packet->team == A_TEAM)
+			cout << "A_TEAM KILLED\n";
+		else
+			cout << "B_TEAM KILLED\n"; 
 
 		gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_DIE);
 		gGameFramework.m_pScene->pHeroObject[clientid]->bHeroDie = true;

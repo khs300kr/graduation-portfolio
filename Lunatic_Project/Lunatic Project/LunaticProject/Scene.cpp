@@ -1028,26 +1028,18 @@ void CScene::ProcessInput()
 			}
 			for (int i = 0; i < MAX_GAMER; ++i)
 			{
-				if ((i != myGame_id) && (pHeroObject[i]->bDeath == false))
+				if ((i != myGame_id) && (pHeroObject[i]->bDeath == false) && (pHeroObject[i]->m_Team != pHeroObject[myGame_id]->m_Team))
 				{
 					if (Sectorcollision(pHeroObject[myGame_id], pHeroObject[i], dwDirforCollision, 3.f, pHeroObject[myGame_id]->GetRange()))
 					{
-						cout << "COLL : " << dwDirforCollision << endl;
-						/*m_ppShaders[i + 1]->GetFBXMesh->SetAnimation(ANI_HIT);*/
-
-						cout << "Server ID : " << pHeroObject[i]->m_serverID << endl;
-						cout << "My HP : " << pHeroObject[myGame_id]->GetHp() << "\t My att : " << pHeroObject[myGame_id]->GetAttack() << endl;
-						cout << "Other HP : " << pHeroObject[i]->GetHp() << "\t Other att : " << pHeroObject[i]->GetAttack() << endl;
-
-
 						cs_packet_attack_hit *my_packet = reinterpret_cast<cs_packet_attack_hit *>(send_buffer);
 						my_packet->size = sizeof(cs_packet_attack_hit);
 						send_wsabuf.len = sizeof(cs_packet_attack_hit);
 						DWORD iobyte;
 						my_packet->type = CS_ATTACK_HIT;
 						my_packet->roomnumber = MyRoomNumber;
-						my_packet->hitID = pHeroObject[i]->m_serverID;
-						my_packet->clientID = i;
+						my_packet->hitID = pHeroObject[i]->m_serverID;	// ³» ServerID.
+						my_packet->clientID = i;					
 
 						WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 

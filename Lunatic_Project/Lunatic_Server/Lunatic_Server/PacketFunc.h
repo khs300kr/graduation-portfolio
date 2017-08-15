@@ -41,4 +41,4 @@ void SendSkillDone(int client, int object);
 void SendAttackHitPacket(int client, int object, int hitid, int clientID);
 
 // (Die)
-void SendDiePacket(int client, int object, int clientID);
+void SendDiePacket(int client, int object, int clientID, BYTE team);

@@ -196,6 +196,7 @@ struct cs_packet_attack_hit {
 	BYTE roomnumber;
 	WORD hitID;
 	BYTE clientID;
+	BYTE team;
 };
 
 struct cs_packet_skillQ {
@@ -356,6 +357,7 @@ struct sc_char_die {
 	BYTE type;
 	WORD id;
 	WORD clientid;
+	BYTE team;
 };
 
 struct sc_packet_remove_player {
