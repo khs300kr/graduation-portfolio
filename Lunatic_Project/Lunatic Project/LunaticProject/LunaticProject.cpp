@@ -261,7 +261,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_CREATE:
-
+		SoundInit();
 		bmp_loading = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_LOADINGWINDOW));
 
 
@@ -1225,3 +1225,18 @@ void EnterRoom()
 	gLobby.vOutPut.clear();
 }
 
+void SoundInit()
+{
+	FMOD_SYSTEM *g_System;      // 시스템 포인터 변수
+	FMOD_SOUND *g_Sound[1];     // 사운드 포인터 변수
+	FMOD_CHANNEL *g_Channel[1]; // 채널   포인터 변수
+
+	FMOD_System_Create(&g_System); //사운드 시스템을 만들어주는 함수이다.
+
+
+	FMOD_System_Init(g_System, 32, FMOD_INIT_NORMAL, NULL); //사운드 시스템을 초기화 해주는 함수다.
+
+	FMOD_System_CreateSound(g_System, "../Data/Sound/Lobby_sound.mp3", FMOD_LOOP_NORMAL, 0, &g_Sound[0]); //사운드를 메모리로 읽어오는 함수 // 참고로 파일포멧은 mp3,wav,mid,plac,dls,asf,asx,fsb...  재생가능함
+
+	FMOD_System_PlaySound(g_System, FMOD_CHANNEL_FREE, g_Sound[0], 0, &g_Channel[0]);
+}

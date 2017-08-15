@@ -23,3 +23,9 @@ bool MouseInbox(int left, int top, int right, int bottom, int x, int y);
 // server
 void ReadPacket(SOCKET sock);
 void ProcessPacket(char *ptr);
+
+
+
+// Sound
+
+void SoundInit();
