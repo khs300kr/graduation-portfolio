@@ -814,29 +814,54 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		pScoreNum[i]->SetSampler(0, pd3dSamplerState);
 		pd3dsrvTexture->Release();
 	}
-
-	for (int i = 1; i < 11; ++i)
+	for (int j = 0; j < 2; ++j)
 	{
-		m_pScoreManager[i] = new CUIManager();
-		m_pScoreManager[i]->Initialize(pd3dDevice);
+		for (int i = 1; i < 11; ++i)
+		{
+			if (j == 0)
+			{
+				m_pScoreManager[i] = new CUIManager();
+				m_pScoreManager[i]->Initialize(pd3dDevice);
+			}
+			if (j == 1)
+			{
+				m_pScoreManager[i + 10] = new CUIManager();
+				m_pScoreManager[i + 10]->Initialize(pd3dDevice);
+			}
 
-
-		pAteam[i - 1] = new CUIObject(pd3dDevice);
-		pAteam[i - 1]->SetMaterial(pScoreNum[i - 1]);
-		pAteam[i - 1]->Initialize(pd3dDevice, POINT{ 400, 20 }, POINT{ 450, 60 }, 0.4f);
-		m_pScoreManager[i]->AddUIObject(pAteam[i - 1]);
+			pAteam[j][i - 1] = new CUIObject(pd3dDevice);
+			if (j == 0) pAteam[j][i - 1]->SetMaterial(pScoreNum[i - 1]);
+			if (j == 1) pAteam[j][i - 1]->SetMaterial(pScoreNum[i - 1]);
+			pAteam[j][i - 1]->SetDevice(pd3dDevice);
+			pAteam[j][i - 1]->Initialize(pd3dDevice, POINT{ -400, -20 }, POINT{ -450, -60 }, 0.4f);
+			if (j == 0) m_pScoreManager[i]->AddUIObject(pAteam[j][i - 1]);
+			if (j == 1) m_pScoreManager[i + 10]->AddUIObject(pAteam[j][i - 1]);
+		}
 	}
 
-	for (int i = 11; i < 21; ++i)
+	for (int j = 0; j < 2; ++j)
 	{
-		m_pScoreManager[i] = new CUIManager();
-		m_pScoreManager[i]->Initialize(pd3dDevice);
+		for (int i = 1; i < 11; ++i)
+		{
+			if (j == 0)
+			{
+				m_pScoreManager[i + 20] = new CUIManager();
+				m_pScoreManager[i + 20]->Initialize(pd3dDevice);
+			}
+			if (j == 1)
+			{
+				m_pScoreManager[i + 30] = new CUIManager();
+				m_pScoreManager[i + 30]->Initialize(pd3dDevice);
+			}
 
-
-		pBteam[i - 11] = new CUIObject(pd3dDevice);
-		pBteam[i - 11]->SetMaterial(pScoreNum[i - 11]);
-		pBteam[i - 11]->Initialize(pd3dDevice, POINT{ 550, 20 }, POINT{ 600, 60 }, 0.4f);
-		m_pScoreManager[i]->AddUIObject(pBteam[i - 11]);
+			pBteam[j][i - 1] = new CUIObject(pd3dDevice);
+			if (j == 0) pBteam[j][i - 1]->SetMaterial(pScoreNum[i - 1]);
+			if (j == 1) pBteam[j][i - 1]->SetMaterial(pScoreNum[i - 1]);
+			pBteam[j][i - 1]->SetDevice(pd3dDevice);
+			pBteam[j][i - 1]->Initialize(pd3dDevice, POINT{ -550, -20 }, POINT{ -600, -60 }, 0.4f);
+			if (j == 0) m_pScoreManager[i + 20]->AddUIObject(pBteam[j][i - 1]);
+			if (j == 1) m_pScoreManager[i + 30]->AddUIObject(pBteam[j][i - 1]);
+		}
 	}
 }
 
@@ -1293,15 +1318,12 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 
 	// hp 갱신
-	//pHpgaugeObject->SetEndPos( (335 / 600) * pHeroObject[myGame_id]->GetHp());
 	pHpgaugeObject->Update();
 
-	// 충돌시 hp 깍이는 곳인데 현재 내가 공격했을때 내 체력 깍이게 되어있음.
-	// 충돌 되는 시간동안 체력이 계속해서 깍여 내려가는 문제가 있음 단 한번만으로 바꿔야함
 
-	// 공격 받고 난후 hp 셋팅
-	//pHeroObject[myGame_id]->SetHp(pHeroObject[myGame_id]->GetHp() - 18);
-	//cout << pHeroObject[myGame_id]->GetHp() << endl;
+	// 점수
+	AteamScore(26);
+	BteamScore(57);
 
 
 	if (pHeroObject[myGame_id]->bHeroAttack || pHeroObject[myGame_id]->bHeroQ || pHeroObject[myGame_id]->bHeroW || pHeroObject[myGame_id]->bHeroE || pHeroObject[myGame_id]->bHeroR
@@ -1395,7 +1417,7 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 	for (int i = 0; i < 6; ++i)
 		m_pUIManager[i]->RenderAll(pd3dDeviceContext);
 
-	for (int i = 0; i < 21; ++i)
+	for (int i = 0; i < 41; ++i)
 		m_pScoreManager[i]->RenderAll(pd3dDeviceContext);
 }
 
@@ -1591,4 +1613,27 @@ bool CScene::Upcollision(CHeroManager* Object1, CGameObject* Object2, float size
 		return true;
 	else
 		return false;
+}
+
+void CScene::AteamScore(int _score)
+{
+	//pAteam[_score]->Initialize(gUIObject->GetDevice(), POINT{ 400, 20 }, POINT{ 450, 60 }, 0.4f);
+	if (_score < 10)
+		pAteam[0][_score]->SetScore(POINT{ 400, 20 }, POINT{ 450, 60 });
+	else if (_score > 10)
+	{
+		pAteam[0][_score % 10]->SetScore(POINT{ 430, 20 }, POINT{ 480, 60 });
+		pAteam[1][_score / 10]->SetScore(POINT{ 370, 20 }, POINT{ 420, 60 });
+	}
+}
+
+void CScene::BteamScore(int _score)
+{
+	if (_score < 10)
+		pBteam[0][_score]->SetScore(POINT{ 550, 20 }, POINT{ 600, 60 });
+	else if (_score > 10)
+	{
+		pBteam[0][_score % 10]->SetScore(POINT{ 580, 20 }, POINT{ 630, 60 });
+		pBteam[1][_score / 10]->SetScore(POINT{ 520, 20 }, POINT{ 570, 60 });
+	}
 }

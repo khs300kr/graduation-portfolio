@@ -56,6 +56,11 @@ void CUIObject::Update()
 	Initialize(pUIDevice, m_ptStartPos, m_ptEndPos, 0.4f);
 }	
 
+void CUIObject::SetScore(POINT _sPoint, POINT _ePoint)
+{
+	Initialize(pUIDevice, _sPoint, _ePoint, 0.4f);
+}
+
 void CUIObject::Render(ID3D11DeviceContext* pDeviceContext)
 {
 	if (m_pTexture) m_pTexture->UpdateShaderVariable(pDeviceContext);

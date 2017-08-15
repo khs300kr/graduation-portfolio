@@ -13,10 +13,14 @@ class CUIObject
 	TextureTag				m_tagTexture;
 	float					m_fOpacity = 1.0f;
 
-	ID3D11Device*			pUIDevice;
+	
 
 public:
+	ID3D11Device*			pUIDevice;
+
+
 	//CUIObject(ID3D11Device* , TextureTag);
+	CUIObject();
 	CUIObject(ID3D11Device*);
 	virtual ~CUIObject();
 
@@ -38,8 +42,10 @@ public:
 
 
 	void SetDevice(ID3D11Device* pDevice) { pUIDevice = pDevice; }
+	
 
 	void Update();
+	void SetScore(POINT _sPoint, POINT _ePoint);
 };
 
 class CUIManager

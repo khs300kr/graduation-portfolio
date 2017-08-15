@@ -87,8 +87,10 @@ public:
 
 	// 스코어 UI
 	CTexture *pScoreNum[10];
-	CUIObject *pAteam[10];
-	CUIObject *pBteam[10];
+	CUIObject *pAteam[2][10]; // 0: 1의 자리 1: 10의 자리
+	CUIObject *pBteam[2][10];
+
+	CUIObject *gUIObject;
 
 
 	CMaterial *pNormalMaterial;
@@ -176,7 +178,9 @@ public:
 
 	// UI
 	CUIManager *m_pUIManager[6]; //hpbar 1 + bpgauge 1 + skillbox 4 = 6
-	CUIManager *m_pScoreManager[21]; // scoreboard 1 + number(0~9) 10 x 2 (A,B팀 스코어 2개 필요) = 21
+	CUIManager *m_pScoreManager[41]; // scoreboard 1 + number(0~9) 10 x 2 (A,B팀 스코어 2개 필요) + 1의자리 10의자리 때매 A,B팀 각각 10개 추가 = 41
 
-	//CUIObject *pUIObject;
+	// Score
+	void AteamScore(int _score);
+	void BteamScore(int _score);
 };
