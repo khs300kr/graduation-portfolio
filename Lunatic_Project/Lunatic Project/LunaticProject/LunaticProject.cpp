@@ -854,6 +854,9 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_put_player *my_packet = reinterpret_cast<sc_packet_put_player *>(ptr);
 		int id = my_packet->id;
+		gGameFramework.m_pScene->AteamScore(0);
+		gGameFramework.m_pScene->BteamScore(0);
+
 		gGameFramework.m_pScene->pHeroObject[id]->SetHp(my_packet->hp);
 		gGameFramework.m_pScene->pHeroObject[id]->SetAttack(my_packet->att);
 
@@ -1140,9 +1143,16 @@ void ProcessPacket(char * ptr)
 		int clientid = my_packet->clientid;
 
 		if (my_packet->team == A_TEAM)
+		{
+			gGameFramework.m_pScene->AteamScore(++g_A_Teamcount);
+
 			cout << "A_TEAM KILLED\n";
+		}
 		else
+		{
+			gGameFramework.m_pScene->BteamScore(++g_B_Teamcount);
 			cout << "B_TEAM KILLED\n"; 
+		}
 
 		gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_DIE);
 		gGameFramework.m_pScene->pHeroObject[clientid]->bHeroDie = true;

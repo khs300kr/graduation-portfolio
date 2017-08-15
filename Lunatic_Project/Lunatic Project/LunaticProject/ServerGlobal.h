@@ -16,3 +16,5 @@ extern bool HeroDataReceive;
 extern int g_ping_send;
 extern int g_ping_recv;
 extern bool g_bDoing_Ani;
+extern int g_A_Teamcount;
+extern int g_B_Teamcount;
