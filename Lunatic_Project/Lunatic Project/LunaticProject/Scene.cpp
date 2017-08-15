@@ -218,7 +218,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	// 일반 쉐이더 선언부
 	/////////////////////////////////////////////////////////////////////////
 
-	m_nShaders = 24 + 24 + 40 + 8 + 8; //24 + 24   // Skybox 포함 + 16 // playercount + 17  = 24 // + 벽 12 + 12 + 40 + hp 8 + hpbar 8
+	m_nShaders = 24 + 24 + 40 ; //24 + 24   // Skybox 포함 + 16 // playercount + 17  = 24 // + 벽 12 + 12 + 40 // [제외] hp 8 + hpbar 8
 	m_ppShaders = new CShader*[m_nShaders];
 
 	// ⑤ SkyBox용 Shader를 생성
@@ -622,60 +622,61 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		}
 
 
-		for (int i = 88; i < 104; ++i)
-		{
-			m_ppShaders[i] = new CTexturedIlluminatedShader(1);
-			m_ppShaders[i]->CreateShader(pd3dDevice);
-			m_ppShaders[i]->BuildObjects(pd3dDevice);
-		}
+		// 상대 머리위의 HP 
+		//for (int i = 88; i < 104; ++i)
+		//{
+		//	m_ppShaders[i] = new CTexturedIlluminatedShader(1);
+		//	m_ppShaders[i]->CreateShader(pd3dDevice);
+		//	m_ppShaders[i]->BuildObjects(pd3dDevice);
+		//}
 
 
-		CMesh *pHpMesh1 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
-		CMesh *pHpMesh2 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
-		CMesh *pHpMesh3 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
-		CMesh *pHpMesh4 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
-		CMesh *pHpMesh5 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
-		CMesh *pHpMesh6 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
-		CMesh *pHpMesh7 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
-		CMesh *pHpMesh8 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f); // 메쉬를 하나로 하면 크기를 줄이면 다같이 줄어들어서 메쉬를 Gamer의 수만큼 만듬
+		//CMesh *pHpMesh1 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
+		//CMesh *pHpMesh2 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
+		//CMesh *pHpMesh3 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
+		//CMesh *pHpMesh4 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
+		//CMesh *pHpMesh5 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
+		//CMesh *pHpMesh6 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
+		//CMesh *pHpMesh7 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
+		//CMesh *pHpMesh8 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f); // 메쉬를 하나로 하면 크기를 줄이면 다같이 줄어들어서 메쉬를 Gamer의 수만큼 만듬
 
-		for (int i = 0; i < MAX_GAMER; ++i)
-		{
-			pHpObject[i] = new CGameObject(1);
+		//for (int i = 0; i < MAX_GAMER; ++i)
+		//{
+		//	pHpObject[i] = new CGameObject(1);
 
-			pHpObject[i]->Rotate(-90, 0, 0);
-			pHpObject[i]->SetMaterial(pNormalMaterial);
-			pHpObject[i]->SetTexture(pHpTexture);
-		}
+		//	pHpObject[i]->Rotate(-90, 0, 0);
+		//	pHpObject[i]->SetMaterial(pNormalMaterial);
+		//	pHpObject[i]->SetTexture(pHpTexture);
+		//}
 
-		pHpObject[0]->SetMesh(pHpMesh1);
-		pHpObject[1]->SetMesh(pHpMesh2);
-		pHpObject[2]->SetMesh(pHpMesh3);
-		pHpObject[3]->SetMesh(pHpMesh4);
-		pHpObject[4]->SetMesh(pHpMesh5);
-		pHpObject[5]->SetMesh(pHpMesh6);
-		pHpObject[6]->SetMesh(pHpMesh7);
-		pHpObject[7]->SetMesh(pHpMesh8);
-
-
-
-		for (int i = 0; i < MAX_GAMER; ++i)
-			m_ppShaders[88 + i]->AddObject(pHpObject[i]);
+		//pHpObject[0]->SetMesh(pHpMesh1);
+		//pHpObject[1]->SetMesh(pHpMesh2);
+		//pHpObject[2]->SetMesh(pHpMesh3);
+		//pHpObject[3]->SetMesh(pHpMesh4);
+		//pHpObject[4]->SetMesh(pHpMesh5);
+		//pHpObject[5]->SetMesh(pHpMesh6);
+		//pHpObject[6]->SetMesh(pHpMesh7);
+		//pHpObject[7]->SetMesh(pHpMesh8);
 
 
-		CMesh *pOtherHpbarMesh = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.5f);
 
-		for (int i = 0; i < 8; ++i)
-		{
-			pOtherHpbarObject[i] = new CGameObject(1);
-			pOtherHpbarObject[i]->SetMesh(pOtherHpbarMesh);
-			pOtherHpbarObject[i]->SetMaterial(pNormalMaterial);
-			pOtherHpbarObject[i]->SetTexture(pHpbarTexture);
+		//for (int i = 0; i < MAX_GAMER; ++i)
+		//	m_ppShaders[88 + i]->AddObject(pHpObject[i]);
 
-			pOtherHpbarObject[i]->Rotate(-90, 0, 0);
 
-			m_ppShaders[96 + i]->AddObject(pOtherHpbarObject[i]);
-		}
+		//CMesh *pOtherHpbarMesh = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.5f);
+
+		//for (int i = 0; i < 8; ++i)
+		//{
+		//	pOtherHpbarObject[i] = new CGameObject(1);
+		//	pOtherHpbarObject[i]->SetMesh(pOtherHpbarMesh);
+		//	pOtherHpbarObject[i]->SetMaterial(pNormalMaterial);
+		//	pOtherHpbarObject[i]->SetTexture(pHpbarTexture);
+
+		//	pOtherHpbarObject[i]->Rotate(-90, 0, 0);
+
+		//	m_ppShaders[96 + i]->AddObject(pOtherHpbarObject[i]);
+		//}
 
 	}
 	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, _T("Data\\HeightMap.raw"), 257, 257, 17, 17, d3dxvScale, d3dxColor);
