@@ -16,3 +16,5 @@ bool HeroDataReceive = false;
 int g_ping_send{};
 int g_ping_recv{};
 bool g_bDoing_Ani = false;
+int g_A_Teamcount = 0;
+int g_B_Teamcount = 0;
