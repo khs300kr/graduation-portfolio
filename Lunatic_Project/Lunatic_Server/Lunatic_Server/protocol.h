@@ -13,7 +13,6 @@
 #define MAX_ID_LEN				10		// 최대 아이디 크기
 #define MAX_PASSWORD_LEN		10		// 최대 비밀번호 크기
 
-
 #define CS_KEYDOWN_UP				1
 #define CS_KEYDOWN_DOWN				2
 #define CS_KEYDOWN_LEFT				3
