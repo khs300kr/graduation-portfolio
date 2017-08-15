@@ -1008,7 +1008,7 @@ void CScene::ProcessInput()
 		}
 
 
-		if ((KEY_DOWN('D') || KEY_DOWN('d')) && !DKeyDown && !g_bDoing_Ani)
+		if ((KEY_DOWN('D') || KEY_DOWN('d')) && !DKeyDown && !g_bDoing_Ani && !DownKeyDown && !UpKeyDown && !RightKeyDown && !LeftKeyDown)
 		{
 			DKeyDown = true;
 			if (!pHeroObject[myGame_id]->bHeroAttack)

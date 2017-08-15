@@ -265,7 +265,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #else
 		SoundInit();
 #endif
-
 		bmp_loading = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_LOADINGWINDOW));
 
 
@@ -802,7 +801,6 @@ void ProcessPacket(char * ptr)
 
 			gRoom.RoomUI[id].Team = gGameFramework.m_pScene->pHeroObject[id]->m_Team; // 룸에 팀 전달
 			gGameFramework.m_pScene->pHeroObject[id]->m_serverID = my_packet->serverID;
-			cout << "Other's Server ID : " << my_packet->serverID << endl;
 			gRoom.RoomUI[id].IsReady = true; // 내꺼
 		}
 		InvalidateRect(g_hWnd, NULL, false);
@@ -823,8 +821,6 @@ void ProcessPacket(char * ptr)
 		gGameFramework.LoadingScene = true;
 
 		InvalidateRect(g_hWnd, NULL, false);
-
-		cout << "올레디\n";
 
 		for (int i = 0; i < MAX_GAMER; ++i)
 		{
@@ -891,8 +887,6 @@ void ProcessPacket(char * ptr)
 			cout << "Other Pos: \t " << id << endl;
 			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 			cout << "초기좌표를 설정하는 다른 아이디" << ends << id << endl;
-
-
 		}
 		break;
 	}
@@ -906,10 +900,10 @@ void ProcessPacket(char * ptr)
 		//sprintf_s(currentTime, "%d/%d/%d %d:%d:%d %d", st.wDay, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
 		//g_ping_recv = (st.wSecond * 1000) + st.wMilliseconds;
 		//cout << "PING : " << g_ping_recv - g_ping_send << endl;
-
 		sc_packet_pos *my_packet = reinterpret_cast<sc_packet_pos *>(ptr);
 		int id = my_packet->id;
 		if (id == gGameFramework.m_pScene->myGame_id) {
+			
 			//cout << "Hero Move\n";
 			gGameFramework.dwDirection = my_packet->direction;
 			// 각도 저장.
@@ -950,7 +944,6 @@ void ProcessPacket(char * ptr)
 			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
 			g_bDoing_Ani = false;	// 애니메이션 도중 키 입력 방지.
 			cout << "Turn to False\n";
-
 		}
 		else {
 			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
@@ -1124,12 +1117,12 @@ void ProcessPacket(char * ptr)
 		int clientid = my_packet->clientid;
 		float fixedHp = 0.f;
 
-		cout << "[SC_ATTACK_HIT]" << "id : " << my_packet->id << "\t clientID : " << my_packet->clientid << endl;
-
 		gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(my_packet->hp);
 		
-		if (clientid == gGameFramework.m_pScene->myGame_id)	g_bDoing_Ani = true;	// 애니메이션 도중 키 입력 방지.
-	
+		if (clientid == gGameFramework.m_pScene->myGame_id) {
+			cout << "turn to true \n";
+			g_bDoing_Ani = true;	// 애니메이션 도중 키 입력 방지.
+		}
 		if (gGameFramework.m_pScene->pHeroObject[clientid]->GetHp() > 0) {
 			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroHit = true;
 			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
@@ -1139,18 +1132,13 @@ void ProcessPacket(char * ptr)
 		if (clientid == gGameFramework.m_pScene->myGame_id)
 		{
 			gGameFramework.m_pScene->pHpgaugeObject->SetEndPos((335.f / gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp()) * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp() + 50.f);
-
-			cout << "고정 체력 : " << gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp() << endl;
 		}
-
-		cout << "내 HP : " << gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp() << endl;
 		break;
 	}
 
 	// (DIE)
 	case SC_CHAR_DIE:
 	{
-		cout << "CHAR DIE\n";
 		sc_char_die *my_packet = reinterpret_cast<sc_char_die *>(ptr);
 		int clientid = my_packet->clientid;
 
