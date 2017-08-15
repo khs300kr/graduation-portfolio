@@ -85,6 +85,10 @@ public:
 	int myGame_id = -1;
 	int MyRoomNumber = -1;
 
+	// 스코어 UI
+	CTexture *pScoreNum[10];
+	CUIObject *pAteam[10];
+	CUIObject *pBteam[10];
 
 
 	CMaterial *pNormalMaterial;
@@ -172,6 +176,7 @@ public:
 
 	// UI
 	CUIManager *m_pUIManager[6]; //hpbar 1 + bpgauge 1 + skillbox 4 = 6
+	CUIManager *m_pScoreManager[21]; // scoreboard 1 + number(0~9) 10 x 2 (A,B팀 스코어 2개 필요) = 21
 
 	//CUIObject *pUIObject;
 };

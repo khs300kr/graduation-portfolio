@@ -779,7 +779,65 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	m_pUIManager[5]->AddUIObject(pSkillboxRObject);
 
 
+	// Score 판
 
+	CTexture *pScoreBoard = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/scoreboard.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pScoreBoard->SetTexture(0, pd3dsrvTexture);
+	pScoreBoard->SetSampler(0, pd3dSamplerState);
+	pd3dsrvTexture->Release();
+
+	m_pScoreManager[0] = new CUIManager();
+	m_pScoreManager[0]->Initialize(pd3dDevice);
+
+	CUIObject *pSocreBoardObject = new CUIObject(pd3dDevice);
+	pSocreBoardObject->SetMaterial(pScoreBoard);
+	pSocreBoardObject->Initialize(pd3dDevice, POINT{ 350, 0 }, POINT{ 650, 80 }, 0.5f);
+	m_pScoreManager[0]->AddUIObject(pSocreBoardObject);
+
+
+	// 점수 숫자 //////////////////////////////////////////////////////////////////////////////////////////////////////////
+	for (int i = 0; i < 10; ++i)
+	{
+		pScoreNum[i] = new CTexture(1, 1, 0, 0);
+		if (i == 0) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/0.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 1) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/1.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 2) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 3) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/3.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 4) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/4.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 5) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/5.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 6) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/6.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 7) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/7.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 8) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/8.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 9) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/9.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		pScoreNum[i]->SetTexture(0, pd3dsrvTexture);
+		pScoreNum[i]->SetSampler(0, pd3dSamplerState);
+		pd3dsrvTexture->Release();
+	}
+
+	for (int i = 1; i < 11; ++i)
+	{
+		m_pScoreManager[i] = new CUIManager();
+		m_pScoreManager[i]->Initialize(pd3dDevice);
+
+
+		pAteam[i - 1] = new CUIObject(pd3dDevice);
+		pAteam[i - 1]->SetMaterial(pScoreNum[i - 1]);
+		pAteam[i - 1]->Initialize(pd3dDevice, POINT{ 400, 20 }, POINT{ 450, 60 }, 0.4f);
+		m_pScoreManager[i]->AddUIObject(pAteam[i - 1]);
+	}
+
+	for (int i = 11; i < 21; ++i)
+	{
+		m_pScoreManager[i] = new CUIManager();
+		m_pScoreManager[i]->Initialize(pd3dDevice);
+
+
+		pBteam[i - 11] = new CUIObject(pd3dDevice);
+		pBteam[i - 11]->SetMaterial(pScoreNum[i - 11]);
+		pBteam[i - 11]->Initialize(pd3dDevice, POINT{ 550, 20 }, POINT{ 600, 60 }, 0.4f);
+		m_pScoreManager[i]->AddUIObject(pBteam[i - 11]);
+	}
 }
 
 
@@ -1344,6 +1402,9 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 
 	for (int i = 0; i < 6; ++i)
 		m_pUIManager[i]->RenderAll(pd3dDeviceContext);
+
+	for (int i = 0; i < 21; ++i)
+		m_pScoreManager[i]->RenderAll(pd3dDeviceContext);
 }
 
 bool CScene::Rightcollision(CHeroManager* Object1, CHeroManager* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2)
