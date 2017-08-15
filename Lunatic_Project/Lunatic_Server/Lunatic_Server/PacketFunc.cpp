@@ -208,6 +208,17 @@ void SendColl_CharPacket(int client, int object, int direction)
 	Send_Packet(client, &packet);
 }
 
+void SendColl_BuildingPacket(int client, int object, int direction)
+{
+	sc_packet_coll_building packet;
+	packet.id = g_Clients[object].m_GameID;
+	packet.size = sizeof(packet);
+	packet.type = SC_CHAR_COLL;
+	packet.direction = direction;
+		
+	Send_Packet(client, &packet);
+}
+
 void Do_move(int id, unsigned char packet[])
 {
 	cs_packet_pos *my_packet = reinterpret_cast<cs_packet_pos*>(packet);
@@ -567,8 +578,17 @@ void ProcessPacket(int id, unsigned char packet[])
 		for (auto& d : g_Room[room_number].m_GameID_list)
 			SendColl_CharPacket(d, id, my_packet->direction);
 		break;
-		// Send That he is coll
 	}
+	case CS_BUILDING_COLL:
+	{
+		cs_packet_building_coll *my_packet = reinterpret_cast<cs_packet_building_coll*>(packet);
+
+		int room_number = packet[2];	// roomnumber
+		for (auto& d : g_Room[room_number].m_GameID_list)
+			SendColl_CharPacket(d, id, my_packet->direction);
+		break;
+	}
+
 	//case CS_POS_UPDATE: Do_move(id, packet); break;
 	// (Att)
 	case CS_ATTACK:

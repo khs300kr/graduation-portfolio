@@ -40,6 +40,7 @@
 #define CS_QUICK_JOIN				24
 #define CS_CHAR_COLL				25
 #define CS_ATTACK_HIT				26
+#define CS_BUILDING_COLL			27
 
 #define SC_POS				 1
 #define SC_PUT_PLAYER		 2
@@ -235,6 +236,13 @@ struct cs_packet_char_coll {
 	BYTE direction;
 };
 
+struct cs_packet_building_coll {
+	BYTE size;
+	BYTE type;
+	BYTE roomnumber;
+	BYTE direction;
+};
+
 
 // Server -> Client
 // Á¢¼Ó
@@ -388,6 +396,13 @@ struct sc_packet_skillR {
 };
 
 struct sc_packet_coll_char {
+	BYTE size;
+	BYTE type;
+	WORD id;
+	BYTE direction;
+};
+
+struct sc_packet_coll_building {
 	BYTE size;
 	BYTE type;
 	WORD id;
