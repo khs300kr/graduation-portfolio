@@ -598,12 +598,14 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 
 		int j = 0;
+		//오른쪽 벽
 		for (int i = 24; i < 24 + 20; ++i)
 		{
 			pWallObject[i]->SetPosition(415.0f, 0.0f, -475.0f + j);
 			pWallObject[i]->Rotate(-90.0f, 90.0f, 0.0f);
 			j += 50;
 		}
+
 		// 왼쪽 벽
 		int k = 0;
 		for (int i = 44; i < 44 + 20; ++i)
@@ -904,7 +906,6 @@ void CScene::ProcessInput()
 				if (dwDirection) SendMovePacket(CS_KEYDOWN_RIGHT);
 			}
 		}
-
 
 
 		if (KEY_UP(VK_UP) && UpKeyDown)
@@ -1227,11 +1228,11 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 		/*두 번째 조명은 플레이어가 가지고 있는 손전등(스팟 조명)이다. 그러므로 플레이어의 위치와 방향이 바뀌면 현재 플레이어의 위치와 z-축 방향 벡터를 스팟 조명의 위치와 방향으로 설정한다.*/
 
-		m_pLights->m_pLights[1].m_d3dxvPosition = pPlayer->GetPosition();
-		m_pLights->m_pLights[1].m_d3dxvDirection = pPlayer->GetLookVector();
+		//m_pLights->m_pLights[1].m_d3dxvPosition = pPlayer->GetPosition();
+		//m_pLights->m_pLights[1].m_d3dxvDirection = pPlayer->GetLookVector();
 
 
-		m_pLights->m_pLights[3].m_d3dxvPosition = pPlayer->GetPosition() + D3DXVECTOR3(0.0f, 40.0f, 0.0f);
+		//m_pLights->m_pLights[3].m_d3dxvPosition = pPlayer->GetPosition() + D3DXVECTOR3(0.0f, 40.0f, 0.0f);
 	}
 	for (int i = 0; i < m_nShaders; i++) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
 	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->AnimateObjects(fTimeElapsed);

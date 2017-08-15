@@ -478,7 +478,33 @@ void CGameFramework::ProcessInput()
 						break;
 					}
 				}
-				
+
+				if (m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().x > 403.f) // 오른쪽 벽 통과못하게
+				{
+					m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x - m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed(), m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
+					m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
+				}
+				else if (m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().x < -403.f) // 왼쪽 벽 통과못하게
+				{
+					m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x + m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed(), m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
+					m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
+				}
+
+				else if (m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().x < -100.f && m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().z < -495.f) //리스폰 왼쪽 밑
+				{
+					m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z + m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
+					m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
+				}
+
+				else if (m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().x > 100.f && m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().z < -495.f) //리스폰 오른쪽 밑
+				{
+					m_pPlayer->SetPosition(D3DXVECTOR3(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z + m_pScene->pHeroObject[m_pScene->myGame_id]->GetSpeed()));//m_pPlayer->Move(dwDirection, -m_pScene->pHeroObject[m_pScene->myroom_id]->GetSpeed() - 0.5f, true);
+					m_pScene->pHeroObject[m_pScene->myGame_id]->SetPosition(m_pPlayer->GetPosition());
+				}
+
+
+
+		
 			}
 
 			
