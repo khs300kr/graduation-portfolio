@@ -1161,7 +1161,7 @@ void ProcessPacket(char * ptr)
 
 		if (id == gGameFramework.m_pScene->myGame_id) {
 				gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, 0.f, my_packet->z);
-				gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, 0.f, my_packet->z));
+				//gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, 0.f, my_packet->z));
 				gGameFramework.m_pScene->pHeroObject[id]->SetHp(my_packet->hp);
 				gGameFramework.m_pScene->pHpgaugeObject->SetEndPos((335.f / gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp()) * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp() + 50.f);
 		}
