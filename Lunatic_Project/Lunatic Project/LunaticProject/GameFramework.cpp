@@ -538,7 +538,7 @@ void CGameFramework::ProcessInput()
 					DWORD iobyte;
 					my_packet->type = CS_BUILDING_COLL;
 					my_packet->roomnumber = m_pScene->MyRoomNumber;
-					my_packet->direction = CS_KEYDOWN_DOWN;
+					my_packet->direction = CS_KEYDOWN_UP;
 
 					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 
@@ -556,6 +556,81 @@ void CGameFramework::ProcessInput()
 
 					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 				}
+
+				// 리스폰 지역 부분 충돌 처리
+
+				// 리스폰안에서 아래쪽으로
+				if (m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().x > -80.0f && m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().x < 80.0f && m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().z < -574.0f)
+				{
+					cs_packet_building_coll *my_packet = reinterpret_cast<cs_packet_building_coll *>(send_buffer);
+					my_packet->size = sizeof(cs_packet_char_coll);
+					send_wsabuf.len = sizeof(cs_packet_char_coll);
+					DWORD iobyte;
+					my_packet->type = CS_BUILDING_COLL;
+					my_packet->roomnumber = m_pScene->MyRoomNumber;
+					my_packet->direction = CS_KEYDOWN_UP;
+
+					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+				}
+
+				// 리스폰 안에서 오른쪽으로
+				if (m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().x > 63.0f && m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().x < 65.0f && m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().z < -413.0f && m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().z > -580.0f)
+				{
+					cs_packet_building_coll *my_packet = reinterpret_cast<cs_packet_building_coll *>(send_buffer);
+					my_packet->size = sizeof(cs_packet_char_coll);
+					send_wsabuf.len = sizeof(cs_packet_char_coll);
+					DWORD iobyte;
+					my_packet->type = CS_BUILDING_COLL;
+					my_packet->roomnumber = m_pScene->MyRoomNumber;
+					my_packet->direction = CS_KEYDOWN_RIGHT;
+
+					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+				}
+
+				//리스폰 안에서 왼쪽으로
+				if (m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().x < -63.0f && m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().x > -65.0f && m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().z < -413.0f && m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().z > -580.0f)
+				{
+					cs_packet_building_coll *my_packet = reinterpret_cast<cs_packet_building_coll *>(send_buffer);
+					my_packet->size = sizeof(cs_packet_char_coll);
+					send_wsabuf.len = sizeof(cs_packet_char_coll);
+					DWORD iobyte;
+					my_packet->type = CS_BUILDING_COLL;
+					my_packet->roomnumber = m_pScene->MyRoomNumber;
+					my_packet->direction = CS_KEYDOWN_LEFT;
+
+					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+				}
+
+				// 리스폰 밖에서 오른쪽으로
+				if (m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().x < -104.0f && m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().x > -106.0f && m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().z < -450.0f && m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().z > -580.0f)
+				{
+					cs_packet_building_coll *my_packet = reinterpret_cast<cs_packet_building_coll *>(send_buffer);
+					my_packet->size = sizeof(cs_packet_char_coll);
+					send_wsabuf.len = sizeof(cs_packet_char_coll);
+					DWORD iobyte;
+					my_packet->type = CS_BUILDING_COLL;
+					my_packet->roomnumber = m_pScene->MyRoomNumber;
+					my_packet->direction = CS_KEYDOWN_RIGHT;
+
+					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+				}
+
+				//리스폰 밖에서 왼쪽으로
+				if (m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().x > 104.0f && m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().x < 106.0f && m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().z < -450.0f && m_pScene->pHeroObject[m_pScene->myGame_id]->GetPosition().z > -580.0f)
+				{
+					cs_packet_building_coll *my_packet = reinterpret_cast<cs_packet_building_coll *>(send_buffer);
+					my_packet->size = sizeof(cs_packet_char_coll);
+					send_wsabuf.len = sizeof(cs_packet_char_coll);
+					DWORD iobyte;
+					my_packet->type = CS_BUILDING_COLL;
+					my_packet->roomnumber = m_pScene->MyRoomNumber;
+					my_packet->direction = CS_KEYDOWN_LEFT;
+
+					WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+				}
+
+
+
 
 
 
