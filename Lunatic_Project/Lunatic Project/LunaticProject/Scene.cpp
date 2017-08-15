@@ -1612,23 +1612,52 @@ bool CScene::Upcollision(CHeroManager* Object1, CGameObject* Object2, float size
 
 void CScene::AteamScore(int _score)
 {
-	//pAteam[_score]->Initialize(gUIObject->GetDevice(), POINT{ 400, 20 }, POINT{ 450, 60 }, 0.4f);
 	if (_score < 10)
-		pAteam[0][_score]->SetScore(POINT{ 400, 20 }, POINT{ 450, 60 });
-	else if (_score > 10)
 	{
+		pAteam[0][_score]->SetScore(POINT{ 400, 20 }, POINT{ 450, 60 });
+		if (_score > 0)
+		{
+			pAteam[0][_score - 1]->SetScore(POINT{ -400, -20 }, POINT{ -450, -60 });
+		}
+	}
+	else if (_score >= 10)
+	{
+		if (_score - 1 == 9)
+			pAteam[0][9]->SetScore(POINT{ -430, -20 }, POINT{ -480, -60 });
+
 		pAteam[0][_score % 10]->SetScore(POINT{ 430, 20 }, POINT{ 480, 60 });
 		pAteam[1][_score / 10]->SetScore(POINT{ 370, 20 }, POINT{ 420, 60 });
+
+		if (_score > 10)
+		{
+			pAteam[0][_score % 10 - 1]->SetScore(POINT{ -430, 20 }, POINT{ -480, 60 });
+			pAteam[1][_score / 10 - 1]->SetScore(POINT{ -370, 20 }, POINT{ -420, 60 });
+		}
 	}
 }
 
 void CScene::BteamScore(int _score)
 {
 	if (_score < 10)
-		pBteam[0][_score]->SetScore(POINT{ 550, 20 }, POINT{ 600, 60 });
-	else if (_score > 10)
 	{
+		pBteam[0][_score]->SetScore(POINT{ 550, 20 }, POINT{ 600, 60 });
+		if (_score > 0)
+		{
+			pBteam[0][_score - 1]->SetScore(POINT{ -550, -20 }, POINT{ -600, -60 });
+		}
+	}
+	else if (_score >= 10)
+	{
+		if (_score - 1 == 9)
+			pBteam[0][9]->SetScore(POINT{ -430, -20 }, POINT{ -480, -60 });
+
 		pBteam[0][_score % 10]->SetScore(POINT{ 580, 20 }, POINT{ 630, 60 });
 		pBteam[1][_score / 10]->SetScore(POINT{ 520, 20 }, POINT{ 570, 60 });
+
+		if (_score > 10)
+		{
+			pBteam[0][_score % 10 - 1]->SetScore(POINT{ -580, -20 }, POINT{ -630, -60 });
+			pBteam[1][_score / 10 - 1]->SetScore(POINT{ -520, -20 }, POINT{ -570, -60 });
+		}
 	}
 }
