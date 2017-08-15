@@ -941,6 +941,7 @@ void ProcessPacket(char * ptr)
 	{
 		sc_packet_attack *my_packet = reinterpret_cast<sc_packet_attack *>(ptr);
 		int id = my_packet->id;
+
 		if (id == gGameFramework.m_pScene->myGame_id) {
 			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
 		}
