@@ -58,6 +58,8 @@ struct ROOM
 	unordered_set<int> m_AcceptLoading_list; 
 	BYTE m_readycount;
 	BYTE m_loadcount;
+	WORD A_killcount;
+	WORD B_killcount;
 };
 // Server
 extern HANDLE g_Hiocp;

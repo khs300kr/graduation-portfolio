@@ -1028,7 +1028,7 @@ void CScene::ProcessInput()
 			}
 			for (int i = 0; i < MAX_GAMER; ++i)
 			{
-				if (i != myGame_id)
+				if ((i != myGame_id) && (pHeroObject[i]->bDeath == false))
 				{
 					if (Sectorcollision(pHeroObject[myGame_id], pHeroObject[i], dwDirforCollision, 3.f, pHeroObject[myGame_id]->GetRange()))
 					{

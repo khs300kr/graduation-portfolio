@@ -20,6 +20,7 @@ public:
 	int m_Team;
 	int m_serverID;
 
+	bool bDeath = false;
 	bool bHeroAttack = false;
 	bool bHeroRun = false;
 	bool bHeroQ = false;

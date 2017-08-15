@@ -1145,6 +1145,7 @@ void ProcessPacket(char * ptr)
 		gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_DIE);
 		gGameFramework.m_pScene->pHeroObject[clientid]->bHeroDie = true;
 		gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
+		gGameFramework.m_pScene->pHeroObject[clientid]->bDeath = true;
 
 		gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(0);
 
