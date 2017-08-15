@@ -1134,7 +1134,7 @@ void ProcessPacket(char * ptr)
 
 		if (clientid == gGameFramework.m_pScene->myGame_id)
 		{
-			gGameFramework.m_pScene->pHpgaugeObject->SetEndPos((385.f / gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp()) * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp());
+			gGameFramework.m_pScene->pHpgaugeObject->SetEndPos((335.f / gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp()) * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp() + 50.f);
 
 			cout << "고정 체력 : " << gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp() << endl;
 		}
