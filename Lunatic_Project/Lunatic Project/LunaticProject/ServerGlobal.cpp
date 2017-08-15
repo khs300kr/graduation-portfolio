@@ -15,3 +15,4 @@ bool activate{};
 bool HeroDataReceive = false;
 int g_ping_send{};
 int g_ping_recv{};
+bool g_bDoing_Ani = false;

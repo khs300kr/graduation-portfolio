@@ -879,7 +879,7 @@ void CScene::ProcessInput()
 	{
 		if (!pHeroObject[myGame_id]->bHeroAttack && !pHeroObject[myGame_id]->bHeroQ && !pHeroObject[myGame_id]->bHeroW && !pHeroObject[myGame_id]->bHeroE && !pHeroObject[myGame_id]->bHeroR)
 		{
-			if (KEY_DOWN(VK_UP) && !UpKeyDown) {
+			if (KEY_DOWN(VK_UP) && !UpKeyDown && !g_bDoing_Ani) {
 				UpKeyDown = true;
 				dwDirection |= DIR_BACK;
 				if (dwDirection) SendMovePacket(CS_KEYDOWN_UP);
@@ -890,17 +890,17 @@ void CScene::ProcessInput()
 				}*/
 
 			}
-			if (KEY_DOWN(VK_DOWN) && !DownKeyDown) {
+			if (KEY_DOWN(VK_DOWN) && !DownKeyDown && !g_bDoing_Ani) {
 				DownKeyDown = true;
 				dwDirection |= DIR_FRONT;
 				if (dwDirection) SendMovePacket(CS_KEYDOWN_DOWN);
 			}
-			if (KEY_DOWN(VK_LEFT) && !LeftKeyDown) {
+			if (KEY_DOWN(VK_LEFT) && !LeftKeyDown && !g_bDoing_Ani) {
 				LeftKeyDown = true;
 				dwDirection |= DIR_LEFT;
 				if (dwDirection) SendMovePacket(CS_KEYDOWN_LEFT);
 			}
-			if (KEY_DOWN(VK_RIGHT) && !RightKeyDown) {
+			if (KEY_DOWN(VK_RIGHT) && !RightKeyDown && !g_bDoing_Ani) {
 				RightKeyDown = true;
 				dwDirection |= DIR_RIGHT;
 				if (dwDirection) SendMovePacket(CS_KEYDOWN_RIGHT);
@@ -908,7 +908,7 @@ void CScene::ProcessInput()
 		}
 
 
-		if (KEY_UP(VK_UP) && UpKeyDown)
+		if (KEY_UP(VK_UP) && UpKeyDown && !g_bDoing_Ani)
 		{
 			UpKeyDown = false;
 			if (pHeroObject[myGame_id]->bHeroRun)
@@ -918,7 +918,7 @@ void CScene::ProcessInput()
 			}
 			SendMovePacket(CS_KEYUP_UP);
 		}
-		if (KEY_UP(VK_DOWN) && DownKeyDown)
+		if (KEY_UP(VK_DOWN) && DownKeyDown && !g_bDoing_Ani)
 		{
 			DownKeyDown = false;
 			if (pHeroObject[myGame_id]->bHeroRun)
@@ -928,7 +928,7 @@ void CScene::ProcessInput()
 			}
 			SendMovePacket(CS_KEYUP_DOWN);
 		}
-		if (KEY_UP(VK_LEFT) && LeftKeyDown)
+		if (KEY_UP(VK_LEFT) && LeftKeyDown && !g_bDoing_Ani)
 		{
 			LeftKeyDown = false;
 			if (pHeroObject[myGame_id]->bHeroRun)
@@ -938,7 +938,7 @@ void CScene::ProcessInput()
 			}
 			SendMovePacket(CS_KEYUP_LEFT);
 		}
-		if (KEY_UP(VK_RIGHT) && RightKeyDown)
+		if (KEY_UP(VK_RIGHT) && RightKeyDown && !g_bDoing_Ani)
 		{
 			RightKeyDown = false;
 			if (pHeroObject[myGame_id]->bHeroRun)
@@ -950,11 +950,12 @@ void CScene::ProcessInput()
 		}
 
 
-		if (KEY_DOWN('D') && !DKeyDown)
+		if ((KEY_DOWN('D') || KEY_DOWN('d')) && !DKeyDown && !g_bDoing_Ani)
 		{
 			DKeyDown = true;
 			if (!pHeroObject[myGame_id]->bHeroAttack)
 			{
+				g_bDoing_Ani = true;	// 애니메이션 도중 키 입력 방지.
 				pHeroObject[myGame_id]->bHeroAttack = true;
 				pHeroObject[myGame_id]->bHeroRun = false;
 
@@ -997,15 +998,16 @@ void CScene::ProcessInput()
 			}
 		}
 
-		if (KEY_UP('D') && DKeyDown)
+		if ((KEY_UP('D') || KEY_UP('d')) && DKeyDown && !g_bDoing_Ani)
 		{
 			DKeyDown = false;
 		}
 
-		else if (KEY_DOWN('Q'))
+		if ((KEY_DOWN('Q') || KEY_DOWN('q')) && !g_bDoing_Ani)
 		{
 			if (!pHeroObject[myGame_id]->bHeroQ)
 			{
+				g_bDoing_Ani = true;	// 애니메이션 도중 키 입력 방지.
 				pHeroObject[myGame_id]->bHeroQ = true;
 				pHeroObject[myGame_id]->bHeroRun = false;
 
@@ -1019,10 +1021,11 @@ void CScene::ProcessInput()
 				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 			}
 		}
-		else if (KEY_DOWN('W'))
+		if ((KEY_DOWN('W') || KEY_DOWN('w')) && !g_bDoing_Ani)
 		{
 			if (!pHeroObject[myGame_id]->bHeroW)
 			{
+				g_bDoing_Ani = true;	// 애니메이션 도중 키 입력 방지.
 				pHeroObject[myGame_id]->bHeroW = true;
 				pHeroObject[myGame_id]->bHeroRun = false;
 
@@ -1036,10 +1039,11 @@ void CScene::ProcessInput()
 				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 			}
 		}
-		else if (KEY_DOWN('E'))
+		if ((KEY_DOWN('E') || KEY_DOWN('e')) && !g_bDoing_Ani)
 		{
 			if (!pHeroObject[myGame_id]->bHeroE)
 			{
+				g_bDoing_Ani = true;	// 애니메이션 도중 키 입력 방지.
 				pHeroObject[myGame_id]->bHeroE = true;
 				pHeroObject[myGame_id]->bHeroRun = false;
 
@@ -1053,11 +1057,11 @@ void CScene::ProcessInput()
 				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 			}
 		}
-		else if (KEY_DOWN('R'))
+		if ((KEY_DOWN('R') || KEY_DOWN('r')) && !g_bDoing_Ani)
 		{
 			if (!pHeroObject[myGame_id]->bHeroR)
 			{
-
+				g_bDoing_Ani = true;	// 애니메이션 도중 키 입력 방지.
 				pHeroObject[myGame_id]->bHeroR = true;
 				pHeroObject[myGame_id]->bHeroRun = false;
 

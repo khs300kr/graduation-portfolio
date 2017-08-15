@@ -15,3 +15,4 @@ extern bool activate;
 extern bool HeroDataReceive;
 extern int g_ping_send;
 extern int g_ping_recv;
+extern bool g_bDoing_Ani;

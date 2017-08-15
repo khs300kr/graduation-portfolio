@@ -944,6 +944,9 @@ void ProcessPacket(char * ptr)
 
 		if (id == gGameFramework.m_pScene->myGame_id) {
 			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
+			g_bDoing_Ani = false;	// 애니메이션 도중 키 입력 방지.
+			cout << "Turn to False\n";
+
 		}
 		else {
 			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
@@ -1121,12 +1124,13 @@ void ProcessPacket(char * ptr)
 
 		gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(my_packet->hp);
 		
+		if (clientid == gGameFramework.m_pScene->myGame_id)	g_bDoing_Ani = true;	// 애니메이션 도중 키 입력 방지.
+	
 		if (gGameFramework.m_pScene->pHeroObject[clientid]->GetHp() > 0) {
-			gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
 			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroHit = true;
 			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
+			gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
 		}
-
 
 		if (clientid == gGameFramework.m_pScene->myGame_id)
 		{

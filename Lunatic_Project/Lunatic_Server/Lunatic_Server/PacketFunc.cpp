@@ -564,7 +564,7 @@ void ProcessPacket(int id, unsigned char packet[])
 	// (Move)
 	case CS_KEYDOWN_UP:		 g_Clients[id].m_Direction |= DIR_BACK;		Do_move(id, packet);	break;
 	case CS_KEYDOWN_DOWN:	 g_Clients[id].m_Direction |= DIR_FRONT;	Do_move(id, packet);	break;
-	case CS_KEYDOWN_LEFT:	cout << "ID : " << id << endl;	 g_Clients[id].m_Direction |= DIR_LEFT;		Do_move(id, packet);	break;
+	case CS_KEYDOWN_LEFT:	 g_Clients[id].m_Direction |= DIR_LEFT;		Do_move(id, packet);	break;
 	case CS_KEYDOWN_RIGHT:	 g_Clients[id].m_Direction |= DIR_RIGHT;	Do_move(id, packet);	break;
 	case CS_KEYUP_UP:		 g_Clients[id].m_Direction ^= DIR_BACK;		Do_move(id, packet);	break;
 	case CS_KEYUP_DOWN:		 g_Clients[id].m_Direction ^= DIR_FRONT;	Do_move(id, packet);	break;
