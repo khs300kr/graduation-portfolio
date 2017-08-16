@@ -5,6 +5,11 @@
 
 CRoom::CRoom()
 {
+	Init();
+}
+
+void CRoom::Init()
+{
 	for (int i = 0; i < MAX_GAMER; ++i)
 	{
 		RoomUI[i].HeroSelect = EMPTY;
@@ -35,9 +40,7 @@ CRoom::CRoom()
 
 	RoomUI[7].xPos = 843;
 	RoomUI[7].yPos = 522;
-	
 }
-
 
 CRoom::~CRoom()
 {

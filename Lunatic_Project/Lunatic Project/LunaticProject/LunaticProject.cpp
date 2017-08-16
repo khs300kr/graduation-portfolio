@@ -857,13 +857,15 @@ void ProcessPacket(char * ptr)
 		gGameFramework.m_pScene->AteamScore(0);
 		gGameFramework.m_pScene->BteamScore(0);
 
+		gRoom.Init();
+
 		gGameFramework.m_pScene->pHeroObject[id]->SetHp(my_packet->hp);
 		gGameFramework.m_pScene->pHeroObject[id]->SetAttack(my_packet->att);
 
 		if (id == gGameFramework.m_pScene->myGame_id) {
 			cout << "Hero Pos : \t " << id << endl;
 			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
-			gGameFramework.m_pPlayer->Move(D3DXVECTOR3(my_packet->x, my_packet->y, my_packet->z));
+			gGameFramework.m_pPlayer->SetPosition(D3DXVECTOR3(my_packet->x, my_packet->y, my_packet->z));
 
 			switch (gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect)
 			{
@@ -1161,6 +1163,14 @@ void ProcessPacket(char * ptr)
 
 		gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(0);
 
+
+		//A_TEAM WIN or B_TEAM WIN
+		if (g_A_Teamcount == 2 || g_A_Teamcount == 2) // 구현중이기떄문에 일단 킬 카운트를 2로함
+		{
+			gGameFramework.ChangeScene = LOBBY; //로비로 돌아간다.
+			
+		}
+
 		break;
 	}
 
@@ -1185,6 +1195,8 @@ void ProcessPacket(char * ptr)
 		
 		gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
 		gGameFramework.m_pScene->pHeroObject[id]->bDeath = false;
+
+
 		break;
 	}
 
@@ -1254,7 +1266,7 @@ void EnterRoom()
 	memset(gLobby.RoomName, 0, sizeof(gLobby.RoomName));
 	memset(gLobby.input, 0, sizeof(gLobby.input));
 
-
+	gLobby.RoomCreateWindow = false;
 	gLobby.vOutPut.clear();
 }
 

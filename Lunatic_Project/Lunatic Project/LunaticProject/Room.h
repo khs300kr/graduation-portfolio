@@ -2,7 +2,7 @@
 
 #include "LunaticProject.h"
 
-typedef struct RoomInfo
+typedef struct RoomInfo // 로비에서 바라보는 룸의 정보
 {
 	WCHAR roomtitle[MAX_ROOMTITLE_SIZE];
 	int room_number;
@@ -11,7 +11,7 @@ typedef struct RoomInfo
 	bool _private; // 암호가 있는지?
 }RoomInfo;
 
-typedef struct RoomUI
+typedef struct RoomUI //룸 안에서의 정보
 {
 	WCHAR ID[MAX_ID_LEN];
 	int HeroSelect; // 캐릭터를 고른 것.
@@ -57,6 +57,7 @@ public:
 	RoomUI RoomUI[MAX_GAMER];
 	
 
+	void Init();
 	void Create(HINSTANCE hInst);
 
 	void Draw(HDC memdc, HDC memdc2);

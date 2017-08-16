@@ -1183,7 +1183,6 @@ void CScene::ProcessInput()
 			}
 		}
 
-
 	}
 
 
