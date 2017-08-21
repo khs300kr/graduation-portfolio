@@ -597,10 +597,10 @@ void ProcessPacket(int id, unsigned char packet[])
 	case CS_KEYDOWN_DOWN:	 g_Clients[id].m_Direction |= DIR_FRONT;	Do_move(id, packet);	break;
 	case CS_KEYDOWN_LEFT:	 g_Clients[id].m_Direction |= DIR_LEFT;		Do_move(id, packet);	break;
 	case CS_KEYDOWN_RIGHT:	 g_Clients[id].m_Direction |= DIR_RIGHT;	Do_move(id, packet);	break;
-	case CS_KEYUP_UP:		 g_Clients[id].m_Direction ^= DIR_BACK;		Do_move(id, packet);	break;
-	case CS_KEYUP_DOWN:		 g_Clients[id].m_Direction ^= DIR_FRONT;	Do_move(id, packet);	break;
-	case CS_KEYUP_LEFT:		 g_Clients[id].m_Direction ^= DIR_LEFT;		Do_move(id, packet);	break;
-	case CS_KEYUP_RIGHT:	 g_Clients[id].m_Direction ^= DIR_RIGHT;	Do_move(id, packet);	break;
+	case CS_KEYUP_UP:		 if(g_Clients[id].m_Direction != 0) g_Clients[id].m_Direction ^= DIR_BACK;		Do_move(id, packet);	break;
+	case CS_KEYUP_DOWN:		 if(g_Clients[id].m_Direction != 0) g_Clients[id].m_Direction ^= DIR_FRONT;	Do_move(id, packet);	break;
+	case CS_KEYUP_LEFT:		 if(g_Clients[id].m_Direction != 0) g_Clients[id].m_Direction ^= DIR_LEFT;		Do_move(id, packet);	break;
+	case CS_KEYUP_RIGHT:	 if(g_Clients[id].m_Direction != 0) g_Clients[id].m_Direction ^= DIR_RIGHT;	Do_move(id, packet);	break;
 	case CS_CHAR_COLL: 
 	{
 		cs_packet_char_coll *my_packet = reinterpret_cast<cs_packet_char_coll*>(packet);
@@ -677,7 +677,11 @@ void ProcessPacket(int id, unsigned char packet[])
 		int room_number = packet[2];	// roomnumber
 		
 		g_Clients[my_packet->hitID].m_hp -= g_Clients[id].m_att; // Hp 감소.
-
+		if (g_Clients[my_packet->hitID].m_Direction != 0)	// 이동 중일때.
+		{
+			g_Clients[my_packet->hitID].m_Direction = 0;	// 이동을 멈추어라.
+			// 위치 갱신 코드 필요.
+		}
 
 		 // 캐릭터 사망시.
 		if (g_Clients[my_packet->hitID].m_hp <= 0) 
