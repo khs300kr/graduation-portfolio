@@ -782,12 +782,19 @@ void ProcessPacket(char * ptr)
 			cout << "내 캐릭터 선택 : " << gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect << endl;
 
 			if (id & 1)
+			{
 				gGameFramework.m_pScene->pHeroObject[id]->m_Team = B_TEAM; // 팀 선택
+				gGameFramework.m_pScene->BteamMax++;
+
+			}
 			else
+			{
 				gGameFramework.m_pScene->pHeroObject[id]->m_Team = A_TEAM;
+				gGameFramework.m_pScene->AteamMax++;
+
+			}
 
 			gRoom.RoomUI[id].Team = gGameFramework.m_pScene->pHeroObject[id]->m_Team; // 룸에 팀 전달
-
 
 		}
 		else
@@ -795,14 +802,25 @@ void ProcessPacket(char * ptr)
 			gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect = gRoom.RoomUI[id].HeroSelect = my_packet->hero_pick; // 캐릭터 선택
 
 			if (id & 1)
+			{
 				gGameFramework.m_pScene->pHeroObject[id]->m_Team = B_TEAM; // 팀 선택
+				gGameFramework.m_pScene->BteamMax++;
+
+			}
 			else
+			{
 				gGameFramework.m_pScene->pHeroObject[id]->m_Team = A_TEAM;
+				gGameFramework.m_pScene->AteamMax++;
+
+			}
 
 			gRoom.RoomUI[id].Team = gGameFramework.m_pScene->pHeroObject[id]->m_Team; // 룸에 팀 전달
 			gGameFramework.m_pScene->pHeroObject[id]->m_serverID = my_packet->serverID;
 			gRoom.RoomUI[id].IsReady = true; // 내꺼
 		}
+
+		cout << "A팀 최대 인원 : " << gGameFramework.m_pScene->AteamMax << endl;
+		cout << "B팀 최대 인원 : " << gGameFramework.m_pScene->BteamMax << endl;
 		InvalidateRect(g_hWnd, NULL, false);
 		break;
 	}
@@ -908,7 +926,7 @@ void ProcessPacket(char * ptr)
 		sc_packet_pos *my_packet = reinterpret_cast<sc_packet_pos *>(ptr);
 		int id = my_packet->id;
 		if (id == gGameFramework.m_pScene->myGame_id) {
-			
+
 			//cout << "Hero Move\n";
 			gGameFramework.dwDirection = my_packet->direction;
 			// 각도 저장.
@@ -1121,7 +1139,7 @@ void ProcessPacket(char * ptr)
 		int clientid = my_packet->clientid;
 
 		gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(my_packet->hp);
-		
+
 		if (clientid == gGameFramework.m_pScene->myGame_id) {
 			g_bDoing_Ani = true;	// 애니메이션 도중 키 입력 방지.
 		}
@@ -1153,7 +1171,7 @@ void ProcessPacket(char * ptr)
 		else
 		{
 			gGameFramework.m_pScene->BteamScore(++g_B_Teamcount);
-			cout << "B_TEAM KILLED\n"; 
+			cout << "B_TEAM KILLED\n";
 		}
 
 		gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_DIE);
@@ -1168,7 +1186,7 @@ void ProcessPacket(char * ptr)
 		if (g_A_Teamcount == 2 || g_A_Teamcount == 2) // 구현중이기떄문에 일단 킬 카운트를 2로함
 		{
 			gGameFramework.ChangeScene = LOBBY; //로비로 돌아간다.
-			
+
 		}
 
 		break;
@@ -1180,19 +1198,19 @@ void ProcessPacket(char * ptr)
 		int id = my_packet->id;
 
 		if (id == gGameFramework.m_pScene->myGame_id) {
-				gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, 0.f, my_packet->z);
-				gGameFramework.m_pPlayer->SetPosition(gGameFramework.m_pScene->pHeroObject[id]->GetPosition());
+			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, 0.f, my_packet->z);
+			gGameFramework.m_pPlayer->SetPosition(gGameFramework.m_pScene->pHeroObject[id]->GetPosition());
 
-				
-				gGameFramework.m_pScene->pHeroObject[id]->SetHp(my_packet->hp);
-				gGameFramework.m_pScene->pHpgaugeObject->SetEndPos((335.f / gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp()) * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp() + 50.f);
+
+			gGameFramework.m_pScene->pHeroObject[id]->SetHp(my_packet->hp);
+			gGameFramework.m_pScene->pHpgaugeObject->SetEndPos((335.f / gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp()) * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp() + 50.f);
 		}
 		else {
 			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, 0.f, my_packet->z);
 			gGameFramework.m_pScene->pHeroObject[id]->SetHp(my_packet->hp);
 		}
 
-		
+
 		gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
 		gGameFramework.m_pScene->pHeroObject[id]->bDeath = false;
 

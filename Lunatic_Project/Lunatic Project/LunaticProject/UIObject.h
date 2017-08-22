@@ -46,6 +46,7 @@ public:
 
 	void Update();
 	void SetScore(POINT _sPoint, POINT _ePoint);
+	void SetGamer(POINT _sPoint, POINT _ePoint);
 };
 
 class CUIManager

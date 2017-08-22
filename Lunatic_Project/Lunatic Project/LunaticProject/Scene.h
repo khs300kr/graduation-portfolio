@@ -79,6 +79,13 @@ public:
 	CGameObject *pHpObject[MAX_GAMER];
 	CGameObject *pOtherHpbarObject[MAX_GAMER];
 
+
+	// A,B팀 플레이어 상단에 보이기
+	CHeroManager* pAteamPlayer[4];
+	CHeroManager* pBteamPlayer[4];
+	int AteamMax;
+	int BteamMax;
+
 	CGameObject *pHouse1Object[13];
 	CGameObject *pWallObject[64];
 
@@ -92,6 +99,8 @@ public:
 
 	CUIObject *gUIObject;
 
+	CUIObject *AteamGamer[4];
+	CUIObject *BteamGamer[4];
 
 	CMaterial *pNormalMaterial;
 
@@ -169,7 +178,7 @@ public:
 
 public:
 
-	
+
 	// server
 	DWORD Animation_number[MAX_GAMER] = {};
 	void SendMovePacket(BYTE type);
@@ -179,6 +188,10 @@ public:
 	// UI
 	CUIManager *m_pUIManager[6]; //hpbar 1 + bpgauge 1 + skillbox 4 = 6
 	CUIManager *m_pScoreManager[41]; // scoreboard 1 + number(0~9) 10 x 2 (A,B팀 스코어 2개 필요) + 1의자리 10의자리 때매 A,B팀 각각 10개 추가 = 41
+
+	CUIManager *m_AteamGamerManager[4];
+	CUIManager *m_BteamGamerManager[4];
+	CUIManager *m_TeamHPManager[MAX_GAMER];
 
 	// Score
 	void AteamScore(int _score);
