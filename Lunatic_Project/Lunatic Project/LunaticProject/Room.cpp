@@ -48,7 +48,7 @@ CRoom::~CRoom()
 
 void CRoom::Create(HINSTANCE hInst)
 {
-	bmp_background = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_RBACKGROUND));
+	bmp_background = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_NEWBACKGROUND));
 
 	bmp_Babarian_Image = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BABARIAN_IMAGE));
 	bmp_Babarian_Select = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BABARIAN_SELECT));
@@ -148,8 +148,8 @@ void CRoom::Draw(HDC memdc, HDC memdc2)
 			DrawBitmap(memdc, memdc2, bmp_Swordman_Image, RoomUI[i].xPos, RoomUI[i].yPos, 94, 94);
 		else if (RoomUI[i].HeroSelect == MAGICIAN)
 			DrawBitmap(memdc, memdc2, bmp_Magician_Image, RoomUI[i].xPos, RoomUI[i].yPos, 94, 94);
-		else if (RoomUI[i].HeroSelect == ARCHER)
-			DrawBitmap(memdc, memdc2, bmp_Archer_Image, RoomUI[i].xPos, RoomUI[i].yPos, 94, 94);
+		/*else if (RoomUI[i].HeroSelect == ARCHER)
+			DrawBitmap(memdc, memdc2, bmp_Archer_Image, RoomUI[i].xPos, RoomUI[i].yPos, 94, 94);*/
 		else if (RoomUI[i].HeroSelect == HEALER)
 			DrawBitmap(memdc, memdc2, bmp_Healer_Image, RoomUI[i].xPos, RoomUI[i].yPos, 94, 94);
 		else if (RoomUI[i].HeroSelect == WITCH)
@@ -168,14 +168,14 @@ void CRoom::Draw(HDC memdc, HDC memdc2)
 		Rectangle(memdc, 526, 48, 622, 143);
 		break;
 	case SWORDMAN:
-		Rectangle(memdc, 355, 173, 449, 265);
+		Rectangle(memdc, 406, 173, 499, 265);
 		break;
 	case MAGICIAN:
-		Rectangle(memdc, 469, 173, 561, 265);
+		Rectangle(memdc, 526, 173, 622, 265);
 		break;
-	case ARCHER:
+	/*case ARCHER:
 		Rectangle(memdc, 578, 173, 672, 265);
-		break;
+		break;*/
 	case HEALER:
 		Rectangle(memdc, 407, 300, 499, 393);
 		break;
@@ -244,18 +244,18 @@ void CRoom::L_ButtonDown(int mx, int my)
 		{
 			RoomUI[GetMyGame_id()].HeroSelect = KNIGHT;
 		}
-		else if (MouseInbox(355, 173, 449, 265, mx, my)) // SwordMan
+		else if (MouseInbox(406, 173, 499, 265, mx, my)) // SwordMan
 		{
 			RoomUI[GetMyGame_id()].HeroSelect = SWORDMAN;
 		}
-		else if (MouseInbox(469, 173, 561, 265, mx, my)) // Magician
+		else if (MouseInbox(526, 173, 622, 265, mx, my)) // Magician
 		{
 			RoomUI[GetMyGame_id()].HeroSelect = MAGICIAN;
 		}
-		else if (MouseInbox(578, 173, 672, 265, mx, my)) // Archer
-		{
-			RoomUI[GetMyGame_id()].HeroSelect = ARCHER;
-		}
+		//else if (MouseInbox(578, 173, 672, 265, mx, my)) // Archer
+		//{
+		//	RoomUI[GetMyGame_id()].HeroSelect = ARCHER;
+		//}
 		else if (MouseInbox(407, 300, 499, 393, mx, my)) // Healer
 		{
 			RoomUI[GetMyGame_id()].HeroSelect = HEALER;

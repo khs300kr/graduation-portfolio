@@ -195,6 +195,7 @@
     <Image Include="..\Data\Menu\Room\Select\Swordman_Select.bmp" />
     <Image Include="..\Data\Menu\Room\Select\Witch_Select.bmp" />
     <Image Include="..\Data\Menu\Room\UI\background.bmp" />
+    <Image Include="..\Data\Menu\Room\UI\new_background.bmp" />
     <Image Include="..\Data\Menu\Room\UI\Ready.bmp" />
     <Image Include="..\Data\Menu\Room\UI\readybutton.bmp" />
     <Image Include="D:\Github data\graduation-portfolio\Lunatic_Project\Lunatic Project\Data\Menu\Lobby\lobbyhome.bmp" />
