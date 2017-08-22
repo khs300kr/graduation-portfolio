@@ -234,6 +234,7 @@ void CRoom::DrawBitmap(HDC memdc, HDC memdc2, HBITMAP bitmap, int x, int y, int 
 void CRoom::L_ButtonDown(int mx, int my)
 {
 	cout << mx << ends << my;
+
 	if (!RoomUI[GetMyGame_id()].IsReady)
 	{
 		if (MouseInbox(406, 48, 499, 143, mx, my)) // Babarian
@@ -267,17 +268,35 @@ void CRoom::L_ButtonDown(int mx, int my)
 
 		else if (MouseInbox(398, 443, 624, 527, mx, my) && RoomUI[GetMyGame_id()].HeroSelect != EMPTY) // Ready ¹öÆ°
 		{
-			for (int i = 0; i < MAX_GAMER; ++i)
+			if (GetMyGame_id() % 2 == 0)
 			{
-				if (i != GetMyGame_id())
+				for (int i = 0; i < MAX_GAMER; i+=2)
 				{
-					if (RoomUI[i].HeroSelect == RoomUI[GetMyGame_id()].HeroSelect)
-						return;
+					if (i != GetMyGame_id())
+					{
+						if (RoomUI[i].HeroSelect == RoomUI[GetMyGame_id()].HeroSelect)
+							return;
+					}
+
 				}
-				
 			}
+			else
+			{
+				for (int i = 1; i < MAX_GAMER; i += 2)
+				{
+					if (i != GetMyGame_id())
+					{
+						if (RoomUI[i].HeroSelect == RoomUI[GetMyGame_id()].HeroSelect)
+							return;
+					}
+
+				}
+			}
+			
 
 			RoomUI[GetMyGame_id()].IsReady = true; // ³»²¨
+
+
 			InvalidateRect(g_hWnd, NULL, false);
 
 			SendReadyButton();
