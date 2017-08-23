@@ -76,7 +76,7 @@ public:
 	//CHeroManager* pOtherObject[MAX_GAMER];
 
 	CHeroManager* pHeroObject[MAX_GAMER];
-	CGameObject *pHpObject[MAX_GAMER];
+	CGameObject *pTeamViewObject[MAX_GAMER];
 	CGameObject *pOtherHpbarObject[MAX_GAMER];
 
 
@@ -85,6 +85,10 @@ public:
 	CHeroManager* pBteamPlayer[4];
 	int AteamMax;
 	int BteamMax;
+
+	// 이미지 테두리
+	CUIObject *pRedTeamObject[4];
+	CUIObject *pBlueTeamObject[4];
 
 	CGameObject *pHouse1Object[13];
 	CGameObject *pWallObject[64];
@@ -99,8 +103,11 @@ public:
 
 	CUIObject *gUIObject;
 
+	// A,B팀
 	CUIObject *AteamGamer[4];
 	CUIObject *BteamGamer[4];
+
+	//CTexture *pTeamEdge[8];
 
 	CMaterial *pNormalMaterial;
 
@@ -116,8 +123,8 @@ public:
 
 	CTexture *pTestTexture;
 
-	CTexture *pHpTexture;
-	CTexture *pHpbarTexture;
+	CTexture *pRedTeamTexture;
+	CTexture *pBlueTeamTexture;
 
 	CMesh *pSwordmanMeshA;
 	CMesh *pSwordmanMeshB;
@@ -192,8 +199,9 @@ public:
 	CUIManager *m_AteamGamerManager[4];
 	CUIManager *m_BteamGamerManager[4];
 	CUIManager *m_TeamHPManager[MAX_GAMER];
+	CUIManager *pTeamEdge[8]; // 이미지 테두리
 
-	// Score
+							  // Score
 	void AteamScore(int _score);
 	void BteamScore(int _score);
 };

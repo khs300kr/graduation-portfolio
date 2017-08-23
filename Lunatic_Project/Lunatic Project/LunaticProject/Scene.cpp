@@ -30,7 +30,7 @@ CScene::CScene()
 	for (int i = 0; i < MAX_GAMER; ++i)
 	{
 		pHeroObject[i] = NULL;
-		pHpObject[i] = NULL;
+		pTeamViewObject[i] = NULL;
 		pOtherHpbarObject[i] = NULL;
 	}
 
@@ -49,7 +49,8 @@ CScene::CScene()
 
 
 	pTestTexture = NULL;
-	pHpTexture = NULL;
+	pRedTeamTexture = NULL;
+	pBlueTeamTexture = NULL;
 
 	pSwordmanMeshA = NULL;
 	pSwordmanMeshB = NULL;
@@ -75,8 +76,8 @@ CScene::CScene()
 		pHeroObject[i] = new CHeroManager(1);
 		pHeroObject[i]->SetPosition(0.0f, -3000.0f, 0.0f);
 
-		pHpObject[i] = new CGameObject(1);
-		pHpObject[i]->SetPosition(0.0f, -3000.0f, 0.0f);
+		pTeamViewObject[i] = new CGameObject(1);
+		pTeamViewObject[i]->SetPosition(0.0f, -3000.0f, 0.0f);
 
 		pOtherHpbarObject[i] = new CGameObject(1);
 		pOtherHpbarObject[i]->SetPosition(0.0f, -3000.0f, 0.0f);
@@ -107,30 +108,49 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 
 	// 체력 UI 띄우기를 위한 A팀과 B팀 구분 
-	for (int i = 0; i < AteamMax; ++i)
+	//for (int i = 0; i < AteamMax; ++i)
+	//{
+	//	for (int j = 0; j < MAX_GAMER; ++j)
+	//	{
+	//		if (pHeroObject[j]->m_Team == A_TEAM)
+	//		{
+	//			pAteamPlayer[i] = pHeroObject[j];
+	//			
+	//		}
+	//	}
+	//}
+
+	//for (int i = 0; i < BteamMax; ++i)
+	//{
+	//	for (int j = 0; j < MAX_GAMER; ++j)
+	//	{
+	//		if (pHeroObject[j]->m_Team == B_TEAM)
+	//		{
+	//			pBteamPlayer[i] = pHeroObject[j];
+	//			
+	//		}
+	//	}
+	//}
+
+	int j = 0;
+	for (int i = 0; i < MAX_GAMER; ++i)
 	{
-		for (int j = 0; j < MAX_GAMER; ++j)
+		if (pHeroObject[i]->m_Team == A_TEAM)
 		{
-			if (pHeroObject[j]->m_Team == A_TEAM)
-			{
-				pAteamPlayer[i] = pHeroObject[j];
-			}
+			pAteamPlayer[j] = pHeroObject[i];
+			++j;
 		}
 	}
 
-
-	for (int i = 0; i < BteamMax; ++i)
+	int k = 0;
+	for (int i = 0; i < MAX_GAMER; ++i)
 	{
-		for (int j = 0; j < MAX_GAMER; ++j)
+		if (pHeroObject[i]->m_Team == B_TEAM)
 		{
-			if (pHeroObject[j]->m_Team == B_TEAM)
-			{
-				pBteamPlayer[i] = pHeroObject[j];
-			}
+			pBteamPlayer[k] = pHeroObject[i];
+			++k;
 		}
 	}
-
-
 
 
 	// ② 텍스쳐 리소스를 생성
@@ -201,18 +221,18 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	//Hp
 
 	pd3dsrvTexture = NULL;
-	pHpTexture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/testhp.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-	pHpTexture->SetTexture(0, pd3dsrvTexture);
-	pHpTexture->SetSampler(0, pd3dSamplerState);
+	pRedTeamTexture = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/red.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pRedTeamTexture->SetTexture(0, pd3dsrvTexture);
+	pRedTeamTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 
 	pd3dsrvTexture = NULL;
-	pHpbarTexture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/testhpbar.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-	pHpbarTexture->SetTexture(0, pd3dsrvTexture);
-	pHpbarTexture->SetSampler(0, pd3dSamplerState);
-	pd3dsrvTexture->Release();
+	pBlueTeamTexture = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/blue.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pBlueTeamTexture->SetTexture(0, pd3dsrvTexture);
+	pBlueTeamTexture->SetSampler(0, pd3dSamplerState);
+	//pd3dsrvTexture->Release();
 
 
 	// ③ Object용 Material과 Shader를 생성 (Skybox는 쉐이더 내부에서 자체적으로 생성)
@@ -243,7 +263,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	// 일반 쉐이더 선언부
 	/////////////////////////////////////////////////////////////////////////
 
-	m_nShaders = 24 + 24 + 40; //24 + 24   // Skybox 포함 + 16 // playercount + 17  = 24 // + 벽 12 + 12 + 40 // [제외] hp 8 + hpbar 8
+	m_nShaders = 24 + 24 + 40 + 8; //24 + 24   // Skybox 포함 + 16 // playercount + 17  = 24 // + 벽 12 + 12 + 40 // Team 구분 //[제외] hp 8 + hpbar 8
 	m_ppShaders = new CShader*[m_nShaders];
 
 	// ⑤ SkyBox용 Shader를 생성
@@ -648,60 +668,65 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 
 		// 상대 머리위의 HP 
-		//for (int i = 88; i < 104; ++i)
-		//{
-		//	m_ppShaders[i] = new CTexturedIlluminatedShader(1);
-		//	m_ppShaders[i]->CreateShader(pd3dDevice);
-		//	m_ppShaders[i]->BuildObjects(pd3dDevice);
-		//}
+		for (int i = 88; i < 96; ++i)
+		{
+			m_ppShaders[i] = new CTexturedIlluminatedShader(1);
+			m_ppShaders[i]->CreateShader(pd3dDevice);
+			m_ppShaders[i]->BuildObjects(pd3dDevice);
+		}
 
 
-		//CMesh *pHpMesh1 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
-		//CMesh *pHpMesh2 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
-		//CMesh *pHpMesh3 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
-		//CMesh *pHpMesh4 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
-		//CMesh *pHpMesh5 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
-		//CMesh *pHpMesh6 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
-		//CMesh *pHpMesh7 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f);
-		//CMesh *pHpMesh8 = new CFBXMesh(pd3dDevice, "../Data/UI/otherhpgauge.data", 0.5f); // 메쉬를 하나로 하면 크기를 줄이면 다같이 줄어들어서 메쉬를 Gamer의 수만큼 만듬
+		CMesh *pHpMesh1 = new CFBXMesh(pd3dDevice, "../Data/UI/TeamView.data", 0.1f);
+		CMesh *pHpMesh2 = new CFBXMesh(pd3dDevice, "../Data/UI/TeamView.data", 0.1f);
+		CMesh *pHpMesh3 = new CFBXMesh(pd3dDevice, "../Data/UI/TeamView.data", 0.1f);
+		CMesh *pHpMesh4 = new CFBXMesh(pd3dDevice, "../Data/UI/TeamView.data", 0.1f);
+		CMesh *pHpMesh5 = new CFBXMesh(pd3dDevice, "../Data/UI/TeamView.data", 0.1f);
+		CMesh *pHpMesh6 = new CFBXMesh(pd3dDevice, "../Data/UI/TeamView.data", 0.1f);
+		CMesh *pHpMesh7 = new CFBXMesh(pd3dDevice, "../Data/UI/TeamView.data", 0.1f);
+		CMesh *pHpMesh8 = new CFBXMesh(pd3dDevice, "../Data/UI/TeamView.data", 0.1f); // 메쉬를 하나로 하면 크기를 줄이면 다같이 줄어들어서 메쉬를 Gamer의 수만큼 만듬
 
-		//for (int i = 0; i < MAX_GAMER; ++i)
-		//{
-		//	pHpObject[i] = new CGameObject(1);
+		for (int i = 0; i < MAX_GAMER; ++i)
+		{
+			pTeamViewObject[i] = new CGameObject(1);
 
-		//	pHpObject[i]->Rotate(-90, 0, 0);
-		//	pHpObject[i]->SetMaterial(pNormalMaterial);
-		//	pHpObject[i]->SetTexture(pHpTexture);
-		//}
+			pTeamViewObject[i]->Rotate(180, 0, 0);
+			pTeamViewObject[i]->SetMaterial(pNormalMaterial);
 
-		//pHpObject[0]->SetMesh(pHpMesh1);
-		//pHpObject[1]->SetMesh(pHpMesh2);
-		//pHpObject[2]->SetMesh(pHpMesh3);
-		//pHpObject[3]->SetMesh(pHpMesh4);
-		//pHpObject[4]->SetMesh(pHpMesh5);
-		//pHpObject[5]->SetMesh(pHpMesh6);
-		//pHpObject[6]->SetMesh(pHpMesh7);
-		//pHpObject[7]->SetMesh(pHpMesh8);
+			if (pHeroObject[i]->m_Team == A_TEAM)
+				pTeamViewObject[i]->SetTexture(pRedTeamTexture);
+
+			if (pHeroObject[i]->m_Team == B_TEAM)
+				pTeamViewObject[i]->SetTexture(pBlueTeamTexture);
+		}
+
+		pTeamViewObject[0]->SetMesh(pHpMesh1);
+		pTeamViewObject[1]->SetMesh(pHpMesh2);
+		pTeamViewObject[2]->SetMesh(pHpMesh3);
+		pTeamViewObject[3]->SetMesh(pHpMesh4);
+		pTeamViewObject[4]->SetMesh(pHpMesh5);
+		pTeamViewObject[5]->SetMesh(pHpMesh6);
+		pTeamViewObject[6]->SetMesh(pHpMesh7);
+		pTeamViewObject[7]->SetMesh(pHpMesh8);
 
 
 
-		//for (int i = 0; i < MAX_GAMER; ++i)
-		//	m_ppShaders[88 + i]->AddObject(pHpObject[i]);
+		for (int i = 0; i < MAX_GAMER; ++i)
+			m_ppShaders[88 + i]->AddObject(pTeamViewObject[i]);
 
 
-		//CMesh *pOtherHpbarMesh = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.5f);
+		/*CMesh *pOtherHpbarMesh = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.5f);
 
-		//for (int i = 0; i < 8; ++i)
-		//{
-		//	pOtherHpbarObject[i] = new CGameObject(1);
-		//	pOtherHpbarObject[i]->SetMesh(pOtherHpbarMesh);
-		//	pOtherHpbarObject[i]->SetMaterial(pNormalMaterial);
-		//	pOtherHpbarObject[i]->SetTexture(pHpbarTexture);
+		for (int i = 0; i < 8; ++i)
+		{
+		pOtherHpbarObject[i] = new CGameObject(1);
+		pOtherHpbarObject[i]->SetMesh(pOtherHpbarMesh);
+		pOtherHpbarObject[i]->SetMaterial(pNormalMaterial);
+		pOtherHpbarObject[i]->SetTexture(pHpbarTexture);
 
-		//	pOtherHpbarObject[i]->Rotate(-90, 0, 0);
+		pOtherHpbarObject[i]->Rotate(-90, 0, 0);
 
-		//	m_ppShaders[96 + i]->AddObject(pOtherHpbarObject[i]);
-		//}
+		m_ppShaders[96 + i]->AddObject(pOtherHpbarObject[i]);
+		}*/
 
 	}
 	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, _T("Data\\HeightMap.raw"), 257, 257, 17, 17, d3dxvScale, d3dxColor);
@@ -818,7 +843,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 	CUIObject *pSocreBoardObject = new CUIObject(pd3dDevice);
 	pSocreBoardObject->SetMaterial(pScoreBoard);
-	pSocreBoardObject->Initialize(pd3dDevice, POINT{ 350, 0 }, POINT{ 650, 80 }, 0.5f);
+	pSocreBoardObject->Initialize(pd3dDevice, POINT{ 355, 0 }, POINT{ 655, 80 }, 0.5f);
 	m_pScoreManager[0]->AddUIObject(pSocreBoardObject);
 
 
@@ -897,7 +922,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	// ATEAM
 	for (int i = 0; i < AteamMax; ++i)
 	{
-		cout << "ateam 인원 : " << AteamMax << endl;
+		cout << "A team 인원 : " << AteamMax << endl;
 		cout << "선택한 캐릭터 : " << pAteamPlayer[i]->m_HeroSelect << endl;
 		if (pAteamPlayer[i]->m_HeroSelect == BABARIAN)
 		{
@@ -922,7 +947,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			AteamGamer[i]->SetDevice(pd3dDevice);
 			m_AteamGamerManager[i]->AddUIObject(AteamGamer[i]);
 		}
-		if (pAteamPlayer[i]->m_HeroSelect == KNIGHT)
+		else if (pAteamPlayer[i]->m_HeroSelect == KNIGHT)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pKnight = new CTexture(1, 1, 0, 0);
@@ -940,7 +965,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			AteamGamer[i]->SetDevice(pd3dDevice);
 			m_AteamGamerManager[i]->AddUIObject(AteamGamer[i]);
 		}
-		if (pAteamPlayer[i]->m_HeroSelect == SWORDMAN)
+		else if (pAteamPlayer[i]->m_HeroSelect == SWORDMAN)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pSwordman = new CTexture(1, 1, 0, 0);
@@ -958,7 +983,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			AteamGamer[i]->SetDevice(pd3dDevice);
 			m_AteamGamerManager[i]->AddUIObject(AteamGamer[i]);
 		}
-		if (pAteamPlayer[i]->m_HeroSelect == MAGICIAN)
+		else if (pAteamPlayer[i]->m_HeroSelect == MAGICIAN)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pMagician = new CTexture(1, 1, 0, 0);
@@ -976,7 +1001,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			AteamGamer[i]->SetDevice(pd3dDevice);
 			m_AteamGamerManager[i]->AddUIObject(AteamGamer[i]);
 		}
-		if (pAteamPlayer[i]->m_HeroSelect == HEALER)
+		else if (pAteamPlayer[i]->m_HeroSelect == HEALER)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pHealer = new CTexture(1, 1, 0, 0);
@@ -994,7 +1019,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			AteamGamer[i]->SetDevice(pd3dDevice);
 			m_AteamGamerManager[i]->AddUIObject(AteamGamer[i]);
 		}
-		if (pAteamPlayer[i]->m_HeroSelect == WITCH)
+		else if (pAteamPlayer[i]->m_HeroSelect == WITCH)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pWitch = new CTexture(1, 1, 0, 0);
@@ -1014,14 +1039,11 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		}
 	}
 
-	for (int i = 0; i < AteamMax; ++i)
-	{
-		AteamGamer[i]->SetGamer(POINT{ 0, 0 }, POINT{ 100, 100 });
-	}
-
 	// BTEAM
 	for (int i = 0; i < BteamMax; ++i)
 	{
+		cout << "B team 인원 : " << BteamMax << endl;
+		cout << "선택한 캐릭터 : " << pBteamPlayer[i]->m_HeroSelect << endl;
 		if (pBteamPlayer[i]->m_HeroSelect == BABARIAN)
 		{
 			pd3dsrvTexture = NULL;
@@ -1040,7 +1062,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			BteamGamer[i]->SetDevice(pd3dDevice);
 			m_AteamGamerManager[i]->AddUIObject(BteamGamer[i]);
 		}
-		if (pBteamPlayer[i]->m_HeroSelect == KNIGHT)
+		else if (pBteamPlayer[i]->m_HeroSelect == KNIGHT)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pKnight = new CTexture(1, 1, 0, 0);
@@ -1058,7 +1080,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			BteamGamer[i]->SetDevice(pd3dDevice);
 			m_AteamGamerManager[i]->AddUIObject(BteamGamer[i]);
 		}
-		if (pBteamPlayer[i]->m_HeroSelect == SWORDMAN)
+		else if (pBteamPlayer[i]->m_HeroSelect == SWORDMAN)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pSwordman = new CTexture(1, 1, 0, 0);
@@ -1076,7 +1098,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			BteamGamer[i]->SetDevice(pd3dDevice);
 			m_AteamGamerManager[i]->AddUIObject(BteamGamer[i]);
 		}
-		if (pBteamPlayer[i]->m_HeroSelect == MAGICIAN)
+		else if (pBteamPlayer[i]->m_HeroSelect == MAGICIAN)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pMagician = new CTexture(1, 1, 0, 0);
@@ -1094,7 +1116,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			BteamGamer[i]->SetDevice(pd3dDevice);
 			m_AteamGamerManager[i]->AddUIObject(BteamGamer[i]);
 		}
-		if (pBteamPlayer[i]->m_HeroSelect == HEALER)
+		else if (pBteamPlayer[i]->m_HeroSelect == HEALER)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pHealer = new CTexture(1, 1, 0, 0);
@@ -1112,7 +1134,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			BteamGamer[i]->SetDevice(pd3dDevice);
 			m_AteamGamerManager[i]->AddUIObject(BteamGamer[i]);
 		}
-		if (pBteamPlayer[i]->m_HeroSelect == WITCH)
+		else if (pBteamPlayer[i]->m_HeroSelect == WITCH)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pWitch = new CTexture(1, 1, 0, 0);
@@ -1132,11 +1154,85 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		}
 	}
 
-	for (int i = 0; i < BteamMax; ++i)
+
+	// 캐릭터들 이미지 위치
+	for (int i = 0; i < AteamMax; ++i)
 	{
-		BteamGamer[i]->SetGamer(POINT{ 700, 0 }, POINT{ 800, 100 });
+		if (i == 0)
+			AteamGamer[i]->SetGamer(POINT{ i * 80 + 5, 0 }, POINT{ 80 + (i * 80) + 5, 80 });
+		else
+			AteamGamer[i]->SetGamer(POINT{ i * 80 + i * 5 + 5, 0 }, POINT{ 85 + (i * 80) + i * 5, 80 });
 	}
 
+	for (int i = 0; i < BteamMax; ++i)
+	{
+		if (i == 0)
+			BteamGamer[i]->SetGamer(POINT{ 660 + (i * 80) + 5, 0 }, POINT{ 740 + (i * 80) + 5, 80 });
+		else
+			BteamGamer[i]->SetGamer(POINT{ 665 + (i * 80) + i * 5, 0 }, POINT{ 745 + (i * 80) + i * 5, 80 });
+	}
+
+
+
+	// 캐릭터 테두리
+	// Red team = A team
+	CTexture *pRedTeam = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/RedTeam.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pRedTeam->SetTexture(0, pd3dsrvTexture);
+	pRedTeam->SetSampler(0, pd3dSamplerState);
+	//pd3dsrvTexture->Release();
+
+	for (int i = 0; i < 4; ++i)
+	{
+		pTeamEdge[i] = new CUIManager();
+		pTeamEdge[i]->Initialize(pd3dDevice);
+	}
+
+	for (int i = 0; i < 4; ++i)
+	{
+		pRedTeamObject[i] = new CUIObject(pd3dDevice);
+		pRedTeamObject[i]->SetMaterial(pRedTeam);
+		pRedTeamObject[i]->Initialize(pd3dDevice, POINT{ -50, -720 }, POINT{ -385, -745 }, 0.4f);
+		pRedTeamObject[i]->SetDevice(pd3dDevice);
+		pTeamEdge[i]->AddUIObject(pRedTeamObject[i]);
+	}
+
+	// Blue team = B team
+	CTexture *pBlueTeam = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/BlueTeam.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pBlueTeam->SetTexture(0, pd3dsrvTexture);
+	pBlueTeam->SetSampler(0, pd3dSamplerState);
+	//pd3dsrvTexture->Release();
+
+	for (int i = 4; i < 8; ++i)
+	{
+		pTeamEdge[i] = new CUIManager();
+		pTeamEdge[i]->Initialize(pd3dDevice);
+	}
+
+	for (int i = 0; i < 4; ++i)
+	{
+		pBlueTeamObject[i] = new CUIObject(pd3dDevice);
+		pBlueTeamObject[i]->SetMaterial(pBlueTeam);
+		pBlueTeamObject[i]->Initialize(pd3dDevice, POINT{ -50, -720 }, POINT{ -385, -745 }, 0.4f);
+		pBlueTeamObject[i]->SetDevice(pd3dDevice);
+		pTeamEdge[i + 4]->AddUIObject(pBlueTeamObject[i]);
+	}
+
+	for (int i = 0; i < 4; ++i)
+	{
+		if (i == 0)
+			pRedTeamObject[i]->SetScore(POINT{ i * 80 + 5, 0 }, POINT{ 80 + (i * 80) + 5, 80 });
+		else
+			pRedTeamObject[i]->SetScore(POINT{ (i * 80) + (i * 5) + 5, 0 }, POINT{ 80 + (i * 80) + (i * 5) + 5, 80 });
+	}
+	for (int i = 0; i < 4; ++i)
+	{
+		if (i == 0)
+			pBlueTeamObject[i]->SetScore(POINT{ 660 + (i * 80) + 5, 0 }, POINT{ 740 + (i * 80) + 5, 80 });
+		else
+			pBlueTeamObject[i]->SetScore(POINT{ 665 + (i * 80) + i * 5, 0 }, POINT{ 745 + (i * 80) + i * 5, 80 });
+	}
 }
 
 
@@ -1640,23 +1736,23 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	}
 
 
-	for (int i = 0; i < MAX_GAMER; ++i)
-	{
-		// [테스트] 체력 게이지만 줄어들게 ( 현재 좌우로 같이 줄어듬 )
-		if (i != myGame_id)
-		{
-			pHpObject[i]->SetPosition(pHeroObject[i]->GetPosition().x, pHeroObject[i]->GetPosition().y + 20, pHeroObject[i]->GetPosition().z);
-			pHpObject[i]->SetXScale(0.2f);
-		}
-	}
-
 	//for (int i = 0; i < MAX_GAMER; ++i)
 	//{
+	//	// [테스트] 체력 게이지만 줄어들게 ( 현재 좌우로 같이 줄어듬 )
 	//	if (i != myGame_id)
 	//	{
 	//		pHpObject[i]->SetPosition(pHeroObject[i]->GetPosition().x, pHeroObject[i]->GetPosition().y + 20, pHeroObject[i]->GetPosition().z);
+	//		pHpObject[i]->SetXScale(0.2f);
 	//	}
 	//}
+
+	for (int i = 0; i < MAX_GAMER; ++i)
+	{
+		if (i != myGame_id)
+		{
+			pTeamViewObject[i]->SetPosition(pHeroObject[i]->GetPosition().x, pHeroObject[i]->GetPosition().y + 20, pHeroObject[i]->GetPosition().z);
+		}
+	}
 
 
 	for (int i = 0; i < MAX_GAMER; ++i)
@@ -1692,6 +1788,11 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 
 	for (int i = 0; i < BteamMax; ++i)
 		m_BteamGamerManager[i]->RenderAll(pd3dDeviceContext);
+
+	for (int i = 0; i < 8; ++i)
+		pTeamEdge[i]->RenderAll(pd3dDeviceContext);
+
+
 }
 
 bool CScene::Rightcollision(CHeroManager* Object1, CHeroManager* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2)
@@ -1892,7 +1993,7 @@ void CScene::AteamScore(int _score)
 {
 	if (_score < 10)
 	{
-		pAteam[0][_score]->SetScore(POINT{ 400, 20 }, POINT{ 450, 60 });
+		pAteam[0][_score]->SetScore(POINT{ 400 + 5, 20 }, POINT{ 450 + 5, 60 });
 		if (_score > 0)
 		{
 			pAteam[0][_score - 1]->SetScore(POINT{ -400, -20 }, POINT{ -450, -60 });
@@ -1903,8 +2004,8 @@ void CScene::AteamScore(int _score)
 		if (_score - 1 == 9)
 			pAteam[0][9]->SetScore(POINT{ -430, -20 }, POINT{ -480, -60 });
 
-		pAteam[0][_score % 10]->SetScore(POINT{ 430, 20 }, POINT{ 480, 60 });
-		pAteam[1][_score / 10]->SetScore(POINT{ 370, 20 }, POINT{ 420, 60 });
+		pAteam[0][_score % 10]->SetScore(POINT{ 430 + 5, 20 }, POINT{ 480 + 5, 60 });
+		pAteam[1][_score / 10]->SetScore(POINT{ 370 + 5, 20 }, POINT{ 420 + 5, 60 });
 
 		if (_score > 10)
 		{
@@ -1918,7 +2019,7 @@ void CScene::BteamScore(int _score)
 {
 	if (_score < 10)
 	{
-		pBteam[0][_score]->SetScore(POINT{ 550, 20 }, POINT{ 600, 60 });
+		pBteam[0][_score]->SetScore(POINT{ 550 + 5, 20 }, POINT{ 600 + 5, 60 });
 		if (_score > 0)
 		{
 			pBteam[0][_score - 1]->SetScore(POINT{ -550, -20 }, POINT{ -600, -60 });
@@ -1929,8 +2030,8 @@ void CScene::BteamScore(int _score)
 		if (_score - 1 == 9)
 			pBteam[0][9]->SetScore(POINT{ -430, -20 }, POINT{ -480, -60 });
 
-		pBteam[0][_score % 10]->SetScore(POINT{ 580, 20 }, POINT{ 630, 60 });
-		pBteam[1][_score / 10]->SetScore(POINT{ 520, 20 }, POINT{ 570, 60 });
+		pBteam[0][_score % 10]->SetScore(POINT{ 580 + 5, 20 }, POINT{ 630 + 5, 60 });
+		pBteam[1][_score / 10]->SetScore(POINT{ 520 + 5, 20 }, POINT{ 570 + 5, 60 });
 
 		if (_score > 10)
 		{

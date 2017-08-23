@@ -63,7 +63,7 @@ void CUIObject::SetScore(POINT _sPoint, POINT _ePoint)
 
 void CUIObject::SetGamer(POINT _sPoint, POINT _ePoint)
 {
-	Initialize(pUIDevice, _sPoint, _ePoint, 0.4f);
+	Initialize(pUIDevice, _sPoint, _ePoint, 0.5f);
 }
 
 
