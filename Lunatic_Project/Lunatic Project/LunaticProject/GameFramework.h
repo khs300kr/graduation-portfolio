@@ -85,6 +85,11 @@ public:
 
 	int playercount;
 
+	bool isEnding;
+	
+	DWORD endingTimer;
+
+
 	//void char_collision_send();
 	
 };

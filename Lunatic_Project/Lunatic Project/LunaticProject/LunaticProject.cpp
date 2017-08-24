@@ -256,16 +256,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HPEN Pen, oldPen;
 	PAINTSTRUCT ps;
 	static HBITMAP bmp_loading;//, bmp_lobby;
+	static HBITMAP bmp_ending; // bmp_ending
 
 
 	switch (message)
 	{
 	case WM_CREATE:
-//#ifdef _DEBUG
-//#else
+#ifdef _DEBUG
+#else
 		SoundInit();
-//#endif
+#endif
 		bmp_loading = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_LOADINGWINDOW));
+		bmp_ending = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_ENDING));
 
 
 		// Chatting
@@ -292,7 +294,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			gMainMenu.Draw(memdc, memdc2);
 
 		else if (gGameFramework.ChangeScene == LOBBY)
-			gLobby.Draw(memdc, memdc2);
+		{
+			if (gGameFramework.isEnding)
+			{
+				SelectObject(memdc2, bmp_ending);
+				BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
+			}
+			else
+			{
+				gLobby.Draw(memdc, memdc2);
+			}
+
+		}
+			
 
 		else if (gGameFramework.ChangeScene == ROOM)
 		{
@@ -304,7 +318,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SelectObject(memdc2, bmp_loading);
 			BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
 		}
-
 
 
 		DeleteDC(memdc2);
@@ -736,7 +749,6 @@ void ProcessPacket(char * ptr)
 		InvalidateRect(g_hWnd, NULL, false);
 		break;
 	}
-
 
 
 
@@ -1193,8 +1205,11 @@ void ProcessPacket(char * ptr)
 		//A_TEAM WIN or B_TEAM WIN
 		if (g_A_Teamcount == 2 || g_B_Teamcount == 2) // 구현중이기떄문에 일단 킬 카운트를 2로함
 		{
-			gGameFramework.ChangeScene = LOBBY; //로비로 돌아간다.
+			// 이곳에 엔딩창을
+			gGameFramework.ChangeScene = LOBBY;
 
+			gGameFramework.isEnding = true;
+			InvalidateRect(g_hWnd, NULL, false);
 		}
 
 		break;

@@ -27,6 +27,9 @@ CGameFramework::CGameFramework()
 	dwDirection = 0;
 
 	
+	isEnding = false; // 엔딩
+
+	endingTimer = 0;
 
 	for (int i = 0; i < MAX_GAMER; ++i)
 		OtherDirection[i] = 0;
@@ -749,7 +752,31 @@ void CGameFramework::FrameAdvance()
 		if (m_pScene) m_pScene->Render(m_pd3dDeviceContext, m_pCamera);
 		//if (m_pPlayerShader) m_pPlayerShader->Render(m_pd3dDeviceContext, m_pCamera);
 
+
+
+
 		m_pDXGISwapChain->Present(0, 0);
+	}
+
+	else if(ChangeScene == LOBBY)
+	{
+		if (isEnding)
+		{
+			if (endingTimer == 0)
+			{
+				endingTimer = GetTickCount();
+			}
+
+
+			else if (GetTickCount() - endingTimer > 5000) // 5초 경과
+			{
+				isEnding = false;
+				endingTimer = 0;
+				InvalidateRect(g_hWnd, NULL, false);
+
+			}
+
+		}
 	}
 	
 		

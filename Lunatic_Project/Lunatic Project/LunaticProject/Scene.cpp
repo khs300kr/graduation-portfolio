@@ -920,7 +920,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	// 상대방 체력 띄우기
 
 	// ATEAM
-	for (int i = 0; i < AteamMax; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		cout << "A team 인원 : " << AteamMax << endl;
 		cout << "선택한 캐릭터 : " << pAteamPlayer[i]->m_HeroSelect << endl;
@@ -1040,7 +1040,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	}
 
 	// BTEAM
-	for (int i = 0; i < BteamMax; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		cout << "B team 인원 : " << BteamMax << endl;
 		cout << "선택한 캐릭터 : " << pBteamPlayer[i]->m_HeroSelect << endl;
@@ -1072,7 +1072,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			//pd3dsrvTexture->Release();
 
 			m_BteamGamerManager[i] = new CUIManager();
-			m_BteamGamerManager[i]->Initialize(pd3dDevice);
+			m_BteamGamerManager[i]->Initialize(pd3dDevice); 
 
 			BteamGamer[i] = new CUIObject(pd3dDevice);
 			BteamGamer[i]->SetMaterial(pKnight);

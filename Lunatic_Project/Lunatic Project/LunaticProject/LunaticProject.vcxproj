@@ -166,6 +166,7 @@
     <ClCompile Include="Witch.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\Data\Menu\Game\ending.bmp" />
     <Image Include="..\Data\Menu\Game\loading.bmp" />
     <Image Include="..\Data\Menu\Lobby\create.bmp" />
     <Image Include="..\Data\Menu\Lobby\createwindow.bmp" />
