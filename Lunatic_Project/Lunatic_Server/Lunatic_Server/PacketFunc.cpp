@@ -329,6 +329,16 @@ void SendRespawnPacket(int client, int object)
 	Send_Packet(client, &packet);
 }
 
+void SendResultPacket(int client, int object)
+{
+	sc_result packet;
+	packet.id = g_Clients[object].m_GameID;
+	packet.size = sizeof(packet);
+	packet.type = SC_RESPAWN;
+
+	Send_Packet(client, &packet);
+}
+
 void Player_Respawn(int id, int room_number)
 {
 	switch (g_Clients[id].m_HeroPick)
@@ -694,15 +704,15 @@ void ProcessPacket(int id, unsigned char packet[])
 			timer_queue.push(t);
 			timerqueue_lock.unlock();
 
-			// KILL수 늘리기.
-			if (my_packet->clientID & 1) // odd
+			// KILL수 늘리기. ( 목표 Kill 수 도달 시 승리 및 패배 패킷 전송 ).
+			if (my_packet->clientID & 1) // odd = B_TEAM
 			{
 				++g_Room[room_number].B_killcount;
 				for (auto& d : g_Room[room_number].m_GameID_list)
 					SendDiePacket(d, id, my_packet->clientID,B_TEAM);
 
 			}
-			else
+			else // even = A_TEAM
 			{
 				++g_Room[room_number].A_killcount;
 				for (auto& d : g_Room[room_number].m_GameID_list)

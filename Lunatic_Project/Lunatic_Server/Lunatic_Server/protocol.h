@@ -70,6 +70,7 @@
 #define SC_ATTACK_HIT		 26
 #define SC_CHAR_DIE			 27
 #define SC_RESPAWN			 28
+#define SC_RESULT			 29
 
 // Client Define
 // 키보드 입력
@@ -96,6 +97,9 @@
 // 팀
 #define A_TEAM 1
 #define B_TEAM 2
+
+#define TEAM_WIN  1
+#define TEAM_LOSE 2
 
 // 캐릭터
 #define EMPTY		0
@@ -379,6 +383,13 @@ struct sc_respawn {
 	WORD hp;
 };
 
+struct sc_result {
+	BYTE size;
+	BYTE type;
+	WORD id;
+};
+
+
 struct sc_packet_remove_player {
 	BYTE size;
 	BYTE type;
@@ -428,6 +439,8 @@ struct sc_packet_coll_building {
 	WORD id;
 	BYTE direction;
 };
+
+
 
 struct sc_packet_chat {
 	BYTE size;
