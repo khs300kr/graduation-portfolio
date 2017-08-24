@@ -32,6 +32,11 @@ CScene::CScene()
 		pHeroObject[i] = NULL;
 		pTeamViewObject[i] = NULL;
 		pOtherHpbarObject[i] = NULL;
+
+		m_TeamGamerManager[i] = NULL;
+		pTeamObject[i] = NULL;
+		PlayerHpObject[i] = NULL;
+		GamerImage[i] = NULL;
 	}
 
 	for (int i = 0; i < 13; ++i)
@@ -105,53 +110,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	d3dSamplerDesc.MinLOD = 0;
 	d3dSamplerDesc.MaxLOD = 0;
 	pd3dDevice->CreateSamplerState(&d3dSamplerDesc, &pd3dSamplerState);
-
-
-	// 체력 UI 띄우기를 위한 A팀과 B팀 구분 
-	//for (int i = 0; i < AteamMax; ++i)
-	//{
-	//	for (int j = 0; j < MAX_GAMER; ++j)
-	//	{
-	//		if (pHeroObject[j]->m_Team == A_TEAM)
-	//		{
-	//			pAteamPlayer[i] = pHeroObject[j];
-	//			
-	//		}
-	//	}
-	//}
-
-	//for (int i = 0; i < BteamMax; ++i)
-	//{
-	//	for (int j = 0; j < MAX_GAMER; ++j)
-	//	{
-	//		if (pHeroObject[j]->m_Team == B_TEAM)
-	//		{
-	//			pBteamPlayer[i] = pHeroObject[j];
-	//			
-	//		}
-	//	}
-	//}
-
-	int j = 0;
-	for (int i = 0; i < MAX_GAMER; ++i)
-	{
-		if (pHeroObject[i]->m_Team == A_TEAM)
-		{
-			pAteamPlayer[j] = pHeroObject[i];
-			++j;
-		}
-	}
-
-	int k = 0;
-	for (int i = 0; i < MAX_GAMER; ++i)
-	{
-		if (pHeroObject[i]->m_Team == B_TEAM)
-		{
-			pBteamPlayer[k] = pHeroObject[i];
-			++k;
-		}
-	}
-
 
 	// ② 텍스쳐 리소스를 생성
 
@@ -917,321 +875,322 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 
 
-	// 상대방 체력 띄우기
-
-	// ATEAM
-	for (int i = 0; i < 1; ++i)
+	// 플레이어 이미지 및 체력 띄우기
+	for (int i = 0; i < 8; ++i)
 	{
-		cout << "A team 인원 : " << AteamMax << endl;
-		cout << "선택한 캐릭터 : " << pAteamPlayer[i]->m_HeroSelect << endl;
-		if (pAteamPlayer[i]->m_HeroSelect == BABARIAN)
+		m_TeamGamerManager[i] = new CUIManager();
+		m_TeamGamerManager[i]->Initialize(pd3dDevice);
+	}
+
+
+	for (int i = 0; i < MAX_GAMER; ++i)
+	{
+		if (pHeroObject[i]->m_HeroSelect == BABARIAN)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pBabarian = new CTexture(1, 1, 0, 0);
 			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/Babarian_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
 			pBabarian->SetTexture(0, pd3dsrvTexture);
 			pBabarian->SetSampler(0, pd3dSamplerState);
-			//pd3dsrvTexture->Release();
+			pd3dsrvTexture->Release();
 
-			m_AteamGamerManager[i] = new CUIManager();
-			m_AteamGamerManager[i]->Initialize(pd3dDevice);
+			if (pHeroObject[i]->m_Team == A_TEAM)
+			{
+				GamerImage[i] = new CUIObject(pd3dDevice);
+				GamerImage[i]->SetMaterial(pBabarian);
+	
+			}
 
-			/*CUIObject *pBabarianImage = new CUIObject(pd3dDevice);
-			pBabarianImage->SetMaterial(pBabarian);
-			pBabarianImage->Initialize(pd3dDevice, POINT{ -600, -668 }, POINT{ -700, -768 }, 0.5f);
-			m_AteamGamerManager[i]->AddUIObject(pBabarianImage);*/
-
-			AteamGamer[i] = new CUIObject(pd3dDevice);
-			AteamGamer[i]->SetMaterial(pBabarian);
-			AteamGamer[i]->Initialize(pd3dDevice, POINT{ -600, -668 }, POINT{ -700, -768 }, 0.5f);
-			AteamGamer[i]->SetDevice(pd3dDevice);
-			m_AteamGamerManager[i]->AddUIObject(AteamGamer[i]);
+			else if (pHeroObject[i]->m_Team == B_TEAM)
+			{
+				GamerImage[i] = new CUIObject(pd3dDevice);
+				GamerImage[i]->SetMaterial(pBabarian);
+	
+			}
 		}
-		else if (pAteamPlayer[i]->m_HeroSelect == KNIGHT)
+
+		else if (pHeroObject[i]->m_HeroSelect == KNIGHT)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pKnight = new CTexture(1, 1, 0, 0);
 			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/Knight_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
 			pKnight->SetTexture(0, pd3dsrvTexture);
 			pKnight->SetSampler(0, pd3dSamplerState);
-			//pd3dsrvTexture->Release();
+			pd3dsrvTexture->Release();
 
-			m_AteamGamerManager[i] = new CUIManager();
-			m_AteamGamerManager[i]->Initialize(pd3dDevice);
+			if (pHeroObject[i]->m_Team == A_TEAM)
+			{
+				GamerImage[i] = new CUIObject(pd3dDevice);
+				GamerImage[i]->SetMaterial(pKnight);
 
-			AteamGamer[i] = new CUIObject(pd3dDevice);
-			AteamGamer[i]->SetMaterial(pKnight);
-			AteamGamer[i]->Initialize(pd3dDevice, POINT{ -600, -668 }, POINT{ -700, -768 }, 0.5f);
-			AteamGamer[i]->SetDevice(pd3dDevice);
-			m_AteamGamerManager[i]->AddUIObject(AteamGamer[i]);
+			}
+
+			else if (pHeroObject[i]->m_Team == B_TEAM)
+			{
+				GamerImage[i] = new CUIObject(pd3dDevice);
+				GamerImage[i]->SetMaterial(pKnight);
+	
+			}
 		}
-		else if (pAteamPlayer[i]->m_HeroSelect == SWORDMAN)
+
+		else if (pHeroObject[i]->m_HeroSelect == SWORDMAN)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pSwordman = new CTexture(1, 1, 0, 0);
 			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/Swordman_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
 			pSwordman->SetTexture(0, pd3dsrvTexture);
 			pSwordman->SetSampler(0, pd3dSamplerState);
-			//pd3dsrvTexture->Release();
+			pd3dsrvTexture->Release();
 
-			m_AteamGamerManager[i] = new CUIManager();
-			m_AteamGamerManager[i]->Initialize(pd3dDevice);
+			if (pHeroObject[i]->m_Team == A_TEAM)
+			{
+				GamerImage[i] = new CUIObject(pd3dDevice);
+				GamerImage[i]->SetMaterial(pSwordman);
+	
+			}
 
-			AteamGamer[i] = new CUIObject(pd3dDevice);
-			AteamGamer[i]->SetMaterial(pSwordman);
-			AteamGamer[i]->Initialize(pd3dDevice, POINT{ -600, -668 }, POINT{ -700, -768 }, 0.5f);
-			AteamGamer[i]->SetDevice(pd3dDevice);
-			m_AteamGamerManager[i]->AddUIObject(AteamGamer[i]);
+			else if (pHeroObject[i]->m_Team == B_TEAM)
+			{
+				GamerImage[i] = new CUIObject(pd3dDevice);
+				GamerImage[i]->SetMaterial(pSwordman);
+			}
 		}
-		else if (pAteamPlayer[i]->m_HeroSelect == MAGICIAN)
+
+		else if (pHeroObject[i]->m_HeroSelect == MAGICIAN)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pMagician = new CTexture(1, 1, 0, 0);
 			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/Magician_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
 			pMagician->SetTexture(0, pd3dsrvTexture);
 			pMagician->SetSampler(0, pd3dSamplerState);
-			//pd3dsrvTexture->Release();
+			pd3dsrvTexture->Release();
 
-			m_AteamGamerManager[i] = new CUIManager();
-			m_AteamGamerManager[i]->Initialize(pd3dDevice);
+			if (pHeroObject[i]->m_Team == A_TEAM)
+			{
+				GamerImage[i] = new CUIObject(pd3dDevice);
+				GamerImage[i]->SetMaterial(pMagician);
 
-			AteamGamer[i] = new CUIObject(pd3dDevice);
-			AteamGamer[i]->SetMaterial(pMagician);
-			AteamGamer[i]->Initialize(pd3dDevice, POINT{ -600, -668 }, POINT{ -700, -768 }, 0.5f);
-			AteamGamer[i]->SetDevice(pd3dDevice);
-			m_AteamGamerManager[i]->AddUIObject(AteamGamer[i]);
+			}
+
+			else if (pHeroObject[i]->m_Team == B_TEAM)
+			{
+				GamerImage[i] = new CUIObject(pd3dDevice);
+				GamerImage[i]->SetMaterial(pMagician);
+
+			}
 		}
-		else if (pAteamPlayer[i]->m_HeroSelect == HEALER)
+
+		else if (pHeroObject[i]->m_HeroSelect == HEALER)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pHealer = new CTexture(1, 1, 0, 0);
 			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/Healer_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
 			pHealer->SetTexture(0, pd3dsrvTexture);
 			pHealer->SetSampler(0, pd3dSamplerState);
-			//pd3dsrvTexture->Release();
+			pd3dsrvTexture->Release();
 
-			m_AteamGamerManager[i] = new CUIManager();
-			m_AteamGamerManager[i]->Initialize(pd3dDevice);
+			if (pHeroObject[i]->m_Team == A_TEAM)
+			{
+				GamerImage[i] = new CUIObject(pd3dDevice);
+				GamerImage[i]->SetMaterial(pHealer);
 
-			AteamGamer[i] = new CUIObject(pd3dDevice);
-			AteamGamer[i]->SetMaterial(pHealer);
-			AteamGamer[i]->Initialize(pd3dDevice, POINT{ -600, -668 }, POINT{ -700, -768 }, 0.5f);
-			AteamGamer[i]->SetDevice(pd3dDevice);
-			m_AteamGamerManager[i]->AddUIObject(AteamGamer[i]);
+			}
+
+			else if (pHeroObject[i]->m_Team == B_TEAM)
+			{
+				GamerImage[i] = new CUIObject(pd3dDevice);
+				GamerImage[i]->SetMaterial(pHealer);
+
+			}
 		}
-		else if (pAteamPlayer[i]->m_HeroSelect == WITCH)
+
+		else if (pHeroObject[i]->m_HeroSelect == WITCH)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pWitch = new CTexture(1, 1, 0, 0);
 			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/Witch_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
 			pWitch->SetTexture(0, pd3dsrvTexture);
 			pWitch->SetSampler(0, pd3dSamplerState);
-			//pd3dsrvTexture->Release();
+			pd3dsrvTexture->Release();
 
-			m_AteamGamerManager[i] = new CUIManager();
-			m_AteamGamerManager[i]->Initialize(pd3dDevice);
+			if (pHeroObject[i]->m_Team == A_TEAM)
+			{
+				GamerImage[i] = new CUIObject(pd3dDevice);
+				GamerImage[i]->SetMaterial(pWitch);
 
-			AteamGamer[i] = new CUIObject(pd3dDevice);
-			AteamGamer[i]->SetMaterial(pWitch);
-			AteamGamer[i]->Initialize(pd3dDevice, POINT{ -600, -668 }, POINT{ -700, -768 }, 0.5f);
-			AteamGamer[i]->SetDevice(pd3dDevice);
-			m_AteamGamerManager[i]->AddUIObject(AteamGamer[i]);
+			}
+
+			else if (pHeroObject[i]->m_Team == B_TEAM)
+			{
+				GamerImage[i] = new CUIObject(pd3dDevice);
+				GamerImage[i]->SetMaterial(pWitch);
+	
+			}
 		}
-	}
 
-	// BTEAM
-	for (int i = 0; i < 1; ++i)
-	{
-		cout << "B team 인원 : " << BteamMax << endl;
-		cout << "선택한 캐릭터 : " << pBteamPlayer[i]->m_HeroSelect << endl;
-		if (pBteamPlayer[i]->m_HeroSelect == BABARIAN)
-		{
-			pd3dsrvTexture = NULL;
-			CTexture *pBabarian = new CTexture(1, 1, 0, 0);
-			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/Babarian_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
-			pBabarian->SetTexture(0, pd3dsrvTexture);
-			pBabarian->SetSampler(0, pd3dSamplerState);
-			//pd3dsrvTexture->Release();
 
-			m_BteamGamerManager[i] = new CUIManager();
-			m_BteamGamerManager[i]->Initialize(pd3dDevice);
-
-			BteamGamer[i] = new CUIObject(pd3dDevice);
-			BteamGamer[i]->SetMaterial(pBabarian);
-			BteamGamer[i]->Initialize(pd3dDevice, POINT{ -600, -668 }, POINT{ -700, -768 }, 0.5f);
-			BteamGamer[i]->SetDevice(pd3dDevice);
-			m_AteamGamerManager[i]->AddUIObject(BteamGamer[i]);
-		}
-		else if (pBteamPlayer[i]->m_HeroSelect == KNIGHT)
-		{
-			pd3dsrvTexture = NULL;
-			CTexture *pKnight = new CTexture(1, 1, 0, 0);
-			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/Knight_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
-			pKnight->SetTexture(0, pd3dsrvTexture);
-			pKnight->SetSampler(0, pd3dSamplerState);
-			//pd3dsrvTexture->Release();
-
-			m_BteamGamerManager[i] = new CUIManager();
-			m_BteamGamerManager[i]->Initialize(pd3dDevice); 
-
-			BteamGamer[i] = new CUIObject(pd3dDevice);
-			BteamGamer[i]->SetMaterial(pKnight);
-			BteamGamer[i]->Initialize(pd3dDevice, POINT{ -600, -668 }, POINT{ -700, -768 }, 0.5f);
-			BteamGamer[i]->SetDevice(pd3dDevice);
-			m_AteamGamerManager[i]->AddUIObject(BteamGamer[i]);
-		}
-		else if (pBteamPlayer[i]->m_HeroSelect == SWORDMAN)
-		{
-			pd3dsrvTexture = NULL;
-			CTexture *pSwordman = new CTexture(1, 1, 0, 0);
-			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/Swordman_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
-			pSwordman->SetTexture(0, pd3dsrvTexture);
-			pSwordman->SetSampler(0, pd3dSamplerState);
-			//pd3dsrvTexture->Release();
-
-			m_BteamGamerManager[i] = new CUIManager();
-			m_BteamGamerManager[i]->Initialize(pd3dDevice);
-
-			BteamGamer[i] = new CUIObject(pd3dDevice);
-			BteamGamer[i]->SetMaterial(pSwordman);
-			BteamGamer[i]->Initialize(pd3dDevice, POINT{ -600, -668 }, POINT{ -700, -768 }, 0.5f);
-			BteamGamer[i]->SetDevice(pd3dDevice);
-			m_AteamGamerManager[i]->AddUIObject(BteamGamer[i]);
-		}
-		else if (pBteamPlayer[i]->m_HeroSelect == MAGICIAN)
-		{
-			pd3dsrvTexture = NULL;
-			CTexture *pMagician = new CTexture(1, 1, 0, 0);
-			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/Magician_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
-			pMagician->SetTexture(0, pd3dsrvTexture);
-			pMagician->SetSampler(0, pd3dSamplerState);
-			//pd3dsrvTexture->Release();
-
-			m_BteamGamerManager[i] = new CUIManager();
-			m_BteamGamerManager[i]->Initialize(pd3dDevice);
-
-			BteamGamer[i] = new CUIObject(pd3dDevice);
-			BteamGamer[i]->SetMaterial(pMagician);
-			BteamGamer[i]->Initialize(pd3dDevice, POINT{ -600, -668 }, POINT{ -700, -768 }, 0.5f);
-			BteamGamer[i]->SetDevice(pd3dDevice);
-			m_AteamGamerManager[i]->AddUIObject(BteamGamer[i]);
-		}
-		else if (pBteamPlayer[i]->m_HeroSelect == HEALER)
-		{
-			pd3dsrvTexture = NULL;
-			CTexture *pHealer = new CTexture(1, 1, 0, 0);
-			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/Healer_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
-			pHealer->SetTexture(0, pd3dsrvTexture);
-			pHealer->SetSampler(0, pd3dSamplerState);
-			//pd3dsrvTexture->Release();
-
-			m_BteamGamerManager[i] = new CUIManager();
-			m_BteamGamerManager[i]->Initialize(pd3dDevice);
-
-			BteamGamer[i] = new CUIObject(pd3dDevice);
-			BteamGamer[i]->SetMaterial(pHealer);
-			BteamGamer[i]->Initialize(pd3dDevice, POINT{ -600, -668 }, POINT{ -700, -768 }, 0.5f);
-			BteamGamer[i]->SetDevice(pd3dDevice);
-			m_AteamGamerManager[i]->AddUIObject(BteamGamer[i]);
-		}
-		else if (pBteamPlayer[i]->m_HeroSelect == WITCH)
+		else
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pWitch = new CTexture(1, 1, 0, 0);
-			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/Witch_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
+			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/empty.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 			pWitch->SetTexture(0, pd3dsrvTexture);
 			pWitch->SetSampler(0, pd3dSamplerState);
-			//pd3dsrvTexture->Release();
+			
 
-			m_BteamGamerManager[i] = new CUIManager();
-			m_BteamGamerManager[i]->Initialize(pd3dDevice);
-
-			BteamGamer[i] = new CUIObject(pd3dDevice);
-			BteamGamer[i]->SetMaterial(pWitch);
-			BteamGamer[i]->Initialize(pd3dDevice, POINT{ -600, -668 }, POINT{ -700, -768 }, 0.5f);
-			BteamGamer[i]->SetDevice(pd3dDevice);
-			m_AteamGamerManager[i]->AddUIObject(BteamGamer[i]);
+			GamerImage[i] = new CUIObject(pd3dDevice);
+			GamerImage[i]->SetMaterial(pWitch);
+			
 		}
+		GamerImage[i]->SetDevice(pd3dDevice);
+
+		m_TeamGamerManager[i]->AddUIObject(GamerImage[i]);
 	}
 
-
+	int r = 0;
+	int b = 0;
 	// 캐릭터들 이미지 위치
-	for (int i = 0; i < AteamMax; ++i)
+	for (int i = 0; i < MAX_GAMER; ++i)
 	{
-		if (i == 0)
-			AteamGamer[i]->SetGamer(POINT{ i * 80 + 5, 0 }, POINT{ 80 + (i * 80) + 5, 80 });
+		if ((i % 2) == 0)
+		{
+			if (r == 0)
+			{
+				GamerImage[i]->SetGamer(POINT{ r * 80 + 5, 0 }, POINT{ 80 + (r * 80) + 5, 80 });
+				++r;
+			}
+			else
+			{
+				GamerImage[i]->SetGamer(POINT{ r * 80 + r * 5 + 5, 0 }, POINT{ 85 + (r * 80) + r * 5, 80 });
+				++r;
+			}
+		}
 		else
-			AteamGamer[i]->SetGamer(POINT{ i * 80 + i * 5 + 5, 0 }, POINT{ 85 + (i * 80) + i * 5, 80 });
+		{
+			if (b == 0)
+			{
+				GamerImage[i]->SetGamer(POINT{ 660 + (b * 80) + 5, 0 }, POINT{ 740 + (b * 80) + 5, 80 });
+				++b;
+			}
+			else
+			{
+				GamerImage[i]->SetGamer(POINT{ 665 + (b * 80) + b * 5, 0 }, POINT{ 745 + (b * 80) + b * 5, 80 });
+				++b;
+			}
+		}
 	}
-
-	for (int i = 0; i < BteamMax; ++i)
-	{
-		if (i == 0)
-			BteamGamer[i]->SetGamer(POINT{ 660 + (i * 80) + 5, 0 }, POINT{ 740 + (i * 80) + 5, 80 });
-		else
-			BteamGamer[i]->SetGamer(POINT{ 665 + (i * 80) + i * 5, 0 }, POINT{ 745 + (i * 80) + i * 5, 80 });
-	}
-
 
 
 	// 캐릭터 테두리
 	// Red team = A team
 	CTexture *pRedTeam = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/RedTeam.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/red.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pRedTeam->SetTexture(0, pd3dsrvTexture);
 	pRedTeam->SetSampler(0, pd3dSamplerState);
-	//pd3dsrvTexture->Release();
-
-	for (int i = 0; i < 4; ++i)
-	{
-		pTeamEdge[i] = new CUIManager();
-		pTeamEdge[i]->Initialize(pd3dDevice);
-	}
-
-	for (int i = 0; i < 4; ++i)
-	{
-		pRedTeamObject[i] = new CUIObject(pd3dDevice);
-		pRedTeamObject[i]->SetMaterial(pRedTeam);
-		pRedTeamObject[i]->Initialize(pd3dDevice, POINT{ -50, -720 }, POINT{ -385, -745 }, 0.4f);
-		pRedTeamObject[i]->SetDevice(pd3dDevice);
-		pTeamEdge[i]->AddUIObject(pRedTeamObject[i]);
-	}
+	pd3dsrvTexture->Release();
 
 	// Blue team = B team
 	CTexture *pBlueTeam = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/BlueTeam.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/blue.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pBlueTeam->SetTexture(0, pd3dsrvTexture);
 	pBlueTeam->SetSampler(0, pd3dSamplerState);
-	//pd3dsrvTexture->Release();
+	pd3dsrvTexture->Release();
 
-	for (int i = 4; i < 8; ++i)
+	for (int i = 0; i < 8; ++i)
 	{
 		pTeamEdge[i] = new CUIManager();
 		pTeamEdge[i]->Initialize(pd3dDevice);
 	}
 
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 8; i++)
 	{
-		pBlueTeamObject[i] = new CUIObject(pd3dDevice);
-		pBlueTeamObject[i]->SetMaterial(pBlueTeam);
-		pBlueTeamObject[i]->Initialize(pd3dDevice, POINT{ -50, -720 }, POINT{ -385, -745 }, 0.4f);
-		pBlueTeamObject[i]->SetDevice(pd3dDevice);
-		pTeamEdge[i + 4]->AddUIObject(pBlueTeamObject[i]);
+		if (i >= 4)
+		{
+			pTeamObject[i] = new CUIObject(pd3dDevice);
+			pTeamObject[i]->SetMaterial(pBlueTeam);
+			pTeamObject[i]->SetDevice(pd3dDevice);
+			pTeamEdge[i]->AddUIObject(pTeamObject[i]);
+		}
+		else
+		{
+			pTeamObject[i] = new CUIObject(pd3dDevice);
+			pTeamObject[i]->SetMaterial(pRedTeam);
+			pTeamObject[i]->SetDevice(pd3dDevice);
+			pTeamEdge[i]->AddUIObject(pTeamObject[i]);
+		}
 	}
 
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 8; i++)
 	{
 		if (i == 0)
-			pRedTeamObject[i]->SetScore(POINT{ i * 80 + 5, 0 }, POINT{ 80 + (i * 80) + 5, 80 });
-		else
-			pRedTeamObject[i]->SetScore(POINT{ (i * 80) + (i * 5) + 5, 0 }, POINT{ 80 + (i * 80) + (i * 5) + 5, 80 });
+			pTeamObject[i]->SetScore(POINT{ i * 80 + 5, 0 }, POINT{ 80 + (i * 80) + 5, 100 });
+		else if (i > 0 && i < 4)
+			pTeamObject[i]->SetScore(POINT{ (i * 80) + (i * 5) + 5, 0 }, POINT{ 80 + (i * 80) + (i * 5) + 5, 100 });
+		else if (i == 4)
+			pTeamObject[i]->SetScore(POINT{ 660 + ((i - 4) * 80) + 5, 0 }, POINT{ 740 + ((i - 4) * 80) + 5, 100 });
+		else if (i > 4)
+			pTeamObject[i]->SetScore(POINT{ 665 + ((i - 4) * 80) + (i - 4) * 5, 0 }, POINT{ 745 + ((i - 4) * 80) + (i - 4) * 5, 100 });
+
+
 	}
-	for (int i = 0; i < 4; ++i)
+
+	// 플레이어들 hp
+
+	pd3dsrvTexture = NULL;
+	CTexture *pOtherHp = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/OtherHp.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pOtherHp->SetTexture(0, pd3dsrvTexture);
+	pOtherHp->SetSampler(0, pd3dSamplerState);
+	pd3dsrvTexture->Release();
+
+	for (int i = 0; i < MAX_GAMER; ++i)
 	{
-		if (i == 0)
-			pBlueTeamObject[i]->SetScore(POINT{ 660 + (i * 80) + 5, 0 }, POINT{ 740 + (i * 80) + 5, 80 });
+		m_TeamHPManager[i] = new CUIManager();
+		m_TeamHPManager[i]->Initialize(pd3dDevice);
+	}
+	for (int i = 0; i < MAX_GAMER; ++i)
+	{
+		PlayerHpObject[i] = new CUIObject(pd3dDevice);
+		PlayerHpObject[i]->SetMaterial(pOtherHp);
+		PlayerHpObject[i]->SetDevice(pd3dDevice);
+		m_TeamHPManager[i]->AddUIObject(PlayerHpObject[i]);
+	}
+
+	int hpr = 0;
+	int hpb = 0;
+
+	for (int i = 0; i < MAX_GAMER; ++i)
+	{
+		if ((i % 2) == 0)
+		{
+			if (hpr == 0)
+			{
+				PlayerHpObject[i]->SetHp(POINT{ hpr * 80 + 5 + 3, 85 }, POINT{ 80 + (hpr * 80) + 5 - 3, 97 });
+				PlayerHpObject[i]->SetNum(hpr);
+				++hpr;
+			}
+			else
+			{
+				PlayerHpObject[i]->SetHp(POINT{ (hpr * 80) + (hpr * 5) + 5 + 3, 85 }, POINT{ 80 + (hpr * 80) + (hpr * 5) + 5 - 3, 97 });
+				PlayerHpObject[i]->SetNum(hpr);
+				++hpr;
+			}
+		}
 		else
-			pBlueTeamObject[i]->SetScore(POINT{ 665 + (i * 80) + i * 5, 0 }, POINT{ 745 + (i * 80) + i * 5, 80 });
+		{
+			if (hpb == 0)
+			{
+				PlayerHpObject[i]->SetHp(POINT{ 660 + (hpb * 80) + 5 + 3, 85 }, POINT{ 740 + (hpb * 80) + 5 - 3, 97 });
+				PlayerHpObject[i]->SetNum(hpb);
+				++hpb;
+			}
+			else
+			{
+				PlayerHpObject[i]->SetHp(POINT{ 665 + (hpb * 80) + hpb * 5 + 3, 85 }, POINT{ 745 + (hpb * 80) + hpb * 5 - 3, 97 });
+				PlayerHpObject[i]->SetNum(hpb);
+				++hpb;
+			}
+		}
 	}
 }
 
@@ -1783,14 +1742,14 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 	for (int i = 0; i < 41; ++i)
 		m_pScoreManager[i]->RenderAll(pd3dDeviceContext);
 
-	for (int i = 0; i < AteamMax; ++i)
-		m_AteamGamerManager[i]->RenderAll(pd3dDeviceContext);
-
-	for (int i = 0; i < BteamMax; ++i)
-		m_BteamGamerManager[i]->RenderAll(pd3dDeviceContext);
+	for (int i = 0; i < 8; ++i)
+		m_TeamGamerManager[i]->RenderAll(pd3dDeviceContext);
 
 	for (int i = 0; i < 8; ++i)
 		pTeamEdge[i]->RenderAll(pd3dDeviceContext);
+
+	for (int i = 0; i < 8; ++i)
+		m_TeamHPManager[i]->RenderAll(pd3dDeviceContext);
 
 
 }

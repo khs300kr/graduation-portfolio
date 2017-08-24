@@ -53,7 +53,7 @@ void CUIObject::Initialize(ID3D11Device* pDevice, POINT startPos, POINT endPos, 
 
 void CUIObject::Update()
 {
-	Initialize(pUIDevice, m_ptStartPos, m_ptEndPos, 0.4f);
+	Initialize(pUIDevice, m_ptStartPos, m_ptEndPos, 0.3f);
 }	
 
 void CUIObject::SetScore(POINT _sPoint, POINT _ePoint)
@@ -66,6 +66,10 @@ void CUIObject::SetGamer(POINT _sPoint, POINT _ePoint)
 	Initialize(pUIDevice, _sPoint, _ePoint, 0.5f);
 }
 
+void CUIObject::SetHp(POINT _sPoint, POINT _ePoint)
+{
+	Initialize(pUIDevice, _sPoint, _ePoint, 0.3f);
+}
 
 void CUIObject::Render(ID3D11DeviceContext* pDeviceContext)
 {

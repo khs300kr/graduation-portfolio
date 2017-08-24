@@ -80,16 +80,6 @@ public:
 	CGameObject *pOtherHpbarObject[MAX_GAMER];
 
 
-	// A,B팀 플레이어 상단에 보이기
-	CHeroManager* pAteamPlayer[4];
-	CHeroManager* pBteamPlayer[4];
-	int AteamMax;
-	int BteamMax;
-
-	// 이미지 테두리
-	CUIObject *pRedTeamObject[4];
-	CUIObject *pBlueTeamObject[4];
-
 	CGameObject *pHouse1Object[13];
 	CGameObject *pWallObject[64];
 
@@ -100,14 +90,6 @@ public:
 	CTexture *pScoreNum[10];
 	CUIObject *pAteam[2][10]; // 0: 1의 자리 1: 10의 자리
 	CUIObject *pBteam[2][10];
-
-	CUIObject *gUIObject;
-
-	// A,B팀
-	CUIObject *AteamGamer[4];
-	CUIObject *BteamGamer[4];
-
-	//CTexture *pTeamEdge[8];
 
 	CMaterial *pNormalMaterial;
 
@@ -180,8 +162,21 @@ public:
 
 	bool Sectorcollision(CHeroManager * Object1, CHeroManager * Object2, DWORD dir, float sizeXZ, float range);
 
+
+	CUIObject *gUIObject;
+
+	// A,B팀 플레이어 상단에 보이기
+	// 이미지 테두리
+	CUIObject *pTeamObject[MAX_GAMER];
+
+	// A,B팀
+	CUIObject *GamerImage[MAX_GAMER];
+
 	// hp gauge
 	CUIObject *pHpgaugeObject;
+
+	// 모든 플레이어 hp
+	CUIObject *PlayerHpObject[MAX_GAMER];
 
 public:
 
@@ -196,8 +191,7 @@ public:
 	CUIManager *m_pUIManager[6]; //hpbar 1 + bpgauge 1 + skillbox 4 = 6
 	CUIManager *m_pScoreManager[41]; // scoreboard 1 + number(0~9) 10 x 2 (A,B팀 스코어 2개 필요) + 1의자리 10의자리 때매 A,B팀 각각 10개 추가 = 41
 
-	CUIManager *m_AteamGamerManager[4];
-	CUIManager *m_BteamGamerManager[4];
+	CUIManager *m_TeamGamerManager[MAX_GAMER];
 	CUIManager *m_TeamHPManager[MAX_GAMER];
 	CUIManager *pTeamEdge[8]; // 이미지 테두리
 

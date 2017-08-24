@@ -13,7 +13,7 @@ class CUIObject
 	TextureTag				m_tagTexture;
 	float					m_fOpacity = 1.0f;
 
-	
+	int  SaveNum;
 
 public:
 	ID3D11Device*			pUIDevice;
@@ -43,10 +43,13 @@ public:
 
 	void SetDevice(ID3D11Device* pDevice) { pUIDevice = pDevice; }
 	
+	void SetNum(int _SaveNum) { SaveNum = _SaveNum; }
+	int GetNum() { return SaveNum; }
 
 	void Update();
 	void SetScore(POINT _sPoint, POINT _ePoint);
 	void SetGamer(POINT _sPoint, POINT _ePoint);
+	void SetHp(POINT _sPoint, POINT _ePoint);
 };
 
 class CUIManager

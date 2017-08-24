@@ -801,13 +801,11 @@ void ProcessPacket(char * ptr)
 			if (id & 1)
 			{
 				gGameFramework.m_pScene->pHeroObject[id]->m_Team = B_TEAM; // 팀 선택
-				gGameFramework.m_pScene->BteamMax++;
 
 			}
 			else
 			{
 				gGameFramework.m_pScene->pHeroObject[id]->m_Team = A_TEAM;
-				gGameFramework.m_pScene->AteamMax++;
 
 			}
 
@@ -821,13 +819,12 @@ void ProcessPacket(char * ptr)
 			if (id & 1)
 			{
 				gGameFramework.m_pScene->pHeroObject[id]->m_Team = B_TEAM; // 팀 선택
-				gGameFramework.m_pScene->BteamMax++;
+
 
 			}
 			else
 			{
 				gGameFramework.m_pScene->pHeroObject[id]->m_Team = A_TEAM;
-				gGameFramework.m_pScene->AteamMax++;
 
 			}
 
@@ -836,8 +833,6 @@ void ProcessPacket(char * ptr)
 			gRoom.RoomUI[id].IsReady = true; // 내꺼
 		}
 
-		cout << "A팀 최대 인원 : " << gGameFramework.m_pScene->AteamMax << endl;
-		cout << "B팀 최대 인원 : " << gGameFramework.m_pScene->BteamMax << endl;
 		InvalidateRect(g_hWnd, NULL, false);
 		break;
 	}
@@ -927,6 +922,24 @@ void ProcessPacket(char * ptr)
 			cout << "Other Pos: \t " << id << endl;
 			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, my_packet->y, my_packet->z);
 			cout << "초기좌표를 설정하는 다른 아이디" << ends << id << endl;
+
+			switch (gGameFramework.m_pScene->pHeroObject[id]->m_HeroSelect)
+			{
+			case BABARIAN:	gGameFramework.m_pScene->pHeroObject[id]->Setmaxhp(BABARIAN_HP);  break;
+
+			case KNIGHT:	gGameFramework.m_pScene->pHeroObject[id]->Setmaxhp(KNIGHT_HP);	  break;
+
+			case SWORDMAN:	gGameFramework.m_pScene->pHeroObject[id]->Setmaxhp(SWORDMAN_HP);  break;
+
+			case MAGICIAN:	gGameFramework.m_pScene->pHeroObject[id]->Setmaxhp(MAGICIAN_HP);  break;
+
+			case ARCHER:	gGameFramework.m_pScene->pHeroObject[id]->Setmaxhp(ARCHER_HP);	  break;
+
+			case HEALER:	gGameFramework.m_pScene->pHeroObject[id]->Setmaxhp(HEALER_HP);	  break;
+
+			case WITCH:		gGameFramework.m_pScene->pHeroObject[id]->Setmaxhp(WITCH_HP);	  break;
+
+			}
 		}
 		break;
 	}
@@ -1169,9 +1182,83 @@ void ProcessPacket(char * ptr)
 			FMOD_System_PlaySound(g_System, FMOD_CHANNEL_REUSE, g_Sound[HIT_SOUND], 0, &g_Channel[HIT_SOUND]);
 		}
 
+		// 플레이어들 체력 업데이트
 		if (clientid == gGameFramework.m_pScene->myGame_id)
 		{
+			// 내 체력
 			gGameFramework.m_pScene->pHpgaugeObject->SetEndPos((335.f / gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp()) * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp() + 50.f);
+
+
+
+			// 상단에 있는 내체력
+			if ((clientid % 2) == 0)
+			{
+
+				// Red Team
+				if (gGameFramework.m_pScene->PlayerHpObject[clientid]->GetNum() == 0)
+				{
+					gGameFramework.m_pScene->PlayerHpObject[clientid]->SetEndPos(74.f / gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp() * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp()
+						+ gGameFramework.m_pScene->PlayerHpObject[clientid]->GetNum() * 80 + 5 + 3);
+				}
+				else
+				{
+					gGameFramework.m_pScene->PlayerHpObject[clientid]->SetEndPos(74.f / gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp() * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp()
+						+ (gGameFramework.m_pScene->PlayerHpObject[clientid]->GetNum() * 80) + (gGameFramework.m_pScene->PlayerHpObject[clientid]->GetNum() * 5) + 5 + 3);
+				}
+
+			}
+			else
+			{
+
+				// Blue Team
+				if (gGameFramework.m_pScene->PlayerHpObject[clientid]->GetNum() == 0)
+				{
+					gGameFramework.m_pScene->PlayerHpObject[clientid]->SetEndPos(74.f / gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp() * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp()
+						+ 660 + (gGameFramework.m_pScene->PlayerHpObject[clientid]->GetNum() * 80) + 5 + 3);
+				}
+				else
+				{
+					gGameFramework.m_pScene->PlayerHpObject[clientid]->SetEndPos(74.f / gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp() * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp()
+						+ 665 + (gGameFramework.m_pScene->PlayerHpObject[clientid]->GetNum() * 80) + gGameFramework.m_pScene->PlayerHpObject[clientid]->GetNum() * 5 + 3);
+				}
+			}
+
+			gGameFramework.m_pScene->PlayerHpObject[clientid]->Update();
+		}
+		else
+		{
+			// 상단에 있는 다른 플레이어 체력
+			if ((clientid % 2) == 0)
+			{
+
+				// Red Team
+				if (gGameFramework.m_pScene->PlayerHpObject[clientid]->GetNum() == 0)
+				{
+					gGameFramework.m_pScene->PlayerHpObject[clientid]->SetEndPos(74.f / gGameFramework.m_pScene->pHeroObject[clientid]->Getmaxhp() * gGameFramework.m_pScene->pHeroObject[clientid]->GetHp()
+						+ gGameFramework.m_pScene->PlayerHpObject[clientid]->GetNum() * 80 + 5 + 3);
+				}
+				else
+				{
+					gGameFramework.m_pScene->PlayerHpObject[clientid]->SetEndPos(74.f / gGameFramework.m_pScene->pHeroObject[clientid]->Getmaxhp() * gGameFramework.m_pScene->pHeroObject[clientid]->GetHp()
+						+ (gGameFramework.m_pScene->PlayerHpObject[clientid]->GetNum() * 80) + (gGameFramework.m_pScene->PlayerHpObject[clientid]->GetNum() * 5) + 5 + 3);
+				}
+			}
+			else
+			{
+				// Blue Team
+				if (gGameFramework.m_pScene->PlayerHpObject[clientid]->GetNum() == 0)
+				{
+					gGameFramework.m_pScene->PlayerHpObject[clientid]->SetEndPos(74.f / gGameFramework.m_pScene->pHeroObject[clientid]->Getmaxhp() * gGameFramework.m_pScene->pHeroObject[clientid]->GetHp()
+						+ 660 + (gGameFramework.m_pScene->PlayerHpObject[clientid]->GetNum() * 80) + 5 + 3);
+				}
+				else
+				{
+					gGameFramework.m_pScene->PlayerHpObject[clientid]->SetEndPos(74.f / gGameFramework.m_pScene->pHeroObject[clientid]->Getmaxhp() * gGameFramework.m_pScene->pHeroObject[clientid]->GetHp()
+						+ 665 + (gGameFramework.m_pScene->PlayerHpObject[clientid]->GetNum() * 80) + gGameFramework.m_pScene->PlayerHpObject[clientid]->GetNum() * 5 + 3);
+				}
+
+			}
+			gGameFramework.m_pScene->PlayerHpObject[clientid]->Update();
 		}
 		break;
 	}
@@ -1227,10 +1314,80 @@ void ProcessPacket(char * ptr)
 
 			gGameFramework.m_pScene->pHeroObject[id]->SetHp(my_packet->hp);
 			gGameFramework.m_pScene->pHpgaugeObject->SetEndPos((335.f / gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp()) * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp() + 50.f);
+
+			// 상단에 있는 내체력
+			if ((id % 2) == 0)
+			{
+
+				// Red Team
+				if (gGameFramework.m_pScene->PlayerHpObject[id]->GetNum() == 0)
+				{
+					gGameFramework.m_pScene->PlayerHpObject[id]->SetEndPos(74.f / gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp() * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp()
+						+ gGameFramework.m_pScene->PlayerHpObject[id]->GetNum() * 80 + 5 + 3);
+				}
+				else
+				{
+					gGameFramework.m_pScene->PlayerHpObject[id]->SetEndPos(74.f / gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp() * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp()
+						+ (gGameFramework.m_pScene->PlayerHpObject[id]->GetNum() * 80) + (gGameFramework.m_pScene->PlayerHpObject[id]->GetNum() * 5) + 5 + 3);
+				}
+
+			}
+			else
+			{
+
+				// Blue Team
+				if (gGameFramework.m_pScene->PlayerHpObject[id]->GetNum() == 0)
+				{
+					gGameFramework.m_pScene->PlayerHpObject[id]->SetEndPos(74.f / gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp() * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp()
+						+ 660 + (gGameFramework.m_pScene->PlayerHpObject[id]->GetNum() * 80) + 5 + 3);
+				}
+				else
+				{
+					gGameFramework.m_pScene->PlayerHpObject[id]->SetEndPos(74.f / gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->Getmaxhp() * gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->GetHp()
+						+ 665 + (gGameFramework.m_pScene->PlayerHpObject[id]->GetNum() * 80) + gGameFramework.m_pScene->PlayerHpObject[id]->GetNum() * 5 + 3);
+				}
+			}
+
+			gGameFramework.m_pScene->PlayerHpObject[id]->Update();
 		}
-		else {
+		else
+		{
 			gGameFramework.m_pScene->pHeroObject[id]->SetPosition(my_packet->x, 0.f, my_packet->z);
 			gGameFramework.m_pScene->pHeroObject[id]->SetHp(my_packet->hp);
+
+
+			// 상단에 있는 다른 플레이어 체력
+			if ((id % 2) == 0)
+			{
+
+				// Red Team
+				if (gGameFramework.m_pScene->PlayerHpObject[id]->GetNum() == 0)
+				{
+					gGameFramework.m_pScene->PlayerHpObject[id]->SetEndPos(74.f / gGameFramework.m_pScene->pHeroObject[id]->Getmaxhp() * gGameFramework.m_pScene->pHeroObject[id]->GetHp()
+						+ gGameFramework.m_pScene->PlayerHpObject[id]->GetNum() * 80 + 5 + 3);
+				}
+				else
+				{
+					gGameFramework.m_pScene->PlayerHpObject[id]->SetEndPos(74.f / gGameFramework.m_pScene->pHeroObject[id]->Getmaxhp() * gGameFramework.m_pScene->pHeroObject[id]->GetHp()
+						+ (gGameFramework.m_pScene->PlayerHpObject[id]->GetNum() * 80) + (gGameFramework.m_pScene->PlayerHpObject[id]->GetNum() * 5) + 5 + 3);
+				}
+			}
+			else
+			{
+				// Blue Team
+				if (gGameFramework.m_pScene->PlayerHpObject[id]->GetNum() == 0)
+				{
+					gGameFramework.m_pScene->PlayerHpObject[id]->SetEndPos(74.f / gGameFramework.m_pScene->pHeroObject[id]->Getmaxhp() * gGameFramework.m_pScene->pHeroObject[id]->GetHp()
+						+ 660 + (gGameFramework.m_pScene->PlayerHpObject[id]->GetNum() * 80) + 5 + 3);
+				}
+				else
+				{
+					gGameFramework.m_pScene->PlayerHpObject[id]->SetEndPos(74.f / gGameFramework.m_pScene->pHeroObject[id]->Getmaxhp() * gGameFramework.m_pScene->pHeroObject[id]->GetHp()
+						+ 665 + (gGameFramework.m_pScene->PlayerHpObject[id]->GetNum() * 80) + gGameFramework.m_pScene->PlayerHpObject[id]->GetNum() * 5 + 3);
+				}
+
+			}
+			gGameFramework.m_pScene->PlayerHpObject[id]->Update();
 		}
 
 
