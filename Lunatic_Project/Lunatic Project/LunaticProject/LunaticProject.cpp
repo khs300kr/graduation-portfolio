@@ -261,10 +261,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_CREATE:
-#ifdef _DEBUG
-#else
+//#ifdef _DEBUG
+//#else
 		SoundInit();
-#endif
+//#endif
 		bmp_loading = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_LOADINGWINDOW));
 
 
@@ -402,23 +402,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int mx = LOWORD(lParam);
 		int my = HIWORD(lParam);
 
-		if (gGameFramework.ChangeScene == MAINMENU)
+		if (gGameFramework.ChangeScene != GAME)
 		{
-			gMainMenu.L_ButtonDown(hChat, mx, my);
-			InvalidateRect(hWnd, NULL, false);
-		}
+			if (gGameFramework.ChangeScene == MAINMENU)
+			{
+				gMainMenu.L_ButtonDown(hChat, mx, my);
+				InvalidateRect(hWnd, NULL, false);
+			}
 
 
-		else if (gGameFramework.ChangeScene == LOBBY)
-		{
-			gLobby.L_ButtonDown(hWnd, hChat, mx, my);
-			InvalidateRect(hWnd, NULL, false);
-		}
+			else if (gGameFramework.ChangeScene == LOBBY)
+			{
+				gLobby.L_ButtonDown(hWnd, hChat, mx, my);
+				InvalidateRect(hWnd, NULL, false);
+			}
 
-		else if (gGameFramework.ChangeScene == ROOM)
-		{
-			gRoom.L_ButtonDown(mx, my);
-			InvalidateRect(hWnd, NULL, false);
+			else if (gGameFramework.ChangeScene == ROOM)
+			{
+				gRoom.L_ButtonDown(mx, my);
+				InvalidateRect(hWnd, NULL, false);
+			}
+
+			FMOD_System_PlaySound(g_System, FMOD_CHANNEL_REUSE, g_Sound[CLICK_SOUND], 0, &g_Channel[CLICK_SOUND]);
 		}
 	}
 
@@ -980,10 +985,12 @@ void ProcessPacket(char * ptr)
 		if (id == gGameFramework.m_pScene->myGame_id) {
 			cout << "[My]SC_ATTACK_PACKET\n";
 			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_ATTACK);
+			FMOD_System_PlaySound(g_System, FMOD_CHANNEL_REUSE, g_Sound[SWING_SOUND], 0, &g_Channel[SWING_SOUND]);
 		}
 		else {
 			cout << "[Other]SC_ATTACK_PACKET\n";
 			gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_ATTACK);
+			FMOD_System_PlaySound(g_System, FMOD_CHANNEL_REUSE, g_Sound[SWING_SOUND], 0, &g_Channel[SWING_SOUND]);
 		}
 
 		break;
@@ -1147,6 +1154,7 @@ void ProcessPacket(char * ptr)
 			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroHit = true;
 			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
 			gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
+			FMOD_System_PlaySound(g_System, FMOD_CHANNEL_REUSE, g_Sound[HIT_SOUND], 0, &g_Channel[HIT_SOUND]);
 		}
 
 		if (clientid == gGameFramework.m_pScene->myGame_id)
@@ -1183,7 +1191,7 @@ void ProcessPacket(char * ptr)
 
 
 		//A_TEAM WIN or B_TEAM WIN
-		if (g_A_Teamcount == 2 || g_A_Teamcount == 2) // 구현중이기떄문에 일단 킬 카운트를 2로함
+		if (g_A_Teamcount == 2 || g_B_Teamcount == 2) // 구현중이기떄문에 일단 킬 카운트를 2로함
 		{
 			gGameFramework.ChangeScene = LOBBY; //로비로 돌아간다.
 
@@ -1290,16 +1298,15 @@ void EnterRoom()
 
 void SoundInit()
 {
-	FMOD_SYSTEM *g_System;      // 시스템 포인터 변수
-	FMOD_SOUND *g_Sound[1];     // 사운드 포인터 변수
-	FMOD_CHANNEL *g_Channel[1]; // 채널   포인터 변수
-
 	FMOD_System_Create(&g_System); //사운드 시스템을 만들어주는 함수이다.
 
 
 	FMOD_System_Init(g_System, 32, FMOD_INIT_NORMAL, NULL); //사운드 시스템을 초기화 해주는 함수다.
 
-	FMOD_System_CreateSound(g_System, "../Data/Sound/Lobby_sound.mp3", FMOD_LOOP_NORMAL, 0, &g_Sound[0]); //사운드를 메모리로 읽어오는 함수 // 참고로 파일포멧은 mp3,wav,mid,plac,dls,asf,asx,fsb...  재생가능함
+	FMOD_System_CreateSound(g_System, "../Data/Sound/Lobby_sound.mp3", FMOD_LOOP_NORMAL, 0, &g_Sound[LOBBY_SOUND]); //사운드를 메모리로 읽어오는 함수 // 참고로 파일포멧은 mp3,wav,mid,plac,dls,asf,asx,fsb...  재생가능함
+	FMOD_System_CreateSound(g_System, "../Data/Sound/Click_sound.wav", FMOD_DEFAULT, 0, &g_Sound[CLICK_SOUND]); //사운드를 메모리로 읽어오는 함수 // 참고로 파일포멧은 mp3,wav,mid,plac,dls,asf,asx,fsb...  재생가능함
+	FMOD_System_CreateSound(g_System, "../Data/Sound/Swing_sound.wav", FMOD_DEFAULT, 0, &g_Sound[SWING_SOUND]); //사운드를 메모리로 읽어오는 함수 // 참고로 파일포멧은 mp3,wav,mid,plac,dls,asf,asx,fsb...  재생가능함
+	FMOD_System_CreateSound(g_System, "../Data/Sound/Hit_sound.wav", FMOD_DEFAULT, 0, &g_Sound[HIT_SOUND]); //사운드를 메모리로 읽어오는 함수 // 참고로 파일포멧은 mp3,wav,mid,plac,dls,asf,asx,fsb...  재생가능함
 
 	FMOD_System_PlaySound(g_System, FMOD_CHANNEL_FREE, g_Sound[0], 0, &g_Channel[0]);
 }

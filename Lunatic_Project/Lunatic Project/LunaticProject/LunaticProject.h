@@ -26,6 +26,21 @@ void ProcessPacket(char *ptr);
 
 
 
+enum
+{
+	LOBBY_SOUND = 0,
+	CLICK_SOUND,
+	SWING_SOUND,
+	HIT_SOUND,
+
+
+
+	SOUND_END
+};
+
 // Sound
+static FMOD_SYSTEM *g_System;      // 시스템 포인터 변수
+static FMOD_SOUND *g_Sound[SOUND_END];     // 사운드 포인터 변수
+static FMOD_CHANNEL *g_Channel[SOUND_END]; // 채널   포인터 변수
 
 void SoundInit();
