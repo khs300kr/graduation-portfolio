@@ -178,6 +178,12 @@ public:
 	// 모든 플레이어 hp
 	CUIObject *PlayerHpObject[MAX_GAMER];
 
+	// 스킬 UI
+	CUIObject *pAttackUpObject;
+	CUIObject *pAttackDownObject;
+	CUIObject *pSwingUpObject;
+	CUIObject *pSwingDownObject;
+
 public:
 
 
@@ -188,7 +194,9 @@ public:
 
 
 	// UI
-	CUIManager *m_pUIManager[6]; //hpbar 1 + bpgauge 1 + skillbox 4 = 6
+	CUIManager *m_pMyHpUIManager[2]; //hpbar 1 + bpgauge 1 = 2
+	CUIManager *m_pSkillUIManager[4];  // 약공, 강공 up & down
+
 	CUIManager *m_pScoreManager[41]; // scoreboard 1 + number(0~9) 10 x 2 (A,B팀 스코어 2개 필요) + 1의자리 10의자리 때매 A,B팀 각각 10개 추가 = 41
 
 	CUIManager *m_TeamGamerManager[MAX_GAMER];

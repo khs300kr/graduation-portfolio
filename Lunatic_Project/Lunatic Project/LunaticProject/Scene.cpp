@@ -703,13 +703,13 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	pHpbar->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 
-	m_pUIManager[0] = new CUIManager();
-	m_pUIManager[0]->Initialize(pd3dDevice);
+	m_pMyHpUIManager[0] = new CUIManager();
+	m_pMyHpUIManager[0]->Initialize(pd3dDevice);
 
 	CUIObject *pHpbarObject = new CUIObject(pd3dDevice);
 	pHpbarObject->SetMaterial(pHpbar);
 	pHpbarObject->Initialize(pd3dDevice, POINT{ 0, 668 }, POINT{ 400, 768 }, 0.5f);
-	m_pUIManager[0]->AddUIObject(pHpbarObject);
+	m_pMyHpUIManager[0]->AddUIObject(pHpbarObject);
 
 	//hp gauge
 	CTexture *pHpgauge = new CTexture(1, 1, 0, 0);
@@ -718,74 +718,81 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	pHpgauge->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 
-	m_pUIManager[1] = new CUIManager();
-	m_pUIManager[1]->Initialize(pd3dDevice);
+	m_pMyHpUIManager[1] = new CUIManager();
+	m_pMyHpUIManager[1]->Initialize(pd3dDevice);
 
 	// hp gauge position x: 50 ~ x: 385 (범위 335)
 	pHpgaugeObject = new CUIObject(pd3dDevice);
 	pHpgaugeObject->SetMaterial(pHpgauge);
 	pHpgaugeObject->Initialize(pd3dDevice, POINT{ 50, 720 }, POINT{ 385, 745 }, 0.4f);
 	pHpgaugeObject->SetDevice(pd3dDevice);
-	m_pUIManager[1]->AddUIObject(pHpgaugeObject);
+	m_pMyHpUIManager[1]->AddUIObject(pHpgaugeObject);
 
 
 	///////////skill box/////////////////////
-	//skill box Q
-	CTexture *pSkillboxQ = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/SkillBox.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-	pSkillboxQ->SetTexture(0, pd3dsrvTexture);
-	pSkillboxQ->SetSampler(0, pd3dSamplerState);
+	// 약공 (key up)
+	CTexture *pAttack_up = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/skill/attack_up.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pAttack_up->SetTexture(0, pd3dsrvTexture);
+	pAttack_up->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 
-	m_pUIManager[2] = new CUIManager();
-	m_pUIManager[2]->Initialize(pd3dDevice);
+	m_pSkillUIManager[0] = new CUIManager();
+	m_pSkillUIManager[0]->Initialize(pd3dDevice);
 
-	CUIObject *pSkillboxQObject = new CUIObject(pd3dDevice);
-	pSkillboxQObject->SetMaterial(pSkillboxQ);
-	pSkillboxQObject->Initialize(pd3dDevice, POINT{ 600, 668 }, POINT{ 700, 768 }, 0.5f);
-	m_pUIManager[2]->AddUIObject(pSkillboxQObject);
-	//skill box W
-	CTexture *pSkillboxW = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/SkillBox.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-	pSkillboxW->SetTexture(0, pd3dsrvTexture);
-	pSkillboxW->SetSampler(0, pd3dSamplerState);
+	pAttackUpObject = new CUIObject(pd3dDevice);
+	pAttackUpObject->SetMaterial(pAttack_up);
+	pAttackUpObject->Initialize(pd3dDevice, POINT{ 600, 668 }, POINT{ 700, 768 }, 0.5f);
+	pAttackUpObject->SetDevice(pd3dDevice);
+	m_pSkillUIManager[0]->AddUIObject(pAttackUpObject);
+
+	// 약공 (key down)
+	CTexture *pAttack_down = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/skill/attack_down2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pAttack_down->SetTexture(0, pd3dsrvTexture);
+	pAttack_down->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 
-	m_pUIManager[3] = new CUIManager();
-	m_pUIManager[3]->Initialize(pd3dDevice);
+	m_pSkillUIManager[1] = new CUIManager();
+	m_pSkillUIManager[1]->Initialize(pd3dDevice);
 
-	CUIObject *pSkillboxWObject = new CUIObject(pd3dDevice);
-	pSkillboxWObject->SetMaterial(pSkillboxW);
-	pSkillboxWObject->Initialize(pd3dDevice, POINT{ 700, 668 }, POINT{ 800, 768 }, 0.5f);
-	m_pUIManager[3]->AddUIObject(pSkillboxWObject);
-	//skill box E
-	CTexture *pSkillboxE = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/SkillBox.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-	pSkillboxE->SetTexture(0, pd3dsrvTexture);
-	pSkillboxE->SetSampler(0, pd3dSamplerState);
+	pAttackDownObject = new CUIObject(pd3dDevice);
+	pAttackDownObject->SetMaterial(pAttack_down);
+	pAttackDownObject->Initialize(pd3dDevice, POINT{ -800, -668 }, POINT{ -900, -768 }, 0.5f);
+	pAttackDownObject->SetDevice(pd3dDevice);
+	m_pSkillUIManager[1]->AddUIObject(pAttackDownObject);
+
+	// 강공 (key up)
+	CTexture *pSwing_up = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/skill/swing_up.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pSwing_up->SetTexture(0, pd3dsrvTexture);
+	pSwing_up->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 
-	m_pUIManager[4] = new CUIManager();
-	m_pUIManager[4]->Initialize(pd3dDevice);
+	m_pSkillUIManager[2] = new CUIManager();
+	m_pSkillUIManager[2]->Initialize(pd3dDevice);
 
-	CUIObject *pSkillboxEObject = new CUIObject(pd3dDevice);
-	pSkillboxEObject->SetMaterial(pSkillboxE);
-	pSkillboxEObject->Initialize(pd3dDevice, POINT{ 800, 668 }, POINT{ 900, 768 }, 0.5f);
-	m_pUIManager[4]->AddUIObject(pSkillboxEObject);
-	//skill box R
-	CTexture *pSkillboxR = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/SkillBox.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-	pSkillboxR->SetTexture(0, pd3dsrvTexture);
-	pSkillboxR->SetSampler(0, pd3dSamplerState);
+	pSwingUpObject = new CUIObject(pd3dDevice);
+	pSwingUpObject->SetMaterial(pSwing_up);
+	pSwingUpObject->Initialize(pd3dDevice, POINT{ 700, 668 }, POINT{ 800, 768 }, 0.5f);
+	pSwingUpObject->SetDevice(pd3dDevice);
+	m_pSkillUIManager[2]->AddUIObject(pSwingUpObject);
+
+	// 강공 (key down)
+	CTexture *pSwing_down = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/skill/swing_down2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pSwing_down->SetTexture(0, pd3dsrvTexture);
+	pSwing_down->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 
-	m_pUIManager[5] = new CUIManager();
-	m_pUIManager[5]->Initialize(pd3dDevice);
+	m_pSkillUIManager[3] = new CUIManager();
+	m_pSkillUIManager[3]->Initialize(pd3dDevice);
 
-	CUIObject *pSkillboxRObject = new CUIObject(pd3dDevice);
-	pSkillboxRObject->SetMaterial(pSkillboxR);
-	pSkillboxRObject->Initialize(pd3dDevice, POINT{ 900, 668 }, POINT{ 1000, 768 }, 0.5f);
-	m_pUIManager[5]->AddUIObject(pSkillboxRObject);
+	pSwingDownObject = new CUIObject(pd3dDevice);
+	pSwingDownObject->SetMaterial(pSwing_down);
+	pSwingDownObject->Initialize(pd3dDevice, POINT{ -900, -668 }, POINT{ -1000, -768 }, 0.5f);
+	pSwingDownObject->SetDevice(pd3dDevice);
+	m_pSkillUIManager[3]->AddUIObject(pSwingDownObject);
 
 
 	// Score 판
@@ -898,14 +905,14 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			{
 				GamerImage[i] = new CUIObject(pd3dDevice);
 				GamerImage[i]->SetMaterial(pBabarian);
-	
+
 			}
 
 			else if (pHeroObject[i]->m_Team == B_TEAM)
 			{
 				GamerImage[i] = new CUIObject(pd3dDevice);
 				GamerImage[i]->SetMaterial(pBabarian);
-	
+
 			}
 		}
 
@@ -929,7 +936,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			{
 				GamerImage[i] = new CUIObject(pd3dDevice);
 				GamerImage[i]->SetMaterial(pKnight);
-	
+
 			}
 		}
 
@@ -946,7 +953,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			{
 				GamerImage[i] = new CUIObject(pd3dDevice);
 				GamerImage[i]->SetMaterial(pSwordman);
-	
+
 			}
 
 			else if (pHeroObject[i]->m_Team == B_TEAM)
@@ -1024,7 +1031,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			{
 				GamerImage[i] = new CUIObject(pd3dDevice);
 				GamerImage[i]->SetMaterial(pWitch);
-	
+
 			}
 		}
 
@@ -1036,11 +1043,11 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/empty.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 			pWitch->SetTexture(0, pd3dsrvTexture);
 			pWitch->SetSampler(0, pd3dSamplerState);
-			
+
 
 			GamerImage[i] = new CUIObject(pd3dDevice);
 			GamerImage[i]->SetMaterial(pWitch);
-			
+
 		}
 		GamerImage[i]->SetDevice(pd3dDevice);
 
@@ -1365,6 +1372,14 @@ void CScene::ProcessInput()
 		if ((KEY_DOWN('D') || KEY_DOWN('d')) && !DKeyDown && !g_bDoing_Ani && !DownKeyDown && !UpKeyDown && !RightKeyDown && !LeftKeyDown)
 		{
 			DKeyDown = true;
+
+
+			pSwingUpObject->SetGamer(POINT{ -700, -668 }, POINT{ -800, -768 });
+			pSwingUpObject->Update();
+
+			pSwingDownObject->SetGamer(POINT{ 700, 668 }, POINT{ 800, 768 });
+			pSwingDownObject->Update();
+
 			if (!pHeroObject[myGame_id]->bHeroAttack)
 			{
 				g_bDoing_Ani = true;	// 애니메이션 도중 키 입력 방지.
@@ -1404,6 +1419,12 @@ void CScene::ProcessInput()
 
 		if ((KEY_UP('D') || KEY_UP('d')) && DKeyDown && !g_bDoing_Ani)
 		{
+			pSwingDownObject->SetGamer(POINT{ -700, -668 }, POINT{ -800, -768 });
+			pSwingDownObject->Update();
+
+			pSwingUpObject->SetGamer(POINT{ 700, 668 }, POINT{ 800, 768 });
+			pSwingUpObject->Update();
+
 			DKeyDown = false;
 		}
 
@@ -1737,7 +1758,7 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 	for (int i = 0; i < m_nInstancingShaders; i++) m_ppInstancingShaders[i]->Render(pd3dDeviceContext, pCamera);
 
 	for (int i = 0; i < 6; ++i)
-		m_pUIManager[i]->RenderAll(pd3dDeviceContext);
+		m_pMyHpUIManager[i]->RenderAll(pd3dDeviceContext);
 
 	for (int i = 0; i < 41; ++i)
 		m_pScoreManager[i]->RenderAll(pd3dDeviceContext);
@@ -1750,6 +1771,9 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 
 	for (int i = 0; i < 8; ++i)
 		m_TeamHPManager[i]->RenderAll(pd3dDeviceContext);
+
+	for (int i = 0; i < 4; ++i)
+		m_pSkillUIManager[i]->RenderAll(pd3dDeviceContext);
 
 
 }
