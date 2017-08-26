@@ -96,6 +96,10 @@ using namespace DirectX::PackedVector;
 #define PS_SLOT_TEXTURE			0x00
 #define PS_SLOT_SAMPLER_STATE	0x00
 
+#define GS_CB_SLOT_PARTICLE		0x02
+#define PARTICLE_TYPE_EMITTER	0
+#define PARTICLES				500
+
 
 #define ANIFRAMETIME			0.0333333f
 #define GetFBXMesh				GetGameObject(0)->GetMesh(0)

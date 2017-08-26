@@ -14,6 +14,9 @@ CScene::CScene()
 	m_ppShaders = NULL;
 	m_ppInstancingShaders = NULL;
 
+	m_pParticleSystem = NULL;
+	m_fGametime = 0.0f;
+
 	m_pCamera = NULL;
 	m_pLights = NULL;
 	m_pd3dcbLights = NULL;
@@ -1094,14 +1097,14 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/red.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pRedTeam->SetTexture(0, pd3dsrvTexture);
 	pRedTeam->SetSampler(0, pd3dSamplerState);
-	pd3dsrvTexture->Release();
+	//pd3dsrvTexture->Release();
 
 	// Blue team = B team
 	CTexture *pBlueTeam = new CTexture(1, 1, 0, 0);
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/blue.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pBlueTeam->SetTexture(0, pd3dsrvTexture);
 	pBlueTeam->SetSampler(0, pd3dSamplerState);
-	pd3dsrvTexture->Release();
+	//pd3dsrvTexture->Release();
 
 	for (int i = 0; i < 8; ++i)
 	{
@@ -1148,7 +1151,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/OtherHp.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pOtherHp->SetTexture(0, pd3dsrvTexture);
 	pOtherHp->SetSampler(0, pd3dSamplerState);
-	pd3dsrvTexture->Release();
+	//pd3dsrvTexture->Release();
 
 	for (int i = 0; i < MAX_GAMER; ++i)
 	{
@@ -1199,6 +1202,13 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			}
 		}
 	}
+
+
+	//m_pParticleSystem = new CParticleSystem();
+	//m_pParticleSystem->Initialize(pd3dDevice, NULL, m_pParticleSystem->CreateRandomTexture1DSRV(pd3dDevice), 200);
+	//m_pParticleSystem->CreateShader(pd3dDevice);
+
+	
 }
 
 
@@ -1742,6 +1752,10 @@ void CScene::AnimateObjects(float fTimeElapsed)
 			pOtherHpbarObject[i]->SetPosition(pHeroObject[i]->GetPosition().x, pHeroObject[i]->GetPosition().y + 20, pHeroObject[i]->GetPosition().z + 0.1);
 		}
 	}
+
+
+	//m_fGametime += fTimeElapsed;
+	//m_pParticleSystem->Update(fTimeElapsed, m_fGametime);
 }
 
 void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
@@ -1775,7 +1789,7 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 	for (int i = 0; i < 4; ++i)
 		m_pSkillUIManager[i]->RenderAll(pd3dDeviceContext);
 
-
+	//m_pParticleSystem->Render(pd3dDeviceContext);
 }
 
 bool CScene::Rightcollision(CHeroManager* Object1, CHeroManager* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2)

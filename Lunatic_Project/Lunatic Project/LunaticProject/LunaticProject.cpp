@@ -255,8 +255,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	HPEN Pen, oldPen;
 	PAINTSTRUCT ps;
-	static HBITMAP bmp_loading;//, bmp_lobby;
-	static HBITMAP bmp_ending; // bmp_ending
+	static HBITMAP bmp_loading; // bmp_lobby;
+	static HBITMAP bmp_ending;  // bmp_ending
 
 
 	switch (message)
@@ -1174,13 +1174,18 @@ void ProcessPacket(char * ptr)
 
 		if (clientid == gGameFramework.m_pScene->myGame_id) {
 			g_bDoing_Ani = true;	// 애니메이션 도중 키 입력 방지.
+			gGameFramework.Scene_Animation = 1;
 		}
+
 		if (gGameFramework.m_pScene->pHeroObject[clientid]->GetHp() > 0) {
 			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroHit = true;
 			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
 			gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
 			FMOD_System_PlaySound(g_System, FMOD_CHANNEL_REUSE, g_Sound[HIT_SOUND], 0, &g_Channel[HIT_SOUND]);
+
+			
 		}
+			
 
 		// 플레이어들 체력 업데이트
 		if (clientid == gGameFramework.m_pScene->myGame_id)
@@ -1260,6 +1265,8 @@ void ProcessPacket(char * ptr)
 			}
 			gGameFramework.m_pScene->PlayerHpObject[clientid]->Update();
 		}
+
+		
 		break;
 	}
 

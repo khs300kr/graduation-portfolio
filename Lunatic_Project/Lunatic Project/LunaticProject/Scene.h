@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "Shader.h"
 #include "SkyBoxShader.h"
+#include "ParticleSystem.h"
 
 #include "HeroManager.h"
 #include "UIObject.h"
@@ -43,6 +44,8 @@ private:
 	int m_nShaders;
 	int m_nInstancingShaders;
 
+	CParticleSystem *m_pParticleSystem;
+	float m_fGametime;
 
 	CInstancingShader **m_ppInstancingShaders;
 

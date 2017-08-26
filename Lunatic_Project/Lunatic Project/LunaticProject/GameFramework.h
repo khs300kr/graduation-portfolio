@@ -91,5 +91,12 @@ public:
 
 
 	//void char_collision_send();
+
+
+
+	void VibeCamera(float VibeSpeed);
+
+	int Scene_Animation;
+	int Scene_count;
 	
 };

@@ -36,6 +36,9 @@ CGameFramework::CGameFramework()
 
 	LoadingScene = false;
 	ChangeScene = MAINMENU;
+
+	Scene_Animation = 0;
+	Scene_count = 0;
 }
 
 CGameFramework::~CGameFramework()
@@ -752,8 +755,8 @@ void CGameFramework::FrameAdvance()
 		if (m_pScene) m_pScene->Render(m_pd3dDeviceContext, m_pCamera);
 		//if (m_pPlayerShader) m_pPlayerShader->Render(m_pd3dDeviceContext, m_pCamera);
 
-
-
+		if (Scene_Animation != 0)
+			VibeCamera(1.5f);
 
 		m_pDXGISwapChain->Present(0, 0);
 	}
@@ -786,3 +789,28 @@ void CGameFramework::FrameAdvance()
 	::SetWindowText(m_hWnd, m_pszBuffer);
 }
 
+void CGameFramework::VibeCamera(float VibeSpeed)
+{
+	if (Scene_count == 30)
+	{
+		Scene_count = 0;
+		Scene_Animation = 0;
+	}
+
+	else if (Scene_Animation == 1)
+	{
+		m_pCamera->Rotate(m_pCamera->GetPitch() + VibeSpeed, m_pCamera->GetYaw() + VibeSpeed, m_pCamera->GetRoll() + VibeSpeed);
+		Scene_Animation = 2;
+
+		++Scene_count;
+	}
+	else if (Scene_Animation == 2)
+	{
+		m_pCamera->Rotate(m_pCamera->GetPitch() - VibeSpeed, m_pCamera->GetYaw() - VibeSpeed, m_pCamera->GetRoll() - VibeSpeed);
+		Scene_Animation = 1;
+
+		++Scene_count;
+	}
+	
+	
+}
