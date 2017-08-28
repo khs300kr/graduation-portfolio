@@ -187,6 +187,15 @@ public:
 	CUIObject *pSwingUpObject;
 	CUIObject *pSwingDownObject;
 
+	// Win & Lose 배경
+	CUIObject *ResultBackground;
+
+	// Win 이미지
+	CTexture *WinImage[14];
+	CUIObject *WinObject[14];
+	// Lose 이미지
+	CTexture *LoseImage[18];
+	CUIObject *LoseObject[18];
 public:
 
 
@@ -206,7 +215,11 @@ public:
 	CUIManager *m_TeamHPManager[MAX_GAMER];
 	CUIManager *pTeamEdge[8]; // 이미지 테두리
 
-							  // Score
+	CUIManager *BackgroundManager;
+	CUIManager *WinManager[14]; //  win
+	CUIManager *LoseManager[18]; // lose
+
+								 // Score
 	void AteamScore(int _score);
 	void BteamScore(int _score);
 };

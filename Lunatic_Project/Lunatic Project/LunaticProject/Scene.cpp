@@ -1204,11 +1204,116 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	}
 
 
-	//m_pParticleSystem = new CParticleSystem();
-	//m_pParticleSystem->Initialize(pd3dDevice, NULL, m_pParticleSystem->CreateRandomTexture1DSRV(pd3dDevice), 200);
-	//m_pParticleSystem->CreateShader(pd3dDevice);
 
-	
+
+	// 승리 패배 이미지 띄우기
+	pd3dsrvTexture = NULL;
+	CTexture *pResultImage = new CTexture(1, 1, 0, 0);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/ResultBackground.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	pResultImage->SetTexture(0, pd3dsrvTexture);
+	pResultImage->SetSampler(0, pd3dSamplerState);
+
+
+	BackgroundManager = new CUIManager();
+	BackgroundManager->Initialize(pd3dDevice);
+
+	ResultBackground = new CUIObject(pd3dDevice);
+	ResultBackground->SetMaterial(pResultImage);
+	ResultBackground->SetDevice(pd3dDevice);
+	ResultBackground->Initialize(pd3dDevice, POINT{ -1000, -1000 }, POINT{ -1024, -768 }, 0.2f);
+	BackgroundManager->AddUIObject(ResultBackground);
+
+
+	// WIN 이미지 //////////////////////////////////////////////////////////////////////////////////////////////////////////
+	for (int i = 0; i < 14; ++i)
+	{
+		pd3dsrvTexture = NULL;
+		WinImage[i] = new CTexture(1, 1, 0, 0);
+		if (i == 0) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win0.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 1) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win1.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 2) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 3) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win3.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 4) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win4.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 5) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win5.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 6) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win6.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 7) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win7.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 8) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win8.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 9) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win9.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 10) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win10.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 11) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win11.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 12) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win12.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 13) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win13.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		WinImage[i]->SetTexture(0, pd3dsrvTexture);
+		WinImage[i]->SetSampler(0, pd3dSamplerState);
+		pd3dsrvTexture->Release();
+	}
+
+	for (int i = 0; i < 14; ++i)
+	{
+		WinManager[i] = new CUIManager();
+		WinManager[i]->Initialize(pd3dDevice);
+	}
+
+	for (int i = 0; i < 14; ++i)
+	{
+		WinObject[i] = new CUIObject(pd3dDevice);
+		WinObject[i]->SetMaterial(WinImage[i]);
+		WinObject[i]->SetDevice(pd3dDevice);
+		WinObject[i]->Initialize(pd3dDevice, POINT{ -400, -350 }, POINT{ -600, -450 }, 0.1f);
+		WinManager[i]->AddUIObject(WinObject[i]);
+	}
+
+	// LOSE 이미지 //////////////////////////////////////////////////////////////////////////////////////////////////////////
+	for (int i = 0; i < 18; ++i)
+	{
+		pd3dsrvTexture = NULL;
+		LoseImage[i] = new CTexture(1, 1, 0, 0);
+		if (i == 0) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose0.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 1) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose1.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 2) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 3) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose3.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 4) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose4.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 5) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose5.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 6) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose6.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 7) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose7.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 8) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose8.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 9) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose9.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 10) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose10.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 11) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose11.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 12) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose12.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 13) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose13.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 14) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose14.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 15) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose15.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 16) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose16.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 17) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose17.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		LoseImage[i]->SetTexture(0, pd3dsrvTexture);
+		LoseImage[i]->SetSampler(0, pd3dSamplerState);
+		pd3dsrvTexture->Release();
+	}
+
+	for (int i = 0; i < 18; ++i)
+	{
+		LoseManager[i] = new CUIManager();
+		LoseManager[i]->Initialize(pd3dDevice);
+	}
+
+	for (int i = 0; i < 18; ++i)
+	{
+		LoseObject[i] = new CUIObject(pd3dDevice);
+		LoseObject[i]->SetMaterial(LoseImage[i]);
+		LoseObject[i]->SetDevice(pd3dDevice);
+		LoseObject[i]->Initialize(pd3dDevice, POINT{ -400, -350 }, POINT{ -600, -450 }, 0.1f);
+		LoseManager[i]->AddUIObject(LoseObject[i]);
+	}
+
+
+
+
+	m_pParticleSystem = new CParticleSystem();
+	m_pParticleSystem->Initialize(pd3dDevice, NULL, m_pParticleSystem->CreateRandomTexture1DSRV(pd3dDevice), 200);
+	m_pParticleSystem->CreateShader(pd3dDevice);
+
+
 }
 
 
@@ -1810,6 +1915,15 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 
 	for (int i = 0; i < 4; ++i)
 		m_pSkillUIManager[i]->RenderAll(pd3dDeviceContext);
+
+
+	for (int i = 0; i < 14; ++i)
+		WinManager[i]->RenderAll(pd3dDeviceContext);
+
+	for (int i = 0; i < 18; ++i)
+		LoseManager[i]->RenderAll(pd3dDeviceContext);
+
+	BackgroundManager->RenderAll(pd3dDeviceContext);
 
 	//m_pParticleSystem->Render(pd3dDeviceContext);
 }

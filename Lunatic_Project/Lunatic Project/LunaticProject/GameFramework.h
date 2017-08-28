@@ -27,11 +27,11 @@ private:
 	_TCHAR m_pszBuffer[60];
 
 	// 플레이어 멤버 변수
-	
+
 
 	// 상수 버퍼
 	ID3D11Buffer *m_pd3dcbColor;
-		
+
 	// 깊이 버퍼(Depth Buffer) 객체 인터페이스와 뷰에 대한 포인터이다.
 	ID3D11Texture2D *m_pd3dDepthStencilBuffer;
 	ID3D11DepthStencilView *m_pd3dDepthStencilView;
@@ -39,7 +39,7 @@ private:
 	// 마지막으로 마우스 버튼을 클릭할 때의 마우스 커서의 위치이다.
 	POINT	m_ptOldCursorPos;
 
-	
+
 
 public:
 	CGameFramework();
@@ -49,7 +49,7 @@ public:
 	CCamera *m_pCamera;
 
 	CPlayerShader *m_pPlayerShader;
-	
+
 	bool Create(HINSTANCE hInstance, HWND hMainWnd);
 	void Destroy();
 
@@ -78,7 +78,7 @@ public:
 	// Server Func
 
 	DWORD dwDirection = 0;
-	
+
 	DWORD OtherDirection[MAX_GAMER];
 	bool LoadingScene;
 	int ChangeScene;
@@ -86,10 +86,15 @@ public:
 	int playercount;
 
 	bool isEnding;
-	
+	bool isResult;
+
+	DWORD ResultTimer;
 	DWORD endingTimer;
 
+	DWORD WinTimer;
+	DWORD LoseTimer;
 
+	int WinCount;
 	//void char_collision_send();
 
 
@@ -98,5 +103,5 @@ public:
 
 	int Scene_Animation;
 	int Scene_count;
-	
+
 };

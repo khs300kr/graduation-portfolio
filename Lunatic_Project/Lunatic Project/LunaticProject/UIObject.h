@@ -42,14 +42,18 @@ public:
 
 
 	void SetDevice(ID3D11Device* pDevice) { pUIDevice = pDevice; }
-	
+
 	void SetNum(int _SaveNum) { SaveNum = _SaveNum; }
 	int GetNum() { return SaveNum; }
 
 	void Update();
+	void ResultUpdate();
+	void BackgroundUpdate();
 	void SetScore(POINT _sPoint, POINT _ePoint);
 	void SetGamer(POINT _sPoint, POINT _ePoint);
 	void SetHp(POINT _sPoint, POINT _ePoint);
+	void SetResult(POINT _sPoint, POINT _ePoint);
+	void SetBackground(POINT _sPoint, POINT _ePoint);
 };
 
 class CUIManager

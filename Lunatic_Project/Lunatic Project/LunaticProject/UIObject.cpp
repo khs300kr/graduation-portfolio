@@ -3,10 +3,10 @@
 #include "Scene.h"
 #include "UIShader.h"
 
-CUIObject::CUIObject(ID3D11Device *pd3dDevice) 
+CUIObject::CUIObject(ID3D11Device *pd3dDevice)
 {
 	//m_pMaterial = new CMaterial();
-		
+
 	/*ID3D11SamplerState *pd3dSamplerState = NULL;
 	D3D11_SAMPLER_DESC d3dSamplerDesc;
 	ZeroMemory(&d3dSamplerDesc, sizeof(D3D11_SAMPLER_DESC));
@@ -36,11 +36,11 @@ CUIObject::~CUIObject()
 /*
 bool CUIObject::IsCollision(POINT mousePos)
 {
-	if (m_ptStartPos.x * TEXT_MGR->GetResizeRatio().x <= mousePos.x && mousePos.x <= m_ptEndPos.x * TEXT_MGR->GetResizeRatio().x) {
-		if (m_ptStartPos.y * TEXT_MGR->GetResizeRatio().y <= mousePos.y && mousePos.y <= m_ptEndPos.y * TEXT_MGR->GetResizeRatio().y)
-			return true;
-	}
-	return false;
+if (m_ptStartPos.x * TEXT_MGR->GetResizeRatio().x <= mousePos.x && mousePos.x <= m_ptEndPos.x * TEXT_MGR->GetResizeRatio().x) {
+if (m_ptStartPos.y * TEXT_MGR->GetResizeRatio().y <= mousePos.y && mousePos.y <= m_ptEndPos.y * TEXT_MGR->GetResizeRatio().y)
+return true;
+}
+return false;
 */
 
 void CUIObject::Initialize(ID3D11Device* pDevice, POINT startPos, POINT endPos, float zPos)
@@ -54,7 +54,28 @@ void CUIObject::Initialize(ID3D11Device* pDevice, POINT startPos, POINT endPos, 
 void CUIObject::Update()
 {
 	Initialize(pUIDevice, m_ptStartPos, m_ptEndPos, 0.3f);
-}	
+}
+
+void CUIObject::ResultUpdate()
+{
+	Initialize(pUIDevice, m_ptStartPos, m_ptEndPos, 0.1f);
+}
+
+void CUIObject::BackgroundUpdate()
+{
+	Initialize(pUIDevice, m_ptStartPos, m_ptEndPos, 0.2f);
+}
+
+void CUIObject::SetBackground(POINT _sPoint, POINT _ePoint)
+{
+	Initialize(pUIDevice, _sPoint, _ePoint, 0.2f);
+}
+
+
+void CUIObject::SetResult(POINT _sPoint, POINT _ePoint)
+{
+	Initialize(pUIDevice, _sPoint, _ePoint, 0.1f);
+}
 
 void CUIObject::SetScore(POINT _sPoint, POINT _ePoint)
 {
@@ -127,12 +148,12 @@ TextureTag CUIManager::FindCollisionUIObject(POINT mousePos)
 {
 	for (auto& uiObj : m_vecUIObject) {
 		if (uiObj->GetActive()) {
-//			if (uiObj->IsCollision(mousePos)) 
-				return uiObj->GetTag();
+			//			if (uiObj->IsCollision(mousePos)) 
+			return uiObj->GetTag();
 		}
 	}
 
-//	return TextureTag::eNone;
+	//	return TextureTag::eNone;
 }
 
 void CUIManager::RenderAll(ID3D11DeviceContext* pDeviceContext)
@@ -142,13 +163,13 @@ void CUIManager::RenderAll(ID3D11DeviceContext* pDeviceContext)
 	m_pUIShader->OnPrepareRender(pDeviceContext);
 
 	pDeviceContext->OMSetBlendState(g_pTransparentBS, NULL, 0xffffffff);
-	
-	if(m_pBackGroundUI) 
+
+	if (m_pBackGroundUI)
 		m_pBackGroundUI->Render(pDeviceContext);
 
 	for (auto& uiObj : m_vecUIObject)
 		uiObj->Render(pDeviceContext);
-	
+
 	/*pDeviceContext->RSSetState(STATEOBJ_MGR->g_pDefaultRS);*/
 	pDeviceContext->OMSetBlendState(NULL, NULL, 0xffffffff);
 }

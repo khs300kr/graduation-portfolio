@@ -306,7 +306,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 
 		}
-			
+
 
 		else if (gGameFramework.ChangeScene == ROOM)
 		{
@@ -1183,9 +1183,9 @@ void ProcessPacket(char * ptr)
 			gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_HIT);
 			FMOD_System_PlaySound(g_System, FMOD_CHANNEL_REUSE, g_Sound[HIT_SOUND], 0, &g_Channel[HIT_SOUND]);
 
-			
+
 		}
-			
+
 
 		// 플레이어들 체력 업데이트
 		if (clientid == gGameFramework.m_pScene->myGame_id)
@@ -1266,7 +1266,7 @@ void ProcessPacket(char * ptr)
 			gGameFramework.m_pScene->PlayerHpObject[clientid]->Update();
 		}
 
-		
+
 		break;
 	}
 
@@ -1297,13 +1297,14 @@ void ProcessPacket(char * ptr)
 
 
 		//A_TEAM WIN or B_TEAM WIN
-		if (g_A_Teamcount == 2 || g_B_Teamcount == 2) // 구현중이기떄문에 일단 킬 카운트를 2로함
+		if (g_A_Teamcount == 1 || g_B_Teamcount == 1) // 구현중이기떄문에 일단 킬 카운트를 2로함
 		{
-			// 이곳에 엔딩창을
-			gGameFramework.ChangeScene = LOBBY;
+			gGameFramework.m_pScene->ResultBackground->SetBackground(POINT{ 0, 0 }, POINT{ 1024, 768 });
+			gGameFramework.m_pScene->ResultBackground->BackgroundUpdate();
 
-			gGameFramework.isEnding = true;
-			InvalidateRect(g_hWnd, NULL, false);
+
+
+			gGameFramework.isResult = true;
 		}
 
 		break;
