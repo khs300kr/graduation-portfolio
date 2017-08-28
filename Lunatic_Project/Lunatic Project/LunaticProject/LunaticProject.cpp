@@ -1399,23 +1399,31 @@ void ProcessPacket(char * ptr)
 	case SC_RESULT:
 	{	 
 		sc_result *my_packet = reinterpret_cast<sc_result *>(ptr);
-		
-		if (my_packet->IsAWin == true)		// A Team 승리
+		//int id = my_packet->id;
+
+		cout << "나는 무스팀? " << gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->m_Team << endl;
+
+		if (gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->m_Team == A_TEAM)
 		{
-			cout << "A Win\n";
+			gGameFramework.m_pScene->ResultBackground->SetBackground(POINT{ 0, 0 }, POINT{ 1024, 768 });
+			gGameFramework.m_pScene->ResultBackground->BackgroundUpdate();
 
-			//A_TEAM WIN or B_TEAM WIN
-			if (g_A_Teamcount == 1 || g_B_Teamcount == 1) // 구현중이기떄문에 일단 킬 카운트를 2로함
-			{
-				gGameFramework.m_pScene->ResultBackground->SetBackground(POINT{ 0, 0 }, POINT{ 1024, 768 });
-				gGameFramework.m_pScene->ResultBackground->BackgroundUpdate();
-				gGameFramework.isResult = true;
-			}
+			if (my_packet->IsAWin == true)		// A Team 승리
+				gGameFramework.isWinResult = true;
 
+			else
+				gGameFramework.isLoseResult = true;
 		}
-		else // B Team 승리
+		else if (gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->m_Team == B_TEAM)
 		{
-			cout << "B Win\n";
+			gGameFramework.m_pScene->ResultBackground->SetBackground(POINT{ 0, 0 }, POINT{ 1024, 768 });
+			gGameFramework.m_pScene->ResultBackground->BackgroundUpdate();
+
+			if (my_packet->IsAWin == true)		// A Team 승리
+				gGameFramework.isLoseResult = true;
+
+			else
+				gGameFramework.isWinResult = true;
 		}
 		break;
 	}

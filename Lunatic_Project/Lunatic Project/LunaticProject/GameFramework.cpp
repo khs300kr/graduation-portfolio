@@ -30,6 +30,9 @@ CGameFramework::CGameFramework()
 	isEnding = false; // 엔딩
 	isResult = false;
 
+	isWinResult = false;
+	isLoseResult = false;
+
 	endingTimer = 0;
 	ResultTimer = 0;
 
@@ -45,6 +48,7 @@ CGameFramework::CGameFramework()
 	WinTimer = 0;
 	LoseTimer = 0;
 	WinCount = 0;
+	LoseCount = 0;
 }
 
 CGameFramework::~CGameFramework()
@@ -768,7 +772,7 @@ void CGameFramework::FrameAdvance()
 
 
 		// win & lose
-		if (isResult)
+		if (isWinResult)
 		{
 			if (ResultTimer == 0)
 			{
@@ -777,7 +781,7 @@ void CGameFramework::FrameAdvance()
 			//
 			else if (GetTickCount() - ResultTimer > 5000) // 5초 경과
 			{
-				isResult = false;
+				isWinResult = false;
 				ResultTimer = 0;
 
 				ChangeScene = LOBBY;
@@ -792,7 +796,7 @@ void CGameFramework::FrameAdvance()
 					WinTimer = GetTickCount();
 				else if (GetTickCount() - WinTimer > 100)
 				{
-					cout << "win & lose 이미지 : " << WinCount << endl;
+					
 
 					if (WinCount == 0)
 					{
@@ -811,11 +815,55 @@ void CGameFramework::FrameAdvance()
 
 					++WinCount;
 				}
+			}
+		}
 
+		else if (isLoseResult)
+		{
+			if (ResultTimer == 0)
+			{
+				ResultTimer = GetTickCount();
+			}
+			//
+			else if (GetTickCount() - ResultTimer > 5000) // 5초 경과
+			{
+				isLoseResult = false;
+				ResultTimer = 0;
+
+				ChangeScene = LOBBY;
+				isEnding = true;
+
+				InvalidateRect(g_hWnd, NULL, false);
 
 			}
+			else
+			{
+				if (LoseTimer == 0)
+					LoseTimer = GetTickCount();
+				else if (GetTickCount() - LoseTimer > 100)
+				{
+					
 
+					if (LoseCount == 0)
+					{
+						m_pScene->LoseObject[LoseCount]->SetResult(POINT{ 400, 350 }, POINT{ 600, 450 });
+						m_pScene->LoseObject[LoseCount]->ResultUpdate();
+					}
+					else if (LoseCount < 18)
+					{
+						m_pScene->LoseObject[LoseCount - 1]->SetResult(POINT{ -400, -350 }, POINT{ -600, -450 });
+						m_pScene->LoseObject[LoseCount - 1]->ResultUpdate();
+
+						m_pScene->LoseObject[LoseCount]->SetResult(POINT{ 400, 350 }, POINT{ 600, 450 });
+						m_pScene->LoseObject[LoseCount]->ResultUpdate();
+					}
+					LoseTimer = 0;
+
+					++LoseCount;
+				}
+			}
 		}
+
 	}
 
 	else if (ChangeScene == LOBBY)

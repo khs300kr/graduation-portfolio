@@ -88,6 +88,9 @@ public:
 	bool isEnding;
 	bool isResult;
 
+	bool isWinResult;
+	bool isLoseResult;
+
 	DWORD ResultTimer;
 	DWORD endingTimer;
 
@@ -95,6 +98,7 @@ public:
 	DWORD LoseTimer;
 
 	int WinCount;
+	int LoseCount;
 	//void char_collision_send();
 
 
