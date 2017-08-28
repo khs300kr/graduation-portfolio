@@ -1378,7 +1378,7 @@ void CScene::ProcessInput()
 			SendMovePacket(CS_KEYUP_RIGHT);
 		}
 
-
+		// 강공 d
 		if ((KEY_DOWN('D') || KEY_DOWN('d')) && !DKeyDown && !g_bDoing_Ani && !DownKeyDown && !UpKeyDown && !RightKeyDown && !LeftKeyDown)
 		{
 			DKeyDown = true;
@@ -1438,8 +1438,17 @@ void CScene::ProcessInput()
 			DKeyDown = false;
 		}
 
-		if ((KEY_DOWN('Q') || KEY_DOWN('q')) && !g_bDoing_Ani)
+		// 약공 s
+		if ((KEY_DOWN('S') || KEY_DOWN('s')) && !SKeyDown && !g_bDoing_Ani && !DownKeyDown && !UpKeyDown && !RightKeyDown && !LeftKeyDown)
 		{
+			SKeyDown = true;
+
+			pAttackUpObject->SetGamer(POINT{ -600, -668 }, POINT{ -700, -768 });
+			pAttackUpObject->Update();
+
+			pAttackDownObject->SetGamer(POINT{ 600, 668 }, POINT{ 700, 768 });
+			pAttackDownObject->Update();
+
 			if (!pHeroObject[myGame_id]->bHeroQ)
 			{
 				g_bDoing_Ani = true;	// 애니메이션 도중 키 입력 방지.
@@ -1456,6 +1465,19 @@ void CScene::ProcessInput()
 				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 			}
 		}
+		if ((KEY_UP('S') || KEY_UP('s')) && SKeyDown && !g_bDoing_Ani)
+		{
+
+			pAttackUpObject->SetGamer(POINT{ -600, -668 }, POINT{ -700, -768 });
+			pAttackUpObject->Update();
+
+			pAttackUpObject->SetGamer(POINT{ 600, 668 }, POINT{ 700, 768 });
+			pAttackUpObject->Update();
+
+			SKeyDown = false;
+		}
+
+
 		if ((KEY_DOWN('W') || KEY_DOWN('w')) && !g_bDoing_Ani)
 		{
 			if (!pHeroObject[myGame_id]->bHeroW)

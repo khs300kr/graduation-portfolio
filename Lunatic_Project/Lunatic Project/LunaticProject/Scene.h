@@ -60,7 +60,7 @@ private:
 	bool DownKeyDown;
 
 	bool DKeyDown;
-	bool QKeyDown;
+	bool SKeyDown;
 	bool WKeyDown;
 	bool EKeyDown;
 	bool RKeyDown;
