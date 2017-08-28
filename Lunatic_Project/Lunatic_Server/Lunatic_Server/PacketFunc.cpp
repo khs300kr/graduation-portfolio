@@ -329,12 +329,13 @@ void SendRespawnPacket(int client, int object)
 	Send_Packet(client, &packet);
 }
 
-void SendResultPacket(int client, int object)
+void SendResultPacket(int client, int object, bool winflag)
 {
 	sc_result packet;
 	packet.id = g_Clients[object].m_GameID;
 	packet.size = sizeof(packet);
-	packet.type = SC_RESPAWN;
+	packet.type = SC_RESULT;
+	packet.IsAWin = winflag;
 
 	Send_Packet(client, &packet);
 }
@@ -698,26 +699,41 @@ void ProcessPacket(int id, unsigned char packet[])
 		{ 
 			g_Clients[my_packet->hitID].m_hp = 0; // 클라이언트용 서버 ID.
 			g_Clients[my_packet->hitID].m_room_number = room_number;
-			// Timer Setting(Respawn)
-			Timer_Event t = { my_packet->hitID ,high_resolution_clock::now() + 5s, P_RESPAWN, room_number };
-			timerqueue_lock.lock();
-			timer_queue.push(t);
-			timerqueue_lock.unlock();
-
+			
 			// KILL수 늘리기. ( 목표 Kill 수 도달 시 승리 및 패배 패킷 전송 ).
 			if (my_packet->clientID & 1) // odd = B_TEAM
 			{
 				++g_Room[room_number].B_killcount;
 				for (auto& d : g_Room[room_number].m_GameID_list)
-					SendDiePacket(d, id, my_packet->clientID,B_TEAM);
-
+					SendDiePacket(d, id, my_packet->clientID, B_TEAM);
 			}
 			else // even = A_TEAM
 			{
 				++g_Room[room_number].A_killcount;
 				for (auto& d : g_Room[room_number].m_GameID_list)
-					SendDiePacket(d, id, my_packet->clientID,A_TEAM);
+					SendDiePacket(d, id, my_packet->clientID, A_TEAM);
 			}
+
+			// 승리조건
+			if (g_Room[room_number].A_killcount == RESULTDEATH)
+			{
+				for (auto& d : g_Room[room_number].m_GameID_list)
+					SendResultPacket(d, id,false);
+			}
+			else if (g_Room[room_number].B_killcount == RESULTDEATH)
+			{
+				for (auto& d : g_Room[room_number].m_GameID_list)
+					SendResultPacket(d, id,true);
+			}
+			else
+			{
+				// Timer Setting(Respawn)
+				Timer_Event t = { my_packet->hitID ,high_resolution_clock::now() + 5s, P_RESPAWN, room_number };
+				timerqueue_lock.lock();
+				timer_queue.push(t);
+				timerqueue_lock.unlock();
+			}
+			
 			
 		}
 		// 캐릭터 사망시.

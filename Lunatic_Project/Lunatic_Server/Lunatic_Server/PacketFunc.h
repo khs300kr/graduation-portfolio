@@ -45,7 +45,7 @@ void SendDiePacket(int client, int object, int clientID, BYTE team);
 void SendRespawnPacket(int client, int object);
 
 // (Result)
-void SendResultPacket(int client, int object);
+void SendResultPacket(int client, int object,bool winflag);
 
 
 

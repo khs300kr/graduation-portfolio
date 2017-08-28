@@ -41,6 +41,7 @@
 #define CS_ATTACK_HIT				26
 #define CS_BUILDING_COLL			27
 #define CS_RESPAWN					28
+#define CS_RESULT					29
 
 #define SC_POS				 1
 #define SC_PUT_PLAYER		 2
@@ -98,8 +99,10 @@
 #define A_TEAM 1
 #define B_TEAM 2
 
+// 승리조건
 #define TEAM_WIN  1
 #define TEAM_LOSE 2
+#define RESULTDEATH 3
 
 // 캐릭터
 #define EMPTY		0
@@ -387,6 +390,7 @@ struct sc_result {
 	BYTE size;
 	BYTE type;
 	WORD id;
+	bool IsAWin;
 };
 
 

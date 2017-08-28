@@ -1278,13 +1278,13 @@ void ProcessPacket(char * ptr)
 
 		if (my_packet->team == A_TEAM)
 		{
-			gGameFramework.m_pScene->AteamScore(++g_A_Teamcount);
+			gGameFramework.m_pScene->BteamScore(++g_A_Teamcount);
 
 			cout << "A_TEAM KILLED\n";
 		}
 		else
 		{
-			gGameFramework.m_pScene->BteamScore(++g_B_Teamcount);
+			gGameFramework.m_pScene->AteamScore(++g_B_Teamcount);
 			cout << "B_TEAM KILLED\n";
 		}
 
@@ -1296,16 +1296,6 @@ void ProcessPacket(char * ptr)
 		gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(0);
 
 
-		//A_TEAM WIN or B_TEAM WIN
-		if (g_A_Teamcount == 1 || g_B_Teamcount == 1) // 구현중이기떄문에 일단 킬 카운트를 2로함
-		{
-			gGameFramework.m_pScene->ResultBackground->SetBackground(POINT{ 0, 0 }, POINT{ 1024, 768 });
-			gGameFramework.m_pScene->ResultBackground->BackgroundUpdate();
-
-
-
-			gGameFramework.isResult = true;
-		}
 
 		break;
 	}
@@ -1405,6 +1395,31 @@ void ProcessPacket(char * ptr)
 
 		break;
 	}
+	
+	case SC_RESULT:
+	{	 
+		sc_result *my_packet = reinterpret_cast<sc_result *>(ptr);
+		
+		if (my_packet->IsAWin == true)		// A Team 승리
+		{
+			cout << "A Win\n";
+
+			//A_TEAM WIN or B_TEAM WIN
+			if (g_A_Teamcount == 1 || g_B_Teamcount == 1) // 구현중이기떄문에 일단 킬 카운트를 2로함
+			{
+				gGameFramework.m_pScene->ResultBackground->SetBackground(POINT{ 0, 0 }, POINT{ 1024, 768 });
+				gGameFramework.m_pScene->ResultBackground->BackgroundUpdate();
+				gGameFramework.isResult = true;
+			}
+
+		}
+		else // B Team 승리
+		{
+			cout << "B Win\n";
+		}
+		break;
+	}
+
 
 	case SC_REMOVE_PLAYER:
 	{
