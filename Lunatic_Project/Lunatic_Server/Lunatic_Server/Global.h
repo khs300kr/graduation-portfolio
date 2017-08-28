@@ -37,6 +37,13 @@ struct CLIENT
 	short			m_att;
 	short			m_hp;
 	int				m_room_number;
+	
+	// °á°úÃ¢ Stat
+	WORD			m_killcount;
+	WORD			m_deathcount;
+	int				m_deal;
+	int				m_hit;
+
 	//
 	bool			m_bConnect;
 	SOCKET			m_client_socket;

@@ -359,6 +359,10 @@ void Player_Respawn(int id, int room_number)
 		SendRespawnPacket(d, id);
 }
 
+void LobbyReset(int id)
+{
+}
+
 
 void SendRemovePlayerPacket(int client, int object)
 {
@@ -688,6 +692,10 @@ void ProcessPacket(int id, unsigned char packet[])
 		int room_number = packet[2];	// roomnumber
 		
 		g_Clients[my_packet->hitID].m_hp -= g_Clients[id].m_att; // Hp 감소.
+
+		g_Clients[my_packet->hitID].m_hit += g_Clients[id].m_att;	// 피해량 계산
+		g_Clients[id].m_deal += g_Clients[id].m_att;				// 딜량 계산
+
 		if (g_Clients[my_packet->hitID].m_Direction != 0)	// 이동 중일때.
 		{
 			g_Clients[my_packet->hitID].m_Direction = 0;	// 이동을 멈추어라.
@@ -698,6 +706,8 @@ void ProcessPacket(int id, unsigned char packet[])
 		if (g_Clients[my_packet->hitID].m_hp <= 0) 
 		{ 
 			g_Clients[my_packet->hitID].m_hp = 0; // 클라이언트용 서버 ID.
+			++g_Clients[id].m_killcount;								// 데스 계산
+			++g_Clients[my_packet->hitID].m_deathcount;					// 킬 계산
 			g_Clients[my_packet->hitID].m_room_number = room_number;
 			
 			// KILL수 늘리기. ( 목표 Kill 수 도달 시 승리 및 패배 패킷 전송 ).
@@ -714,7 +724,7 @@ void ProcessPacket(int id, unsigned char packet[])
 					SendDiePacket(d, id, my_packet->clientID, A_TEAM);
 			}
 
-			// 승리조건
+			// 승리조건 + 초기화 작업(not yet)
 			if (g_Room[room_number].A_killcount == RESULTDEATH)
 			{
 				for (auto& d : g_Room[room_number].m_GameID_list)
@@ -725,6 +735,7 @@ void ProcessPacket(int id, unsigned char packet[])
 				for (auto& d : g_Room[room_number].m_GameID_list)
 					SendResultPacket(d, id,true);
 			}
+
 			else
 			{
 				// Timer Setting(Respawn)
