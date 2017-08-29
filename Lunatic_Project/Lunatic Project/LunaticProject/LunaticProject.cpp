@@ -267,7 +267,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		SoundInit();
 #endif
 		bmp_loading = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_LOADINGWINDOW));
-		bmp_ending = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_ENDING));
+		bmp_ending = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_ENDING_BACK));
 
 
 		// Chatting

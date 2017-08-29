@@ -430,6 +430,27 @@
     <Image Include="..\Data\Menu\Game\ending.bmp">
       <Filter>리소스 파일\Game</Filter>
     </Image>
+    <Image Include="..\Data\Menu\Game\EndingState\ending_background.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Game\EndingState\r_babarian.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Game\EndingState\r_healer.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Game\EndingState\r_knight.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Game\EndingState\r_magician.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Game\EndingState\r_swordman.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Data\Menu\Game\EndingState\r_witch.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="BaseEffect.fx">

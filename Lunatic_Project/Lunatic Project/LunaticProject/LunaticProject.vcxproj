@@ -169,6 +169,13 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Data\Menu\Game\ending.bmp" />
+    <Image Include="..\Data\Menu\Game\EndingState\ending_background.bmp" />
+    <Image Include="..\Data\Menu\Game\EndingState\r_babarian.bmp" />
+    <Image Include="..\Data\Menu\Game\EndingState\r_healer.bmp" />
+    <Image Include="..\Data\Menu\Game\EndingState\r_knight.bmp" />
+    <Image Include="..\Data\Menu\Game\EndingState\r_magician.bmp" />
+    <Image Include="..\Data\Menu\Game\EndingState\r_swordman.bmp" />
+    <Image Include="..\Data\Menu\Game\EndingState\r_witch.bmp" />
     <Image Include="..\Data\Menu\Game\loading.bmp" />
     <Image Include="..\Data\Menu\Lobby\create.bmp" />
     <Image Include="..\Data\Menu\Lobby\createwindow.bmp" />
