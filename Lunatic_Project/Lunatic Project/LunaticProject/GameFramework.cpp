@@ -880,6 +880,7 @@ void CGameFramework::FrameAdvance()
 			{
 				isEnding = false;
 				endingTimer = 0;
+
 				InvalidateRect(g_hWnd, NULL, false);
 
 			}

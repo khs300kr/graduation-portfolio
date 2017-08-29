@@ -19,6 +19,7 @@ public:
 	int m_HeroSelect;
 	int m_Team;
 	int m_serverID;
+
 	// Ending Stat
 	WORD m_killcount;
 	WORD m_deathcount;

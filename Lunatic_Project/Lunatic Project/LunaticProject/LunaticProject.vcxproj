@@ -168,7 +168,6 @@
     <ClCompile Include="Witch.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\Data\Menu\Game\ending.bmp" />
     <Image Include="..\Data\Menu\Game\EndingState\ending_background.bmp" />
     <Image Include="..\Data\Menu\Game\EndingState\r_babarian.bmp" />
     <Image Include="..\Data\Menu\Game\EndingState\r_healer.bmp" />

@@ -249,7 +249,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	HDC hdc, memdc, memdc2;
 
-	//HFONT hFont, hOldFont;
+	HFONT hFont, hOldFont;
 
 	HBITMAP hBackBit, hOldBitmap;
 
@@ -258,7 +258,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static HBITMAP bmp_loading; // bmp_lobby;
 	static HBITMAP bmp_ending;  // bmp_ending
 
+	static HBITMAP bmp_babarian;
+	static HBITMAP bmp_healer;
+	static HBITMAP bmp_knight;
+	static HBITMAP bmp_magician;
+	static HBITMAP bmp_swordman;
+	static HBITMAP bmp_witch;
 
+
+	static wchar_t s[5];
 	switch (message)
 	{
 	case WM_CREATE:
@@ -269,6 +277,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		bmp_loading = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_LOADINGWINDOW));
 		bmp_ending = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_ENDING_BACK));
 
+		bmp_babarian = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_R_BABARIAN));
+		bmp_healer = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_R_HEALER));
+		bmp_knight = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_R_KNIGHT));
+		bmp_magician = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_R_MAGICIAN));
+		bmp_swordman = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_R_SWORDMAN));
+		bmp_witch = (HBITMAP)LoadBitmap(hInst, MAKEINTRESOURCE(IDB_R_WITCH));
+		
 
 		// Chatting
 		hChat = CreateWindow(L"edit", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER |
@@ -297,8 +312,73 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			if (gGameFramework.isEnding)
 			{
+
 				SelectObject(memdc2, bmp_ending);
 				BitBlt(memdc, 0, 0, 1024, 768, memdc2, 0, 0, SRCCOPY);
+
+
+
+				for (int i = 0; i < 4; ++i) // 결과창 아이콘 이미지
+				{
+					if (gGameFramework.m_pScene->pHeroObject[i]->m_HeroSelect == BABARIAN) SelectObject(memdc2, bmp_babarian);
+					else if (gGameFramework.m_pScene->pHeroObject[i]->m_HeroSelect == HEALER) SelectObject(memdc2, bmp_healer);
+					else if (gGameFramework.m_pScene->pHeroObject[i]->m_HeroSelect == MAGICIAN) SelectObject(memdc2, bmp_magician);
+					else if (gGameFramework.m_pScene->pHeroObject[i]->m_HeroSelect == WITCH) SelectObject(memdc2, bmp_witch);
+					else if (gGameFramework.m_pScene->pHeroObject[i]->m_HeroSelect == SWORDMAN) SelectObject(memdc2, bmp_swordman);
+					else if (gGameFramework.m_pScene->pHeroObject[i]->m_HeroSelect == KNIGHT) SelectObject(memdc2, bmp_knight);
+
+					if(gGameFramework.m_pScene->pHeroObject[i]->m_HeroSelect != 0)
+						BitBlt(memdc, 83, 160 + (i * 70), 60, 60, memdc2, 0, 0, SRCCOPY);
+				}
+
+				for (int i = 4; i < MAX_GAMER; ++i)
+				{
+					if (gGameFramework.m_pScene->pHeroObject[i]->m_HeroSelect == BABARIAN) SelectObject(memdc2, bmp_babarian);
+					else if (gGameFramework.m_pScene->pHeroObject[i]->m_HeroSelect == HEALER) SelectObject(memdc2, bmp_healer);
+					else if (gGameFramework.m_pScene->pHeroObject[i]->m_HeroSelect == MAGICIAN) SelectObject(memdc2, bmp_magician);
+					else if (gGameFramework.m_pScene->pHeroObject[i]->m_HeroSelect == WITCH) SelectObject(memdc2, bmp_witch);
+					else if (gGameFramework.m_pScene->pHeroObject[i]->m_HeroSelect == SWORDMAN) SelectObject(memdc2, bmp_swordman);
+					else if (gGameFramework.m_pScene->pHeroObject[i]->m_HeroSelect == KNIGHT) SelectObject(memdc2, bmp_knight);
+
+					if (gGameFramework.m_pScene->pHeroObject[i]->m_HeroSelect != 0)
+						BitBlt(memdc, 83, 170 + (i * 70), 60, 60, memdc2, 0, 0, SRCCOPY);
+				}
+
+
+
+				
+				hFont = CreateFont(24, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("함초롱바탕"));
+				hOldFont = (HFONT)SelectObject(memdc, hFont);
+
+				SetTextColor(memdc, RGB(255, 255, 255));
+				SetBkMode(memdc, TRANSPARENT);
+
+				for (int i = 0; i < MAX_GAMER; ++i)
+				{
+
+	
+					// DB달고 여기에 아이디를 추가해야함
+
+
+					wsprintf(s, L"%d", gGameFramework.m_pScene->pHeroObject[i]->m_killcount);
+					TextOut(memdc, 410, 170 + (i * 70), s, wcslen(s)); // 방 제목 출력
+
+					
+					wsprintf(s, L"%d", gGameFramework.m_pScene->pHeroObject[i]->m_deathcount);
+					TextOut(memdc, 510, 170 + (i * 70), s, wcslen(s)); // 방 제목 출력
+
+
+					wsprintf(s, L"%d", gGameFramework.m_pScene->pHeroObject[i]->m_damageDealt);
+					TextOut(memdc, 650, 170 + (i * 70), s, wcslen(s)); // 방 제목 출력
+
+					wsprintf(s, L"%d", gGameFramework.m_pScene->pHeroObject[i]->m_hitAmount);
+					TextOut(memdc, 780, 170 + (i * 70), s, wcslen(s)); // 방 제목 출력
+				}
+				
+
+				
+
+				SetTextColor(memdc, RGB(0, 0, 0));
 			}
 			else
 			{
@@ -440,8 +520,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 	}
 
-
 	break;
+
 	case WM_KEYDOWN:
 
 		switch (wParam)

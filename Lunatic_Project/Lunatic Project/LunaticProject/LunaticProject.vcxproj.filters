@@ -263,9 +263,6 @@
     <ClCompile Include="CharacterShader.cpp">
       <Filter>소스 파일\98.Shader</Filter>
     </ClCompile>
-    <ClCompile Include="LunaticProject.cpp">
-      <Filter>소스 파일\00.Main</Filter>
-    </ClCompile>
     <ClCompile Include="ServerGlobal.cpp">
       <Filter>소스 파일\69.Server</Filter>
     </ClCompile>
@@ -319,6 +316,9 @@
     </ClCompile>
     <ClCompile Include="ParticleSystem.cpp">
       <Filter>Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="LunaticProject.cpp">
+      <Filter>소스 파일\00.Main\03.UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -426,9 +426,6 @@
     </Image>
     <Image Include="..\Data\Menu\Room\UI\new_background.bmp">
       <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="..\Data\Menu\Game\ending.bmp">
-      <Filter>리소스 파일\Game</Filter>
     </Image>
     <Image Include="..\Data\Menu\Game\EndingState\ending_background.bmp">
       <Filter>리소스 파일</Filter>
