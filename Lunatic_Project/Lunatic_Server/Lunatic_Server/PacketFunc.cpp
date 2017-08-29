@@ -340,6 +340,20 @@ void SendResultPacket(int client, int object, bool winflag)
 	Send_Packet(client, &packet);
 }
 
+void SendEndingResult(int client, int object)
+{
+	sc_packet_endingresult packet;
+	packet.id = g_Clients[object].m_GameID;
+	packet.size = sizeof(packet);
+	packet.type = SC_ENDINGRESULT;
+	packet.killcount = g_Clients[object].m_killcount;
+	packet.deathcount = g_Clients[object].m_deathcount;
+	packet.deal = g_Clients[object].m_deal;
+	packet.hit = g_Clients[object].m_hit;
+
+	Send_Packet(client, &packet);
+}
+
 void Player_Respawn(int id, int room_number)
 {
 	switch (g_Clients[id].m_HeroPick)
@@ -597,7 +611,6 @@ void ProcessPacket(int id, unsigned char packet[])
 			for (auto& id : g_Room[room_number].m_AcceptLoading_list) {
 				for (auto& d : g_Room[room_number].m_GameID_list) 
 				{
-					cout << "d : " << d << " id : " << id << endl;
 					SendPutPlayerPacket(d,id);
 	
 				}
@@ -710,6 +723,19 @@ void ProcessPacket(int id, unsigned char packet[])
 			++g_Clients[my_packet->hitID].m_deathcount;					// 킬 계산
 			g_Clients[my_packet->hitID].m_room_number = room_number;
 			
+			cout << "맞은애\n";
+			cout << "킬 수 : " << g_Clients[my_packet->hitID].m_killcount << endl;
+			cout << "데스 수 : " << g_Clients[my_packet->hitID].m_deathcount << endl;
+			cout << "딜량 수 : " << g_Clients[my_packet->hitID].m_deal << endl;
+			cout << "피해량 수 : " << g_Clients[my_packet->hitID].m_hit << endl;
+
+			cout << "때린애\n";
+			cout << "킬 수 : " << g_Clients[id].m_killcount << endl;
+			cout << "데스 수 : " << g_Clients[id].m_deathcount << endl;
+			cout << "딜량 수 : " << g_Clients[id].m_deal << endl;
+			cout << "피해량 수 : " << g_Clients[id].m_hit << endl;
+
+
 			// KILL수 늘리기. ( 목표 Kill 수 도달 시 승리 및 패배 패킷 전송 ).
 			if (my_packet->clientID & 1) // odd = B_TEAM
 			{
@@ -729,11 +755,23 @@ void ProcessPacket(int id, unsigned char packet[])
 			{
 				for (auto& d : g_Room[room_number].m_GameID_list)
 					SendResultPacket(d, id,false);
+				for (auto& id : g_Room[room_number].m_AcceptLoading_list) 
+					for (auto& d : g_Room[room_number].m_GameID_list)
+					{
+						cout << "d : " << d << " id : " << id << endl;
+						SendEndingResult(d, id);
+					}
 			}
 			else if (g_Room[room_number].B_killcount == RESULTDEATH)
 			{
 				for (auto& d : g_Room[room_number].m_GameID_list)
 					SendResultPacket(d, id,true);
+				for (auto& id : g_Room[room_number].m_AcceptLoading_list)
+					for (auto& d : g_Room[room_number].m_GameID_list)
+					{
+						cout << "d : " << d << " id : " << id << endl;
+						SendEndingResult(d, id);
+					}
 			}
 
 			else

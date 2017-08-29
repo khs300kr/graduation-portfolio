@@ -46,6 +46,7 @@ void SendRespawnPacket(int client, int object);
 
 // (Result)
 void SendResultPacket(int client, int object,bool winflag);
+void SendEndingResult(int client, int object);
 
 // (Timer_Thread_Func)
 void Player_Respawn(int id, int room_number);

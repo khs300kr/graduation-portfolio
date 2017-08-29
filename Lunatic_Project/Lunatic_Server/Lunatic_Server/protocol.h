@@ -41,7 +41,6 @@
 #define CS_ATTACK_HIT				26
 #define CS_BUILDING_COLL			27
 #define CS_RESPAWN					28
-#define CS_RESULT					29
 
 #define SC_POS				 1
 #define SC_PUT_PLAYER		 2
@@ -72,6 +71,7 @@
 #define SC_CHAR_DIE			 27
 #define SC_RESPAWN			 28
 #define SC_RESULT			 29
+#define SC_ENDINGRESULT		 30
 
 // Client Define
 // 키보드 입력
@@ -391,8 +391,22 @@ struct sc_result {
 	BYTE type;
 	WORD id;
 	bool IsAWin;
+	WORD killcount;
+	WORD deathcount;
+	int	 deal;
+	int	 hit;
 };
 
+struct sc_packet_endingresult
+{
+	BYTE size;
+	BYTE type;
+	WORD id;
+	WORD killcount;
+	WORD deathcount;
+	int	 deal;
+	int	 hit;
+};
 
 struct sc_packet_remove_player {
 	BYTE size;
@@ -443,8 +457,6 @@ struct sc_packet_coll_building {
 	WORD id;
 	BYTE direction;
 };
-
-
 
 struct sc_packet_chat {
 	BYTE size;

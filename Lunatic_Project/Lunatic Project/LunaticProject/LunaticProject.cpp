@@ -1428,6 +1428,33 @@ void ProcessPacket(char * ptr)
 		break;
 	}
 
+	case SC_ENDINGRESULT:
+	{
+		sc_packet_endingresult *my_packet = reinterpret_cast<sc_packet_endingresult *>(ptr);
+		int id = my_packet->id;
+		if (id == gGameFramework.m_pScene->myGame_id) {
+			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->m_killcount = my_packet->killcount;
+			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->m_deathcount = my_packet->deathcount;
+			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->m_damageDealt = my_packet->deal;
+			gGameFramework.m_pScene->pHeroObject[gGameFramework.m_pScene->myGame_id]->m_hitAmount = my_packet->hit;
+		}
+		else
+		{
+			gGameFramework.m_pScene->pHeroObject[id]->m_killcount = my_packet->killcount;
+			gGameFramework.m_pScene->pHeroObject[id]->m_deathcount = my_packet->deathcount;
+			gGameFramework.m_pScene->pHeroObject[id]->m_damageDealt = my_packet->deal;
+			gGameFramework.m_pScene->pHeroObject[id]->m_hitAmount = my_packet->hit;
+		}
+		for (int i = 0; i < MAX_GAMER; ++i)
+		{
+			cout << i << "번쨰 인포\n";
+			cout << "킬 수 : " << gGameFramework.m_pScene->pHeroObject[i]->m_killcount << endl;
+			cout << "데스 수 : " << gGameFramework.m_pScene->pHeroObject[i]->m_deathcount << endl;
+			cout << "딜량 : " << gGameFramework.m_pScene->pHeroObject[i]->m_damageDealt << endl;
+			cout << "피해량 : " << gGameFramework.m_pScene->pHeroObject[i]->m_hitAmount << endl;
+		}
+		break;
+	}
 
 	case SC_REMOVE_PLAYER:
 	{
