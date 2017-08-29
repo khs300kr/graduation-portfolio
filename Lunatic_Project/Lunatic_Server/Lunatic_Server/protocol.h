@@ -41,6 +41,8 @@
 #define CS_ATTACK_HIT				26
 #define CS_BUILDING_COLL			27
 #define CS_RESPAWN					28
+#define CS_WEAKATTACK_HIT			29
+#define CS_SKILL_HIT				30
 
 #define SC_POS				 1
 #define SC_PUT_PLAYER		 2

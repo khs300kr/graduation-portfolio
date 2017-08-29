@@ -1488,7 +1488,6 @@ void CScene::ProcessInput()
 		{
 			DKeyDown = true;
 
-
 			pSwingUpObject->SetGamer(POINT{ -700, -668 }, POINT{ -800, -768 });
 			pSwingUpObject->Update();
 
@@ -1569,10 +1568,29 @@ void CScene::ProcessInput()
 
 				WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
 			}
+			for (int i = 0; i < MAX_GAMER; ++i)
+			{
+				if ((i != myGame_id) && (pHeroObject[i]->bDeath == false) && (pHeroObject[i]->m_Team != pHeroObject[myGame_id]->m_Team))
+				{
+					if (Sectorcollision(pHeroObject[myGame_id], pHeroObject[i], dwDirforCollision, 3.f, pHeroObject[myGame_id]->GetRange()))
+					{
+						cs_packet_attack_hit *my_packet = reinterpret_cast<cs_packet_attack_hit *>(send_buffer);
+						my_packet->size = sizeof(cs_packet_attack_hit);
+						send_wsabuf.len = sizeof(cs_packet_attack_hit);
+						DWORD iobyte;
+						my_packet->type = CS_WEAKATTACK_HIT;
+						my_packet->roomnumber = MyRoomNumber;
+						my_packet->hitID = pHeroObject[i]->m_serverID;	// ³» ServerID.
+						my_packet->clientID = i;
+
+						WSASend(g_mysocket, &send_wsabuf, 1, &iobyte, 0, NULL, NULL);
+
+					}
+				}
+			}
 		}
 		if ((KEY_UP('S') || KEY_UP('s')) && SKeyDown && !g_bDoing_Ani)
 		{
-
 			pAttackUpObject->SetGamer(POINT{ -600, -668 }, POINT{ -700, -768 });
 			pAttackUpObject->Update();
 

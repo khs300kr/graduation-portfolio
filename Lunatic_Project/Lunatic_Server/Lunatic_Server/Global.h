@@ -35,6 +35,8 @@ struct CLIENT
 	BYTE			m_HeroPick;
 	// Hero Stat
 	short			m_att;
+	short			m_weakatt;
+	short			m_skillatt;
 	short			m_hp;
 	int				m_room_number;
 	

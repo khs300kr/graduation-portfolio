@@ -566,13 +566,20 @@ void ProcessPacket(int id, unsigned char packet[])
 		g_Clients[id].m_HeroPick = my_packet->hero_pick;
 		switch (my_packet->hero_pick)
 		{
-		case BABARIAN:	g_Clients[id].m_hp = BABARIAN_HP; g_Clients[id].m_att = 150;	break;
-		case KNIGHT:	g_Clients[id].m_hp = KNIGHT_HP; g_Clients[id].m_att = 150;		break;
-		case SWORDMAN:	g_Clients[id].m_hp = SWORDMAN_HP; g_Clients[id].m_att = 200;	break;
-		case MAGICIAN:	g_Clients[id].m_hp = MAGICIAN_HP; g_Clients[id].m_att = 180;	break;
-		case ARCHER:	g_Clients[id].m_hp = ARCHER_HP; g_Clients[id].m_att = 170;		break;
-		case HEALER:	g_Clients[id].m_hp = HEALER_HP; g_Clients[id].m_att = 200;		break;
-		case WITCH:		g_Clients[id].m_hp = WITCH_HP; g_Clients[id].m_att = 200;		break;
+		case BABARIAN:	g_Clients[id].m_hp = BABARIAN_HP; g_Clients[id].m_att = 150;	
+			g_Clients[id].m_weakatt = 100; g_Clients[id].m_skillatt = 200; break;
+		case KNIGHT:	g_Clients[id].m_hp = KNIGHT_HP; g_Clients[id].m_att = 150;		
+			g_Clients[id].m_weakatt = 100; g_Clients[id].m_skillatt = 200; break;
+		case SWORDMAN:	g_Clients[id].m_hp = SWORDMAN_HP; g_Clients[id].m_att = 200;	
+			g_Clients[id].m_weakatt = 130; g_Clients[id].m_skillatt = 200; break;
+		case MAGICIAN:	g_Clients[id].m_hp = MAGICIAN_HP; g_Clients[id].m_att = 180;
+			g_Clients[id].m_weakatt = 110; g_Clients[id].m_skillatt = 200; break;
+		case ARCHER:	g_Clients[id].m_hp = ARCHER_HP; g_Clients[id].m_att = 170;
+			g_Clients[id].m_weakatt = 120; g_Clients[id].m_skillatt = 200; break;
+		case HEALER:	g_Clients[id].m_hp = HEALER_HP; g_Clients[id].m_att = 200;
+			g_Clients[id].m_weakatt = 130; g_Clients[id].m_skillatt = 200; break;
+		case WITCH:		g_Clients[id].m_hp = WITCH_HP; g_Clients[id].m_att = 200;
+			g_Clients[id].m_weakatt = 130; g_Clients[id].m_skillatt = 200; break;
 		}
 		++g_Room[room_number].m_readycount;
 		g_Clients[id].vl_lock.unlock();	////////////////////// UNLOCK
@@ -758,7 +765,6 @@ void ProcessPacket(int id, unsigned char packet[])
 				for (auto& id : g_Room[room_number].m_AcceptLoading_list) 
 					for (auto& d : g_Room[room_number].m_GameID_list)
 					{
-						cout << "d : " << d << " id : " << id << endl;
 						SendEndingResult(d, id);
 					}
 			}
@@ -769,7 +775,6 @@ void ProcessPacket(int id, unsigned char packet[])
 				for (auto& id : g_Room[room_number].m_AcceptLoading_list)
 					for (auto& d : g_Room[room_number].m_GameID_list)
 					{
-						cout << "d : " << d << " id : " << id << endl;
 						SendEndingResult(d, id);
 					}
 			}
@@ -789,6 +794,162 @@ void ProcessPacket(int id, unsigned char packet[])
 
 
 
+		for (auto& d : g_Room[room_number].m_GameID_list)
+			SendAttackHitPacket(d, id, my_packet->hitID, my_packet->clientID);
+		break;
+	}
+	case CS_WEAKATTACK_HIT:
+	{
+		cs_packet_attack_hit *my_packet = reinterpret_cast<cs_packet_attack_hit*>(packet);
+		int room_number = packet[2];	// roomnumber
+
+		g_Clients[my_packet->hitID].m_hp -= g_Clients[id].m_weakatt; // Hp 감소.
+
+		g_Clients[my_packet->hitID].m_hit += g_Clients[id].m_weakatt;	// 피해량 계산
+		g_Clients[id].m_deal += g_Clients[id].m_weakatt;				// 딜량 계산
+
+		if (g_Clients[my_packet->hitID].m_Direction != 0)	// 이동 중일때.
+		{
+			g_Clients[my_packet->hitID].m_Direction = 0;	// 이동을 멈추어라.
+															// 위치 갱신 코드 필요.
+		}
+
+		// 캐릭터 사망시.
+		if (g_Clients[my_packet->hitID].m_hp <= 0)
+		{
+			g_Clients[my_packet->hitID].m_hp = 0; // 클라이언트용 서버 ID.
+			++g_Clients[id].m_killcount;								// 데스 계산
+			++g_Clients[my_packet->hitID].m_deathcount;					// 킬 계산
+			g_Clients[my_packet->hitID].m_room_number = room_number;
+
+
+			// KILL수 늘리기. ( 목표 Kill 수 도달 시 승리 및 패배 패킷 전송 ).
+			if (my_packet->clientID & 1) // odd = B_TEAM
+			{
+				++g_Room[room_number].B_killcount;
+				for (auto& d : g_Room[room_number].m_GameID_list)
+					SendDiePacket(d, id, my_packet->clientID, B_TEAM);
+			}
+			else // even = A_TEAM
+			{
+				++g_Room[room_number].A_killcount;
+				for (auto& d : g_Room[room_number].m_GameID_list)
+					SendDiePacket(d, id, my_packet->clientID, A_TEAM);
+			}
+
+			// 승리조건 + 초기화 작업(not yet)
+			if (g_Room[room_number].A_killcount == RESULTDEATH)
+			{
+				for (auto& d : g_Room[room_number].m_GameID_list)
+					SendResultPacket(d, id, false);
+				for (auto& id : g_Room[room_number].m_AcceptLoading_list)
+					for (auto& d : g_Room[room_number].m_GameID_list)
+					{
+						SendEndingResult(d, id);
+					}
+			}
+			else if (g_Room[room_number].B_killcount == RESULTDEATH)
+			{
+				for (auto& d : g_Room[room_number].m_GameID_list)
+					SendResultPacket(d, id, true);
+				for (auto& id : g_Room[room_number].m_AcceptLoading_list)
+					for (auto& d : g_Room[room_number].m_GameID_list)
+					{
+						SendEndingResult(d, id);
+					}
+			}
+
+			else
+			{
+				// Timer Setting(Respawn)
+				Timer_Event t = { my_packet->hitID ,high_resolution_clock::now() + 5s, P_RESPAWN, room_number };
+				timerqueue_lock.lock();
+				timer_queue.push(t);
+				timerqueue_lock.unlock();
+			}
+
+
+		}
+		// 캐릭터 사망시.
+
+
+
+		for (auto& d : g_Room[room_number].m_GameID_list)
+			SendAttackHitPacket(d, id, my_packet->hitID, my_packet->clientID);
+		break;
+	}
+	case CS_SKILL_HIT:
+	{
+		cs_packet_attack_hit *my_packet = reinterpret_cast<cs_packet_attack_hit*>(packet);
+		int room_number = packet[2];	// roomnumber
+
+		g_Clients[my_packet->hitID].m_hp -= g_Clients[id].m_skillatt; // Hp 감소.
+
+		g_Clients[my_packet->hitID].m_hit += g_Clients[id].m_skillatt;	// 피해량 계산
+		g_Clients[id].m_deal += g_Clients[id].m_skillatt;				// 딜량 계산
+
+		if (g_Clients[my_packet->hitID].m_Direction != 0)	// 이동 중일때.
+		{
+			g_Clients[my_packet->hitID].m_Direction = 0;	// 이동을 멈추어라.
+															// 위치 갱신 코드 필요.
+		}
+
+		// 캐릭터 사망시.
+		if (g_Clients[my_packet->hitID].m_hp <= 0)
+		{
+			g_Clients[my_packet->hitID].m_hp = 0; // 클라이언트용 서버 ID.
+			++g_Clients[id].m_killcount;								// 데스 계산
+			++g_Clients[my_packet->hitID].m_deathcount;					// 킬 계산
+			g_Clients[my_packet->hitID].m_room_number = room_number;
+
+
+			// KILL수 늘리기. ( 목표 Kill 수 도달 시 승리 및 패배 패킷 전송 ).
+			if (my_packet->clientID & 1) // odd = B_TEAM
+			{
+				++g_Room[room_number].B_killcount;
+				for (auto& d : g_Room[room_number].m_GameID_list)
+					SendDiePacket(d, id, my_packet->clientID, B_TEAM);
+			}
+			else // even = A_TEAM
+			{
+				++g_Room[room_number].A_killcount;
+				for (auto& d : g_Room[room_number].m_GameID_list)
+					SendDiePacket(d, id, my_packet->clientID, A_TEAM);
+			}
+
+			// 승리조건 + 초기화 작업(not yet)
+			if (g_Room[room_number].A_killcount == RESULTDEATH)
+			{
+				for (auto& d : g_Room[room_number].m_GameID_list)
+					SendResultPacket(d, id, false);
+				for (auto& id : g_Room[room_number].m_AcceptLoading_list)
+					for (auto& d : g_Room[room_number].m_GameID_list)
+					{
+						SendEndingResult(d, id);
+					}
+			}
+			else if (g_Room[room_number].B_killcount == RESULTDEATH)
+			{
+				for (auto& d : g_Room[room_number].m_GameID_list)
+					SendResultPacket(d, id, true);
+				for (auto& id : g_Room[room_number].m_AcceptLoading_list)
+					for (auto& d : g_Room[room_number].m_GameID_list)
+					{
+						SendEndingResult(d, id);
+					}
+			}
+
+			else
+			{
+				// Timer Setting(Respawn)
+				Timer_Event t = { my_packet->hitID ,high_resolution_clock::now() + 5s, P_RESPAWN, room_number };
+				timerqueue_lock.lock();
+				timer_queue.push(t);
+				timerqueue_lock.unlock();
+			}
+
+
+		}
 		for (auto& d : g_Room[room_number].m_GameID_list)
 			SendAttackHitPacket(d, id, my_packet->hitID, my_packet->clientID);
 		break;
