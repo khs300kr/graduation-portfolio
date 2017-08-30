@@ -92,7 +92,6 @@ public:
 	bool isLoseResult;
 
 	DWORD ResultTimer;
-	DWORD endingTimer;
 
 	DWORD WinTimer;
 	DWORD LoseTimer;
@@ -100,7 +99,6 @@ public:
 	int WinCount;
 	int LoseCount;
 	//void char_collision_send();
-
 
 
 	void VibeCamera(float VibeSpeed);

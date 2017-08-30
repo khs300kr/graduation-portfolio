@@ -57,5 +57,31 @@ public:
 	void SetAttack(float _attack) { attack = _attack; }
 	void SetSpeed(float _speed) { speed = _speed; }
 	void SetRange(float _range) { range = _range; }
+
+	void HeroInit()
+	{
+		
+		m_HeroSelect = 0;
+		m_Team = 0;
+		m_serverID = 0;
+
+		// Ending Stat
+		m_killcount = 0;
+		m_deathcount = 0;
+		m_damageDealt = 0;
+		m_hitAmount = 0;
+
+		bDeath = false;
+		bHeroAttack = false;
+		bHeroRun = false;
+		bHeroQ = false;
+		bHeroW = false;
+		bHeroE = false;
+		bHeroR = false;
+		bHeroHit = false;
+		bHeroStun = false;
+		bHeroDie = false;
+	
+	}
 };
 

@@ -33,7 +33,6 @@ CGameFramework::CGameFramework()
 	isWinResult = false;
 	isLoseResult = false;
 
-	endingTimer = 0;
 	ResultTimer = 0;
 
 	for (int i = 0; i < MAX_GAMER; ++i)
@@ -790,6 +789,8 @@ void CGameFramework::FrameAdvance()
 				InvalidateRect(g_hWnd, NULL, false);
 
 			}
+
+
 			else
 			{
 				if (WinTimer == 0)
@@ -831,6 +832,7 @@ void CGameFramework::FrameAdvance()
 				ResultTimer = 0;
 
 				ChangeScene = LOBBY;
+
 				isEnding = true;
 
 				InvalidateRect(g_hWnd, NULL, false);
@@ -865,30 +867,6 @@ void CGameFramework::FrameAdvance()
 		}
 
 	}
-
-	else if (ChangeScene == LOBBY)
-	{
-
-		// 결과창
-		if (isEnding)
-		{
-			if (endingTimer == 0)
-			{
-				endingTimer = GetTickCount();
-			}
-			else if (GetTickCount() - endingTimer > 5000) // 5초 경과
-			{
-				isEnding = false;
-				endingTimer = 0;
-
-				InvalidateRect(g_hWnd, NULL, false);
-
-			}
-
-		}
-	}
-
-
 
 
 	m_GameTimer.GetFrameRate(m_pszBuffer + 16, 33);

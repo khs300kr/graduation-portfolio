@@ -22,6 +22,19 @@ CLobby::CLobby()
 
 	whatclick = -1;
 
+
+	for (int i = 0; i < MAX_GAMER; ++i)
+		ending[i].xPos = 300;
+
+	ending[0].yPos = 170;
+	ending[1].yPos = 450;
+	ending[2].yPos = 240;
+	ending[3].yPos = 520;
+	ending[4].yPos = 310;
+	ending[5].yPos = 590;
+	ending[6].yPos = 380;
+	ending[7].yPos = 660;
+
 }
 
 

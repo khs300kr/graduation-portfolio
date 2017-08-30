@@ -13,6 +13,11 @@ typedef struct Room
 	bool _private; // 암호가 있는지?
 }Room;
 
+typedef struct Ending
+{
+	int xPos;
+	int yPos;
+}Ending;
 
 class CLobby
 {
@@ -34,6 +39,7 @@ public:
 
 
 	Room room[6];
+	Ending ending[MAX_GAMER];
 
 	void Create(HINSTANCE hInst);
 
