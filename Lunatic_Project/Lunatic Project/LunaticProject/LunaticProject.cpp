@@ -1371,7 +1371,7 @@ void ProcessPacket(char * ptr)
 		gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_DIE);
 		gGameFramework.m_pScene->pHeroObject[clientid]->bHeroDie = true;
 		gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
-		gGameFramework.m_pScene->pHeroObject[clientid]->bDeath = true;
+		//gGameFramework.m_pScene->pHeroObject[clientid]->bDeath = true;
 
 		gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(0);
 
@@ -1470,7 +1470,7 @@ void ProcessPacket(char * ptr)
 
 
 		gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
-		gGameFramework.m_pScene->pHeroObject[id]->bDeath = false;
+		//gGameFramework.m_pScene->pHeroObject[id]->bDeath = false;
 
 
 		break;

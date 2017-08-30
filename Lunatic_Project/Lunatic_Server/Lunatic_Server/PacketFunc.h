@@ -52,4 +52,4 @@ void SendEndingResult(int client, int object);
 void Player_Respawn(int id, int room_number);
 
 // (Lobby Reset)
-void LobbyReset(int id);
+void LobbyReset(int id, int roomnumber);

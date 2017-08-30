@@ -65,6 +65,7 @@ struct ROOM
 	BYTE  m_RoomStatus;
 	unordered_set<int> m_GameID_list;// ÀÎ¿ø(BYTE)
 	unordered_set<int> m_AcceptLoading_list; 
+
 	BYTE m_readycount;
 	BYTE m_loadcount;
 	WORD A_killcount;

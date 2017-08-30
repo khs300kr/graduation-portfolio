@@ -373,8 +373,42 @@ void Player_Respawn(int id, int room_number)
 		SendRespawnPacket(d, id);
 }
 
-void LobbyReset(int id)
+void LobbyReset(int id, int roomnumber)
 {
+	// 클라이언트 초기화.
+	cout << "리셋 방 번호  : " << roomnumber << endl;
+
+	for (auto& d : g_Room[roomnumber].m_GameID_list)
+	{
+		g_Clients[d].m_killcount = 0;
+		g_Clients[d].m_deathcount = 0;
+		g_Clients[d].m_deal = 0;
+		g_Clients[d].m_hit = 0;
+
+		g_Clients[d].m_room_number = 0;
+		g_Clients[d].m_Direction = 0;
+
+		g_Clients[d].m_bLobby = true;
+	}
+
+	// Room 초기화.
+	memset(g_Room[roomnumber].m_title, 0, MAX_ROOMTITLE_SIZE);
+	memset(g_Room[roomnumber].m_password, 0, MAX_ROOMPASSWORD_SIZE);
+	g_Room[roomnumber].m_readycount = 0;
+	g_Room[roomnumber].m_loadcount = 0;
+	g_Room[roomnumber].A_killcount = 0;
+	g_Room[roomnumber].B_killcount = 0;
+	g_Room[roomnumber].m_RoomStatus = ROOM_EMPTY;
+	g_Room[roomnumber].m_GameID_list.clear();				// 보관된 client ID.
+	
+	for (int i = 0; i < MAX_ROOM; ++i)
+	{
+		for (int j = 0; j < MAX_USER; ++j) {
+			if (g_Clients[j].m_bConnect == true && g_Clients[j].m_bLobby == true)
+				SendRoomInfo(j, id, i);
+		}
+	}
+	g_Room[roomnumber].m_AcceptLoading_list.clear();
 }
 
 
@@ -406,7 +440,6 @@ void ProcessPacket(int id, unsigned char packet[])
 		g_Clients[id].vl_lock.unlock();
 		for (int i = 0; i < MAX_ROOM; ++i)
 		{
-			if (g_Room[i].m_GameID_list.size() == 0) break;	// 방에 아무도 없으면 탈출
 			for (int j = 0; j < MAX_USER; ++j) {
 				if(g_Clients[j].m_bConnect == true && g_Clients[j].m_bLobby == true)
 					SendRoomInfo(j, id, i);
@@ -425,8 +458,15 @@ void ProcessPacket(int id, unsigned char packet[])
 	}
 	case CS_MAKE_ROOM:
 	{
-		if (g_RoomNum > MAX_ROOM) { cout << "방 갯수 초과\n"; break; }
-		
+		for (int i = 0; i < MAX_ROOM; ++i)
+		{
+			if (g_Room[i].m_GameID_list.empty())
+			{
+				g_RoomNum = i;
+				break;
+			}
+		}
+
 		// 룸 정보 서버 저장.
 		cs_packet_makeroom* my_packet = reinterpret_cast<cs_packet_makeroom*>(packet);
 		g_Clients[id].m_GameID = 0;			// 최초 방장 아이디는 0
@@ -462,7 +502,6 @@ void ProcessPacket(int id, unsigned char packet[])
 			}
 		}
 
-		++g_RoomNum; // 우선 순서대로 룸 생성.
 		break;
 	}
 	case CS_JOIN_ROOM:
@@ -494,7 +533,6 @@ void ProcessPacket(int id, unsigned char packet[])
 				SendEnterNewPlayer(id, d); 
 			}
 		}
-
 
 
 		// 접속 && 로비 - 방정보 send
@@ -710,7 +748,6 @@ void ProcessPacket(int id, unsigned char packet[])
 	{
 		cs_packet_attack_hit *my_packet = reinterpret_cast<cs_packet_attack_hit*>(packet);
 		int room_number = packet[2];	// roomnumber
-		
 		g_Clients[my_packet->hitID].m_hp -= g_Clients[id].m_att; // Hp 감소.
 
 		g_Clients[my_packet->hitID].m_hit += g_Clients[id].m_att;	// 피해량 계산
@@ -729,20 +766,7 @@ void ProcessPacket(int id, unsigned char packet[])
 			++g_Clients[id].m_killcount;								// 데스 계산
 			++g_Clients[my_packet->hitID].m_deathcount;					// 킬 계산
 			g_Clients[my_packet->hitID].m_room_number = room_number;
-			
-			cout << "맞은애\n";
-			cout << "킬 수 : " << g_Clients[my_packet->hitID].m_killcount << endl;
-			cout << "데스 수 : " << g_Clients[my_packet->hitID].m_deathcount << endl;
-			cout << "딜량 수 : " << g_Clients[my_packet->hitID].m_deal << endl;
-			cout << "피해량 수 : " << g_Clients[my_packet->hitID].m_hit << endl;
-
-			cout << "때린애\n";
-			cout << "킬 수 : " << g_Clients[id].m_killcount << endl;
-			cout << "데스 수 : " << g_Clients[id].m_deathcount << endl;
-			cout << "딜량 수 : " << g_Clients[id].m_deal << endl;
-			cout << "피해량 수 : " << g_Clients[id].m_hit << endl;
-
-
+		
 			// KILL수 늘리기. ( 목표 Kill 수 도달 시 승리 및 패배 패킷 전송 ).
 			if (my_packet->clientID & 1) // odd = B_TEAM
 			{
@@ -767,6 +791,9 @@ void ProcessPacket(int id, unsigned char packet[])
 					{
 						SendEndingResult(d, id);
 					}
+				// 초기화 작업.
+				cout << " 방 번호  : " << room_number << endl;
+				LobbyReset(id, room_number);
 			}
 			else if (g_Room[room_number].B_killcount == RESULTDEATH)
 			{
@@ -777,12 +804,16 @@ void ProcessPacket(int id, unsigned char packet[])
 					{
 						SendEndingResult(d, id);
 					}
+				// 초기화 작업.
+				cout << " 방 번호  : " << room_number << endl;
+				LobbyReset(id, room_number);
+
 			}
 
 			else
 			{
 				// Timer Setting(Respawn)
-				Timer_Event t = { my_packet->hitID ,high_resolution_clock::now() + 5s, P_RESPAWN, room_number };
+				Timer_Event t = { my_packet->hitID ,high_resolution_clock::now() + 1s, P_RESPAWN, room_number };
 				timerqueue_lock.lock();
 				timer_queue.push(t);
 				timerqueue_lock.unlock();
