@@ -43,6 +43,7 @@
 #define CS_RESPAWN					28
 #define CS_WEAKATTACK_HIT			29
 #define CS_SKILL_HIT				30
+#define CS_RESULTCONFIRM			31
 
 #define SC_POS				 1
 #define SC_PUT_PLAYER		 2
@@ -260,6 +261,12 @@ struct cs_packet_building_coll {
 	BYTE type;
 	BYTE roomnumber;
 	BYTE direction;
+};
+
+struct cs_packet_result_confirm {
+	BYTE size;
+	BYTE type;
+	BYTE roomnumber;
 };
 
 

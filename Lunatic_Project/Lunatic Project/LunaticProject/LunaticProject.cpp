@@ -1371,7 +1371,7 @@ void ProcessPacket(char * ptr)
 		gGameFramework.m_pScene->m_ppShaders[clientid + 1]->GetFBXMesh->SetAnimation(ANI_DIE);
 		gGameFramework.m_pScene->pHeroObject[clientid]->bHeroDie = true;
 		gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
-		//gGameFramework.m_pScene->pHeroObject[clientid]->bDeath = true;
+		gGameFramework.m_pScene->pHeroObject[clientid]->bDeath = true;
 
 		gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(0);
 
@@ -1470,7 +1470,7 @@ void ProcessPacket(char * ptr)
 
 
 		gGameFramework.m_pScene->m_ppShaders[id + 1]->GetFBXMesh->SetAnimation(ANI_IDLE);
-		//gGameFramework.m_pScene->pHeroObject[id]->bDeath = false;
+		gGameFramework.m_pScene->pHeroObject[id]->bDeath = false;
 
 
 		break;
@@ -1524,14 +1524,6 @@ void ProcessPacket(char * ptr)
 			gGameFramework.m_pScene->pHeroObject[id]->m_deathcount = my_packet->deathcount;
 			gGameFramework.m_pScene->pHeroObject[id]->m_damageDealt = my_packet->deal;
 			gGameFramework.m_pScene->pHeroObject[id]->m_hitAmount = my_packet->hit;
-		}
-		for (int i = 0; i < MAX_GAMER; ++i)
-		{
-			cout << i << "번쨰 인포\n";
-			cout << "킬 수 : " << gGameFramework.m_pScene->pHeroObject[i]->m_killcount << endl;
-			cout << "데스 수 : " << gGameFramework.m_pScene->pHeroObject[i]->m_deathcount << endl;
-			cout << "딜량 : " << gGameFramework.m_pScene->pHeroObject[i]->m_damageDealt << endl;
-			cout << "피해량 : " << gGameFramework.m_pScene->pHeroObject[i]->m_hitAmount << endl;
 		}
 		break;
 	}

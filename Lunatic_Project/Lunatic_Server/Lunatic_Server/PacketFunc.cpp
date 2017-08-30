@@ -376,31 +376,43 @@ void Player_Respawn(int id, int room_number)
 void LobbyReset(int id, int roomnumber)
 {
 	// 클라이언트 초기화.
-	cout << "리셋 방 번호  : " << roomnumber << endl;
+	
+	g_Clients[id].m_killcount = 0;
+	g_Clients[id].m_deathcount = 0;
+	g_Clients[id].m_deal = 0;
+	g_Clients[id].m_hit = 0;
 
-	for (auto& d : g_Room[roomnumber].m_GameID_list)
-	{
-		g_Clients[d].m_killcount = 0;
-		g_Clients[d].m_deathcount = 0;
-		g_Clients[d].m_deal = 0;
-		g_Clients[d].m_hit = 0;
+	g_Clients[id].m_room_number = 0;
+	g_Clients[id].m_Direction = 0;
 
-		g_Clients[d].m_room_number = 0;
-		g_Clients[d].m_Direction = 0;
-
-		g_Clients[d].m_bLobby = true;
-	}
+	g_Clients[id].m_bLobby = true;
+	
 
 	// Room 초기화.
-	memset(g_Room[roomnumber].m_title, 0, MAX_ROOMTITLE_SIZE);
-	memset(g_Room[roomnumber].m_password, 0, MAX_ROOMPASSWORD_SIZE);
-	g_Room[roomnumber].m_readycount = 0;
-	g_Room[roomnumber].m_loadcount = 0;
-	g_Room[roomnumber].A_killcount = 0;
-	g_Room[roomnumber].B_killcount = 0;
-	g_Room[roomnumber].m_RoomStatus = ROOM_EMPTY;
-	g_Room[roomnumber].m_GameID_list.clear();				// 보관된 client ID.
-	
+	g_Room[roomnumber].m_GameID_list.erase(id);
+
+	if (g_Room[roomnumber].m_GameID_list.empty())
+	{
+		memset(g_Room[roomnumber].m_title, 0, MAX_ROOMTITLE_SIZE);
+		memset(g_Room[roomnumber].m_password, 0, MAX_ROOMPASSWORD_SIZE);
+		g_Room[roomnumber].m_readycount = 0;
+		g_Room[roomnumber].m_loadcount = 0;
+		g_Room[roomnumber].A_killcount = 0;
+		g_Room[roomnumber].B_killcount = 0;
+		g_Room[roomnumber].m_RoomStatus = ROOM_EMPTY;
+		g_Room[roomnumber].m_GameID_list.clear();				// 보관된 client ID.
+		g_Room[roomnumber].m_AcceptLoading_list.clear();
+
+		// 접속 && 로비 - 방정보 send
+		for (int i = 0; i < MAX_USER; ++i)
+		{
+			if ((g_Clients[i].m_bConnect == true) && (g_Clients[i].m_bLobby == true))
+			{
+				SendRoomInfo(i, id, g_RoomNum);
+			}
+		}
+	}
+
 	for (int i = 0; i < MAX_ROOM; ++i)
 	{
 		for (int j = 0; j < MAX_USER; ++j) {
@@ -408,7 +420,6 @@ void LobbyReset(int id, int roomnumber)
 				SendRoomInfo(j, id, i);
 		}
 	}
-	g_Room[roomnumber].m_AcceptLoading_list.clear();
 }
 
 
@@ -791,9 +802,6 @@ void ProcessPacket(int id, unsigned char packet[])
 					{
 						SendEndingResult(d, id);
 					}
-				// 초기화 작업.
-				cout << " 방 번호  : " << room_number << endl;
-				LobbyReset(id, room_number);
 			}
 			else if (g_Room[room_number].B_killcount == RESULTDEATH)
 			{
@@ -804,16 +812,12 @@ void ProcessPacket(int id, unsigned char packet[])
 					{
 						SendEndingResult(d, id);
 					}
-				// 초기화 작업.
-				cout << " 방 번호  : " << room_number << endl;
-				LobbyReset(id, room_number);
-
 			}
 
 			else
 			{
 				// Timer Setting(Respawn)
-				Timer_Event t = { my_packet->hitID ,high_resolution_clock::now() + 1s, P_RESPAWN, room_number };
+				Timer_Event t = { my_packet->hitID ,high_resolution_clock::now() + 3s, P_RESPAWN, room_number };
 				timerqueue_lock.lock();
 				timer_queue.push(t);
 				timerqueue_lock.unlock();
@@ -893,7 +897,7 @@ void ProcessPacket(int id, unsigned char packet[])
 			else
 			{
 				// Timer Setting(Respawn)
-				Timer_Event t = { my_packet->hitID ,high_resolution_clock::now() + 5s, P_RESPAWN, room_number };
+				Timer_Event t = { my_packet->hitID ,high_resolution_clock::now() + 3s, P_RESPAWN, room_number };
 				timerqueue_lock.lock();
 				timer_queue.push(t);
 				timerqueue_lock.unlock();
@@ -973,7 +977,7 @@ void ProcessPacket(int id, unsigned char packet[])
 			else
 			{
 				// Timer Setting(Respawn)
-				Timer_Event t = { my_packet->hitID ,high_resolution_clock::now() + 5s, P_RESPAWN, room_number };
+				Timer_Event t = { my_packet->hitID ,high_resolution_clock::now() + 3s, P_RESPAWN, room_number };
 				timerqueue_lock.lock();
 				timer_queue.push(t);
 				timerqueue_lock.unlock();
@@ -983,6 +987,14 @@ void ProcessPacket(int id, unsigned char packet[])
 		}
 		for (auto& d : g_Room[room_number].m_GameID_list)
 			SendAttackHitPacket(d, id, my_packet->hitID, my_packet->clientID);
+		break;
+	}
+	case CS_RESULTCONFIRM:
+	{
+		cs_packet_result_confirm *my_packet = reinterpret_cast<cs_packet_result_confirm*>(packet);
+		int room_number = packet[2];	// roomnumber
+	
+		LobbyReset(id, room_number);
 		break;
 	}
 	default: std::cout << "Unknown Packet Type from Client : " << id << std::endl;
