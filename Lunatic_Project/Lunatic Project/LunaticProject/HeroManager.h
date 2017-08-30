@@ -65,11 +65,7 @@ public:
 		m_Team = 0;
 		m_serverID = 0;
 
-		// Ending Stat
-		m_killcount = 0;
-		m_deathcount = 0;
-		m_damageDealt = 0;
-		m_hitAmount = 0;
+		g_bDoing_Ani = false;
 
 		bDeath = false;
 		bHeroAttack = false;

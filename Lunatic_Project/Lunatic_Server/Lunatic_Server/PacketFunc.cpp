@@ -384,9 +384,9 @@ void LobbyReset(int id, int roomnumber)
 
 	g_Clients[id].m_room_number = 0;
 	g_Clients[id].m_Direction = 0;
-
 	g_Clients[id].m_bLobby = true;
-	
+	g_Clients[id].m_GameID = 0;
+
 
 	// Room 초기화.
 	g_Room[roomnumber].m_GameID_list.erase(id);
@@ -402,7 +402,7 @@ void LobbyReset(int id, int roomnumber)
 		g_Room[roomnumber].m_RoomStatus = ROOM_EMPTY;
 		g_Room[roomnumber].m_GameID_list.clear();				// 보관된 client ID.
 		g_Room[roomnumber].m_AcceptLoading_list.clear();
-
+		g_Room[roomnumber].respawnposition = 0.f;
 		// 접속 && 로비 - 방정보 send
 		for (int i = 0; i < MAX_USER; ++i)
 		{
@@ -660,6 +660,25 @@ void ProcessPacket(int id, unsigned char packet[])
 		g_Clients[id].vl_lock.lock();	/////////////////////////////// LOCK
 		g_Room[room_number].m_AcceptLoading_list.insert(id);
 		g_Clients[id].vl_lock.unlock();	/////////////////////////////// UNLOCK
+
+		// 초기 좌표 초기화.
+		if (g_Clients[id].m_GameID & 1) // B Team
+		{
+			g_Clients[id].m_fX = -30.f + g_Room[room_number].respawnposition;
+			g_Clients[id].m_fY = 0.f;
+			g_Clients[id].m_fZ = -500.f;
+		}
+		else // A Team
+		{
+			g_Clients[id].m_fX = -30.f + g_Room[room_number].respawnposition;
+			g_Clients[id].m_fY = 0.f;
+			g_Clients[id].m_fZ = -480.f;
+		}
+		if (g_Room[room_number].m_loadcount % 2 == 0)
+		{
+			g_Room[room_number].respawnposition += 20.f;
+		}
+
 		// 모든 플레이가 로딩완료시 초기위치 전송.
 		if (g_Room[room_number].m_loadcount == g_Room[room_number].m_GameID_list.size())
 		{

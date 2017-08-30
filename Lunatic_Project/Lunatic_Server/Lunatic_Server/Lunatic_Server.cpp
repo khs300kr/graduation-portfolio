@@ -111,17 +111,6 @@ void Accept_Thread()
 		cout << "동접 : " << g_CCU << endl;
 #endif
 		// 초기
-		//g_Clients[new_id].m_Animation = 0;
-
-		for (int i = 0; i < MAX_USER; ++i)
-		{
-			g_Clients[i].m_fX = i * 20.f;
-			g_Clients[i].m_fY = 0.f;
-			g_Clients[i].m_fZ = -500.f;
-			// hp, att init
-			g_Clients[i].m_hp = 0;
-			g_Clients[i].m_att = 0;
-		}
 		// 비동기 입출력 시작
 		DWORD recv_flag = 0;
 		CreateIoCompletionPort(reinterpret_cast<HANDLE>(client_sock), g_Hiocp, new_id, 0);

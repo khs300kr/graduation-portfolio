@@ -70,6 +70,8 @@ struct ROOM
 	BYTE m_loadcount;
 	WORD A_killcount;
 	WORD B_killcount;
+
+	float respawnposition;
 };
 // Server
 extern HANDLE g_Hiocp;
