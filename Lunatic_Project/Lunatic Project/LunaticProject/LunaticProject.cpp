@@ -511,7 +511,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (gGameFramework.isEnding == true)
 				{
 					for (int i = 0; i < MAX_GAMER; ++i)
+					{
 						gGameFramework.m_pScene->pHeroObject[i]->HeroInit(); // Hero 정보 초기화
+						gGameFramework.m_pScene->pHeroObject[i]->Rotate(0, 0, 0);
+					}
+						
 
 					// server send (cs_packet_result_confirm complete)
 					cs_packet_result_confirm *my_packet = reinterpret_cast<cs_packet_result_confirm *>(send_buffer);
@@ -1396,7 +1400,8 @@ void ProcessPacket(char * ptr)
 
 		gGameFramework.m_pScene->pHeroObject[clientid]->SetHp(0);
 
-
+		gGameFramework.m_pScene->pHeroObject[my_packet->clientid]->Rotate(0, 0, 0);
+		
 
 		break;
 	}
