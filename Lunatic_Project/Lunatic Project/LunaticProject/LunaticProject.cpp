@@ -512,6 +512,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					for (int i = 0; i < MAX_GAMER; ++i)
 					{
+						for (int i = 0; i < MAX_GAMER; ++i)
+						{
+							memset(gRoom.RoomUI[i].ID, 0, sizeof(gRoom.RoomUI[i].ID));
+						}
 						gGameFramework.m_pScene->pHeroObject[i]->HeroInit(); // Hero 정보 초기화
 						gGameFramework.m_pScene->pHeroObject[i]->Rotate(0, 0, 0);
 					}

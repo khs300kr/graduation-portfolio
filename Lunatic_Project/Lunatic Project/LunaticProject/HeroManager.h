@@ -64,6 +64,9 @@ public:
 		m_HeroSelect = 0;
 		m_Team = 0;
 		m_serverID = 0;
+		g_A_Teamcount = 0;
+		g_B_Teamcount = 0;		
+
 
 		g_bDoing_Ani = false;
 
