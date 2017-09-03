@@ -356,6 +356,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				for (int i = 0; i < MAX_GAMER; i++)
 				{
+
+					// 스코어 REd 팀
+					wsprintf(s, L"%d", g_B_Teamcount);
+					TextOut(memdc, 450, 30, s, wcslen(s));
+
+					// 스코어 BLUE 팀
+					wsprintf(s, L"%d", g_A_Teamcount);
+					TextOut(memdc, 550, 30, s, wcslen(s));
+
+
 					// DB달고 여기에 아이디를 추가해야함
 
 
