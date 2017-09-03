@@ -309,7 +309,7 @@
       <Filter>소스 파일\00.Main\03.UI\Manager</Filter>
     </ClCompile>
     <ClCompile Include="LunaticProject.cpp">
-      <Filter>소스 파일\00.Main\03.UI</Filter>
+      <Filter>소스 파일\00.Main</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
