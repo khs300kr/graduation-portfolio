@@ -60,7 +60,6 @@ public:
 
 	void HeroInit()
 	{
-		
 		m_HeroSelect = 0;
 		m_Team = 0;
 		m_serverID = 0;

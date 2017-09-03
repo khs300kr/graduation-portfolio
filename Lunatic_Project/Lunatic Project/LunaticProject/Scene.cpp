@@ -14,7 +14,7 @@ CScene::CScene()
 	m_ppShaders = NULL;
 	m_ppInstancingShaders = NULL;
 
-	m_pParticleSystem = NULL;
+
 	m_fGametime = 0.0f;
 
 	m_pCamera = NULL;
@@ -1306,14 +1306,6 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		LoseManager[i]->AddUIObject(LoseObject[i]);
 	}
 
-
-
-
-	m_pParticleSystem = new CParticleSystem();
-	m_pParticleSystem->Initialize(pd3dDevice, NULL, m_pParticleSystem->CreateRandomTexture1DSRV(pd3dDevice), 200);
-	m_pParticleSystem->CreateShader(pd3dDevice);
-
-
 }
 
 
@@ -1902,9 +1894,6 @@ void CScene::AnimateObjects(float fTimeElapsed)
 		}
 	}
 
-
-	//m_fGametime += fTimeElapsed;
-	//m_pParticleSystem->Update(fTimeElapsed, m_fGametime);
 }
 
 void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
@@ -1947,7 +1936,6 @@ void CScene::Render(ID3D11DeviceContext*pd3dDeviceContext, CCamera *pCamera)
 
 	BackgroundManager->RenderAll(pd3dDeviceContext);
 
-	//m_pParticleSystem->Render(pd3dDeviceContext);
 }
 
 bool CScene::Rightcollision(CHeroManager* Object1, CHeroManager* Object2, float sizeX1, float sizeZ1, float sizeX2, float sizeZ2)

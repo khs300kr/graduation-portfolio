@@ -376,6 +376,7 @@ struct sc_packet_attack_hit {
 	WORD id;
 	WORD hp;
 	WORD clientid;
+	BYTE direction;
 };
 
 struct sc_char_die {

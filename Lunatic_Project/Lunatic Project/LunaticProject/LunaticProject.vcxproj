@@ -107,7 +107,6 @@
     <ClInclude Include="Magician.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Mesh.h" />
-    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Room.h" />
@@ -146,7 +145,6 @@
     <ClCompile Include="Magician.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="Scene.cpp" />

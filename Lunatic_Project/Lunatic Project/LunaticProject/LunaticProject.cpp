@@ -1284,8 +1284,13 @@ void ProcessPacket(char * ptr)
 		if (clientid == gGameFramework.m_pScene->myGame_id) {
 			g_bDoing_Ani = true;	// 애니메이션 도중 키 입력 방지.
 			gGameFramework.Scene_Animation = 1;
+			gGameFramework.dwDirection = my_packet->direction;
 		}
-
+		else
+		{
+			gGameFramework.OtherDirection[clientid] = my_packet->direction;
+		}
+		
 		if (gGameFramework.m_pScene->pHeroObject[clientid]->GetHp() > 0) {
 			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroHit = true;
 			gGameFramework.m_pScene->pHeroObject[clientid]->bHeroRun = false;
