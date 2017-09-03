@@ -376,7 +376,7 @@ void Player_Respawn(int id, int room_number)
 	else // A Team
 	{
 		g_Clients[id].m_fX = 0.f;
-		g_Clients[id].m_fZ = 500.f;
+		g_Clients[id].m_fZ = -500.f;
 	}
 
 	for (auto& d : g_Room[room_number].m_GameID_list)
@@ -626,19 +626,19 @@ void ProcessPacket(int id, unsigned char packet[])
 		switch (my_packet->hero_pick)
 		{
 		case BABARIAN:	g_Clients[id].m_hp = BABARIAN_HP; g_Clients[id].m_att = 150;	
-			g_Clients[id].m_weakatt = 100; g_Clients[id].m_skillatt = 200; break;
+			g_Clients[id].m_weakatt = 50; g_Clients[id].m_skillatt = 200; break;
 		case KNIGHT:	g_Clients[id].m_hp = KNIGHT_HP; g_Clients[id].m_att = 150;		
-			g_Clients[id].m_weakatt = 100; g_Clients[id].m_skillatt = 200; break;
+			g_Clients[id].m_weakatt = 50; g_Clients[id].m_skillatt = 200; break;
 		case SWORDMAN:	g_Clients[id].m_hp = SWORDMAN_HP; g_Clients[id].m_att = 200;	
-			g_Clients[id].m_weakatt = 130; g_Clients[id].m_skillatt = 200; break;
+			g_Clients[id].m_weakatt = 60; g_Clients[id].m_skillatt = 200; break;
 		case MAGICIAN:	g_Clients[id].m_hp = MAGICIAN_HP; g_Clients[id].m_att = 180;
-			g_Clients[id].m_weakatt = 110; g_Clients[id].m_skillatt = 200; break;
+			g_Clients[id].m_weakatt = 55; g_Clients[id].m_skillatt = 200; break;
 		case ARCHER:	g_Clients[id].m_hp = ARCHER_HP; g_Clients[id].m_att = 170;
-			g_Clients[id].m_weakatt = 120; g_Clients[id].m_skillatt = 200; break;
+			g_Clients[id].m_weakatt = 45; g_Clients[id].m_skillatt = 200; break;
 		case HEALER:	g_Clients[id].m_hp = HEALER_HP; g_Clients[id].m_att = 200;
-			g_Clients[id].m_weakatt = 130; g_Clients[id].m_skillatt = 200; break;
+			g_Clients[id].m_weakatt = 60; g_Clients[id].m_skillatt = 200; break;
 		case WITCH:		g_Clients[id].m_hp = WITCH_HP; g_Clients[id].m_att = 200;
-			g_Clients[id].m_weakatt = 130; g_Clients[id].m_skillatt = 200; break;
+			g_Clients[id].m_weakatt = 60; g_Clients[id].m_skillatt = 200; break;
 		}
 		++g_Room[room_number].m_readycount;
 		g_Clients[id].vl_lock.unlock();	////////////////////// UNLOCK
