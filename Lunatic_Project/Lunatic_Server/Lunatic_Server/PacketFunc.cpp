@@ -626,7 +626,7 @@ void ProcessPacket(int id, unsigned char packet[])
 		switch (my_packet->hero_pick)
 		{
 		case BABARIAN:	g_Clients[id].m_hp = BABARIAN_HP; g_Clients[id].m_att = 150;	
-			g_Clients[id].m_weakatt = 50; g_Clients[id].m_skillatt = 200; break;
+			g_Clients[id].m_weakatt = 15; g_Clients[id].m_skillatt = 200; break;
 		case KNIGHT:	g_Clients[id].m_hp = KNIGHT_HP; g_Clients[id].m_att = 150;		
 			g_Clients[id].m_weakatt = 50; g_Clients[id].m_skillatt = 200; break;
 		case SWORDMAN:	g_Clients[id].m_hp = SWORDMAN_HP; g_Clients[id].m_att = 200;	

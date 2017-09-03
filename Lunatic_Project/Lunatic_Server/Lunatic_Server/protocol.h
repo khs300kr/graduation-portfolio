@@ -117,13 +117,13 @@
 #define HEALER		6
 #define WITCH		7
 
-#define BABARIAN_HP		600
-#define KNIGHT_HP		600
-#define SWORDMAN_HP		300
-#define MAGICIAN_HP		300
-#define ARCHER_HP		300
-#define HEALER_HP		200
-#define WITCH_HP		200
+#define BABARIAN_HP		500
+#define KNIGHT_HP		500
+#define SWORDMAN_HP		400
+#define MAGICIAN_HP		400
+#define ARCHER_HP		400
+#define HEALER_HP		350
+#define WITCH_HP		350
 
 // 방 상태
 #define ROOM_EMPTY    0  // 비어있음
