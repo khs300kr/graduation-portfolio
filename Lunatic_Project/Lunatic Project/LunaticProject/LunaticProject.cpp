@@ -528,6 +528,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						}
 						gGameFramework.m_pScene->pHeroObject[i]->HeroInit(); // Hero 정보 초기화
 						gGameFramework.m_pScene->pHeroObject[i]->Rotate(0, 0, 0);
+						gLobby.vOutPut.clear();
 					}
 						
 

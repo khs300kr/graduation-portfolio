@@ -672,23 +672,24 @@ void ProcessPacket(int id, unsigned char packet[])
 		g_Clients[id].vl_lock.unlock();	/////////////////////////////// UNLOCK
 
 		// 초기 좌표 초기화.
+		if (g_Clients[id].m_GameID == 1 || g_Clients[id].m_GameID == 0)
+			g_Clients[id].m_fX = -30.f;
+		else if(g_Clients[id].m_GameID ==3 || g_Clients[id].m_GameID ==2)
+			g_Clients[id].m_fX = -10.f;
+		else if(g_Clients[id].m_GameID ==5 || g_Clients[id].m_GameID ==4)
+			g_Clients[id].m_fX = 10.f;
+		else if (g_Clients[id].m_GameID ==7 || g_Clients[id].m_GameID ==6)
+			g_Clients[id].m_fX = 30.f;
+
+		g_Clients[id].m_fY = 0.f;
 		if (g_Clients[id].m_GameID & 1) // B Team
 		{
-			g_Clients[id].m_fX = -30.f + g_Room[room_number].respawnposition;
-			g_Clients[id].m_fY = 0.f;
 			g_Clients[id].m_fZ = -500.f;
 		}
 		else // A Team
 		{
-			g_Clients[id].m_fX = -30.f + g_Room[room_number].respawnposition;
-			g_Clients[id].m_fY = 0.f;
 			g_Clients[id].m_fZ = 500.f;
 		}
-		if (g_Room[room_number].m_loadcount % 2 == 0)
-		{
-			g_Room[room_number].respawnposition += 20.f;
-		}
-
 		// 모든 플레이가 로딩완료시 초기위치 전송.
 		if (g_Room[room_number].m_loadcount == g_Room[room_number].m_GameID_list.size())
 		{
@@ -789,7 +790,7 @@ void ProcessPacket(int id, unsigned char packet[])
 		cs_packet_attack_hit *my_packet = reinterpret_cast<cs_packet_attack_hit*>(packet);
 		int room_number = packet[2];	// roomnumber
 		g_Clients[my_packet->hitID].m_hp -= g_Clients[id].m_att; // Hp 감소.
-
+		
 		g_Clients[my_packet->hitID].m_hit += g_Clients[id].m_att;	// 피해량 계산
 		g_Clients[id].m_deal += g_Clients[id].m_att;				// 딜량 계산
 
