@@ -120,7 +120,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	//바닥
 	pd3dsrvTexture = NULL;
 	CTexture *pPlaneTexture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/plane.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/texture/plane.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pPlaneTexture->SetTexture(0, pd3dsrvTexture);
 	pPlaneTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
@@ -128,28 +128,28 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	// 테스트빌딩1
 	pd3dsrvTexture = NULL;
 	CTexture *pBuilding1Texture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/building/building1/building1.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/building/building1/building1.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pBuilding1Texture->SetTexture(0, pd3dsrvTexture);
 	pBuilding1Texture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 	// 빌딩2
 	pd3dsrvTexture = NULL;
 	CTexture *pBuilding2Texture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/building/building2/building2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/building/building2/building2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pBuilding2Texture->SetTexture(0, pd3dsrvTexture);
 	pBuilding2Texture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 	// 하우스1 
 	pd3dsrvTexture = NULL;
 	CTexture *pHouse1Texture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/building/house1/house1.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/building/house1/house1.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pHouse1Texture->SetTexture(0, pd3dsrvTexture);
 	pHouse1Texture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 	//하우스2
 	pd3dsrvTexture = NULL;
 	CTexture *pHouse2Texture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/building/house2/house2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/building/house2/house2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pHouse2Texture->SetTexture(0, pd3dsrvTexture);
 	pHouse2Texture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
@@ -157,7 +157,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	//시티홀
 	pd3dsrvTexture = NULL;
 	CTexture *pCityhallTexture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/building/cityhall/cityhall.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/building/cityhall/cityhall.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pCityhallTexture->SetTexture(0, pd3dsrvTexture);
 	pCityhallTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
@@ -165,7 +165,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	// 벽
 	pd3dsrvTexture = NULL;
 	CTexture *pWallTexture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/building/wall/Wall.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/building/wall/Wall.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pWallTexture->SetTexture(0, pd3dsrvTexture);
 	pWallTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
@@ -174,7 +174,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	//테스트
 	pd3dsrvTexture = NULL;
 	pTestTexture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/testbox.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/testbox.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pCityhallTexture->SetTexture(0, pd3dsrvTexture);
 	pCityhallTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
@@ -183,14 +183,14 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 	pd3dsrvTexture = NULL;
 	pRedTeamTexture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/red.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/red.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pRedTeamTexture->SetTexture(0, pd3dsrvTexture);
 	pRedTeamTexture->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
 
 	pd3dsrvTexture = NULL;
 	pBlueTeamTexture = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/blue.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/blue.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pBlueTeamTexture->SetTexture(0, pd3dsrvTexture);
 	pBlueTeamTexture->SetSampler(0, pd3dSamplerState);
 	//pd3dsrvTexture->Release();
@@ -207,17 +207,17 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 
 
-	pTestMesh = new CFBXMesh(pd3dDevice, "../Data/testbox.data", 0.1f);
+	pTestMesh = new CFBXMesh(pd3dDevice, "Data/testbox.data", 0.1f);
 
 	// map objects
-	CMesh *pPlaneMesh = new CFBXMesh(pd3dDevice, "../Data/plane1.data", 1.f);
+	CMesh *pPlaneMesh = new CFBXMesh(pd3dDevice, "Data/plane1.data", 1.f);
 
-	CMesh *pBuilding1Mesh = new CFBXMesh(pd3dDevice, "../Data/building/building1/building1.data", 0.6f);
-	CMesh *pBuilding2Mesh = new CFBXMesh(pd3dDevice, "../Data/building/building2/building2.data", 1.f);
-	CMesh *pHouse1Mesh = new CFBXMesh(pd3dDevice, "../Data/building/house1/house1.data", 0.6f);
-	CMesh *pHouse2Mesh = new CFBXMesh(pd3dDevice, "../Data/building/house2/house2.data", 0.7f);
-	CMesh *pCityhallMesh = new CFBXMesh(pd3dDevice, "../Data/building/cityhall/cityhall.data", 1.f);
-	CMesh *pWallMesh = new CFBXMesh(pd3dDevice, "../Data/building/wall/Wall.data", 5.f);
+	CMesh *pBuilding1Mesh = new CFBXMesh(pd3dDevice, "Data/building/building1/building1.data", 0.6f);
+	CMesh *pBuilding2Mesh = new CFBXMesh(pd3dDevice, "Data/building/building2/building2.data", 1.f);
+	CMesh *pHouse1Mesh = new CFBXMesh(pd3dDevice, "Data/building/house1/house1.data", 0.6f);
+	CMesh *pHouse2Mesh = new CFBXMesh(pd3dDevice, "Data/building/house2/house2.data", 0.7f);
+	CMesh *pCityhallMesh = new CFBXMesh(pd3dDevice, "Data/building/cityhall/cityhall.data", 1.f);
+	CMesh *pWallMesh = new CFBXMesh(pd3dDevice, "Data/building/wall/Wall.data", 5.f);
 
 
 
@@ -249,14 +249,14 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			{
 				pd3dsrvTexture = NULL;
 				pSwordmanTexture = new CTexture(1, 1, 0, 0);
-				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Swordman.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/texture/Swordman.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 				pSwordmanTexture->SetTexture(0, pd3dsrvTexture);
 				pSwordmanTexture->SetSampler(0, pd3dSamplerState);
 				pd3dsrvTexture->Release();
 
 				if (pHeroObject[i]->m_Team == A_TEAM)
 				{
-					pSwordmanMeshA = new CFBXMesh(pd3dDevice, "../Data/data/SwordMan.data", 0.1f);
+					pSwordmanMeshA = new CFBXMesh(pd3dDevice, "Data/data/SwordMan.data", 0.1f);
 					pHeroObject[i]->SetMesh(pSwordmanMeshA);
 					pHeroObject[i]->SetTexture(pSwordmanTexture);
 
@@ -264,7 +264,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 				else if (pHeroObject[i]->m_Team == B_TEAM)
 				{
-					pSwordmanMeshB = new CFBXMesh(pd3dDevice, "../Data/data/SwordMan.data", 0.1f);
+					pSwordmanMeshB = new CFBXMesh(pd3dDevice, "Data/data/SwordMan.data", 0.1f);
 					pHeroObject[i]->SetMesh(pSwordmanMeshB);
 					pHeroObject[i]->SetTexture(pSwordmanTexture);
 
@@ -276,14 +276,14 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			{
 				pd3dsrvTexture = NULL;
 				pHealerTexture = new CTexture(1, 1, 0, 0);
-				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Healer.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/texture/Healer.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 				pHealerTexture->SetTexture(0, pd3dsrvTexture);
 				pHealerTexture->SetSampler(0, pd3dSamplerState);
 				pd3dsrvTexture->Release();
 
 				if (pHeroObject[i]->m_Team == A_TEAM)
 				{
-					pHealerMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Healer.data", 0.1f);
+					pHealerMeshA = new CFBXMesh(pd3dDevice, "Data/data/Healer.data", 0.1f);
 					pHeroObject[i]->SetMesh(pHealerMeshA);
 					pHeroObject[i]->SetTexture(pHealerTexture);
 
@@ -291,7 +291,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 				else if (pHeroObject[i]->m_Team == B_TEAM)
 				{
-					pHealerMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Healer.data", 0.1f);
+					pHealerMeshB = new CFBXMesh(pd3dDevice, "Data/data/Healer.data", 0.1f);
 					pHeroObject[i]->SetMesh(pHealerMeshB);
 					pHeroObject[i]->SetTexture(pHealerTexture);
 
@@ -302,14 +302,14 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			{
 				pd3dsrvTexture = NULL;
 				pBabarianTexture = new CTexture(1, 1, 0, 0);
-				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Babarian.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/texture/Babarian.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 				pBabarianTexture->SetTexture(0, pd3dsrvTexture);
 				pBabarianTexture->SetSampler(0, pd3dSamplerState);
 				pd3dsrvTexture->Release();
 
 				if (pHeroObject[i]->m_Team == A_TEAM)
 				{
-					pBabarianMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Babarian.data", 0.1f);
+					pBabarianMeshA = new CFBXMesh(pd3dDevice, "Data/data/Babarian.data", 0.1f);
 					pHeroObject[i]->SetMesh(pBabarianMeshA);
 					pHeroObject[i]->SetTexture(pBabarianTexture);
 
@@ -317,7 +317,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 				else if (pHeroObject[i]->m_Team == B_TEAM)
 				{
-					pBabarianMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Babarian.data", 0.1f);
+					pBabarianMeshB = new CFBXMesh(pd3dDevice, "Data/data/Babarian.data", 0.1f);
 					pHeroObject[i]->SetMesh(pBabarianMeshB);
 					pHeroObject[i]->SetTexture(pBabarianTexture);
 
@@ -328,14 +328,14 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			{
 				pd3dsrvTexture = NULL;
 				pKnightTexture = new CTexture(1, 1, 0, 0);
-				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Knight.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/texture/Knight.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 				pKnightTexture->SetTexture(0, pd3dsrvTexture);
 				pKnightTexture->SetSampler(0, pd3dSamplerState);
 				pd3dsrvTexture->Release();
 
 				if (pHeroObject[i]->m_Team == A_TEAM)
 				{
-					pKnightMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Knight.data", 0.1f);
+					pKnightMeshA = new CFBXMesh(pd3dDevice, "Data/data/Knight.data", 0.1f);
 					pHeroObject[i]->SetMesh(pKnightMeshA);
 					pHeroObject[i]->SetTexture(pKnightTexture);
 
@@ -343,7 +343,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 				else if (pHeroObject[i]->m_Team == B_TEAM)
 				{
-					pKnightMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Knight.data", 0.1f);
+					pKnightMeshB = new CFBXMesh(pd3dDevice, "Data/data/Knight.data", 0.1f);
 					pHeroObject[i]->SetMesh(pKnightMeshB);
 					pHeroObject[i]->SetTexture(pKnightTexture);
 
@@ -354,14 +354,14 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			{
 				pd3dsrvTexture = NULL;
 				pArcherTexture = new CTexture(1, 1, 0, 0);
-				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Archer.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/texture/Archer.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 				pArcherTexture->SetTexture(0, pd3dsrvTexture);
 				pArcherTexture->SetSampler(0, pd3dSamplerState);
 				pd3dsrvTexture->Release();
 
 				if (pHeroObject[i]->m_Team == A_TEAM)
 				{
-					pArcherMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Archer.data", 0.1f);
+					pArcherMeshA = new CFBXMesh(pd3dDevice, "Data/data/Archer.data", 0.1f);
 					pHeroObject[i]->SetMesh(pArcherMeshA);
 					pHeroObject[i]->SetTexture(pArcherTexture);
 
@@ -369,7 +369,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 				else if (pHeroObject[i]->m_Team == B_TEAM)
 				{
-					pArcherMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Archer.data", 0.1f);
+					pArcherMeshB = new CFBXMesh(pd3dDevice, "Data/data/Archer.data", 0.1f);
 					pHeroObject[i]->SetMesh(pArcherMeshB);
 					pHeroObject[i]->SetTexture(pArcherTexture);
 
@@ -380,14 +380,14 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			{
 				pd3dsrvTexture = NULL;
 				pWitchTexture = new CTexture(1, 1, 0, 0);
-				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Witch.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/texture/Witch.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 				pWitchTexture->SetTexture(0, pd3dsrvTexture);
 				pWitchTexture->SetSampler(0, pd3dSamplerState);
 				pd3dsrvTexture->Release();
 
 				if (pHeroObject[i]->m_Team == A_TEAM)
 				{
-					pWitchMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Witch.data", 0.1f);
+					pWitchMeshA = new CFBXMesh(pd3dDevice, "Data/data/Witch.data", 0.1f);
 					pHeroObject[i]->SetMesh(pWitchMeshA);
 					pHeroObject[i]->SetTexture(pWitchTexture);
 
@@ -395,7 +395,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 				else if (pHeroObject[i]->m_Team == B_TEAM)
 				{
-					pWitchMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Witch.data", 0.1f);
+					pWitchMeshB = new CFBXMesh(pd3dDevice, "Data/data/Witch.data", 0.1f);
 					pHeroObject[i]->SetMesh(pWitchMeshB);
 					pHeroObject[i]->SetTexture(pWitchTexture);
 
@@ -406,14 +406,14 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			{
 				pd3dsrvTexture = NULL;
 				pMagicianTexture = new CTexture(1, 1, 0, 0);
-				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/texture/Magician.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+				D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/texture/Magician.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 				pMagicianTexture->SetTexture(0, pd3dsrvTexture);
 				pMagicianTexture->SetSampler(0, pd3dSamplerState);
 				pd3dsrvTexture->Release();
 
 				if (pHeroObject[i]->m_Team == A_TEAM)
 				{
-					pMagicianMeshA = new CFBXMesh(pd3dDevice, "../Data/data/Magician.data", 0.1f);
+					pMagicianMeshA = new CFBXMesh(pd3dDevice, "Data/data/Magician.data", 0.1f);
 					pHeroObject[i]->SetMesh(pMagicianMeshA);
 					pHeroObject[i]->SetTexture(pMagicianTexture);
 
@@ -421,7 +421,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 				else if (pHeroObject[i]->m_Team == B_TEAM)
 				{
-					pMagicianMeshB = new CFBXMesh(pd3dDevice, "../Data/data/Magician.data", 0.1f);
+					pMagicianMeshB = new CFBXMesh(pd3dDevice, "Data/data/Magician.data", 0.1f);
 					pHeroObject[i]->SetMesh(pMagicianMeshB);
 					pHeroObject[i]->SetTexture(pMagicianTexture);
 
@@ -637,14 +637,14 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		}
 
 
-		CMesh *pHpMesh1 = new CFBXMesh(pd3dDevice, "../Data/UI/TeamView.data", 0.1f);
-		CMesh *pHpMesh2 = new CFBXMesh(pd3dDevice, "../Data/UI/TeamView.data", 0.1f);
-		CMesh *pHpMesh3 = new CFBXMesh(pd3dDevice, "../Data/UI/TeamView.data", 0.1f);
-		CMesh *pHpMesh4 = new CFBXMesh(pd3dDevice, "../Data/UI/TeamView.data", 0.1f);
-		CMesh *pHpMesh5 = new CFBXMesh(pd3dDevice, "../Data/UI/TeamView.data", 0.1f);
-		CMesh *pHpMesh6 = new CFBXMesh(pd3dDevice, "../Data/UI/TeamView.data", 0.1f);
-		CMesh *pHpMesh7 = new CFBXMesh(pd3dDevice, "../Data/UI/TeamView.data", 0.1f);
-		CMesh *pHpMesh8 = new CFBXMesh(pd3dDevice, "../Data/UI/TeamView.data", 0.1f); // 메쉬를 하나로 하면 크기를 줄이면 다같이 줄어들어서 메쉬를 Gamer의 수만큼 만듬
+		CMesh *pHpMesh1 = new CFBXMesh(pd3dDevice, "Data/UI/TeamView.data", 0.1f);
+		CMesh *pHpMesh2 = new CFBXMesh(pd3dDevice, "Data/UI/TeamView.data", 0.1f);
+		CMesh *pHpMesh3 = new CFBXMesh(pd3dDevice, "Data/UI/TeamView.data", 0.1f);
+		CMesh *pHpMesh4 = new CFBXMesh(pd3dDevice, "Data/UI/TeamView.data", 0.1f);
+		CMesh *pHpMesh5 = new CFBXMesh(pd3dDevice, "Data/UI/TeamView.data", 0.1f);
+		CMesh *pHpMesh6 = new CFBXMesh(pd3dDevice, "Data/UI/TeamView.data", 0.1f);
+		CMesh *pHpMesh7 = new CFBXMesh(pd3dDevice, "Data/UI/TeamView.data", 0.1f);
+		CMesh *pHpMesh8 = new CFBXMesh(pd3dDevice, "Data/UI/TeamView.data", 0.1f); // 메쉬를 하나로 하면 크기를 줄이면 다같이 줄어들어서 메쉬를 Gamer의 수만큼 만듬
 
 		for (int i = 0; i < MAX_GAMER; ++i)
 		{
@@ -675,7 +675,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 			m_ppShaders[88 + i]->AddObject(pTeamViewObject[i]);
 
 
-		/*CMesh *pOtherHpbarMesh = new CFBXMesh(pd3dDevice, "../Data/UI/otherhp.data", 0.5f);
+		/*CMesh *pOtherHpbarMesh = new CFBXMesh(pd3dDevice, "Data/UI/otherhp.data", 0.5f);
 
 		for (int i = 0; i < 8; ++i)
 		{
@@ -701,7 +701,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	//hpbar ui
 	pd3dsrvTexture = NULL;
 	CTexture *pHpbar = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/hpbar.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/hpbar.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pHpbar->SetTexture(0, pd3dsrvTexture);
 	pHpbar->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
@@ -716,7 +716,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 	//hp gauge
 	CTexture *pHpgauge = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/gauge.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/gauge.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pHpgauge->SetTexture(0, pd3dsrvTexture);
 	pHpgauge->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
@@ -735,7 +735,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	///////////skill box/////////////////////
 	// 약공 (key up)
 	CTexture *pAttack_up = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/skill/attack_up.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/skill/attack_up.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pAttack_up->SetTexture(0, pd3dsrvTexture);
 	pAttack_up->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
@@ -751,7 +751,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 	// 약공 (key down)
 	CTexture *pAttack_down = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/skill/attack_down2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/skill/attack_down2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pAttack_down->SetTexture(0, pd3dsrvTexture);
 	pAttack_down->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
@@ -767,7 +767,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 	// 강공 (key up)
 	CTexture *pSwing_up = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/skill/swing_up.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/skill/swing_up.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pSwing_up->SetTexture(0, pd3dsrvTexture);
 	pSwing_up->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
@@ -783,7 +783,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 	// 강공 (key down)
 	CTexture *pSwing_down = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/skill/swing_down2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/skill/swing_down2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pSwing_down->SetTexture(0, pd3dsrvTexture);
 	pSwing_down->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
@@ -801,7 +801,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	// Score 판
 
 	CTexture *pScoreBoard = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/scoreboard.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/scoreboard.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pScoreBoard->SetTexture(0, pd3dsrvTexture);
 	pScoreBoard->SetSampler(0, pd3dSamplerState);
 	pd3dsrvTexture->Release();
@@ -819,16 +819,16 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	for (int i = 0; i < 10; ++i)
 	{
 		pScoreNum[i] = new CTexture(1, 1, 0, 0);
-		if (i == 0) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/0.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 1) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/1.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 2) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 3) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/3.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 4) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/4.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 5) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/5.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 6) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/6.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 7) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/7.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 8) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/8.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 9) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/number/9.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 0) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/number/0.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 1) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/number/1.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 2) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/number/2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 3) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/number/3.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 4) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/number/4.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 5) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/number/5.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 6) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/number/6.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 7) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/number/7.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 8) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/number/8.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 9) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/number/9.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 		pScoreNum[i]->SetTexture(0, pd3dsrvTexture);
 		pScoreNum[i]->SetSampler(0, pd3dSamplerState);
 		pd3dsrvTexture->Release();
@@ -899,7 +899,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pBabarian = new CTexture(1, 1, 0, 0);
-			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/Babarian_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
+			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/other/Babarian_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
 			pBabarian->SetTexture(0, pd3dsrvTexture);
 			pBabarian->SetSampler(0, pd3dSamplerState);
 			pd3dsrvTexture->Release();
@@ -923,7 +923,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pKnight = new CTexture(1, 1, 0, 0);
-			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/Knight_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
+			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/other/Knight_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
 			pKnight->SetTexture(0, pd3dsrvTexture);
 			pKnight->SetSampler(0, pd3dSamplerState);
 			pd3dsrvTexture->Release();
@@ -947,7 +947,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pSwordman = new CTexture(1, 1, 0, 0);
-			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/Swordman_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
+			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/other/Swordman_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
 			pSwordman->SetTexture(0, pd3dsrvTexture);
 			pSwordman->SetSampler(0, pd3dSamplerState);
 			pd3dsrvTexture->Release();
@@ -970,7 +970,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pMagician = new CTexture(1, 1, 0, 0);
-			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/Magician_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
+			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/other/Magician_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
 			pMagician->SetTexture(0, pd3dsrvTexture);
 			pMagician->SetSampler(0, pd3dSamplerState);
 			pd3dsrvTexture->Release();
@@ -994,7 +994,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pHealer = new CTexture(1, 1, 0, 0);
-			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/Healer_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
+			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/other/Healer_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
 			pHealer->SetTexture(0, pd3dsrvTexture);
 			pHealer->SetSampler(0, pd3dSamplerState);
 			pd3dsrvTexture->Release();
@@ -1018,7 +1018,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pWitch = new CTexture(1, 1, 0, 0);
-			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/Witch_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
+			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/other/Witch_image.bmp"), NULL, NULL, &pd3dsrvTexture, NULL);
 			pWitch->SetTexture(0, pd3dsrvTexture);
 			pWitch->SetSampler(0, pd3dSamplerState);
 			pd3dsrvTexture->Release();
@@ -1043,7 +1043,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 		{
 			pd3dsrvTexture = NULL;
 			CTexture *pWitch = new CTexture(1, 1, 0, 0);
-			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/empty.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+			D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/other/empty.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 			pWitch->SetTexture(0, pd3dsrvTexture);
 			pWitch->SetSampler(0, pd3dSamplerState);
 
@@ -1094,14 +1094,14 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	// 캐릭터 테두리
 	// Red team = A team
 	CTexture *pRedTeam = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/red.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/other/red.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pRedTeam->SetTexture(0, pd3dsrvTexture);
 	pRedTeam->SetSampler(0, pd3dSamplerState);
 	//pd3dsrvTexture->Release();
 
 	// Blue team = B team
 	CTexture *pBlueTeam = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/blue.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/other/blue.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pBlueTeam->SetTexture(0, pd3dsrvTexture);
 	pBlueTeam->SetSampler(0, pd3dSamplerState);
 	//pd3dsrvTexture->Release();
@@ -1148,7 +1148,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 
 	pd3dsrvTexture = NULL;
 	CTexture *pOtherHp = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/other/OtherHp.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/other/OtherHp.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pOtherHp->SetTexture(0, pd3dsrvTexture);
 	pOtherHp->SetSampler(0, pd3dSamplerState);
 	//pd3dsrvTexture->Release();
@@ -1209,7 +1209,7 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	// 승리 패배 이미지 띄우기
 	pd3dsrvTexture = NULL;
 	CTexture *pResultImage = new CTexture(1, 1, 0, 0);
-	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/ResultBackground.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+	D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/ResultBackground.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 	pResultImage->SetTexture(0, pd3dsrvTexture);
 	pResultImage->SetSampler(0, pd3dSamplerState);
 
@@ -1229,20 +1229,20 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	{
 		pd3dsrvTexture = NULL;
 		WinImage[i] = new CTexture(1, 1, 0, 0);
-		if (i == 0) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win0.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 1) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win1.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 2) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 3) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win3.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 4) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win4.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 5) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win5.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 6) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win6.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 7) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win7.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 8) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win8.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 9) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win9.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 10) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win10.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 11) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win11.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 12) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win12.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 13) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Win13.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 0) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Win0.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 1) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Win1.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 2) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Win2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 3) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Win3.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 4) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Win4.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 5) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Win5.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 6) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Win6.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 7) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Win7.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 8) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Win8.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 9) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Win9.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 10) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Win10.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 11) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Win11.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 12) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Win12.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 13) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Win13.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 		WinImage[i]->SetTexture(0, pd3dsrvTexture);
 		WinImage[i]->SetSampler(0, pd3dSamplerState);
 		pd3dsrvTexture->Release();
@@ -1268,24 +1268,24 @@ void CScene::BuildObjects(ID3D11Device *pd3dDevice, int playercount)
 	{
 		pd3dsrvTexture = NULL;
 		LoseImage[i] = new CTexture(1, 1, 0, 0);
-		if (i == 0) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose0.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 1) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose1.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 2) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 3) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose3.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 4) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose4.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 5) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose5.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 6) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose6.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 7) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose7.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 8) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose8.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 9) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose9.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 10) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose10.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 11) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose11.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 12) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose12.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 13) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose13.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 14) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose14.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 15) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose15.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 16) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose16.png"), NULL, NULL, &pd3dsrvTexture, NULL);
-		if (i == 17) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("../Data/UI/win&lose/Lose17.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 0) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Lose0.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 1) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Lose1.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 2) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Lose2.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 3) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Lose3.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 4) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Lose4.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 5) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Lose5.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 6) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Lose6.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 7) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Lose7.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 8) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Lose8.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 9) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Lose9.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 10) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Lose10.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 11) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Lose11.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 12) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Lose12.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 13) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Lose13.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 14) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Lose14.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 15) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Lose15.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 16) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Lose16.png"), NULL, NULL, &pd3dsrvTexture, NULL);
+		if (i == 17) D3DX11CreateShaderResourceViewFromFile(pd3dDevice, _T("Data/UI/win&lose/Lose17.png"), NULL, NULL, &pd3dsrvTexture, NULL);
 		LoseImage[i]->SetTexture(0, pd3dsrvTexture);
 		LoseImage[i]->SetSampler(0, pd3dSamplerState);
 		pd3dsrvTexture->Release();

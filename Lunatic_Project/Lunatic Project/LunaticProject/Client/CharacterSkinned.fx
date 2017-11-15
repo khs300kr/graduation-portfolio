@@ -1,4 +1,4 @@
-#include "Light.fx"
+#include "../Client/Light.fx"
 
 //
 // 상수 버퍼

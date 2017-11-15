@@ -1,4 +1,4 @@
-#include "Client/Effect.fx"
+#include "/Client/Effect.fx"
 
 #define PARTICLE_TYPE_EMITTER	0
 #define PARTICLE_TYPE_FLARE		1

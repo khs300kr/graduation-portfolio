@@ -21,8 +21,8 @@ void CUIShader::CreateShader(ID3D11Device *pd3dDevice)
 	};
 	UINT nElements = ARRAYSIZE(d3dInputElements);
 
-	CreateVertexShaderFromFile(pd3dDevice, L"UI.fx", "VSUI", "vs_5_0", &m_pd3dVertexShader, d3dInputElements, nElements, &m_pd3dVertexLayout);
-	CreatePixelShaderFromFile(pd3dDevice, L"UI.fx", "PSUI", "ps_5_0", &m_pd3dPixelShader);
+	CreateVertexShaderFromFile(pd3dDevice, L"Client/UI.fx", "VSUI", "vs_5_0", &m_pd3dVertexShader, d3dInputElements, nElements, &m_pd3dVertexLayout);
+	CreatePixelShaderFromFile(pd3dDevice, L"Client/UI.fx", "PSUI", "ps_5_0", &m_pd3dPixelShader);
 }
 
 void CUIShader::CreateMesh(ID3D11Device *pd3dDevice)
